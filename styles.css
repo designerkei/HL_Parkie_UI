@@ -19,20 +19,111 @@
 
 /* ---- theme (chrome) : DARK default ---- */
 :root{
-  --bg:#0F0F11; --panel:#161618; --card:#1E1E21; --card2:#242426;
-  --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.05);
-  --ink:rgba(255,255,255,.95); --ink2:rgba(255,255,255,.6); --ink3:rgba(255,255,255,.4);
-  --accent:#00AAFF; --accent-soft:rgba(0,170,255,.14);
-  --sidebar:#161618; --topbar:rgba(15,15,17,.82);
-  --shadow:0 24px 60px rgba(0,0,0,.5);
+  --parkie-brand-primary:oklch(0.68 0.15 255);
+  --parkie-brand-primary-hover:oklch(0.74 0.15 255);
+  --parkie-brand-primary-active:oklch(0.62 0.15 255);
+  --parkie-brand-on:oklch(0.16 0.01 260);
+  --parkie-brand-subtle:oklch(0.33 0.06 260);
+  --parkie-brand-subtle-hover:oklch(0.38 0.07 260);
+  --parkie-brand-border:oklch(0.46 0.09 260);
+  --parkie-brand-text:oklch(0.82 0.10 260);
+
+  --parkie-bg:oklch(0.19 0.012 260);
+  --parkie-surface:oklch(0.23 0.014 260);
+  --parkie-surface-2:oklch(0.26 0.014 260);
+  --parkie-surface-3:oklch(0.30 0.015 260);
+  --parkie-border:oklch(0.33 0.014 260);
+  --parkie-border-strong:oklch(0.43 0.016 260);
+  --parkie-text:oklch(0.96 0.006 260);
+  --parkie-text-secondary:oklch(0.78 0.01 260);
+  --parkie-text-tertiary:oklch(0.62 0.012 260);
+  --parkie-text-disabled:oklch(0.48 0.012 260);
+
+  --parkie-success:oklch(0.72 0.13 150);
+  --parkie-success-subtle:oklch(0.30 0.05 150);
+  --parkie-success-text:oklch(0.82 0.11 150);
+  --parkie-warning:oklch(0.80 0.14 80);
+  --parkie-warning-subtle:oklch(0.33 0.05 80);
+  --parkie-warning-text:oklch(0.85 0.11 82);
+  --parkie-danger:oklch(0.67 0.18 25);
+  --parkie-danger-subtle:oklch(0.31 0.07 25);
+  --parkie-danger-text:oklch(0.80 0.14 25);
+  --parkie-info:oklch(0.72 0.12 240);
+  --parkie-info-subtle:oklch(0.31 0.05 245);
+  --parkie-info-text:oklch(0.82 0.10 245);
+
+  --parkie-status-active:oklch(0.72 0.14 150);
+  --parkie-status-charging:oklch(0.72 0.13 240);
+  --parkie-status-idle:oklch(0.60 0.012 260);
+  --parkie-status-error:oklch(0.67 0.18 25);
+  --parkie-status-offline:oklch(0.50 0.01 260);
+
+  --parkie-shadow-sm:0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
+  --parkie-shadow-md:0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);
+  --parkie-shadow-lg:0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
+  --parkie-shadow-xl:0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
+  --parkie-ring:0 0 0 3px oklch(0.68 0.15 255 / 0.40);
+
+  --bg:var(--parkie-bg); --panel:var(--parkie-surface); --card:var(--parkie-surface-2); --card2:var(--parkie-surface-3);
+  --line:var(--parkie-border); --line-soft:rgba(255,255,255,.05);
+  --ink:var(--parkie-text); --ink2:var(--parkie-text-secondary); --ink3:var(--parkie-text-tertiary);
+  --accent:var(--parkie-brand-primary); --accent-soft:var(--parkie-brand-subtle);
+  --sidebar:var(--parkie-surface); --topbar:oklch(0.19 0.012 260 / .82);
+  --shadow:var(--parkie-shadow-xl);
 }
-[data-theme="light"]{
-  --bg:#F4F5F7; --panel:#FFFFFF; --card:#FFFFFF; --card2:#F7F8FA;
-  --line:rgba(20,24,40,.10); --line-soft:rgba(20,24,40,.06);
-  --ink:#161A22; --ink2:#5B6470; --ink3:#98A1AD;
-  --accent:#0084ED; --accent-soft:rgba(0,132,237,.10);
-  --sidebar:#FFFFFF; --topbar:rgba(244,245,247,.85);
-  --shadow:0 20px 50px rgba(20,24,40,.10);
+
+[data-theme="dark"]{
+  --parkie-brand-primary:oklch(0.68 0.15 255);
+  --parkie-brand-primary-hover:oklch(0.74 0.15 255);
+  --parkie-brand-primary-active:oklch(0.62 0.15 255);
+  --parkie-brand-on:oklch(0.16 0.01 260);
+  --parkie-brand-subtle:oklch(0.33 0.06 260);
+  --parkie-brand-subtle-hover:oklch(0.38 0.07 260);
+  --parkie-brand-border:oklch(0.46 0.09 260);
+  --parkie-brand-text:oklch(0.82 0.10 260);
+
+  --parkie-bg:oklch(0.19 0.012 260);
+  --parkie-surface:oklch(0.23 0.014 260);
+  --parkie-surface-2:oklch(0.26 0.014 260);
+  --parkie-surface-3:oklch(0.30 0.015 260);
+  --parkie-border:oklch(0.33 0.014 260);
+  --parkie-border-strong:oklch(0.43 0.016 260);
+  --parkie-text:oklch(0.96 0.006 260);
+  --parkie-text-secondary:oklch(0.78 0.01 260);
+  --parkie-text-tertiary:oklch(0.62 0.012 260);
+  --parkie-text-disabled:oklch(0.48 0.012 260);
+
+  --parkie-success:oklch(0.72 0.13 150);
+  --parkie-success-subtle:oklch(0.30 0.05 150);
+  --parkie-success-text:oklch(0.82 0.11 150);
+  --parkie-warning:oklch(0.80 0.14 80);
+  --parkie-warning-subtle:oklch(0.33 0.05 80);
+  --parkie-warning-text:oklch(0.85 0.11 82);
+  --parkie-danger:oklch(0.67 0.18 25);
+  --parkie-danger-subtle:oklch(0.31 0.07 25);
+  --parkie-danger-text:oklch(0.80 0.14 25);
+  --parkie-info:oklch(0.72 0.12 240);
+  --parkie-info-subtle:oklch(0.31 0.05 245);
+  --parkie-info-text:oklch(0.82 0.10 245);
+
+  --parkie-status-active:oklch(0.72 0.14 150);
+  --parkie-status-charging:oklch(0.72 0.13 240);
+  --parkie-status-idle:oklch(0.60 0.012 260);
+  --parkie-status-error:oklch(0.67 0.18 25);
+  --parkie-status-offline:oklch(0.50 0.01 260);
+
+  --parkie-shadow-sm:0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
+  --parkie-shadow-md:0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);
+  --parkie-shadow-lg:0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
+  --parkie-shadow-xl:0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
+  --parkie-ring:0 0 0 3px oklch(0.68 0.15 255 / 0.40);
+
+  --bg:var(--parkie-bg); --panel:var(--parkie-surface); --card:var(--parkie-surface-2); --card2:var(--parkie-surface-3);
+  --line:var(--parkie-border); --line-soft:rgba(255,255,255,.05);
+  --ink:var(--parkie-text); --ink2:var(--parkie-text-secondary); --ink3:var(--parkie-text-tertiary);
+  --accent:var(--parkie-brand-primary); --accent-soft:var(--parkie-brand-subtle);
+  --sidebar:var(--parkie-surface); --topbar:oklch(0.19 0.012 260 / .82);
+  --shadow:var(--parkie-shadow-xl);
 }
 
 *{box-sizing:border-box; margin:0; padding:0;}
@@ -68,7 +159,7 @@ svg{ display:block; }
 .topbar .crumb{ font-family:var(--mono); font-size:12px; color:var(--ink3);}
 .topbar .crumb b{ color:var(--ink2); font-weight:500;}
 .topbar .spacer{ flex:1;}
-.toggle-theme{ display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); color:var(--ink2);
+.toggle-theme{ display:none; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); color:var(--ink2);
   border-radius:20px; padding:7px 13px; font-size:12px; font-family:var(--mono); cursor:pointer;}
 .toggle-theme:hover{ color:var(--ink);}
 .toggle-theme svg{ width:15px; height:15px;}

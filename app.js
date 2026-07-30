@@ -34,7 +34,7 @@
     if (match) showPage(hash, match.textContent.trim());
   }
 
-  /* -------- theme toggle (dark <-> light) -------- */
+  /* -------- theme baseline (dark only for Phase 1) -------- */
   var themeBtn = document.getElementById('themeBtn');
   var themeLabel = document.getElementById('themeLabel');
   var themeIcon = document.getElementById('themeIcon');
@@ -52,12 +52,10 @@
 
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
-      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      setTheme('dark');
     });
   }
-  var saved;
-  try { saved = localStorage.getItem('hl-theme'); } catch (e) {}
-  setTheme(saved || 'dark');
+  setTheme('dark');
 
   /* -------- copy hex on swatch click -------- */
   var toast = document.getElementById('copied');
