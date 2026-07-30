@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HL Mando Parking · SMS — Design System</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="mark">HL</div>
+      <div class="bt">HL Robotics</div>
+      <div class="ver">v0.1</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gt">Overview</div>
+      <button class="nav-item active" data-target="intro"><span class="dot"></span>Introduction</button>
+    </div>
+    <div class="nav-group">
+      <div class="gt">Foundations</div>
+      <button class="nav-item" data-target="color"><span class="dot"></span>Color</button>
+      <button class="nav-item" data-target="typography"><span class="dot"></span>Typography</button>
+      <button class="nav-item" data-target="spacing"><span class="dot"></span>Layout &amp; Spacing</button>
+      <button class="nav-item" data-target="elevation"><span class="dot"></span>Elevation</button>
+      <button class="nav-item" data-target="icons"><span class="dot"></span>Icons</button>
+      <button class="nav-item" data-target="motion"><span class="dot"></span>Motion</button>
+    </div>
+    <div class="nav-group">
+      <div class="gt">Components</div>
+      <button class="nav-item" data-target="button"><span class="dot"></span>Button</button>
+      <button class="nav-item" data-target="forms"><span class="dot"></span>Form Controls</button>
+      <button class="nav-item" data-target="notification"><span class="dot"></span>Notification / Alert</button>
+      <button class="nav-item" data-target="panel"><span class="dot"></span>Site Status Panel</button>
+      <button class="nav-item" data-target="navigation"><span class="dot"></span>Navigation</button>
+      <button class="nav-item" data-target="overlays"><span class="dot"></span>Overlays &amp; Feedback</button>
+      <button class="nav-item" data-target="media"><span class="dot"></span>Media &amp; Emergency</button>
+      <button class="nav-item" data-target="badge"><span class="dot"></span>Badge &amp; Status</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="crumb">HL Mando Parking · SMS &nbsp;/&nbsp; <b id="crumb">Introduction</b></div>
+      <div class="spacer"></div>
+      <button class="toggle-theme" id="themeBtn">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+        <span id="themeLabel">Dark</span>
+      </button>
+    </div>
+
+    <div class="content">
+
+      <!-- ==================== INTRO ==================== -->
+      <section class="page active" id="page-intro">
+        <div class="eyebrow"><span class="n">00</span> DESIGN SYSTEM</div>
+        <h1>HL Mando Parking<br>SMS Design System</h1>
+        <p class="lead">로보틱스 주차 관제 대시보드를 위한 다크 UI 시스템. 색·타이포·컴포넌트를 하나의 토큰 언어로 통합해, <b style="color:var(--ink)">상태를 색으로 읽고 3초 안에 판단하는</b> 화면을 만듭니다.</p>
+
+        <div class="sec">
+          <h2>4대 원칙</h2>
+          <div class="grid g2" style="margin-top:8px;">
+            <div class="card"><div class="sublabel" style="margin:0 0 8px;">01</div><b>색 = 상태 신호</b><p class="note" style="margin-top:8px;">위계는 크기·굵기로, 의미는 색으로. 색은 장식이 아니라 로봇·차단기·카메라의 상태를 전달하는 신호입니다.</p></div>
+            <div class="card"><div class="sublabel" style="margin:0 0 8px;">02</div><b>다크 Elevation</b><p class="note" style="margin-top:8px;">#131315 위에 흰색 오버레이(dp)를 얹어 깊이를 표현. 저조도 관제실을 전제한 딥 다크 모드입니다.</p></div>
+            <div class="card"><div class="sublabel" style="margin:0 0 8px;">03</div><b>수치 = 모노스페이스</b><p class="note" style="margin-top:8px;">속도·배터리·좌표·번호는 고정폭으로 정렬. 실시간 값이 바뀌어도 자릿수가 흔들리지 않습니다.</p></div>
+            <div class="card"><div class="sublabel" style="margin:0 0 8px;">04</div><b>파괴적 액션 분리</b><p class="note" style="margin-top:8px;">정지·초기화·전체 재부팅은 레드 + 격리(오버플로/모달). 오조작을 구조적으로 막습니다.</p></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Token Architecture</h2>
+          <p class="subtitle">Primitive → Semantic → Component 3계층. Figma Variables와 1:1 매핑되고 코드(CSS 변수/DTCG JSON)로 그대로 떨어집니다.</p>
+          <div class="card" style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <span class="btn primary" style="pointer-events:none;">Primitive</span>
+            <span style="color:var(--ink3)">→</span>
+            <span class="btn primary" style="pointer-events:none;">Semantic</span>
+            <span style="color:var(--ink3)">→</span>
+            <span class="btn secondary" style="pointer-events:none;">Component</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== COLOR ==================== -->
+      <section class="page" id="page-color">
+        <div class="eyebrow"><span class="n">01</span> FOUNDATION</div>
+        <h1>Color</h1>
+        <p class="lead">색은 심각도(severity)와 상태를 전달하는 신호입니다. 스와치를 클릭하면 hex가 복사됩니다.</p>
+
+        <div class="sec">
+          <h2>Surface · dp Elevation</h2>
+          <p class="subtitle">#131315 기준 흰색 오버레이. 위로 뜰수록 밝아집니다.</p>
+          <div class="ramp">
+            <div class="stop" style="background:#131315;color:#fff" data-hex="#131315"><div class="k">dp/00</div><div class="h">#131315</div></div>
+            <div class="stop" style="background:#242425;color:#fff" data-hex="#242425"><div class="k">dp/02</div><div class="h">#242425</div></div>
+            <div class="stop" style="background:#28282A;color:#fff" data-hex="#28282A"><div class="k">dp/04</div><div class="h">#28282A</div></div>
+            <div class="stop" style="background:#2F2F31;color:#fff" data-hex="#2F2F31"><div class="k">dp/08</div><div class="h">#2F2F31</div></div>
+            <div class="stop" style="background:#363638;color:#fff" data-hex="#363638"><div class="k">dp/16</div><div class="h">#363638</div></div>
+            <div class="stop" style="background:#39393A;color:#fff" data-hex="#39393A"><div class="k">dp/24</div><div class="h">#39393A</div></div>
+            <div class="stop" style="background:#4C4C4D;color:#fff" data-hex="#4C4C4D"><div class="k">dp/40</div><div class="h">#4C4C4D</div></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Primary · Blue</h2>
+          <div class="swatches g4">
+            <div class="sw" data-hex="#00C8FF"><div class="chip" style="background:#00C8FF"></div><div class="meta"><div class="nm">primary/100</div><div class="hx">#00C8FF</div><div class="role">밝은 액센트 · 아이콘</div></div></div>
+            <div class="sw" data-hex="#00AAFF"><div class="chip" style="background:#00AAFF"></div><div class="meta"><div class="nm">primary/200 · base</div><div class="hx">#00AAFF</div><div class="role">Primary 액션 · 선택</div></div></div>
+            <div class="sw" data-hex="#009BE9"><div class="chip" style="background:#009BE9"></div><div class="meta"><div class="nm">primary/300</div><div class="hx">#009BE9</div><div class="role">pressed</div></div></div>
+            <div class="sw" data-hex="#16DCF2"><div class="chip" style="background:#16DCF2"></div><div class="meta"><div class="nm">hover</div><div class="hx">#16DCF2</div><div class="role">호버 (파랑→시안)</div></div></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Semantic</h2>
+          <div class="grid g4">
+            <div class="pill" style="background:#0FDC4C;color:#06210F" data-hex="#0FDC4C"><span class="pn">success</span><span class="ph">#0FDC4C</span></div>
+            <div class="pill" style="background:#FFD900;color:#241800" data-hex="#FFD900"><span class="pn">warning</span><span class="ph">#FFD900</span></div>
+            <div class="pill" style="background:#DF0000;color:#fff" data-hex="#DF0000"><span class="pn">alert</span><span class="ph">#DF0000</span></div>
+            <div class="pill" style="background:#00AAFF;color:#06222E" data-hex="#00AAFF"><span class="pn">info</span><span class="ph">#00AAFF</span></div>
+          </div>
+          <div class="tok">critical <b>#F20000</b> (제안) · emergency <b>#FF1D1D</b> (제안) · warning alt <b>#F5DE2E</b> (삼각형 아이콘)</div>
+        </div>
+
+        <div class="sec">
+          <h2>Text · Border (opacity)</h2>
+          <div class="tok">body <b>white 95%</b> · secondary <b>60%</b> · icon <b>70%</b> · disabled <b>35%</b> · border <b>12%</b> · hover overlay <b>6%</b></div>
+        </div>
+      </section>
+
+      <!-- ==================== TYPOGRAPHY ==================== -->
+      <section class="page" id="page-typography">
+        <div class="eyebrow"><span class="n">02</span> FOUNDATION</div>
+        <h1>Typography</h1>
+        <p class="lead">UI·본문은 Pretendard, 실시간 수치·데이터는 Roboto Mono. 두 트랙을 분리해 계기판 데이터와 서술형 텍스트를 구분합니다.</p>
+
+        <div class="sec">
+          <div class="stage pad-lg">
+            <div class="type-row"><div class="meta"><b>Display</b>32 / 40 · Bold</div><div class="sample" style="font-size:32px;font-weight:700;letter-spacing:-.5px;">HL 만도 파킹 관제</div></div>
+            <div class="type-row"><div class="meta"><b>Heading 1</b>24 / 32 · SemiBold</div><div class="sample" style="font-size:24px;font-weight:600;">실시간 모니터링</div></div>
+            <div class="type-row"><div class="meta"><b>Heading 2</b>20 / 28 · SemiBold</div><div class="sample" style="font-size:20px;font-weight:600;">로봇 상태 현황</div></div>
+            <div class="type-row"><div class="meta"><b>Title</b>16 / 24 · Medium</div><div class="sample" style="font-size:16px;font-weight:500;">구역 배정 설정</div></div>
+            <div class="type-row"><div class="meta"><b>Body · base</b>14 / 20 · Regular</div><div class="sample" style="font-size:14px;">로봇의 위치와 상태를 실시간으로 확인하세요.</div></div>
+            <div class="type-row"><div class="meta"><b>Caption</b>12 / 16 · Regular</div><div class="sample" style="font-size:12px;color:var(--ink2)">마지막 업데이트: 2026-07-29</div></div>
+            <div class="type-row"><div class="meta"><b>Mono · Data</b>Roboto Mono · 13</div><div class="sample" style="font-family:var(--mono);font-size:13px;color:var(--p100)">JOINT_04 · 87.2° · 12km/h · 100%</div></div>
+          </div>
+          <div class="tok">위계는 크기·굵기로만 · 알림 본문은 Regular 고정 · 수치는 모노스페이스로 정렬</div>
+        </div>
+      </section>
+
+      <!-- ==================== SPACING ==================== -->
+      <section class="page" id="page-spacing">
+        <div class="eyebrow"><span class="n">03</span> FOUNDATION</div>
+        <h1>Layout &amp; Spacing</h1>
+        <p class="lead">모든 간격과 크기는 8px 배수(4px 보조)로 구성합니다. 일관된 그리드가 컴포넌트 간의 관계를 만듭니다.</p>
+
+        <div class="sec">
+          <h2>Spacing Scale</h2>
+          <div class="stage">
+            <div class="spac">
+              <div class="u"><div class="b" style="width:4px;height:4px"></div><div class="n">4</div><div class="p">sp-1</div></div>
+              <div class="u"><div class="b" style="width:8px;height:8px"></div><div class="n">8</div><div class="p">sp-2</div></div>
+              <div class="u"><div class="b" style="width:12px;height:12px"></div><div class="n">12</div><div class="p">sp-3</div></div>
+              <div class="u"><div class="b" style="width:16px;height:16px"></div><div class="n">16</div><div class="p">sp-4</div></div>
+              <div class="u"><div class="b" style="width:24px;height:24px"></div><div class="n">24</div><div class="p">sp-5</div></div>
+              <div class="u"><div class="b" style="width:32px;height:32px"></div><div class="n">32</div><div class="p">sp-6</div></div>
+              <div class="u"><div class="b" style="width:48px;height:48px"></div><div class="n">48</div><div class="p">sp-7</div></div>
+              <div class="u"><div class="b" style="width:64px;height:64px"></div><div class="n">64</div><div class="p">sp-8</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Radius</h2>
+          <div class="stage">
+            <div class="radi">
+              <div class="u"><div class="box" style="border-radius:0"></div><div class="n">0</div><div class="p">0px</div></div>
+              <div class="u"><div class="box" style="border-radius:6px"></div><div class="n">6</div><div class="p">sm</div></div>
+              <div class="u"><div class="box" style="border-radius:8px"></div><div class="n">8</div><div class="p">버튼</div></div>
+              <div class="u"><div class="box" style="border-radius:12px"></div><div class="n">12</div><div class="p">메뉴</div></div>
+              <div class="u"><div class="box" style="border-radius:16px"></div><div class="n">16</div><div class="p">패널</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Layout Tokens</h2>
+          <div class="tok">rail-width <b>72px</b> · panel-width <b>360px</b> · topbar-height <b>64px</b> · content-padding <b>24px</b> · panel-gap <b>16px</b> · section-gap <b>32px</b> · border-width <b>1px</b></div>
+        </div>
+      </section>
+
+      <!-- ==================== ELEVATION ==================== -->
+      <section class="page" id="page-elevation">
+        <div class="eyebrow"><span class="n">04</span> FOUNDATION</div>
+        <h1>Elevation</h1>
+        <p class="lead">Material 다크 elevation 오버레이 모델. 서피스가 위로 뜰수록 dp가 올라가고 흰색 오버레이 %가 커집니다.</p>
+
+        <div class="sec">
+          <div class="elev">
+            <div class="r"><div class="c" style="background:#131315"></div><div class="i"><div class="tk">dp/00</div><div class="ov">0%</div><div class="hx">#131315</div><div class="role">앱 배경</div></div></div>
+            <div class="r"><div class="c" style="background:#242425"></div><div class="i"><div class="tk">dp/02</div><div class="ov">7%</div><div class="hx">#242425</div><div class="role">카드 · 리스트 행</div></div></div>
+            <div class="r"><div class="c" style="background:#28282A"></div><div class="i"><div class="tk">dp/04</div><div class="ov">9%</div><div class="hx">#28282A</div><div class="role">패널 · 상태창</div></div></div>
+            <div class="r"><div class="c" style="background:#2F2F31"></div><div class="i"><div class="tk">dp/08</div><div class="ov">12%</div><div class="hx">#2F2F31</div><div class="role">팝오버</div></div></div>
+            <div class="r"><div class="c" style="background:#363638"></div><div class="i"><div class="tk">dp/16</div><div class="ov">15%</div><div class="hx">#363638</div><div class="role">드롭다운 메뉴</div></div></div>
+            <div class="r"><div class="c" style="background:#39393A"></div><div class="i"><div class="tk">dp/24</div><div class="ov">16%</div><div class="hx">#39393A</div><div class="role">모달 · 토스트</div></div></div>
+          </div>
+          <div class="sublabel">Shadow (floating surfaces)</div>
+          <div class="grid g3">
+            <div class="card" style="box-shadow:0 1px 2px rgba(0,0,0,.4)"><b style="font-size:13px">elev-1</b><div class="tok" style="margin-top:6px">0 1 2 · rgba .4</div></div>
+            <div class="card" style="box-shadow:0 4px 12px rgba(0,0,0,.45)"><b style="font-size:13px">elev-2</b><div class="tok" style="margin-top:6px">0 4 12 · rgba .45</div></div>
+            <div class="card" style="box-shadow:0 12px 28px rgba(0,0,0,.55)"><b style="font-size:13px">elev-3</b><div class="tok" style="margin-top:6px">0 12 28 · rgba .55</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ICONS ==================== -->
+      <section class="page" id="page-icons">
+        <div class="eyebrow"><span class="n">05</span> FOUNDATION</div>
+        <h1>Icons</h1>
+        <p class="lead">24px 그리드 · 2px stroke · 라운드 캡 &amp; 조인. 라인 스타일로 통일해 다크 배경에서 또렷하게 읽힙니다.</p>
+        <div class="sec">
+          <div class="stage">
+            <div class="icons">
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></div><div class="l">홈</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M12 8V5"/><path d="M9.5 13h.01M14.5 13h.01"/></svg></div><div class="l">로봇</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-2h6l2 2h4v11H3z"/><circle cx="12" cy="13" r="3"/></svg></div><div class="l">카메라</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="9" height="11" rx="2"/><path d="M15 11h2v4h-2"/><path d="M10 10l-1 3h2l-1 3"/></svg></div><div class="l">충전기</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1112 0c0 4 2 5 2 5H4s2-1 2-5z"/><path d="M10 20a2 2 0 004 0"/></svg></div><div class="l">알림</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg></div><div class="l">설정</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M20 11v3"/></svg></div><div class="l">배터리</div></div>
+              <div class="ico"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a13 13 0 0118 0"/><path d="M6.5 13.5a8 8 0 0111 0"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg></div><div class="l">통신</div></div>
+            </div>
+          </div>
+          <div class="tok">라이브러리는 Fluent System Icons 계열을 기준으로 확장 · 상태 아이콘은 severity 색과 결합</div>
+        </div>
+      </section>
+
+      <!-- ==================== MOTION ==================== -->
+      <section class="page" id="page-motion">
+        <div class="eyebrow"><span class="n">06</span> FOUNDATION</div>
+        <h1>Motion</h1>
+        <p class="lead">모션은 상태 변화를 부드럽게 잇되, 관제 화면의 즉각성을 해치지 않게 짧게 유지합니다. <span style="color:var(--warn)">(제안 · 확정 대기)</span></p>
+        <div class="sec">
+          <div class="card">
+            <div class="type-row"><div class="meta"><b>Fast</b>120ms · ease-out</div><div class="sample note">즉각 피드백 · 마이크로 인터랙션 (토글·hover)</div></div>
+            <div class="type-row"><div class="meta"><b>Normal</b>200ms · ease-out</div><div class="sample note">일반 전환 · 패널 오픈/클로즈</div></div>
+            <div class="type-row"><div class="meta"><b>Slow</b>300ms · ease-out</div><div class="sample note">페이지 전환 · 대형 UI 애니메이션</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BUTTON ==================== -->
+      <section class="page" id="page-button">
+        <div class="eyebrow"><span class="n">07</span> COMPONENT</div>
+        <h1>Button</h1>
+        <p class="lead">위계는 채움·색으로 표현하고, 파괴적 액션(정지·초기화)은 레드로 분리합니다. 화면당 Primary는 1개.</p>
+
+        <div class="sec">
+          <h2>Variants</h2>
+          <div class="stage" style="display:flex; gap:14px; flex-wrap:wrap;">
+            <button class="btn primary">서비스 시작</button>
+            <button class="btn destructive">즉시 정지</button>
+            <button class="btn secondary">취소</button>
+            <button class="btn ghost">더보기</button>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>State Matrix</h2>
+          <div class="matrix">
+            <div class="hd"><div>VARIANT</div><div>Enabled</div><div>Hover</div><div>Pressed</div><div>Disabled</div><div>Focus</div></div>
+            <div class="row"><div class="lbl">Primary</div>
+              <div class="cell"><span class="btn primary">작동 재개</span></div>
+              <div class="cell"><span class="btn primary" style="background:var(--hover)">작동 재개</span></div>
+              <div class="cell"><span class="btn primary" style="background:var(--p300);color:#fff">작동 재개</span></div>
+              <div class="cell"><span class="btn primary disabled">작동 재개</span></div>
+              <div class="cell"><span class="btn primary focusring">작동 재개</span></div>
+            </div>
+            <div class="row"><div class="lbl">Destructive</div>
+              <div class="cell"><span class="btn destructive">즉시 정지</span></div>
+              <div class="cell"><span class="btn destructive" style="background:#F51A1A">즉시 정지</span></div>
+              <div class="cell"><span class="btn destructive" style="background:#B00000">즉시 정지</span></div>
+              <div class="cell"><span class="btn destructive disabled">즉시 정지</span></div>
+              <div class="cell"><span class="btn destructive focusring">즉시 정지</span></div>
+            </div>
+            <div class="row"><div class="lbl">Secondary</div>
+              <div class="cell"><span class="btn secondary">취소</span></div>
+              <div class="cell"><span class="btn secondary" style="background:var(--dp16)">취소</span></div>
+              <div class="cell"><span class="btn secondary" style="background:var(--dp4)">취소</span></div>
+              <div class="cell"><span class="btn secondary disabled">취소</span></div>
+              <div class="cell"><span class="btn secondary focusring">취소</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Size &amp; Type</h2>
+          <div class="stage" style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+            <button class="btn primary sm">확인</button>
+            <button class="btn primary">확인</button>
+            <button class="btn primary lg">확인</button>
+            <button class="btn primary" style="width:40px;padding:0;min-width:0"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="#06222E" stroke-width="2"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/></svg></button>
+          </div>
+          <div class="tok">radius <b>8</b> (sm 6 / lg 10) · H <b>32 / 40 / 48</b> · icon <b>18</b> · gap <b>8</b> · 파랑 위 텍스트 <b>#06222E</b></div>
+        </div>
+      </section>
+
+      <!-- ==================== FORMS ==================== -->
+      <section class="page" id="page-forms">
+        <div class="eyebrow"><span class="n">08</span> COMPONENT</div>
+        <h1>Form Controls</h1>
+        <p class="lead">어두운 inset 서피스 위에서 포커스는 primary 링, 에러는 alert 링으로 상태를 명확히 전달합니다.</p>
+
+        <div class="sec">
+          <h2>Input</h2>
+          <div class="stage">
+            <div class="grid g2">
+              <div class="field"><div class="lab">차량 번호</div><div class="input ph">입력하세요</div><div class="help">default</div></div>
+              <div class="field"><div class="lab">차량 번호</div><div class="input focus">213바5502</div><div class="help">focus</div></div>
+              <div class="field"><div class="lab">차량 번호</div><div class="input err">213바</div><div class="help err">형식이 올바르지 않습니다</div></div>
+              <div class="field"><div class="lab">차량 번호</div><div class="input dis">입력 불가</div><div class="help">disabled</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Select · Dropdown</h2>
+          <div class="stage" style="max-width:400px;">
+            <div class="lab" style="font-size:12.5px;color:var(--ink2);margin-bottom:8px;font-weight:500">구역 선택</div>
+            <div class="input focus">B2F_23A<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></div>
+            <div class="selmenu"><div class="o sel">B2F_23A</div><div class="o">B2F_24A</div><div class="o">B1F_11C</div></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Choice</h2>
+          <div class="grid g3">
+            <div class="stage"><b style="font-size:14px">Checkbox</b><div style="margin-top:16px">
+              <div class="opt"><span class="cb"></span>미선택</div>
+              <div class="opt"><span class="cb on"><svg viewBox="0 0 24 24" width="13"><path fill="#06222E" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></span>선택</div>
+              <div class="opt muted"><span class="cb dis"></span>비활성</div></div></div>
+            <div class="stage"><b style="font-size:14px">Radio</b><div style="margin-top:16px">
+              <div class="opt"><span class="rd"></span>평면 뷰</div>
+              <div class="opt"><span class="rd on"></span>입체 뷰</div>
+              <div class="opt muted"><span class="rd dis"></span>비활성</div></div></div>
+            <div class="stage"><b style="font-size:14px">Toggle</b><div style="margin-top:16px">
+              <div class="opt">Off<span class="tg" style="margin-left:auto" data-toggle></span></div>
+              <div class="opt">On<span class="tg on" style="margin-left:auto" data-toggle></span></div>
+              <div class="opt muted">Disabled<span class="tg dis" style="margin-left:auto"></span></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== NOTIFICATION ==================== -->
+      <section class="page" id="page-notification">
+        <div class="eyebrow"><span class="n">09</span> COMPONENT</div>
+        <h1>Notification / Alert</h1>
+        <p class="lead">주차기록·시스템 이벤트를 실시간으로 전달합니다. severity를 색·아이콘으로 즉시 구분하고, 치명 알림은 나머지를 압도합니다.</p>
+
+        <div class="sec">
+          <h2>Panel</h2>
+          <div class="stage pad-lg">
+            <div class="notipanel">
+              <div class="nhead"><span class="t1">알림</span><span class="t2">주차기록</span><span class="x">✕</span></div>
+              <div class="n sel"><div class="nic ok"><svg viewBox="0 0 24 24"><path fill="#06210F" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></div><div class="nsev ok">입차완료</div><div class="nveh">213바5502</div><div class="nzone">B2F_23A</div><div class="nts">13:25:07</div></div>
+              <div class="n"><div class="nic info"><svg viewBox="0 0 24 24"><path fill="#06222E" d="M5 11l1.5-4.5h11L19 11M6.5 16a1.5 1.5 0 110-3 1.5 1.5 0 010 3m11 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3M18.9 6c-.2-.6-.8-1-1.4-1H6.5c-.6 0-1.2.4-1.4 1L3 12v6h2v-1h14v1h2v-6z"/></svg></div><div class="nsev info">입차중</div><div class="nveh">213바5502</div><div class="nzone">B2F_23A</div><div class="nts">13:25:07</div></div>
+              <div class="n"><div class="nic warn"><svg viewBox="0 0 24 24"><path fill="#241800" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="nsev warn">입차실패</div><div class="nveh">213바5502</div><div class="nzone">B2F_23A</div><div class="nts">13:25:07</div></div>
+              <div class="n crit-tint"><div class="nic crit"><svg viewBox="0 0 24 24"><path fill="#fff" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="nsev crit">경고</div><div class="nmsg">에러로 인해 로봇이 중단됩니다.</div><div class="nts">13:25:07</div></div>
+              <div class="n crit-solid"><div class="nic"><svg viewBox="0 0 24 24"><path fill="#F20000" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="nsev">경고</div><div class="nmsg">배터리 부족으로 로봇이 즉시 중단됩니다...</div><div class="nts">13:25:07</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Severity</h2>
+          <div class="stage" style="max-width:640px;">
+            <div class="n line info" style="margin-bottom:10px"><div class="nic info"><svg viewBox="0 0 24 24"><path fill="#06222E" d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9a10 10 0 100 20 10 10 0 000-20z"/></svg></div><div class="nsev info">정보</div><div class="nmsg">시스템을 정상 시작 합니다.</div><div class="nts">13:25:07</div></div>
+            <div class="n line ok" style="margin-bottom:10px"><div class="nic ok"><svg viewBox="0 0 24 24"><path fill="#06210F" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></div><div class="nsev ok">완료</div><div class="nmsg">임무가 완료 되었습니다.</div><div class="nts">13:25:07</div></div>
+            <div class="n line warn" style="margin-bottom:10px"><div class="nic warn"><svg viewBox="0 0 24 24"><path fill="#241800" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="nsev warn">경고</div><div class="nmsg">배터리가 부족하여 충전이 필요합니다.</div><div class="nts">13:25:07</div></div>
+            <div class="n line crit crit-tint"><div class="nic crit"><svg viewBox="0 0 24 24"><path fill="#fff" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="nsev crit">경고</div><div class="nmsg">에러로 인해 로봇이 중단됩니다.</div><div class="nts">13:25:07</div></div>
+          </div>
+          <div class="tok">아이콘 칩 + 라벨 = 동일 severity 색 · critical은 tint(히스토리)/solid(강조) 2단계 · 본문 Regular 고정</div>
+        </div>
+      </section>
+
+      <!-- ==================== PANEL ==================== -->
+      <section class="page" id="page-panel">
+        <div class="eyebrow"><span class="n">10</span> COMPONENT</div>
+        <h1>Site Status Panel</h1>
+        <p class="lead">로봇·차단기·카메라·인프라를 한 패널에서 통제하는 관제의 심장부. 상태 확인과 즉시 조작이 한 화면에서 끝납니다.</p>
+        <div class="sec">
+          <div class="stage pad-lg">
+            <div class="spanel">
+              <div class="pt">사이트 상태창</div>
+              <div class="ssec">로봇<div class="tools"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 15l6-6 6 6"/></svg></div></div>
+              <div class="rr"><div class="rid">01</div><div class="rwifi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 18a2 2 0 100 4 2 2 0 000-4zm-4.9-3.1l1.7 1.7A4.5 4.5 0 0112 15c1.2 0 2.3.5 3.2 1.3l1.7-1.7A7 7 0 0012 13a7 7 0 00-4.9 1.9z"/></svg></div><div class="rspd">12<span style="font-size:10px;color:rgba(255,255,255,.5)">km/h</span></div><div class="rbat">100%</div></div>
+              <div class="rr sel"><div class="rid">02</div><div class="rwifi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 18a2 2 0 100 4 2 2 0 000-4zm-4.9-3.1l1.7 1.7A4.5 4.5 0 0112 15c1.2 0 2.3.5 3.2 1.3l1.7-1.7A7 7 0 0012 13a7 7 0 00-4.9 1.9z"/></svg></div><div class="rspd">0<span style="font-size:10px;color:rgba(255,255,255,.5)">km/h</span></div><div class="rbat">66%</div></div>
+              <div class="ssec">차단기</div>
+              <div class="rr" style="padding-left:16px"><div class="rid" style="width:auto">01</div><span style="color:rgba(255,255,255,.42)">차단기</span><div class="seg"><span class="on">열기</span><span>닫기</span></div></div>
+              <div class="ssec">카메라</div>
+              <div class="crow"><div class="rid" style="width:auto">01</div><div class="grp">그룹 1</div><span class="tg on" style="margin-left:auto" data-toggle></span></div>
+              <div class="ssec">인프라</div>
+              <div class="infra">
+                <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 11l1.5-4.5h11L19 11M6 17v1M18 17v1M5 11h14v6H5z"/></svg><div class="il">드랍존</div></div>
+                <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="4" width="9" height="16" rx="1"/><path d="M15 10h2v4M10 8l-1 3h2l-1 3"/></svg><div class="il">충전기</div></div>
+                <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><div class="il">키오스크</div></div>
+                <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 10a13 13 0 0116 0M7 13.5a8 8 0 0110 0"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg><div class="il">통신</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tok">상태바 색 — 가동중 <b>green</b> / 선택 <b>blue</b> / 주의 <b>yellow</b> / 오프라인 <b>gray</b> · 전체 정지·재부팅은 ⋮ 메뉴에 격리</div>
+        </div>
+      </section>
+
+      <!-- ==================== NAVIGATION ==================== -->
+      <section class="page" id="page-navigation">
+        <div class="eyebrow"><span class="n">11</span> COMPONENT</div>
+        <h1>Navigation</h1>
+        <p class="lead">전역 컨트롤과 화면 전환. 상단 글로벌 바, 좌측 아이콘 레일, 역할 전환(관리자/엔지니어), 검색.</p>
+
+        <div class="sec">
+          <h2>Global Top Bar</h2>
+          <div class="stage">
+            <div class="topbardemo">
+              <div class="brand" style="padding:0"><div class="mark" style="width:26px;height:26px;font-size:11px">HL</div></div>
+              <div class="opt" style="margin:0;gap:8px;font-size:12.5px;color:rgba(255,255,255,.6)">서비스 활성화<span class="tg on" style="width:38px;height:21px" data-toggle><span class="k" style="width:17px;height:17px"></span></span></div>
+              <div class="tb-seg"><span class="on">관리자</span><span>엔지니어</span></div>
+              <div class="tb-search"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Search vehicles by VIN…</div>
+              <div style="margin-left:auto;font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.6)">KOR</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Icon Rail</h2>
+          <div class="stage" style="display:flex; gap:40px; align-items:flex-start;">
+            <div class="raildemo">
+              <div class="r on"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="l">홈</div></div>
+              <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M12 8V5"/></svg><div class="l">로봇관리</div></div>
+              <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-2h6l2 2h4v11H3z"/><circle cx="12" cy="13" r="3"/></svg><div class="l">카메라</div></div>
+              <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg><div class="l">설정</div></div>
+            </div>
+            <div style="flex:1">
+              <div class="tok" style="margin-top:0">width <b>72–88</b> · active = <b>primary tint 12%</b> + primary 아이콘 · idle <b>white 42%</b></div>
+              <div class="sublabel">Role Switch</div>
+              <div style="display:flex; gap:14px;">
+                <div class="tb-seg"><span class="on">관리자</span><span>엔지니어</span></div>
+                <div class="tb-seg"><span>관리자</span><span class="on">엔지니어</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== OVERLAYS ==================== -->
+      <section class="page" id="page-overlays">
+        <div class="eyebrow"><span class="n">12</span> COMPONENT</div>
+        <h1>Overlays &amp; Feedback</h1>
+        <p class="lead">화면 위로 뜨는 요소는 dp/16 + 그림자로 depth를 만들고, 배경은 스크림으로 초점을 모읍니다.</p>
+
+        <div class="sec">
+          <div class="grid g2">
+            <div>
+              <h2 style="font-size:16px">Modal / Dialog</h2>
+              <div class="scrim" style="margin-top:12px">
+                <div class="modal">
+                  <div class="mh">전체 로봇을 정지할까요?</div>
+                  <div class="mb">진행 중인 모든 임무가 즉시 중단됩니다. 되돌릴 수 없습니다.</div>
+                  <div class="mf"><span class="btn secondary" style="height:36px">취소</span><span class="btn destructive" style="height:36px">전체 정지</span></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h2 style="font-size:16px">Dropdown · Tooltip</h2>
+              <div class="stage" style="margin-top:12px; display:flex; flex-direction:column; gap:20px; align-items:flex-start;">
+                <div class="menu">
+                  <div class="mi"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>전체 로봇 일시정지</div>
+                  <div class="mi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3h-2v10h2V3zm4.8 2.2l-1.4 1.4A7 7 0 1112 5V3a9 9 0 105.8 2.2z"/></svg>전체 로봇 재부팅</div>
+                  <div class="div"></div>
+                  <div class="mi danger"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 7h12l-1 13H7L6 7zm3-3h6l1 2H8z"/></svg>세션 종료</div>
+                </div>
+                <span class="tip">배터리 14% · 충전 필요</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Empty · Loading</h2>
+          <div class="grid g2">
+            <div class="empty"><div class="ic"><svg viewBox="0 0 24 24" width="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h4l2-2h6l2 2h4v11H3z"/><circle cx="12" cy="13" r="3"/></svg></div><div class="t">표시할 알림이 없습니다</div><div class="d">새 이벤트가 발생하면 여기에 실시간으로 표시됩니다.</div></div>
+            <div>
+              <div class="card" style="display:flex; align-items:center; gap:16px;"><div class="spinner"></div><div class="note">로봇 상태 불러오는 중…</div></div>
+              <div class="card" style="margin-top:12px"><div class="skel" style="width:60%"></div><div class="skel" style="width:90%"></div><div class="skel" style="width:75%;margin-bottom:0"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== MEDIA ==================== -->
+      <section class="page" id="page-media">
+        <div class="eyebrow"><span class="n">13</span> COMPONENT</div>
+        <h1>Media &amp; Emergency</h1>
+        <p class="lead">실시간 카메라 피드와 상시 고정 비상 제어. 관제의 눈과, 즉시 정지 트리거.</p>
+
+        <div class="sec">
+          <h2>Camera Feed</h2>
+          <div class="stage">
+            <div class="grid g4">
+              <div class="cam"><div class="top"><span class="live"></span>카메라 1</div><div class="view"><span class="fl">CAM_01 · 14:01:35</span><div class="ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 018-8 8 8 0 016 3M20 5v4h-4"/></svg></div><div class="ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M4 15v5h5"/></svg></div></div></div>
+              <div class="cam"><div class="top"><span class="live"></span>카메라 2</div><div class="view"><span class="fl">CAM_02 · 14:01:35</span></div></div>
+              <div class="cam"><div class="top"><span class="live"></span>카메라 3</div><div class="view"><span class="fl">CAM_03 · 14:01:35</span></div></div>
+              <div class="cam"><div class="top"><span class="live"></span>카메라 4</div><div class="view"><span class="fl">CAM_04 · 14:01:35</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Emergency · FAB</h2>
+          <div class="stage" style="display:flex; gap:36px; align-items:center;">
+            <div class="fab emg"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M6 6h12v9a3 3 0 01-3 3H9a3 3 0 01-3-3z"/><path d="M12 2v3"/></svg>비상모드</div>
+            <div class="fab mic"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><span style="font-size:10px;color:rgba(255,255,255,.9)">마이크</span></div>
+            <div class="note" style="flex:1">비상모드는 좌하단 상시 고정, 다른 어떤 요소보다 우선 접근됩니다. alert 전용 색으로 "즉시 전체 정지" 트리거임을 명확히 합니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BADGE ==================== -->
+      <section class="page" id="page-badge">
+        <div class="eyebrow"><span class="n">14</span> COMPONENT</div>
+        <h1>Badge &amp; Status</h1>
+        <p class="lead">상태 칩은 severity 색 체계를 그대로 따르고(틴트 배경 + 진한 텍스트 + dot), 카운트 배지는 alert로 주의를 끕니다.</p>
+
+        <div class="sec">
+          <h2>Status Chips</h2>
+          <div class="stage" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <span class="chip ok"><span class="d"></span>입차완료</span>
+            <span class="chip info"><span class="d"></span>입차중</span>
+            <span class="chip warn"><span class="d"></span>입차실패</span>
+            <span class="chip crit"><span class="d"></span>경고</span>
+            <span class="chip off"><span class="d"></span>오프라인</span>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Count Badge</h2>
+          <div class="stage" style="display:flex; gap:28px; align-items:center;">
+            <div class="countwrap"><svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9a6 6 0 1112 0c0 4 2 5 2 5H4s2-1 2-5z"/><path d="M10 20a2 2 0 004 0"/></svg><span class="count">12</span></div>
+            <div class="tok" style="margin-top:0">count = <b>alert</b> · min-w 20 · 서피스와 2px 보더로 분리</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="copied" id="copied">복사됨</div>
+<script src="app.js"></script>
+</body>
+</html>
