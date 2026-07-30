@@ -1,0 +1,167 @@
+/* =====================================================================
+   Parkie RMS — Design Tokens (SWAP LAYER)
+   브랜드를 교체하려면 주로 이 파일만 수정하면 전체 시스템이 리테마됩니다.
+   To rebrand, edit this file — every component reads var(--parkie-*).
+   ===================================================================== */
+
+:root {
+  /* ---- Typography families ---- */
+  --parkie-font-sans: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --parkie-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* ---- Type scale ---- */
+  --parkie-font-xs: 12px;
+  --parkie-font-sm: 13px;
+  --parkie-font-base: 14px;
+  --parkie-font-md: 15px;
+  --parkie-font-lg: 16px;
+  --parkie-font-xl: 18px;
+  --parkie-font-2xl: 20px;
+  --parkie-font-3xl: 24px;
+  --parkie-font-4xl: 30px;
+  --parkie-font-5xl: 38px;
+  --parkie-font-6xl: 48px;
+
+  --parkie-leading-tight: 1.2;
+  --parkie-leading-snug: 1.35;
+  --parkie-leading-normal: 1.5;
+  --parkie-leading-relaxed: 1.65;
+
+  --parkie-weight-regular: 400;
+  --parkie-weight-medium: 500;
+  --parkie-weight-semibold: 600;
+  --parkie-weight-bold: 700;
+
+  --parkie-tracking-tight: -0.01em;
+  --parkie-tracking-wide: 0.02em;
+
+  /* ---- Spacing (4px base, roomy) ---- */
+  --parkie-space-1: 4px;
+  --parkie-space-2: 8px;
+  --parkie-space-3: 12px;
+  --parkie-space-4: 16px;
+  --parkie-space-5: 20px;
+  --parkie-space-6: 24px;
+  --parkie-space-7: 32px;
+  --parkie-space-8: 40px;
+  --parkie-space-9: 48px;
+  --parkie-space-10: 64px;
+  --parkie-space-11: 80px;
+  --parkie-space-12: 96px;
+
+  /* ---- Radius ---- */
+  --parkie-radius-xs: 4px;
+  --parkie-radius-sm: 6px;
+  --parkie-radius-md: 8px;
+  --parkie-radius-lg: 12px;
+  --parkie-radius-xl: 16px;
+  --parkie-radius-2xl: 20px;
+  --parkie-radius-pill: 999px;
+  --parkie-radius-round: 50%;
+
+  /* ---- Brand ---- */
+  --parkie-brand-primary: #00AAFF;
+  --parkie-brand-primary-hover: #16DCF2;
+  --parkie-brand-primary-active: #009BE9;
+  --parkie-brand-on: #06222E;
+  --parkie-brand-subtle: rgba(0,170,255,0.14);
+  --parkie-brand-subtle-hover: rgba(0,170,255,0.20);
+  --parkie-brand-border: rgba(0,170,255,0.42);
+  --parkie-brand-text: #00C8FF;
+
+  /* ---- Neutral surfaces & text (cool slate) ---- */
+  --parkie-bg: #0F0F11;
+  --parkie-surface: #161618;
+  --parkie-surface-2: #1E1E21;
+  --parkie-surface-3: #242426;
+  --parkie-border: rgba(255,255,255,0.09);
+  --parkie-border-strong: #4C4C4D;
+  --parkie-text: rgba(255,255,255,0.95);
+  --parkie-text-secondary: rgba(255,255,255,0.60);
+  --parkie-text-tertiary: rgba(255,255,255,0.40);
+  --parkie-text-disabled: rgba(255,255,255,0.30);
+
+  /* ---- Semantic: success ---- */
+  --parkie-success: #0FDC4C;
+  --parkie-success-subtle: rgba(15,220,76,0.14);
+  --parkie-success-text: #4ADE8B;
+  /* ---- Semantic: warning ---- */
+  --parkie-warning: #FFD900;
+  --parkie-warning-subtle: rgba(255,217,0,0.14);
+  --parkie-warning-text: #FFE44D;
+  /* ---- Semantic: danger ---- */
+  --parkie-danger: #DF0000;
+  --parkie-danger-subtle: rgba(223,0,0,0.16);
+  --parkie-danger-text: #FF6B6B;
+  /* ---- Semantic: info ---- */
+  --parkie-info: #00AAFF;
+  --parkie-info-subtle: rgba(0,170,255,0.14);
+  --parkie-info-text: #00C8FF;
+
+  /* ---- Robot status (domain tokens — 관제 상태) ---- */
+  --parkie-status-active: #0FDC4C;   /* 운행중 / active */
+  --parkie-status-charging: #00AAFF; /* 충전중 / charging */
+  --parkie-status-idle: #98A1AD;     /* 대기 / idle */
+  --parkie-status-error: #DF0000;    /* 오류 / error */
+  --parkie-status-offline: #4C4C4D;  /* 오프라인 / offline */
+
+  /* ---- Elevation ---- */
+  --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
+  --parkie-shadow-md: 0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);
+  --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
+  --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
+
+  /* ---- Focus ring ---- */
+  --parkie-ring: 0 0 0 3px rgba(0,170,255,0.40);
+}
+
+/* =====================================================================
+   Dark theme — applied via [data-theme="dark"] on the app root
+   ===================================================================== */
+[data-theme="dark"] {
+  --parkie-brand-primary: #00AAFF;
+  --parkie-brand-primary-hover: #16DCF2;
+  --parkie-brand-primary-active: #009BE9;
+  --parkie-brand-on: #06222E;
+  --parkie-brand-subtle: rgba(0,170,255,0.14);
+  --parkie-brand-subtle-hover: rgba(0,170,255,0.20);
+  --parkie-brand-border: rgba(0,170,255,0.42);
+  --parkie-brand-text: #00C8FF;
+
+  --parkie-bg: #0F0F11;
+  --parkie-surface: #161618;
+  --parkie-surface-2: #1E1E21;
+  --parkie-surface-3: #242426;
+  --parkie-border: rgba(255,255,255,0.09);
+  --parkie-border-strong: #4C4C4D;
+  --parkie-text: rgba(255,255,255,0.95);
+  --parkie-text-secondary: rgba(255,255,255,0.60);
+  --parkie-text-tertiary: rgba(255,255,255,0.40);
+  --parkie-text-disabled: rgba(255,255,255,0.30);
+
+  --parkie-success: #0FDC4C;
+  --parkie-success-subtle: rgba(15,220,76,0.14);
+  --parkie-success-text: #4ADE8B;
+  --parkie-warning: #FFD900;
+  --parkie-warning-subtle: rgba(255,217,0,0.14);
+  --parkie-warning-text: #FFE44D;
+  --parkie-danger: #DF0000;
+  --parkie-danger-subtle: rgba(223,0,0,0.16);
+  --parkie-danger-text: #FF6B6B;
+  --parkie-info: #00AAFF;
+  --parkie-info-subtle: rgba(0,170,255,0.14);
+  --parkie-info-text: #00C8FF;
+
+  --parkie-status-active: #0FDC4C;
+  --parkie-status-charging: #00AAFF;
+  --parkie-status-idle: #98A1AD;
+  --parkie-status-error: #DF0000;
+  --parkie-status-offline: #4C4C4D;
+
+  --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
+  --parkie-shadow-md: 0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);
+  --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
+  --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
+
+  --parkie-ring: 0 0 0 3px rgba(0,170,255,0.40);
+}

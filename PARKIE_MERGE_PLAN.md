@@ -1,116 +1,103 @@
-# HL Parkie UI — RMS Merge Plan
+# Parkie UI → RMS 적용 계획
 
-## 1. 목표와 기준
+## 1. 병합 방향
 
-- 대상: 현재 저장소의 정적 HTML/CSS/JS 디자인 시스템 사이트
-- 디자인 기준: `../Parkie RMS UI`
-- 토큰 원본: `../Parkie RMS UI/tokens/parkie-tokens.css`
-- 컴포넌트 기준: `../Parkie RMS UI/Parkie Design System.dc.html`
-- 브랜드: HL Robotics 유지
+RMS를 큰 뼈대로 사용한다.
 
-RMS의 Design Component 파일은 전용 런타임용이므로 대상 앱에 그대로 복사하지 않는다.
-토큰은 원본 값을 사용하고, 컴포넌트는 현재 앱 구조에 맞춰 단계적으로 이식한다.
+- RMS에서 유지: 정보 구조, 내비게이션, 타이포그래피 스케일, 간격과 모서리
+  규정, 컴포넌트 상태, 관제 테이블, 대시보드, KO/EN 콘텐츠, MS 참조
+- Parkie UI에서 적용: 폰트, 색상, 상태 표현, 포커스, 그림자, HL Robotics
+  브랜드 자산
 
-## 2. 변경 불변 조건
+Parkie UI의 단순한 문서 구조에 RMS 일부를 옮기는 방식은 사용하지 않는다.
+RMS의 풍부한 규정과 예시를 그대로 유지하면서 모든 시각 토큰을 Parkie UI로
+교체한다.
 
-- 현재 정보 구조, 문서 콘텐츠, 내비게이션과 인터랙션은 유지한다.
-- 라이트 테마 검증 전까지 앱은 다크 모드로 고정한다.
-- 테마 토글 UI는 숨긴 상태로 유지한다.
-- 각 Phase는 검증 후 별도 커밋과 원격 체크포인트를 남긴다.
-- 승인되지 않은 제품명 변경이나 MS 참조 번들 이식은 하지 않는다.
+## 2. 기준 파일
 
-## 3. 롤백 지점
+- RMS 본체: `../Parkie RMS UI/Parkie Design System.dc.html`
+- RMS 런타임: `../Parkie RMS UI/support.js`
+- RMS 토큰 구조: `../Parkie RMS UI/tokens/parkie-tokens.css`
+- Parkie UI 시각 기준: 기존 `HL_Parkie_UI`의 `79a3ede` 버전
+- 브랜드 자산: 사용자가 제공한 HL Robotics SVG 3종
 
-- Phase 1 이전: `79a3ede`
-- Phase 1 완료: `b95e816`
+## 3. 타이포그래피 적용 원칙
 
-문제가 생기면 대상 Phase의 커밋을 `git revert`해 이전 체크포인트로 복구한다.
+RMS의 타입 규정은 유지하고 폰트 패밀리만 Parkie UI로 교체한다.
 
-## 4. Phase
+| RMS 규정 | 유지 여부 | Parkie UI 적용 |
+|---|---|---|
+| Display 38/Bold | 유지 | Pretendard 700 |
+| Headline 30/Bold | 유지 | Pretendard 700 |
+| Title 24/Semibold | 유지 | Pretendard 600 |
+| Subtitle 20/Semibold | 유지 | Pretendard 600 |
+| Section 18/Semibold | 유지 | Pretendard 600 |
+| Body Large 16/Regular | 유지 | Pretendard 400 |
+| Body 14/Regular | 유지 | Pretendard 400 |
+| Small 13/Regular | 유지 | Pretendard 400 |
+| Caption 12/Medium | 유지 | Pretendard 500 |
+| 숫자·코드·토큰 | 유지 | Roboto Mono |
 
-### Phase 0 — 기준점 확보 · 완료
+폰트 크기, 굵기, 행간, 추적, 사용 목적은 RMS를 따른다.
 
-- 작업 트리와 원격 `main` 동기화
-- GitHub Pages 정상 배포 확인
-- 롤백 커밋 기록
+## 4. 색상과 상태 적용 원칙
 
-### Phase 1 — 다크 토큰 도입 및 앱 셸 스왑 · 완료
+- 브랜드: `#00AAFF`, hover `#16DCF2`, active `#009BE9`
+- 배경: `#0F0F11`
+- 표면: `#161618`, `#1E1E21`, `#242426`
+- 텍스트: 흰색 95/60/40/30% 계층
+- 성공·운행: `#0FDC4C`
+- 경고: `#FFD900`
+- 오류·위험: `#DF0000`
+- 정보·충전: `#00AAFF`
 
-- RMS 다크 색상·상태·그림자 토큰 40개 도입
-- 신규 토큰을 `:root`와 `[data-theme="dark"]` 양쪽에 정의
-- 앱 셸 토큰을 `--parkie-*` 토큰에 연결
-- HTML과 JS를 다크 모드로 고정
+RMS 컴포넌트는 직접 색상을 참조하지 않고 `--parkie-*` 토큰을 통해 이 값을
+사용한다.
+
+## 5. 브랜드 적용
+
+- `brand/logo.svg`: HL Robotics 심볼
+- `brand/hl-robotics-wordmark-white.svg`: 다크 배경용 워드마크
+- `brand/hl-robotics-wordmark-black.svg`: 라이트 배경용 워드마크
+- `brand/hl-robotics-symbol.svg`: 원본 심볼 및 파비콘
+
+RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유지해 스왑
+구조를 보존한다.
+
+## 6. 테마 정책
+
+- 다크 테마 고정
+- 다크 토큰을 `:root`와 `[data-theme="dark"]` 양쪽에 정의
 - 테마 토글 UI 숨김
+- 라이트 테마는 별도 승인 전까지 노출하지 않음
 
-Phase 1은 전체 제품 컴포넌트 변환이 아니라 토큰 기반과 앱 셸 변환까지를 범위로 한다.
+## 7. 배포 구조
 
-### Phase 2 — 제품 토큰 브리지 및 HL Robotics 로고 · 완료
+- `index.html`: RMS Design Component 본체
+- `support.js`: RMS 런타임
+- `styles.css`: 토큰 import와 반응형 보완
+- `tokens/`: Parkie UI 테마를 입힌 RMS 토큰
+- `ms*`: RMS에서 사용하는 정적 MS 참조 번들
 
-- 기존 깊이·브랜드·상태 토큰을 Parkie 토큰에 연결
-- 컴포넌트의 기존 토큰 참조를 `--parkie-*` 참조로 전환
-- 기존 컴포넌트 구조와 레이아웃은 변경하지 않음
-- 제공된 HL Robotics 흑색/백색 워드마크와 심볼을 벡터 자산으로 등록
-- 다크 앱 셸에는 백색 워드마크 사용
-- 심볼은 파비콘 및 축약형 브랜드 자산으로 사용 가능하게 보관
+## 8. 완료 조건
 
-#### 제품 토큰 매핑
+- 운영 첫 화면이 RMS의 Overview 구조다.
+- RMS의 Parkie/MS 참조 내비게이션이 유지된다.
+- RMS 타이포그래피 9단계가 모두 존재하고 Pretendard를 참조한다.
+- 숫자와 코드 예시는 Roboto Mono를 참조한다.
+- RMS 버튼, 입력, 상태, 테이블, 카드, 탭, 모달, 브레드크럼과 대시보드
+  섹션이 유지된다.
+- 모든 `--parkie-*` 참조가 정의된다.
+- 테마 토글은 노출되지 않고 루트 테마는 항상 dark다.
+- HL Robotics 로고와 파비콘 자산이 정상 로드된다.
+- RMS 런타임과 MS 번들 의존성이 모두 HTTP 200으로 제공된다.
+- 정적 구문, 런타임 렌더, 내비게이션, KO/EN 전환, 반응형 검증을 통과한다.
+- 커밋·푸시 후 GitHub Pages 운영 파일이 로컬과 일치한다.
 
-| 기존 토큰 | Parkie 기준 |
-|---|---|
-| `--dp0` | `--parkie-bg` |
-| `--dp1` | `--parkie-surface` |
-| `--dp2` | `--parkie-surface-2` |
-| `--dp4` | `--parkie-surface-3` |
-| `--dp8` | `--parkie-surface-3`와 `--parkie-border` 사이 |
-| `--dp16` | `--parkie-border` |
-| `--dp24` | `--parkie-border`와 `--parkie-border-strong` 사이 |
-| `--dp40` | `--parkie-border-strong` |
-| `--inset` | `--parkie-bg`보다 낮은 inset 표면 |
-| `--p100` | `--parkie-brand-text` |
-| `--p200` | `--parkie-brand-primary` |
-| `--p300` | `--parkie-brand-primary-active` |
-| `--hover` | `--parkie-brand-primary-hover` |
-| `--ok` | `--parkie-status-active` |
-| `--warn` | `--parkie-warning` |
-| `--warn2` | `--parkie-warning-text` |
-| `--alert` | `--parkie-danger` |
-| `--emergency` | `--parkie-status-error` |
-| `--crit` | `--parkie-danger` |
+## 9. 롤백 지점
 
-### Phase 3 — 타이포그래피·간격·모서리 · 완료
+- 기존 단순 HL 사이트: `79a3ede`
+- 토큰만 적용된 중간 상태: `b95e816`
+- 잘못된 방향의 이전 병합: `5de6598`
 
-- `--parkie-font-*`, `--parkie-space-*`, `--parkie-radius-*` 도입
-- 폰트 로드와 한글 폴백 검증
-- 줄바꿈, 카드 높이와 반응형 레이아웃 회귀 검증
-
-### Phase 4 — 컴포넌트 시각 정렬 · 완료
-
-- 버튼과 폼
-- 알림과 상태 뱃지
-- 카드와 관제 패널
-- 내비게이션과 오버레이
-
-RMS `.dc.html`은 시각·상태 레퍼런스로만 사용하고 현재 앱의 기능은 유지한다.
-
-### Phase 5 — 브랜드 문구 정리 · 일부 완료/문구 승인 필요
-
-- HL Robotics 로고 3종과 파비콘 적용 완료
-- HL Mando Parking, HL Robotics, SMS/Parkie 명칭의 최종 표기
-- 브랜드 로고 사용 위치와 최소 크기
-- 버전 표기
-
-### Phase 6 — 라이트 테마 · 선택
-
-- RMS 라이트 토큰 적용
-- 전체 컴포넌트와 대비 검증
-- 저장 테마 복원 및 테마 토글 UI 재노출
-
-## 5. Phase별 완료 조건
-
-- 토큰 원본과 매핑이 계획서와 일치한다.
-- CSS와 JavaScript 정적 검사가 통과한다.
-- 정의되지 않은 CSS 변수가 없다.
-- 데스크톱과 모바일에서 레이아웃이 깨지지 않는다.
-- 내비게이션, 복사, 토글과 데모 인터랙션이 유지된다.
-- 작업 범위 밖 파일과 콘텐츠가 변경되지 않는다.
-- 커밋·푸시 후 GitHub Pages 배포가 성공하고 운영 파일이 로컬과 일치한다.
+문제 발생 시 해당 커밋 이후 변경을 `git revert`해 복구한다.
