@@ -95,6 +95,9 @@ test('capture System Summary at planned breakpoints', async ({ page }) => {
     path: path.join('test-results', 'review', 'system-summary-full.png'),
   });
   const summarySections = [
+    ['identity', 'system-summary-identity.png'],
+    ['typography', 'system-summary-typography.png'],
+    ['colors', 'system-summary-colors.png'],
     ['iconography', 'system-summary-iconography.png'],
     ['form-controls', 'system-summary-form-controls.png'],
     ['buttons', 'system-summary-buttons.png'],

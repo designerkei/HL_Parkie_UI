@@ -295,6 +295,9 @@ test('System Summary composes eight live-token sections and links to detail page
   await openComponent(page, '전체 요약');
   await expect(page.locator('h1')).toContainText('전체 요약');
   await expect(page.locator('.pk-content-frame')).toHaveClass(/pk-content-frame--summary/);
+  await expect(page.locator('.pk-summary-hero')).toBeVisible();
+  await expect(page.locator('.pk-summary-hero__stat')).toHaveCount(4);
+  await expect(page.locator('[data-summary-story]')).toHaveCount(3);
   await expect(page.locator('[data-summary-section]')).toHaveCount(8);
 
   const typeRows = page.locator('[data-summary-type-row]');

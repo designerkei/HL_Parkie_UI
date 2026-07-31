@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.5">
+<link rel="stylesheet" href="styles.css?v=0.6">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -109,10 +109,10 @@
       <div class="{{ contentFrameClass }}">
 
         <!-- page header -->
-        <div style="margin-bottom:var(--parkie-space-8);">
-          <div style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-brand-text);font-weight:600;letter-spacing:var(--parkie-tracking-wide);margin-bottom:8px;">{{ curSub }}</div>
-          <h1 style="margin:0;font-size:var(--parkie-font-4xl);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ curTitle }}</h1>
-          <p style="margin:12px 0 0;font-size:var(--parkie-font-lg);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);max-width:640px;">{{ curDesc }}</p>
+        <div class="pk-page-header" style="margin-bottom:var(--parkie-space-8);">
+          <div class="pk-page-header__eyebrow" style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-brand-text);font-weight:600;letter-spacing:var(--parkie-tracking-wide);margin-bottom:8px;">{{ curSub }}</div>
+          <h1 class="pk-page-header__title" style="margin:0;font-size:var(--parkie-font-4xl);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ curTitle }}</h1>
+          <p class="pk-page-header__description" style="margin:12px 0 0;font-size:var(--parkie-font-lg);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);max-width:640px;">{{ curDesc }}</p>
         </div>
 
         <!-- ===== OVERVIEW ===== -->
@@ -165,16 +165,52 @@
         <!-- ===== SYSTEM SUMMARY ===== -->
         <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="{{ false }}">
           <div class="pk-system-summary" data-system-summary>
-            <div class="pk-summary-guide">
-              <div>
-                <strong>RMS 구조 × Parkie 시각 언어</strong>
-                <p>핵심 규정을 빠르게 확인하는 인덱스입니다. 각 카드의 전체 보기를 누르면 실제 상세 규정으로 이동합니다.</p>
+            <section class="pk-summary-hero" aria-labelledby="summary-case-title">
+              <div class="pk-summary-hero__content">
+                <div class="pk-summary-hero__copy">
+                  <span class="pk-summary-hero__kicker">DESIGN SYSTEM CASE STUDY · 2026</span>
+                  <h2 id="summary-case-title">Operational clarity,<br><span>systemized.</span></h2>
+                  <p>복잡한 RMS 관제 구조는 그대로 유지하면서 Parkie의 브랜드·타입·상태 언어를 하나의 운영 시스템으로 통합했습니다.</p>
+                  <div class="pk-summary-hero__meta" aria-label="프로젝트 범위">
+                    <span>RMS ARCHITECTURE</span>
+                    <span>PARKIE VISUAL LAYER</span>
+                    <span>DARK · KO/EN</span>
+                  </div>
+                </div>
+                <div class="pk-summary-hero__visual" aria-hidden="true">
+                  <div class="pk-summary-hero__visual-grid">
+                    <span class="pk-summary-hero__visual-label">HL ROBOTICS · PARKIE UI</span>
+                    <img src="brand/logo.svg" alt="">
+                    <strong>PARKIE<br>RMS</strong>
+                    <span class="pk-summary-hero__visual-code">SYSTEM / 01—08</span>
+                  </div>
+                </div>
               </div>
-              <span class="pk-summary-guide__meta">8 SECTIONS · LIVE TOKENS</span>
-            </div>
+              <div class="pk-summary-hero__stats" aria-label="시스템 주요 지표">
+                <sc-for list="{{ summaryHeroStats }}" as="stat" hint-placeholder-count="4">
+                  <div class="pk-summary-hero__stat">
+                    <strong>{{ stat.value }}</strong>
+                    <span>{{ stat.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="pk-summary-story" aria-label="디자인 시스템 접근 방식">
+              <sc-for list="{{ summaryStoryPoints }}" as="point" hint-placeholder-count="3">
+                <article class="pk-summary-story__item" data-summary-story>
+                  <span class="pk-summary-story__index">{{ point.index }}</span>
+                  <div>
+                    <span class="pk-summary-story__label">{{ point.label }}</span>
+                    <h2>{{ point.title }}</h2>
+                    <p>{{ point.description }}</p>
+                  </div>
+                </article>
+              </sc-for>
+            </section>
 
             <div class="pk-summary-grid">
-              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="identity" aria-labelledby="summary-identity-title">
+              <section class="pk-summary-section pk-summary-section--wide pk-summary-section--identity" data-summary-section="identity" aria-labelledby="summary-identity-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">01</span>
                   <div class="pk-summary-section__title">
@@ -207,7 +243,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section" data-summary-section="typography" aria-labelledby="summary-typography-title">
+              <section class="pk-summary-section pk-summary-section--typography" data-summary-section="typography" aria-labelledby="summary-typography-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">02</span>
                   <div class="pk-summary-section__title">
@@ -248,7 +284,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section" data-summary-section="colors" aria-labelledby="summary-colors-title">
+              <section class="pk-summary-section pk-summary-section--colors" data-summary-section="colors" aria-labelledby="summary-colors-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">03</span>
                   <div class="pk-summary-section__title">
@@ -283,7 +319,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="iconography" aria-labelledby="summary-iconography-title">
+              <section class="pk-summary-section pk-summary-section--wide pk-summary-section--iconography" data-summary-section="iconography" aria-labelledby="summary-iconography-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">04</span>
                   <div class="pk-summary-section__title">
@@ -323,7 +359,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section" data-summary-section="form-controls" aria-labelledby="summary-form-title">
+              <section class="pk-summary-section pk-summary-section--controls" data-summary-section="form-controls" aria-labelledby="summary-form-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">05</span>
                   <div class="pk-summary-section__title">
@@ -365,7 +401,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section" data-summary-section="buttons" aria-labelledby="summary-buttons-title">
+              <section class="pk-summary-section pk-summary-section--buttons" data-summary-section="buttons" aria-labelledby="summary-buttons-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">06</span>
                   <div class="pk-summary-section__title">
@@ -398,7 +434,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="robot-operations" aria-labelledby="summary-operations-title">
+              <section class="pk-summary-section pk-summary-section--wide pk-summary-section--operations" data-summary-section="robot-operations" aria-labelledby="summary-operations-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">07</span>
                   <div class="pk-summary-section__title">
@@ -423,7 +459,7 @@
                 </div>
               </section>
 
-              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="component-index" aria-labelledby="summary-index-title">
+              <section class="pk-summary-section pk-summary-section--wide pk-summary-section--index" data-summary-section="component-index" aria-labelledby="summary-index-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">08</span>
                   <div class="pk-summary-section__title">
@@ -3348,6 +3384,32 @@ class Component extends DCLogic {
     ];
     const summaryTypeScale = typeScale.slice(0, 9);
     const summaryMonoType = typeScale[typeScale.length - 1];
+    const summaryHeroStats = [
+      { value: `${summaryTypeScale.length}`, label: L('타입 레벨', 'Type levels') },
+      { value: `${totalParkieIcons}`, label: L('문서화 아이콘', 'Documented icons') },
+      { value: `${parkieDomainGroups.reduce((sum, group) => sum + group.items.length, 0)}`, label: L('운영 상태', 'Operational states') },
+      { value: `${cameraFeeds.length}`, label: L('CCTV 채널', 'CCTV channels') },
+    ];
+    const summaryStoryPoints = [
+      {
+        index: '01',
+        label: 'CHALLENGE',
+        title: L('복잡성을 지우지 않고 명료하게', 'Clarify without erasing complexity'),
+        description: L('RMS의 다양한 규정과 고밀도 관제 정보를 줄이는 대신, 읽는 순서와 상태 문법을 다시 설계했습니다.', 'Instead of reducing RMS rules and dense operations data, the system redesigns reading order and status grammar.'),
+      },
+      {
+        index: '02',
+        label: 'APPROACH',
+        title: L('구조는 RMS, 표현은 Parkie', 'RMS structure, Parkie expression'),
+        description: L('정보 구조와 컴포넌트는 유지하고 브랜드·타입·색·포커스를 토큰 레이어에서 일관되게 교체했습니다.', 'Information architecture and components stay intact while tokens consistently swap brand, type, color and focus.'),
+      },
+      {
+        index: '03',
+        label: 'OUTCOME',
+        title: L('하나의 운영 언어로 연결', 'One connected operations language'),
+        description: L('파운데이션, 제어, 로봇 상태와 CCTV까지 같은 시각 규칙으로 탐색하고 확장할 수 있습니다.', 'Foundations, controls, robot states and CCTV now share one visual language that can be explored and extended.'),
+      },
+    ];
     const summaryColorSections = colorSections.map((section) => ({
       ...section,
       items: section.items.slice(0, 5).map((item) => ({
@@ -3505,6 +3567,8 @@ class Component extends DCLogic {
       summaryIdentityFacts,
       summaryTypeScale,
       summaryMonoType,
+      summaryHeroStats,
+      summaryStoryPoints,
       summaryColorSections,
       summaryIconRows,
       summaryDomainItems,
