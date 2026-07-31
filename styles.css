@@ -1,7 +1,9 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css?v=0.2";
-@import "./components/operations.css?v=0.2";
+@import "./tokens/parkie-tokens.css?v=0.3";
+@import "./components/controls.css?v=0.3";
+@import "./components/robot-status.css?v=0.3";
+@import "./components/operations.css?v=0.3";
 
 :root {
   color-scheme: dark;

@@ -179,14 +179,14 @@
   --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);
   --parkie-success-text: var(--parkie-color-green-300);
-  --parkie-warning: var(--parkie-color-yellow-500);
-  --parkie-warning-subtle: rgba(255,217,0,0.14);
+  --parkie-warning: #F5DE2E;
+  --parkie-warning-subtle: rgba(245,222,46,0.14);
   --parkie-warning-text: var(--parkie-color-yellow-300);
   --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
   --parkie-danger-text: var(--parkie-color-red-300);
-  --parkie-info: var(--parkie-color-brand-500);
-  --parkie-info-subtle: rgba(0,170,255,0.14);
+  --parkie-info: var(--parkie-color-brand-400);
+  --parkie-info-subtle: rgba(0,200,255,0.14);
   --parkie-info-text: var(--parkie-color-brand-400);
 
   /* ---- Parkie domain aliases — robot control states ---- */
@@ -211,6 +211,34 @@
   --parkie-operation-warning-subtle: rgba(245,222,46,0.14);
   --parkie-operation-danger-subtle: rgba(223,0,0,0.30);
   --parkie-operation-danger-strong: var(--parkie-operation-danger);
+
+  /* ---- Independent interaction and robot-state axes ----
+     Selection is an interaction state. It must never inherit the current
+     robot health, connection, motion or battery severity. */
+  --parkie-interaction-selected: var(--parkie-color-brand-500);
+  --parkie-interaction-focus: var(--parkie-color-brand-300);
+
+  --parkie-status-neutral: var(--parkie-color-neutral-400);
+  --parkie-status-success: var(--parkie-operation-success);
+  --parkie-status-info: var(--parkie-operation-info);
+  --parkie-status-warning: var(--parkie-operation-warning);
+  --parkie-status-danger: var(--parkie-operation-danger);
+
+  --parkie-connection-good: var(--parkie-text);
+  --parkie-connection-weak: var(--parkie-status-warning);
+  --parkie-connection-reconnecting: var(--parkie-status-info);
+  --parkie-connection-lost: var(--parkie-status-danger);
+  --parkie-connection-offline: var(--parkie-color-neutral-400);
+
+  --parkie-motion-running: var(--parkie-status-success);
+  --parkie-motion-paused: var(--parkie-text-secondary);
+  --parkie-motion-idle: var(--parkie-status-neutral);
+  --parkie-motion-fault: var(--parkie-status-danger);
+
+  --parkie-battery-normal: var(--parkie-text);
+  --parkie-battery-low: var(--parkie-status-warning);
+  --parkie-battery-critical: var(--parkie-status-danger);
+  --parkie-battery-charging: var(--parkie-status-info);
 
   /* ---- Application shell ---- */
   --parkie-appbar-height: 46px;
@@ -297,14 +325,14 @@
   --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);
   --parkie-success-text: var(--parkie-color-green-300);
-  --parkie-warning: var(--parkie-color-yellow-500);
-  --parkie-warning-subtle: rgba(255,217,0,0.14);
+  --parkie-warning: #F5DE2E;
+  --parkie-warning-subtle: rgba(245,222,46,0.14);
   --parkie-warning-text: var(--parkie-color-yellow-300);
   --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
   --parkie-danger-text: var(--parkie-color-red-300);
-  --parkie-info: var(--parkie-color-brand-500);
-  --parkie-info-subtle: rgba(0,170,255,0.14);
+  --parkie-info: var(--parkie-color-brand-400);
+  --parkie-info-subtle: rgba(0,200,255,0.14);
   --parkie-info-text: var(--parkie-color-brand-400);
 
   --parkie-status-active: var(--parkie-success);

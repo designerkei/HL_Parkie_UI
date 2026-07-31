@@ -365,7 +365,7 @@
                 <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover">확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed">확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button" disabled>확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" disabled>확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
               </div>
             </section>
@@ -2076,7 +2076,7 @@ class Component extends DCLogic {
   state = {
     theme: 'dark',
     lang: this.props.defaultLang || 'ko',
-    active: 'robotcard',
+    active: 'overview',
     icons: null,
     modalDemo: 'critical',
     serviceActive: true,

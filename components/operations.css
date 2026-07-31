@@ -284,7 +284,7 @@
   border-left: 1px solid var(--parkie-select-border);
 }
 
-.pk-role-segment button[aria-selected="true"] {
+.pk-role-segment button[aria-checked="true"] {
   color: var(--parkie-brand-primary);
   background: rgba(0,170,255,0.12);
 }
@@ -857,18 +857,11 @@
 }
 
 .pk-robot-card::before {
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 0;
-  width: 3px;
-  background: var(--parkie-operation-success);
-  border-radius: 0 3px 3px 0;
-  content: "";
+  content: none;
 }
 
 .pk-robot-card--info::before {
-  background: var(--parkie-operation-info);
+  content: none;
 }
 
 .pk-robot-card small {

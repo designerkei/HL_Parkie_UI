@@ -1,0 +1,422 @@
+/* =====================================================================
+   Parkie controls — actions, single-select controls and binary switches
+   ===================================================================== */
+
+.pk-control-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-8);
+}
+
+.pk-control-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-4);
+}
+
+.pk-control-section h3,
+.pk-control-section p {
+  margin: 0;
+}
+
+.pk-control-section h3 {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-xl);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-control-section p {
+  max-width: 760px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-control-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--parkie-space-3);
+  padding: var(--parkie-space-6);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-control-state {
+  display: flex;
+  min-height: 104px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--parkie-space-4);
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-control-state-label {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: 11px;
+}
+
+/* Button -------------------------------------------------------------- */
+
+.pk-button {
+  display: inline-flex;
+  min-width: 0;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: var(--parkie-brand-on);
+  font-family: var(--parkie-font-sans);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+  white-space: nowrap;
+  background: var(--parkie-brand-primary);
+  border: 1px solid transparent;
+  border-radius: var(--parkie-radius-md);
+  cursor: pointer;
+}
+
+.pk-button:hover:not(:disabled),
+.pk-button.is-hover {
+  background: var(--parkie-brand-primary-hover);
+}
+
+.pk-button:active:not(:disabled),
+.pk-button.is-pressed {
+  background: var(--parkie-brand-primary-active);
+  transform: translateY(1px);
+}
+
+.pk-button:focus-visible,
+.pk-button.is-focus {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-button:disabled,
+.pk-button.is-disabled {
+  color: var(--parkie-text-disabled);
+  background: var(--parkie-surface-3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pk-button--secondary {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-2);
+  border-color: var(--parkie-border-strong);
+}
+
+.pk-button--secondary:hover:not(:disabled),
+.pk-button--secondary.is-hover {
+  background: var(--parkie-surface-elevation-12);
+}
+
+.pk-button--secondary:active:not(:disabled),
+.pk-button--secondary.is-pressed {
+  background: var(--parkie-surface-elevation-24);
+}
+
+.pk-button--outline {
+  color: var(--parkie-brand-text);
+  background: transparent;
+  border-color: var(--parkie-brand-border);
+}
+
+.pk-button--outline:hover:not(:disabled) {
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-button--subtle {
+  color: var(--parkie-brand-text);
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-button--subtle:hover:not(:disabled) {
+  background: var(--parkie-brand-subtle-hover);
+}
+
+.pk-button--ghost {
+  color: var(--parkie-text-secondary);
+  background: transparent;
+}
+
+.pk-button--ghost:hover:not(:disabled) {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-2);
+}
+
+.pk-button--danger {
+  color: var(--parkie-operation-on-solid);
+  background: var(--parkie-status-danger);
+}
+
+.pk-button--danger:hover:not(:disabled),
+.pk-button--danger.is-hover {
+  background: var(--parkie-color-red-500);
+}
+
+.pk-button--danger:active:not(:disabled),
+.pk-button--danger.is-pressed {
+  background: var(--parkie-color-red-700);
+}
+
+.pk-button--compact {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--parkie-radius-sm);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-button--large {
+  height: 48px;
+  padding: 0 24px;
+  font-size: var(--parkie-font-lg);
+}
+
+.pk-button--full {
+  width: 100%;
+}
+
+.pk-button-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.36);
+  border-top-color: currentColor;
+  border-radius: var(--parkie-radius-round);
+  animation: pk-spin 700ms linear infinite;
+}
+
+/* Icon button --------------------------------------------------------- */
+
+.pk-icon-button {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--parkie-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--parkie-radius-sm);
+  cursor: pointer;
+}
+
+.pk-icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pk-icon-button:hover:not(:disabled),
+.pk-icon-button.is-hover {
+  color: var(--parkie-text);
+  background: rgba(255,255,255,0.35);
+}
+
+.pk-icon-button:active:not(:disabled),
+.pk-icon-button.is-pressed {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-elevation-24);
+}
+
+.pk-icon-button:focus-visible,
+.pk-icon-button.is-focus {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-icon-button:disabled,
+.pk-icon-button.is-disabled {
+  color: var(--parkie-text-disabled);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.pk-icon-button--compact {
+  width: 30px;
+  height: 30px;
+}
+
+.pk-icon-button--large {
+  width: 40px;
+  height: 40px;
+}
+
+.pk-icon-button--danger {
+  color: var(--parkie-danger-text);
+}
+
+.pk-icon-button--danger:hover:not(:disabled) {
+  color: var(--parkie-operation-on-solid);
+  background: var(--parkie-danger);
+}
+
+/* Segmented control --------------------------------------------------- */
+
+.pk-segmented {
+  display: inline-grid;
+  min-width: 200px;
+  height: 30px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(96px, 1fr);
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid var(--parkie-select-border);
+  border-radius: var(--parkie-radius-xs);
+}
+
+.pk-segmented button {
+  min-width: 0;
+  padding: 0 12px;
+  overflow: hidden;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-sans);
+  font-size: var(--parkie-font-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.pk-segmented button + button {
+  border-left: 1px solid var(--parkie-select-border);
+}
+
+.pk-segmented button:hover:not(:disabled):not([aria-checked="true"]) {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-elevation-12);
+}
+
+.pk-segmented button:active:not(:disabled) {
+  background: var(--parkie-surface-elevation-24);
+}
+
+.pk-segmented button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 0;
+  box-shadow: inset var(--parkie-ring);
+}
+
+.pk-segmented button[aria-checked="true"] {
+  color: var(--parkie-interaction-selected);
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-segmented button:disabled,
+.pk-segmented.is-disabled button {
+  color: var(--parkie-text-disabled);
+  cursor: not-allowed;
+}
+
+.pk-segmented--default {
+  height: 36px;
+}
+
+/* Switch -------------------------------------------------------------- */
+
+.pk-switch-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  cursor: pointer;
+}
+
+.pk-switch {
+  position: relative;
+  display: inline-flex;
+  width: 36px;
+  height: 28px;
+  flex: 0 0 36px;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.pk-switch::before {
+  width: 34px;
+  height: 14px;
+  margin-left: 0;
+  background: rgba(0,170,255,0.35);
+  border-radius: var(--parkie-radius-pill);
+  content: "";
+}
+
+.pk-switch::after {
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  width: 20px;
+  height: 20px;
+  background: var(--parkie-brand-primary);
+  border-radius: var(--parkie-radius-round);
+  box-shadow: -2px 4px 4px rgba(33,37,44,0.25);
+  content: "";
+  transition: left 160ms ease, background 160ms ease;
+}
+
+.pk-switch[aria-checked="false"]::before {
+  margin-left: 2px;
+  background: var(--parkie-color-neutral-600);
+}
+
+.pk-switch[aria-checked="false"]::after {
+  left: 2px;
+  background: var(--parkie-color-neutral-300);
+  box-shadow: 2px 4px 4px rgba(33,37,44,0.25);
+}
+
+.pk-switch:hover:not(:disabled)::before {
+  filter: brightness(1.15);
+}
+
+.pk-switch:active:not(:disabled)::after {
+  transform: scale(0.92);
+}
+
+.pk-switch:focus-visible {
+  outline: 0;
+  border-radius: var(--parkie-radius-pill);
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-switch:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .pk-control-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-button,
+  .pk-switch::after {
+    transition: none;
+  }
+
+  .pk-button-spinner {
+    animation-duration: 1.4s;
+  }
+}
