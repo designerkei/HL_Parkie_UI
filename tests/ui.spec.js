@@ -1,0 +1,193 @@
+const { test, expect } = require('@playwright/test');
+
+async function openComponent(page, label) {
+  const item = page.locator('nav.pk-scroll button').filter({ hasText: label }).first();
+  await expect(item).toBeVisible();
+  await item.click();
+}
+
+test.beforeEach(async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  page.__runtimeErrors = errors;
+});
+
+test.afterEach(async ({ page }) => {
+  expect(page.__runtimeErrors, 'the UI must not throw runtime errors').toEqual([]);
+});
+
+test('primary actions use the supplied reference colors', async ({ page }) => {
+  await openComponent(page, '버튼');
+  const button = page.locator('.pk-control-stage .pk-button').first();
+  await expect(button).toBeVisible();
+  await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
+  await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(button).toHaveCSS('height', '36px');
+
+  const disabled = page.locator('.pk-button.is-disabled');
+  await expect(disabled).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.35)');
+  await expect(page.locator('.pk-button.pk-button--danger')).toHaveCSS(
+    'background-color',
+    'rgb(223, 0, 0)'
+  );
+  await expect(page.locator('.pk-button.is-hover')).toHaveCSS(
+    'background-color',
+    'rgb(22, 220, 242)'
+  );
+  await expect(page.locator('.pk-button.is-pressed')).toHaveCSS(
+    'background-color',
+    'rgb(0, 155, 233)'
+  );
+});
+
+test('icon controls, segment and switch keep their reference geometry', async ({ page }) => {
+  await openComponent(page, '버튼');
+  const icon = page.locator('.pk-icon-button').first();
+  await expect(icon).toHaveCSS('width', '24px');
+  await expect(icon).toHaveCSS('height', '24px');
+
+  await openComponent(page, '세그먼트');
+  const segment = page.locator('.pk-segmented').first();
+  await expect(segment).toHaveCSS('width', '200px');
+  await expect(segment).toHaveCSS('height', '36px');
+
+  await openComponent(page, '스위치');
+  const toggle = page.locator('.pk-switch').first();
+  const box = await toggle.boundingBox();
+  expect(box.width).toBe(36);
+  expect(box.height).toBe(28);
+});
+
+test('robot card summary is exactly 266 by 64 and retains expandable controls', async ({ page }) => {
+  await openComponent(page, '로봇 카드');
+  const card = page.locator('.pk-robot-control-card').first();
+  const summary = card.locator('.pk-robot-control-card__summary');
+  const cardBox = await card.boundingBox();
+  const summaryBox = await summary.boundingBox();
+  expect(Math.round(cardBox.width)).toBe(266);
+  expect(Math.round(summaryBox.height)).toBe(64);
+  await expect(summary.locator('.pk-robot-control-card__signal')).toHaveCSS('width', '32px');
+
+  const expanded = page.locator('.pk-robot-control-card.is-expanded');
+  await expect(expanded.locator('.pk-robot-control-card__details')).toBeVisible();
+  await expect(expanded.locator('.pk-robot-command__action')).toHaveCount(2);
+  await expect(expanded.locator('.pk-robot-control-card__signal')).toHaveCSS(
+    'color',
+    'rgb(245, 222, 46)'
+  );
+  await expect(expanded.locator('.pk-robot-control-card__battery')).toHaveCSS(
+    'color',
+    'rgb(245, 222, 46)'
+  );
+});
+
+test('compact and emergency modal recipes match supplied dimensions', async ({ page }) => {
+  await openComponent(page, '모달');
+  const compact = page.locator('.pk-modal-shell--sm').first();
+  const compactBox = await compact.boundingBox();
+  expect(Math.round(compactBox.width)).toBe(306);
+  expect(Math.round(compactBox.height)).toBe(196);
+
+  const emergency = page.locator('.pk-modal-shell--reference-alert');
+  const emergencyBox = await emergency.boundingBox();
+  expect(Math.round(emergencyBox.width)).toBe(500);
+  expect(Math.round(emergencyBox.height)).toBe(320);
+  const actionBox = await emergency.locator('.pk-modal-button').boundingBox();
+  expect(Math.round(actionBox.width)).toBe(200);
+  expect(Math.round(actionBox.height)).toBe(48);
+  await expect(emergency.locator('.pk-modal-button')).toHaveCSS('background-color', 'rgb(223, 0, 0)');
+  await expect(emergency.locator('.pk-modal-button')).toHaveCSS('color', 'rgb(255, 255, 255)');
+
+  await page.getByRole('tab', { name: '관리자 인증' }).click();
+  const authBox = await page.getByRole('group', { name: '서비스 활성화 인증' }).boundingBox();
+  expect(Math.round(authBox.width)).toBe(306);
+  expect(Math.round(authBox.height)).toBe(196);
+
+  await page.getByRole('tab', { name: '점검 항목' }).click();
+  const checklistBox = await page.locator('.pk-modal-shell--lg').boundingBox();
+  expect(Math.round(checklistBox.width)).toBe(306);
+  expect(Math.round(checklistBox.height)).toBe(240);
+
+  await page.getByRole('tab', { name: '처리 중' }).click();
+  const progressBox = await page.getByRole('status', { name: '서비스 초기화 중…' }).boundingBox();
+  expect(Math.round(progressBox.width)).toBe(306);
+  expect(Math.round(progressBox.height)).toBe(196);
+
+  await page.getByRole('tab', { name: '완료' }).click();
+  const resultBox = await page.getByRole('group', { name: '서비스 초기화 완료' }).boundingBox();
+  expect(Math.round(resultBox.width)).toBe(306);
+  expect(Math.round(resultBox.height)).toBe(196);
+});
+
+test('top bar controls and site dropdown follow the supplied shell recipe', async ({ page }) => {
+  await openComponent(page, '상단 바');
+  const appbar = page.locator('.pk-appbar-stage > .pk-appbar');
+  await expect(appbar).toHaveCSS('height', '46px');
+  await expect(appbar.locator('.pk-role-segment')).toHaveCSS('width', '200px');
+  await expect(appbar.locator('.pk-site-select')).toHaveCSS('width', '270px');
+  await expect(appbar.locator('.pk-app-search')).toHaveCSS('width', '460px');
+  await expect(appbar.getByText('서비스 활성화')).toBeVisible();
+  await expect(appbar.getByText('KOR')).toBeVisible();
+
+  const select = appbar.locator('.pk-site-select-button');
+  await select.click();
+  await expect(appbar.locator('.pk-site-menu')).toBeVisible();
+  await expect(appbar.locator('.pk-site-option')).toHaveCount(3);
+});
+
+test('latest event stroke is 50 percent and feed rows keep source sizes', async ({ page }) => {
+  await openComponent(page, '이벤트 피드 행');
+  const latest = page.locator('.pk-feed-item--latest').first();
+  const box = await latest.boundingBox();
+  expect(Math.round(box.width)).toBe(448);
+  expect(Math.round(box.height)).toBe(48);
+  await expect(latest).toHaveCSS('border-color', 'rgba(15, 220, 76, 0.5)');
+
+  const rows = page.locator('.pk-feed-list').first().locator('.pk-feed-item');
+  await expect(rows.nth(0).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(15, 220, 76)');
+  await expect(rows.nth(1).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(0, 200, 255)');
+  await expect(rows.nth(2).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(245, 222, 46)');
+  await expect(rows.nth(3)).toHaveCSS('background-color', 'rgba(223, 0, 0, 0.3)');
+  await expect(rows.nth(3)).toHaveCSS('color', 'rgb(255, 255, 255)');
+});
+
+test('critical views remain usable at a narrower viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 900 });
+  await openComponent(page, '로봇 카드');
+  const card = page.locator('.pk-robot-control-card').first();
+  await expect(card).toBeVisible();
+  expect((await card.boundingBox()).width).toBeLessThanOrEqual(266);
+
+  await openComponent(page, '모달');
+  await expect(page.locator('.pk-modal-shell--sm').first()).toBeVisible();
+});
+
+test('the operations shell controls update their exposed UI state', async ({ page }) => {
+  await openComponent(page, '관제 앱 셸');
+  const shell = page.locator('.pk-shell-frame');
+  await expect(shell).toBeVisible();
+
+  const service = shell.getByRole('switch', { name: '서비스 활성화' });
+  const initialServiceState = await service.getAttribute('aria-checked');
+  await service.click();
+  await expect(service).toHaveAttribute(
+    'aria-checked',
+    initialServiceState === 'true' ? 'false' : 'true'
+  );
+
+  const siteSelect = shell.locator('.pk-site-select-button');
+  await siteSelect.click();
+  await expect(shell.locator('.pk-site-menu')).toBeVisible();
+  await shell.locator('.pk-site-option').nth(1).click();
+  await expect(siteSelect).toContainText('충북도청 운영존');
+
+  const robotToggle = shell.locator('.pk-robot-card-toggle').first();
+  const initialExpanded = await robotToggle.getAttribute('aria-expanded');
+  await robotToggle.click();
+  await expect(robotToggle).toHaveAttribute(
+    'aria-expanded',
+    initialExpanded === 'true' ? 'false' : 'true'
+  );
+});

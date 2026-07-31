@@ -3,3 +3,8 @@
 
 # Claude Code local overrides (personal, not shared)
 .claude/settings.local.json
+
+# UI verification
+node_modules/
+test-results/
+playwright-report/

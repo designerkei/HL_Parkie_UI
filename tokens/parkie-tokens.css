@@ -165,6 +165,22 @@
   --parkie-brand-border: rgba(0,170,255,0.42);
   --parkie-brand-text: var(--parkie-color-brand-400);
 
+  /* ---- Action colors
+     Solid actions always use white foreground in the Parkie references.
+     Keep this separate from brand-on, which is not an action token. */
+  --parkie-action-primary-bg: #00AAFF;
+  --parkie-action-primary-bg-hover: #16DCF2;
+  --parkie-action-primary-bg-pressed: #009BE9;
+  --parkie-action-primary-fg: var(--parkie-color-common-white);
+  --parkie-action-danger-bg: #DF0000;
+  --parkie-action-danger-bg-hover: #EF2020;
+  --parkie-action-danger-bg-pressed: #C00000;
+  --parkie-action-danger-fg: var(--parkie-color-common-white);
+  --parkie-action-neutral-bg: var(--parkie-surface-elevation-12);
+  --parkie-action-neutral-fg: var(--parkie-color-common-white);
+  --parkie-action-disabled-bg: rgba(255,255,255,0.35);
+  --parkie-action-disabled-fg: rgba(255,255,255,0.70);
+
   --parkie-bg: var(--parkie-color-common-canvas);
   --parkie-surface: var(--parkie-surface-elevation-00);
   --parkie-surface-2: var(--parkie-surface-elevation-01);
@@ -240,6 +256,15 @@
   --parkie-battery-critical: var(--parkie-status-danger);
   --parkie-battery-charging: var(--parkie-status-info);
 
+  /* ---- Reference geometry: robot summary card ---- */
+  --parkie-robot-card-width: 266px;
+  --parkie-robot-card-height: 64px;
+  --parkie-robot-card-radius: 4px;
+  --parkie-robot-state-slot: 32px;
+  --parkie-robot-card-shadow:
+    0 5px 5px rgba(0,0,0,0.20),
+    0 8px 10px rgba(0,0,0,0.18);
+
   /* ---- Application shell ---- */
   --parkie-appbar-height: 46px;
   --parkie-appbar-surface: var(--parkie-surface-elevation-06);
@@ -267,7 +292,7 @@
   --parkie-feed-row-surface: var(--parkie-surface-elevation-06);
   --parkie-feed-row-latest: var(--parkie-surface-elevation-12);
   --parkie-feed-icon-surface: var(--parkie-surface-elevation-24);
-  --parkie-feed-latest-stroke-opacity: 0.80;
+  --parkie-feed-latest-stroke-opacity: 0.50;
   --parkie-feed-latest-shadow: 0 4px 6px rgba(0,0,0,0.80);
 
   /* ---- Modal component aliases ----
@@ -283,10 +308,23 @@
   --parkie-modal-disabled-text: rgba(255,255,255,0.38);
   --parkie-modal-error-surface: rgba(223,0,0,0.22);
   --parkie-modal-radius: var(--parkie-radius-lg);
-  --parkie-modal-width-sm: 360px;
-  --parkie-modal-width-md: 420px;
-  --parkie-modal-width-lg: 500px;
+  --parkie-modal-width-sm: 306px;
+  --parkie-modal-width-md: 306px;
+  --parkie-modal-width-lg: 306px;
+  --parkie-modal-compact-height: 196px;
+  --parkie-modal-checklist-height: 240px;
+  --parkie-modal-compact-action-height: 30px;
   --parkie-modal-shadow: 4px 4px 10px rgba(0,0,0,0.50);
+
+  /* ---- Reference recipe: emergency stop notice ----
+     Source SVG frame: x6/y6, 500×320, radius 12.
+     The single destructive action is 200×48 at x156/y250. */
+  --parkie-modal-emergency-width: 500px;
+  --parkie-modal-emergency-height: 320px;
+  --parkie-modal-emergency-radius: 12px;
+  --parkie-modal-emergency-action-width: 200px;
+  --parkie-modal-emergency-action-height: 48px;
+  --parkie-modal-emergency-action-radius: 6px;
 
   /* ---- Elevation ---- */
   --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);

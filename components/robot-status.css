@@ -156,16 +156,16 @@
 .pk-robot-stack {
   display: grid;
   gap: var(--parkie-space-3);
-  width: min(100%, 286px);
+  width: min(100%, var(--parkie-robot-card-width));
 }
 
 .pk-robot-control-card {
   position: relative;
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: var(--parkie-radius-xs);
+  border-radius: var(--parkie-robot-card-radius);
   background: var(--parkie-surface-elevation-12);
-  box-shadow: 0 5px 5px rgba(0,0,0,.2), 0 8px 10px rgba(0,0,0,.18);
+  box-shadow: var(--parkie-robot-card-shadow);
   color: var(--parkie-text);
   transition: border-color 120ms ease, background-color 120ms ease;
 }
@@ -174,7 +174,7 @@
   position: absolute;
   inset: 12px auto auto 0;
   width: 3px;
-  height: 34px;
+  height: 40px;
   border-radius: 0 3px 3px 0;
   background: transparent;
   content: "";
@@ -191,11 +191,12 @@
 
 .pk-robot-control-card__summary {
   display: grid;
-  grid-template-columns: 34px 32px minmax(52px,1fr) auto 24px 28px;
-  gap: var(--parkie-space-2);
+  grid-template-columns: 38px var(--parkie-robot-state-slot) minmax(52px,1fr) 42px 24px 24px;
+  gap: 4px;
   align-items: center;
-  min-height: 62px;
-  padding: 0 10px 0 var(--parkie-space-4);
+  width: 100%;
+  min-height: var(--parkie-robot-card-height);
+  padding: 0 8px 0 10px;
 }
 
 .pk-robot-control-card__id {
@@ -210,8 +211,8 @@
 .pk-robot-control-card__signal {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: var(--parkie-robot-state-slot);
+  height: var(--parkie-robot-state-slot);
   color: var(--parkie-connection-good);
 }
 
@@ -224,7 +225,8 @@
 
 .pk-robot-control-card__signal.is-weak { color: var(--parkie-connection-weak); }
 .pk-robot-control-card__signal.is-lost,
-.pk-robot-control-card__signal.is-offline { color: var(--parkie-connection-lost); }
+.pk-robot-control-card__signal.is-offline,
+.pk-robot-control-card__signal.is-paused { color: var(--parkie-text); }
 .pk-robot-control-card__signal.is-reconnecting svg {
   animation: pk-status-pulse 1.2s ease-in-out infinite;
 }
@@ -249,10 +251,7 @@
 }
 
 .pk-robot-control-card__motion {
-  margin-top: 2px;
-  color: var(--parkie-text-secondary);
-  font-size: var(--parkie-font-xs);
-  font-weight: var(--parkie-weight-medium);
+  display: none;
 }
 
 .pk-robot-control-card__battery-value {
@@ -274,8 +273,8 @@
 .pk-robot-card-toggle {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 0;
   border-radius: var(--parkie-radius-xs);
@@ -292,8 +291,8 @@
 }
 
 .pk-robot-card-toggle svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   transition: transform 140ms ease;
 }
 
@@ -327,6 +326,26 @@
 
 .pk-robot-command button { justify-self: end; }
 
+.pk-robot-command--primary,
+.pk-robot-command--primary .pk-robot-command__action {
+  color: var(--parkie-action-primary-bg);
+}
+
+.pk-robot-command__action {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--parkie-text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.pk-robot-command__action:hover,
+.pk-robot-command__action:focus-visible {
+  color: var(--parkie-text);
+}
+
 .pk-robot-card-anatomy {
   display: grid;
   gap: var(--parkie-space-3);
@@ -342,9 +361,9 @@
 
 @media (max-width: 420px) {
   .pk-robot-control-card__summary {
-    grid-template-columns: 30px 28px minmax(46px,1fr) auto 24px 26px;
-    gap: 5px;
-    padding-left: var(--parkie-space-3);
+    grid-template-columns: 34px 28px minmax(46px,1fr) 38px 22px 22px;
+    gap: 3px;
+    padding: 0 6px 0 8px;
   }
 }
 

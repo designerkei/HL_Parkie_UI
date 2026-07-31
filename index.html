@@ -589,16 +589,36 @@
                   <button class="pk-robot-card-toggle" aria-expanded="true" aria-label="로봇 02 상세 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
                 </div>
                 <div class="pk-robot-control-card__details">
-                  <div class="pk-robot-command"><span>⏻</span><span>전원</span><button class="pk-button pk-button--ghost pk-button--compact">끄기</button></div>
-                  <div class="pk-robot-command"><span>↻</span><span>재시작</span><button class="pk-button pk-button--ghost pk-button--compact">실행</button></div>
-                  <div class="pk-robot-command"><span>●</span><span>로봇 카메라</span><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button></div>
+                  <div class="pk-robot-command pk-robot-command--primary"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v9M7.1 5.8a8 8 0 1 0 9.8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><button class="pk-robot-command__action" type="button">끄기</button><span></span></div>
+                  <div class="pk-robot-command"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.1 8.2A7 7 0 1 1 5 15.5M5 5v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8.5V12l2.3 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><button class="pk-robot-command__action" type="button">재시작</button><span></span></div>
+                  <div class="pk-robot-command"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 7h11a2 2 0 0 1 2 2v1.5l3.2-2a.8.8 0 0 1 1.2.7v5.6a.8.8 0 0 1-1.2.7l-3.2-2V15a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/></svg><span>로봇 카메라</span><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button></div>
+                </div>
+              </article>
+              <article class="pk-robot-control-card">
+                <div class="pk-robot-control-card__summary">
+                  <strong class="pk-robot-control-card__id">03</strong>
+                  <span class="pk-robot-control-card__signal is-lost" aria-label="연결 끊김"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2.3 3.7 18 18-1.4 1.4-3.1-3.1A1.8 1.8 0 0 1 12 20.5c0-.9.6-1.6 1.4-1.8l-2.2-2.2a3.7 3.7 0 0 0-1.8 1.1l-1.5-1.5c.5-.5 1.1-.9 1.7-1.2l-2.3-2.3c-.5.3-.9.7-1.3 1.1l-1.5-1.5c.4-.4.8-.8 1.3-1.1L.9 6.2l1.4-2.5ZM12 3.4c4.2 0 8.2 1.7 11 4.8l-1.5 1.5A13.4 13.4 0 0 0 7.8 6.3L5.9 4.4c1.9-.7 4-1 6.1-1Zm0 4.9c2.8 0 5.5 1.2 7.5 3.2L18 13a8.5 8.5 0 0 0-6-2.5c-.4 0-.8 0-1.2.1L8.9 8.7c1-.3 2-.4 3.1-.4Z"/></svg></span>
+                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">12 km/h</span></span>
+                  <span class="pk-robot-control-card__battery-value">100%</span>
+                  <span class="pk-robot-control-card__battery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 2h6v10H9V8Z"/></svg></span>
+                  <button class="pk-robot-card-toggle" aria-label="로봇 03 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                </div>
+              </article>
+              <article class="pk-robot-control-card">
+                <div class="pk-robot-control-card__summary">
+                  <strong class="pk-robot-control-card__id">04</strong>
+                  <span class="pk-robot-control-card__signal is-paused" aria-label="일시정지"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"/></svg></span>
+                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">12 km/h</span></span>
+                  <span class="pk-robot-control-card__battery-value">100%</span>
+                  <span class="pk-robot-control-card__battery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 2h6v10H9V8Z"/></svg></span>
+                  <button class="pk-robot-card-toggle" aria-label="로봇 04 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
                 </div>
               </article>
             </div>
             <ol class="pk-robot-card-anatomy">
               <li><strong>선택 표시:</strong> 좌측 Brand blue rail만 사용합니다.</li>
               <li><strong>통신:</strong> Wi-Fi 아이콘의 형태와 색으로 full·low·lost를 구분합니다.</li>
-              <li><strong>동작:</strong> 속도 아래 텍스트로 운행·일시정지·대기·고장을 명시합니다.</li>
+              <li><strong>동작:</strong> 운행 속도와 통신·일시정지 아이콘을 분리해 한눈에 상태를 판별합니다.</li>
               <li><strong>배터리:</strong> 퍼센트와 아이콘을 함께 제공하고 low/critical만 의미 색을 적용합니다.</li>
               <li><strong>상세:</strong> chevron은 카드 확장만 담당하며 카드 선택과 분리합니다.</li>
             </ol>
@@ -650,7 +670,7 @@
 
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--parkie-space-3);">
             <h3 style="margin:0;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">로봇 현황 · Fleet</h3>
-            <button style="padding:7px 14px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-brand-primary-hover);">+ 로봇 추가</button>
+            <button style="padding:7px 14px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-action-primary-bg);color:var(--parkie-action-primary-fg);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-action-primary-bg-hover);">+ 로봇 추가</button>
           </div>
           <div style="border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow:hidden;background:var(--parkie-surface);margin-bottom:var(--parkie-space-6);">
             <table style="width:100%;border-collapse:collapse;font-family:var(--parkie-font-sans);">
@@ -892,7 +912,7 @@
               <div class="pk-modal-metrics">
                 <div class="pk-modal-metric"><strong>05</strong><span>재사용 패턴 · Patterns</span></div>
                 <div class="pk-modal-metric"><strong>04</strong><span>운영 플로우 · Workflows</span></div>
-                <div class="pk-modal-metric"><strong>SM–LG</strong><span>360 · 420 · 500px</span></div>
+                <div class="pk-modal-metric"><strong>306 / 500</strong><span>Compact / Reference alert</span></div>
               </div>
             </section>
 
@@ -984,7 +1004,7 @@
 
                 <sc-if value="{{ modalProgressSelected }}" hint-placeholder-val="{{ false }}">
                   <div class="pk-modal-shell pk-modal-shell--sm" role="status" aria-live="polite" aria-labelledby="progress-demo-title">
-                    <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:300px;flex-direction:column;justify-content:center;">
+                    <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:143px;flex-direction:column;justify-content:center;">
                       <div class="pk-modal-spinner" aria-hidden="true"></div>
                       <h3 class="pk-modal-title" id="progress-demo-title">서비스 초기화 중…</h3>
                       <p class="pk-modal-note">초기화 후 로봇 수동조작이 필요합니다.</p>
@@ -1010,6 +1030,36 @@
                     <div class="pk-modal-actions"><button class="pk-modal-button">확인</button></div>
                   </div>
                 </sc-if>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-reference-alert-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">REFERENCE RECIPE · 500 × 320</div>
+                  <h2 id="modal-reference-alert-title" style="font-size:var(--parkie-font-2xl);">비상 작업 단일 확인 알럿</h2>
+                  <p>제공된 SVG의 프레임, 200×48 액션, 위험 색상과 내부 정렬을 고정값으로 재현한 기준 레시피입니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-stage" style="min-height:380px;">
+                <div class="pk-modal-shell pk-modal-shell--reference-alert" role="dialog" aria-modal="true" aria-labelledby="reference-alert-heading">
+                  <div class="pk-modal-context">
+                    <span aria-hidden="true"></span>
+                    <button class="pk-modal-close" type="button" aria-label="닫기">
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                  <div class="pk-modal-body pk-modal-body--center">
+                    <div class="pk-modal-status-icon pk-modal-status-icon--danger" aria-hidden="true">
+                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M13.1 4.9a3.35 3.35 0 0 1 5.8 0l10.2 17.5A3.35 3.35 0 0 1 26.2 27H5.8a3.35 3.35 0 0 1-2.9-4.6L13.1 4.9Z" fill="currentColor"/><path d="M16 11v7M16 22.2v.3" stroke="white" stroke-width="2.4" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3 class="pk-modal-title" id="reference-alert-heading">로봇 초기화 중…</h3>
+                    <p class="pk-modal-description">로봇 수동조작을 통해 충전존으로 이동바랍니다.</p>
+                  </div>
+                  <div class="pk-modal-actions">
+                    <button class="pk-modal-button pk-modal-button--danger" type="button">확인</button>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -1161,7 +1211,7 @@
                   <div class="pk-modal-state-label">PROGRESS · NON-DISMISSIBLE</div>
                   <div class="pk-modal-state-card">
                     <div class="pk-modal-shell pk-modal-shell--sm" role="status" aria-live="polite">
-                      <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:300px;flex-direction:column;justify-content:center;">
+                      <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:143px;flex-direction:column;justify-content:center;">
                         <div class="pk-modal-spinner" aria-hidden="true"></div>
                         <h3 class="pk-modal-title">서비스 초기화 중…</h3>
                         <p class="pk-modal-note">초기화 후 로봇 수동조작이 필요합니다.</p>
@@ -1198,7 +1248,7 @@
                 <div class="pk-modal-rule"><strong>포커스 복귀</strong><span>닫힌 뒤 모달을 열었던 트리거로 포커스를 되돌리고 배경 스크롤을 복구합니다.</span></div>
                 <div class="pk-modal-rule"><strong>검증은 인라인</strong><span>오류는 해당 필드 가까이에 표시하고 aria-invalid와 설명 연결을 제공합니다.</span></div>
                 <div class="pk-modal-rule"><strong>상태 색상 분리</strong><span>Danger는 위험, Green은 성공, Blue는 정보와 기본 액션, Yellow는 주의에만 사용합니다.</span></div>
-                <div class="pk-modal-rule"><strong>반응형 너비</strong><span>SM 360, MD 420, LG 500px을 사용하고 모바일에서는 좌우 16px 여백을 유지합니다.</span></div>
+                <div class="pk-modal-rule"><strong>참조 규격</strong><span>확인·인증·진행형은 306px, 체크리스트는 306×240px, 원본 비상 알럿은 500×320px을 사용합니다.</span></div>
               </div>
             </section>
 
@@ -1218,7 +1268,7 @@
                   <tr><td><code>--parkie-modal-shadow</code></td><td>4 / 4 / 10 · Black 50%</td><td>배경과의 깊이 분리</td></tr>
                   <tr><td><code>--parkie-modal-field</code></td><td>Surface Elevation 12 · #343436</td><td>인증 입력 필드</td></tr>
                   <tr><td><code>--parkie-modal-error-surface</code></td><td>Danger 600 · 22%</td><td>인라인 오류 배경</td></tr>
-                  <tr><td><code>--parkie-modal-width-*</code></td><td>360 · 420 · 500px</td><td>Confirm · Form · Checklist</td></tr>
+                  <tr><td><code>--parkie-modal-width-*</code></td><td>306px · reference 500px</td><td>Compact workflow · exact alert</td></tr>
                 </tbody>
               </table>
             </section>
@@ -1670,9 +1720,9 @@
                           </div>
                           <sc-if value="{{ robot02Expanded }}" hint-placeholder-val="{{ true }}">
                             <div class="pk-robot-control-card__details">
-                              <div class="pk-robot-command"><span aria-hidden="true">⏻</span><span>전원</span><button class="pk-button pk-button--ghost pk-button--compact" type="button">끄기</button></div>
-                              <div class="pk-robot-command"><span aria-hidden="true">↻</span><span>재시작</span><button class="pk-button pk-button--ghost pk-button--compact" type="button">실행</button></div>
-                              <div class="pk-robot-command"><span aria-hidden="true">●</span><span>로봇 카메라</span><button class="pk-switch" type="button" role="switch" aria-checked="{{ robotCameraActive }}" aria-label="로봇 02 카메라" onClick="{{ toggleRobotCamera }}"></button></div>
+                              <div class="pk-robot-command pk-robot-command--primary"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v9M7.1 5.8a8 8 0 1 0 9.8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><button class="pk-robot-command__action" type="button">끄기</button><span></span></div>
+                              <div class="pk-robot-command"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.1 8.2A7 7 0 1 1 5 15.5M5 5v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8.5V12l2.3 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><button class="pk-robot-command__action" type="button">재시작</button><span></span></div>
+                              <div class="pk-robot-command"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 7h11a2 2 0 0 1 2 2v1.5l3.2-2a.8.8 0 0 1 1.2.7v5.6a.8.8 0 0 1-1.2.7l-3.2-2V15a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/></svg><span>로봇 카메라</span><button class="pk-switch" type="button" role="switch" aria-checked="{{ robotCameraActive }}" aria-label="로봇 02 카메라" onClick="{{ toggleRobotCamera }}"></button></div>
                             </div>
                           </sc-if>
                         </article>
@@ -2105,8 +2155,11 @@ class Component extends DCLogic {
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'principles', 'changelog'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography'] },
-      { ko: '컴포넌트', en: 'Components', items: ['button', 'segmented', 'switch', 'badge', 'statuslabel', 'robotstatus', 'robotcard', 'input', 'topbar', 'select', 'checkbox', 'avatar', 'alert', 'alertfeed', 'card', 'table', 'tabs', 'modal', 'breadcrumb'] },
-      { ko: '패턴', en: 'Patterns', items: ['alertcenter'] },
+      { ko: '액션·입력', en: 'Actions & Input', items: ['button', 'segmented', 'switch', 'input', 'select', 'checkbox'] },
+      { ko: '상태·피드백', en: 'Status & Feedback', items: ['badge', 'statuslabel', 'alert', 'alertfeed'] },
+      { ko: '내비게이션·구조', en: 'Navigation & Structure', items: ['topbar', 'tabs', 'breadcrumb', 'card', 'table', 'avatar'] },
+      { ko: '로봇 운영', en: 'Robot Operations', items: ['robotstatus', 'robotcard'] },
+      { ko: '오버레이·패턴', en: 'Overlays & Patterns', items: ['modal', 'alertcenter'] },
       { ko: '템플릿', en: 'Templates', items: ['appshell', 'dashboard'] },
       { ko: '리소스', en: 'Resources', items: ['brand', 'downloads'] },
     ] },
@@ -2452,7 +2505,7 @@ class Component extends DCLogic {
     const contrastPairs = [
       { label: L('기본 텍스트', 'Primary text'), usage: L('일반 본문 · AA/AAA', 'Body copy · AA/AAA'), ratio: '16.72:1', sample: contrastSample('var(--parkie-text)', 'var(--parkie-surface)') },
       { label: L('보조 텍스트', 'Secondary text'), usage: L('설명과 메타 정보', 'Description and metadata'), ratio: '7.18:1', sample: contrastSample('var(--parkie-text-secondary)', 'var(--parkie-surface)') },
-      { label: L('브랜드 액션', 'Brand action'), usage: L('Primary 버튼', 'Primary button'), ratio: '6.42:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-brand-primary)') },
+      { label: L('기본 액션', 'Primary action'), usage: L('레퍼런스 고정 · 흰색 콘텐츠', 'Reference exact · white content'), ratio: '2.56:1 · Reference', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
       { label: L('위험 텍스트', 'Danger text'), usage: L('오류 메시지', 'Error messaging'), ratio: '6.69:1', sample: contrastSample('var(--parkie-danger-text)', 'var(--parkie-surface)') },
       { label: L('경고 위 콘텐츠', 'On warning'), usage: L('경고 배경의 아이콘·텍스트', 'Content on warning background'), ratio: '11.89:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-warning)') },
     ];
