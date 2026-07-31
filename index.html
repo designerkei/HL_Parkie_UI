@@ -165,37 +165,6 @@
         <!-- ===== SYSTEM SUMMARY ===== -->
         <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="{{ false }}">
           <div class="pk-system-summary" data-system-summary>
-            <section class="pk-summary-hero" aria-labelledby="summary-case-title">
-              <div class="pk-summary-hero__content">
-                <div class="pk-summary-hero__copy">
-                  <span class="pk-summary-hero__kicker">DESIGN SYSTEM CASE STUDY · 2026</span>
-                  <h2 id="summary-case-title">Operational clarity,<br><span>systemized.</span></h2>
-                  <p>복잡한 RMS 관제 구조는 그대로 유지하면서 Parkie의 브랜드·타입·상태 언어를 하나의 운영 시스템으로 통합했습니다.</p>
-                  <div class="pk-summary-hero__meta" aria-label="프로젝트 범위">
-                    <span>RMS ARCHITECTURE</span>
-                    <span>PARKIE VISUAL LAYER</span>
-                    <span>DARK · KO/EN</span>
-                  </div>
-                </div>
-                <div class="pk-summary-hero__visual" aria-hidden="true">
-                  <div class="pk-summary-hero__visual-grid">
-                    <span class="pk-summary-hero__visual-label">HL ROBOTICS · PARKIE UI</span>
-                    <img src="brand/logo.svg" alt="">
-                    <strong>PARKIE<br>RMS</strong>
-                    <span class="pk-summary-hero__visual-code">SYSTEM / 01—08</span>
-                  </div>
-                </div>
-              </div>
-              <div class="pk-summary-hero__stats" aria-label="시스템 주요 지표">
-                <sc-for list="{{ summaryHeroStats }}" as="stat" hint-placeholder-count="4">
-                  <div class="pk-summary-hero__stat">
-                    <strong>{{ stat.value }}</strong>
-                    <span>{{ stat.label }}</span>
-                  </div>
-                </sc-for>
-              </div>
-            </section>
-
             <section class="pk-summary-story" aria-label="디자인 시스템 접근 방식">
               <sc-for list="{{ summaryStoryPoints }}" as="point" hint-placeholder-count="3">
                 <article class="pk-summary-story__item" data-summary-story>
@@ -3384,12 +3353,6 @@ class Component extends DCLogic {
     ];
     const summaryTypeScale = typeScale.slice(0, 9);
     const summaryMonoType = typeScale[typeScale.length - 1];
-    const summaryHeroStats = [
-      { value: `${summaryTypeScale.length}`, label: L('타입 레벨', 'Type levels') },
-      { value: `${totalParkieIcons}`, label: L('문서화 아이콘', 'Documented icons') },
-      { value: `${parkieDomainGroups.reduce((sum, group) => sum + group.items.length, 0)}`, label: L('운영 상태', 'Operational states') },
-      { value: `${cameraFeeds.length}`, label: L('CCTV 채널', 'CCTV channels') },
-    ];
     const summaryStoryPoints = [
       {
         index: '01',
@@ -3567,7 +3530,6 @@ class Component extends DCLogic {
       summaryIdentityFacts,
       summaryTypeScale,
       summaryMonoType,
-      summaryHeroStats,
       summaryStoryPoints,
       summaryColorSections,
       summaryIconRows,
