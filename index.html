@@ -660,13 +660,15 @@
                         <span class="pk-icon-name-en">{{ icon.en }}</span>
                         <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
                       </div>
-                      <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
-                        <div class="pk-icon-spec-row">
-                          <span class="{{ state.className }}" role="img" aria-label="{{ state.label }}">{{ state.svg }}</span>
-                          <span class="pk-icon-spec-leader" aria-hidden="true"></span>
-                          <span class="pk-icon-spec-state">{{ state.stateName }}</span>
-                        </div>
-                      </sc-for>
+                      <div class="pk-icon-spec-states">
+                        <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
+                          <div class="pk-icon-spec-row">
+                            <span class="{{ state.className }}" role="img" aria-label="{{ state.label }}">{{ state.svg }}</span>
+                            <span class="pk-icon-spec-leader" aria-hidden="true"></span>
+                            <span class="pk-icon-spec-state">{{ state.stateName }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
                     </div>
                   </sc-for>
                 </div>
