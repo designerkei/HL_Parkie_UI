@@ -196,6 +196,24 @@
   --parkie-status-error: var(--parkie-danger);
   --parkie-status-offline: var(--parkie-color-neutral-700);
 
+  /* ---- Modal component aliases ----
+     The Parkie operations references use a low-luminance dialog surface.
+     Surface 01 is the normalized 5% overlay match for that source artwork. */
+  --parkie-modal-scrim: rgba(0,0,0,0.64);
+  --parkie-modal-surface: var(--parkie-surface-elevation-01);
+  --parkie-modal-surface-raised: var(--parkie-surface-elevation-02);
+  --parkie-modal-border: rgba(255,255,255,0.20);
+  --parkie-modal-field: var(--parkie-surface-elevation-12);
+  --parkie-modal-field-hover: var(--parkie-surface-elevation-16);
+  --parkie-modal-disabled: var(--parkie-surface-elevation-12);
+  --parkie-modal-disabled-text: rgba(255,255,255,0.38);
+  --parkie-modal-error-surface: rgba(223,0,0,0.22);
+  --parkie-modal-radius: var(--parkie-radius-lg);
+  --parkie-modal-width-sm: 360px;
+  --parkie-modal-width-md: 420px;
+  --parkie-modal-width-lg: 500px;
+  --parkie-modal-shadow: 4px 4px 10px rgba(0,0,0,0.50);
+
   /* ---- Elevation ---- */
   --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
   --parkie-shadow-md: 0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);

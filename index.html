@@ -694,17 +694,348 @@
 
         <!-- ===== PARKIE MODAL ===== -->
         <sc-if value="{{ isModal }}" hint-placeholder-val="{{ false }}">
-          <div style="position:relative;background:var(--parkie-surface-3);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-9);display:flex;align-items:center;justify-content:center;min-height:320px;">
-            <div style="width:100%;max-width:420px;background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);box-shadow:var(--parkie-shadow-xl);overflow:hidden;">
-              <div style="padding:var(--parkie-space-6) var(--parkie-space-6) var(--parkie-space-4);">
-                <div style="font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">로봇 정지 확인</div>
-                <p style="margin:10px 0 0;font-size:var(--parkie-font-base);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">PK-004를 즉시 정지합니다. 진행 중인 작업이 취소될 수 있습니다. 계속하시겠습니까?</p>
+          <div class="pk-modal-doc">
+            <section class="pk-modal-section" aria-labelledby="modal-overview-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">MODAL FAMILY · v1.0</div>
+                  <h2 id="modal-overview-title" style="font-size:var(--parkie-font-2xl);">운영 흐름을 상태로 설계합니다</h2>
+                  <p>화면마다 모달을 새로 만들지 않습니다. 5개 패턴과 공통 상태를 조합해 비상정지, 서비스 재개, 초기화, 활성화 흐름을 일관되게 구성합니다.</p>
+                </div>
               </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;padding:var(--parkie-space-4) var(--parkie-space-6);border-top:1px solid var(--parkie-border);background:var(--parkie-surface-2);">
-                <button style="padding:9px 18px;border:1px solid var(--parkie-border-strong);border-radius:var(--parkie-radius-md);background:var(--parkie-surface);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-surface-2);">취소</button>
-                <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-danger);color:#fff;font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="filter:brightness(0.93);">정지</button>
+              <div class="pk-modal-metrics">
+                <div class="pk-modal-metric"><strong>05</strong><span>재사용 패턴 · Patterns</span></div>
+                <div class="pk-modal-metric"><strong>04</strong><span>운영 플로우 · Workflows</span></div>
+                <div class="pk-modal-metric"><strong>SM–LG</strong><span>360 · 420 · 500px</span></div>
               </div>
-            </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-playground-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">LIVE COMPOSITION</div>
+                  <h2 id="modal-playground-title" style="font-size:var(--parkie-font-2xl);">패턴 미리보기</h2>
+                  <p>동일한 Shell 안에서 목적과 상태에 따라 콘텐츠, 액션, 닫기 정책만 교체됩니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-demo-tabs" role="tablist" aria-label="모달 패턴 선택">
+                <button class="pk-modal-tab" role="tab" aria-selected="{{ modalCriticalSelected }}" onClick="{{ showModalCritical }}" style="{{ modalCriticalTab }}">위험 확인</button>
+                <button class="pk-modal-tab" role="tab" aria-selected="{{ modalAuthSelected }}" onClick="{{ showModalAuth }}" style="{{ modalAuthTab }}">관리자 인증</button>
+                <button class="pk-modal-tab" role="tab" aria-selected="{{ modalChecklistSelected }}" onClick="{{ showModalChecklist }}" style="{{ modalChecklistTab }}">점검 항목</button>
+                <button class="pk-modal-tab" role="tab" aria-selected="{{ modalProgressSelected }}" onClick="{{ showModalProgress }}" style="{{ modalProgressTab }}">처리 중</button>
+                <button class="pk-modal-tab" role="tab" aria-selected="{{ modalResultSelected }}" onClick="{{ showModalResult }}" style="{{ modalResultTab }}">완료</button>
+              </div>
+
+              <div class="pk-modal-stage">
+                <sc-if value="{{ modalCriticalSelected }}" hint-placeholder-val="{{ true }}">
+                  <div class="pk-modal-shell pk-modal-shell--sm" role="group" aria-labelledby="critical-demo-title">
+                    <div class="pk-modal-context">
+                      <span>비상정지</span>
+                      <button class="pk-modal-close" aria-label="닫기">
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="pk-modal-body pk-modal-body--center">
+                      <div class="pk-modal-status-icon pk-modal-status-icon--danger">
+                        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.3 3.8a2 2 0 0 1 3.4 0l8 13.8a2 2 0 0 1-1.7 3H4a2 2 0 0 1-1.7-3l8-13.8Z" fill="currentColor"/><path d="M12 8v5.5M12 17.2v.1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                      </div>
+                      <h3 class="pk-modal-title" id="critical-demo-title">비상정지 실행할까요?</h3>
+                      <p class="pk-modal-description">모든 로봇이 즉시 멈추며, 이 작업은 되돌릴 수 없습니다.</p>
+                    </div>
+                    <div class="pk-modal-actions">
+                      <button class="pk-modal-button">취소</button>
+                      <button class="pk-modal-button pk-modal-button--danger">즉시 정지</button>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ modalAuthSelected }}" hint-placeholder-val="{{ false }}">
+                  <div class="pk-modal-shell" role="group" aria-labelledby="auth-demo-title">
+                    <div class="pk-modal-context">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/><path d="M8 7.3v3.5M8 4.8v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      <span id="auth-demo-title">서비스 활성화 인증</span>
+                      <button class="pk-modal-close" aria-label="닫기">
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="pk-modal-body">
+                      <div class="pk-modal-fields">
+                        <div class="pk-modal-field"><label for="modal-demo-id">아이디</label><input class="pk-modal-input" id="modal-demo-id" value="HLRobotics@hlcompany.com" aria-label="아이디"></div>
+                        <div class="pk-modal-field"><label for="modal-demo-password">비밀번호</label><input class="pk-modal-input" id="modal-demo-password" type="password" value="parkie-password" aria-label="비밀번호"></div>
+                      </div>
+                      <p class="pk-modal-helper">서비스 시작을 위해 관리자 인증이 필요합니다.</p>
+                    </div>
+                    <div class="pk-modal-actions">
+                      <button class="pk-modal-button">취소</button>
+                      <button class="pk-modal-button pk-modal-button--primary">서비스 시작</button>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ modalChecklistSelected }}" hint-placeholder-val="{{ false }}">
+                  <div class="pk-modal-shell pk-modal-shell--lg" role="group" aria-labelledby="checklist-demo-title">
+                    <div class="pk-modal-context">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7.1 2.4a1 1 0 0 1 1.8 0l5.5 10a1 1 0 0 1-.9 1.5h-11a1 1 0 0 1-.9-1.5l5.5-10Z" fill="currentColor"/><path d="M8 6v3.2M8 11.4v.1" stroke="#1F1F21" stroke-width="1.3" stroke-linecap="round"/></svg>
+                      <span id="checklist-demo-title">시스템 재개 체크항목</span>
+                      <button class="pk-modal-close" aria-label="닫기">
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="pk-modal-body" style="padding-top:8px;">
+                      <div class="pk-modal-checklist">
+                        <label class="pk-modal-check"><input type="checkbox" checked><span>로봇 시작 위치 이동 및 정상 작동 확인</span></label>
+                        <label class="pk-modal-check"><input type="checkbox" checked><span>차단기 닫힘 및 물리 비상정지 버튼 해제 확인</span></label>
+                        <label class="pk-modal-check"><input type="checkbox" checked><span>키오스크 및 관리자용 애플리케이션 확인</span></label>
+                        <label class="pk-modal-check"><input type="checkbox" checked><span>카메라 및 통신 확인</span></label>
+                      </div>
+                    </div>
+                    <div class="pk-modal-actions">
+                      <button class="pk-modal-button">취소</button>
+                      <button class="pk-modal-button pk-modal-button--primary">점검 확인</button>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ modalProgressSelected }}" hint-placeholder-val="{{ false }}">
+                  <div class="pk-modal-shell pk-modal-shell--sm" role="status" aria-live="polite" aria-labelledby="progress-demo-title">
+                    <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:300px;flex-direction:column;justify-content:center;">
+                      <div class="pk-modal-spinner" aria-hidden="true"></div>
+                      <h3 class="pk-modal-title" id="progress-demo-title">서비스 초기화 중…</h3>
+                      <p class="pk-modal-note">초기화 후 로봇 수동조작이 필요합니다.</p>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ modalResultSelected }}" hint-placeholder-val="{{ false }}">
+                  <div class="pk-modal-shell pk-modal-shell--sm" role="group" aria-labelledby="result-demo-title">
+                    <div class="pk-modal-context">
+                      <span>서비스 상태</span>
+                      <button class="pk-modal-close" aria-label="닫기">
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="pk-modal-body pk-modal-body--center">
+                      <div class="pk-modal-status-icon pk-modal-status-icon--success">
+                        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m7 12.5 3.2 3.2L17.5 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </div>
+                      <h3 class="pk-modal-title" id="result-demo-title">서비스 초기화 완료</h3>
+                      <p class="pk-modal-note">초기화 후 로봇 수동조작이 필요합니다.</p>
+                    </div>
+                    <div class="pk-modal-actions"><button class="pk-modal-button">확인</button></div>
+                  </div>
+                </sc-if>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-pattern-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">COMPOSITION MODEL</div>
+                  <h2 id="modal-pattern-title" style="font-size:var(--parkie-font-2xl);">5개 패턴</h2>
+                  <p>모달의 이름은 화면명이 아니라 사용자가 해결해야 하는 과업을 기준으로 정의합니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-pattern-grid">
+                <article class="pk-modal-pattern">
+                  <div class="pk-modal-pattern-top"><h3>Critical Confirm</h3><span class="pk-modal-pill">Danger · Dual</span></div>
+                  <p>되돌릴 수 없거나 운행에 직접 영향을 주는 액션. 영향 설명과 안전한 취소 액션을 함께 제공합니다.</p>
+                </article>
+                <article class="pk-modal-pattern">
+                  <div class="pk-modal-pattern-top"><h3>Authentication</h3><span class="pk-modal-pill">Form · Dual</span></div>
+                  <p>관리자 권한이 필요한 서비스 재개·활성화 작업. 입력, 준비, 오류, 제출 상태를 하나의 패턴에서 처리합니다.</p>
+                </article>
+                <article class="pk-modal-pattern">
+                  <div class="pk-modal-pattern-top"><h3>Safety Checklist</h3><span class="pk-modal-pill">Gate · Dual</span></div>
+                  <p>운행 재개 전 물리 환경과 시스템 상태를 확인합니다. 모든 필수 항목이 완료되어야 진행할 수 있습니다.</p>
+                </article>
+                <article class="pk-modal-pattern">
+                  <div class="pk-modal-pattern-top"><h3>Progress</h3><span class="pk-modal-pill">Blocking · None</span></div>
+                  <p>원자적 작업이 진행되는 동안 상태를 명확히 전달합니다. 작업 중 닫기와 ESC는 제공하지 않습니다.</p>
+                </article>
+                <article class="pk-modal-pattern" style="grid-column:1/-1;">
+                  <div class="pk-modal-pattern-top"><h3>Result</h3><span class="pk-modal-pill">Success · Single</span></div>
+                  <p>완료 결과와 다음 행동을 안내합니다. 성공은 Green, 안내·진행은 Parkie Blue로 의미를 분리합니다.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-workflow-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">OPERATION WORKFLOWS</div>
+                  <h2 id="modal-workflow-title" style="font-size:var(--parkie-font-2xl);">업무 플로우 맵</h2>
+                  <p>참조 이미지의 모달을 4개의 상태 흐름으로 통합했습니다. 각 단계는 독립 화면이 아니라 앞 단계의 결과를 이어받습니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-workflows">
+                <div class="pk-modal-workflow">
+                  <div><strong>비상정지</strong><small>Emergency stop</small></div>
+                  <div class="pk-modal-flow-steps"><span class="pk-modal-flow-step">위험 확인</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">즉시 정지</span></div>
+                </div>
+                <div class="pk-modal-workflow">
+                  <div><strong>비상모드 해제</strong><small>Resume service</small></div>
+                  <div class="pk-modal-flow-steps"><span class="pk-modal-flow-step">재개 확인</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">관리자 인증</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">안전 점검</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">재개 완료</span></div>
+                </div>
+                <div class="pk-modal-workflow">
+                  <div><strong>서비스 초기화</strong><small>Reset service</small></div>
+                  <div class="pk-modal-flow-steps"><span class="pk-modal-flow-step">초기화 확인</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">처리 중</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">초기화 완료</span></div>
+                </div>
+                <div class="pk-modal-workflow">
+                  <div><strong>서비스 활성화</strong><small>Activate service</small></div>
+                  <div class="pk-modal-flow-steps"><span class="pk-modal-flow-step">관리자 인증</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">입력 검증</span><span class="pk-modal-flow-arrow">→</span><span class="pk-modal-flow-step">서비스 시작</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-auth-states-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">FORM STATES</div>
+                  <h2 id="modal-auth-states-title" style="font-size:var(--parkie-font-2xl);">인증 상태</h2>
+                  <p>Empty, Ready, Error는 서로 다른 모달이 아니라 동일 컴포넌트의 상태입니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-state-grid">
+                <div>
+                  <div class="pk-modal-state-label">AUTH · EMPTY / DISABLED</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell">
+                      <div class="pk-modal-context"><span>서비스 활성화 인증</span><button class="pk-modal-close" aria-label="닫기"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+                      <div class="pk-modal-body">
+                        <div class="pk-modal-fields">
+                          <div class="pk-modal-field"><label>아이디</label><input class="pk-modal-input" placeholder="이메일을 입력해주세요."></div>
+                          <div class="pk-modal-field"><label>비밀번호</label><input class="pk-modal-input" type="password" placeholder="비밀번호를 입력해주세요."></div>
+                        </div>
+                      </div>
+                      <div class="pk-modal-actions"><button class="pk-modal-button">취소</button><button class="pk-modal-button" disabled>서비스 시작</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="pk-modal-state-label">AUTH · READY</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell">
+                      <div class="pk-modal-context"><span>서비스 활성화 인증</span><button class="pk-modal-close" aria-label="닫기"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+                      <div class="pk-modal-body">
+                        <div class="pk-modal-fields">
+                          <div class="pk-modal-field"><label>아이디</label><input class="pk-modal-input" value="HLRobotics@hlcompany.com"></div>
+                          <div class="pk-modal-field"><label>비밀번호</label><input class="pk-modal-input" type="password" value="parkie-password"></div>
+                        </div>
+                      </div>
+                      <div class="pk-modal-actions"><button class="pk-modal-button">취소</button><button class="pk-modal-button pk-modal-button--primary">서비스 시작</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="pk-modal-state-label">AUTH · ERROR</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell">
+                      <div class="pk-modal-context"><span>서비스 활성화 인증</span><button class="pk-modal-close" aria-label="닫기"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+                      <div class="pk-modal-body">
+                        <div class="pk-modal-fields">
+                          <div class="pk-modal-field"><label>아이디</label><input class="pk-modal-input" value="HLRobotics@hlcompany.com"></div>
+                          <div class="pk-modal-field"><label>비밀번호</label><input class="pk-modal-input" type="password" value="wrong-password" aria-invalid="true" aria-describedby="modal-auth-error"></div>
+                        </div>
+                        <div class="pk-modal-error" id="modal-auth-error"><span aria-hidden="true">!</span><span>회원정보를 다시 확인해주세요.</span></div>
+                      </div>
+                      <div class="pk-modal-actions"><button class="pk-modal-button">취소</button><button class="pk-modal-button pk-modal-button--primary">서비스 시작</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="pk-modal-state-label">CHECKLIST · INCOMPLETE / COMPLETE</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell">
+                      <div class="pk-modal-context"><span>시스템 재개 체크항목</span><button class="pk-modal-close" aria-label="닫기"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+                      <div class="pk-modal-body" style="padding-top:8px;">
+                        <div class="pk-modal-checklist">
+                          <label class="pk-modal-check"><input type="checkbox" checked><span>로봇 시작 위치 이동 및 정상 작동 확인</span></label>
+                          <label class="pk-modal-check"><input type="checkbox" checked><span>물리 비상정지 버튼 해제 확인</span></label>
+                          <label class="pk-modal-check"><input type="checkbox"><span>관리자용 애플리케이션 확인</span></label>
+                          <label class="pk-modal-check"><input type="checkbox"><span>카메라 및 통신 확인</span></label>
+                        </div>
+                      </div>
+                      <div class="pk-modal-actions"><button class="pk-modal-button">취소</button><button class="pk-modal-button" disabled>점검 확인</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-system-states-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">SYSTEM STATES</div>
+                  <h2 id="modal-system-states-title" style="font-size:var(--parkie-font-2xl);">처리와 결과 상태</h2>
+                  <p>시스템 작업의 불확실성을 줄이기 위해 처리 중과 완료를 명확히 분리합니다.</p>
+                </div>
+              </div>
+              <div class="pk-modal-state-grid">
+                <div>
+                  <div class="pk-modal-state-label">PROGRESS · NON-DISMISSIBLE</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell pk-modal-shell--sm" role="status" aria-live="polite">
+                      <div class="pk-modal-body pk-modal-body--center" style="display:flex;min-height:300px;flex-direction:column;justify-content:center;">
+                        <div class="pk-modal-spinner" aria-hidden="true"></div>
+                        <h3 class="pk-modal-title">서비스 초기화 중…</h3>
+                        <p class="pk-modal-note">초기화 후 로봇 수동조작이 필요합니다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="pk-modal-state-label">RESULT · SUCCESS</div>
+                  <div class="pk-modal-state-card">
+                    <div class="pk-modal-shell pk-modal-shell--sm">
+                      <div class="pk-modal-context"><span>서비스 상태</span><button class="pk-modal-close" aria-label="닫기"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+                      <div class="pk-modal-body pk-modal-body--center">
+                        <div class="pk-modal-status-icon pk-modal-status-icon--success"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m7 12.5 3.2 3.2L17.5 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <h3 class="pk-modal-title">서비스가 정상적으로 재개됩니다.</h3>
+                      </div>
+                      <div class="pk-modal-actions"><button class="pk-modal-button">확인</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-behavior-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">BEHAVIOR &amp; ACCESSIBILITY</div>
+                  <h2 id="modal-behavior-title" style="font-size:var(--parkie-font-2xl);">동작 원칙</h2>
+                </div>
+              </div>
+              <div class="pk-modal-rule-grid">
+                <div class="pk-modal-rule"><strong>안전한 초기 포커스</strong><span>위험 확인은 취소에 포커스를 둡니다. Enter 입력만으로 파괴적 액션이 실행되지 않습니다.</span></div>
+                <div class="pk-modal-rule"><strong>닫기 정책</strong><span>일반 모달은 ESC와 닫기를 허용하고, 원자적 처리 중에는 모두 차단합니다.</span></div>
+                <div class="pk-modal-rule"><strong>포커스 복귀</strong><span>닫힌 뒤 모달을 열었던 트리거로 포커스를 되돌리고 배경 스크롤을 복구합니다.</span></div>
+                <div class="pk-modal-rule"><strong>검증은 인라인</strong><span>오류는 해당 필드 가까이에 표시하고 aria-invalid와 설명 연결을 제공합니다.</span></div>
+                <div class="pk-modal-rule"><strong>상태 색상 분리</strong><span>Danger는 위험, Green은 성공, Blue는 정보와 기본 액션, Yellow는 주의에만 사용합니다.</span></div>
+                <div class="pk-modal-rule"><strong>반응형 너비</strong><span>SM 360, MD 420, LG 500px을 사용하고 모바일에서는 좌우 16px 여백을 유지합니다.</span></div>
+              </div>
+            </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-token-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">COMPONENT TOKENS</div>
+                  <h2 id="modal-token-title" style="font-size:var(--parkie-font-2xl);">토큰 매핑</h2>
+                  <p>원시 팔레트를 직접 사용하지 않고 Modal Component Token이 Foundation과 연결됩니다.</p>
+                </div>
+              </div>
+              <table class="pk-modal-token-table">
+                <thead><tr><th>Token</th><th>Foundation mapping</th><th>Usage</th></tr></thead>
+                <tbody>
+                  <tr><td><code>--parkie-modal-surface</code></td><td>Surface Elevation 01 · #1F1F21</td><td>모달 기본 표면</td></tr>
+                  <tr><td><code>--parkie-modal-border</code></td><td>White 20%</td><td>Shell 외곽선</td></tr>
+                  <tr><td><code>--parkie-modal-shadow</code></td><td>4 / 4 / 10 · Black 50%</td><td>배경과의 깊이 분리</td></tr>
+                  <tr><td><code>--parkie-modal-field</code></td><td>Surface Elevation 12 · #343436</td><td>인증 입력 필드</td></tr>
+                  <tr><td><code>--parkie-modal-error-surface</code></td><td>Danger 600 · 22%</td><td>인라인 오류 배경</td></tr>
+                  <tr><td><code>--parkie-modal-width-*</code></td><td>360 · 420 · 500px</td><td>Confirm · Form · Checklist</td></tr>
+                </tbody>
+              </table>
+            </section>
           </div>
         </sc-if>
 
@@ -1045,6 +1376,7 @@ class Component extends DCLogic {
     lang: this.props.defaultLang || 'ko',
     active: 'overview',
     icons: null,
+    modalDemo: 'critical',
   };
 
   componentDidMount() {
@@ -1094,7 +1426,7 @@ class Component extends DCLogic {
     card:        { ko: '카드', en: 'Card', impl: true, dko: '콘텐츠 컨테이너. 로봇 카드·통계·강조 카드.', den: 'Content containers — robot card, stat and emphasis cards.' },
     table:       { ko: '테이블', en: 'Table', impl: true, dko: '관제 데이터 그리드. 로봇 상태·배터리·위치를 한눈에.', den: 'Control-view data grid — robot status, battery and location at a glance.' },
     tabs:        { ko: '탭', en: 'Tabs', impl: true, dko: '탭 내비게이션. 하단 인디케이터 스타일.', den: 'Tab navigation with an underline indicator.' },
-    modal:       { ko: '모달', en: 'Modal', impl: true, dko: '다이얼로그와 모달. 확인/취소 액션.', den: 'Dialogs and modals with confirm/cancel actions.' },
+    modal:       { ko: '모달', en: 'Modal', impl: true, dko: '운영 안전을 위한 모달 패밀리. 확인·인증·점검·처리·완료 상태를 하나의 체계로 관리합니다.', den: 'An operations-safe modal family covering confirmation, authentication, checklist, progress and result states.' },
     statuslabel: { ko: '상태 라벨', en: 'Status Label', impl: true, dko: '로봇 상태를 pill로 표시. 관제 리스트·상세에서 상태를 강조합니다.', den: 'Robot status shown as a pill — emphasizes state in the control list and detail views.' },
     breadcrumb:  { ko: '브레드크럼', en: 'Breadcrumb', impl: true, dko: '현재 위치 경로. 구역 → 로봇 상세 등 계층 탐색.', den: 'Path to the current location — hierarchy like zone → robot detail.' },
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
@@ -1137,7 +1469,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const { theme, lang, active } = this.state;
+    const { theme, lang, active, modalDemo } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
     const cur = this.META[active] || this.META.overview;
@@ -1381,6 +1713,19 @@ class Component extends DCLogic {
       box: { width: '120px', height: '84px', background: 'var(--parkie-surface)', border: '1px solid var(--parkie-border)', borderRadius: 'var(--parkie-radius-lg)', boxShadow: `var(--parkie-shadow-${k})` },
     }));
 
+    const modalTab = (id) => ({
+      minHeight: '32px',
+      padding: '0 12px',
+      border: id === modalDemo ? '1px solid var(--parkie-brand-border)' : '1px solid transparent',
+      borderRadius: 'var(--parkie-radius-sm)',
+      cursor: 'pointer',
+      fontFamily: 'var(--parkie-font-sans)',
+      fontSize: 'var(--parkie-font-xs)',
+      fontWeight: id === modalDemo ? 600 : 500,
+      background: id === modalDemo ? 'var(--parkie-brand-subtle)' : 'transparent',
+      color: id === modalDemo ? 'var(--parkie-brand-text)' : 'var(--parkie-text-secondary)',
+    });
+
     return {
       rootRef: this.rootRef,
       theme, lang,
@@ -1456,6 +1801,21 @@ class Component extends DCLogic {
       contrastTitle: L('접근성 기준 조합 · Accessibility', 'Accessibility pairs'),
       contrastNote: L('대표 전경·배경 조합의 WCAG 대비율입니다. Tertiary와 Disabled는 본문 텍스트에 사용하지 않습니다.', 'WCAG contrast for key foreground/background pairs. Tertiary and disabled colors are not for body copy.'),
       contrastPairs,
+      modalCriticalSelected: modalDemo === 'critical',
+      modalAuthSelected: modalDemo === 'auth',
+      modalChecklistSelected: modalDemo === 'checklist',
+      modalProgressSelected: modalDemo === 'progress',
+      modalResultSelected: modalDemo === 'result',
+      modalCriticalTab: modalTab('critical'),
+      modalAuthTab: modalTab('auth'),
+      modalChecklistTab: modalTab('checklist'),
+      modalProgressTab: modalTab('progress'),
+      modalResultTab: modalTab('result'),
+      showModalCritical: () => this.setState({ modalDemo: 'critical' }),
+      showModalAuth: () => this.setState({ modalDemo: 'auth' }),
+      showModalChecklist: () => this.setState({ modalDemo: 'checklist' }),
+      showModalProgress: () => this.setState({ modalDemo: 'progress' }),
+      showModalResult: () => this.setState({ modalDemo: 'result' }),
       typeScale, spacingScale, radiusScale, elevationScale,
     };
   }
