@@ -50,7 +50,7 @@
   <!-- ============ TOP BAR ============ -->
   <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:var(--parkie-space-4);padding:0 var(--parkie-space-6);background:var(--parkie-surface);border-bottom:1px solid var(--parkie-border);z-index:10;">
     <div style="display:flex;align-items:center;gap:var(--parkie-space-3);">
-      <img src="brand/logo.svg" alt="HL Robotics" width="30" height="30" style="display:block;border-radius:var(--parkie-radius-md);">
+      <img src="brand/logo.svg?v=2" alt="HL Robotics" width="30" height="30" style="display:block;">
       <div style="display:flex;flex-direction:column;line-height:1.15;">
         <span style="font-size:var(--parkie-font-lg);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ brandName }}</span>
         <span style="font-size:11px;font-weight:var(--parkie-weight-medium);color:var(--parkie-text-tertiary);letter-spacing:var(--parkie-tracking-wide);text-transform:uppercase;">{{ subtitle }}</span>
@@ -2039,7 +2039,7 @@
               </div>
               <div class="pk-appbar-stage">
                 <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
-                  <div class="pk-appbar-brand"><img src="brand/logo.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-appbar-brand"><img src="brand/logo.svg?v=2" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control">
                     <span>서비스 활성화</span>
                     <button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button>
@@ -2233,7 +2233,7 @@
               </div>
               <div class="pk-shell-frame">
                 <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
-                  <div class="pk-appbar-brand"><img src="brand/logo.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-appbar-brand"><img src="brand/logo.svg?v=2" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control"><span>서비스 활성화</span><button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button></div>
                   <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
                     <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
@@ -2405,7 +2405,7 @@
             <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="font-family:var(--parkie-font-mono);font-size:11px;padding:2px 9px;border-radius:var(--parkie-radius-pill);background:var(--parkie-brand-subtle);color:var(--parkie-brand-text);font-weight:700;">2</span><span style="font-weight:600;font-size:var(--parkie-font-lg);color:var(--parkie-text);">로고</span></div>
               <p style="margin:0 0 12px;font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);"><code style="font-family:var(--parkie-font-mono);color:var(--parkie-brand-text);">brand/logo.svg</code> 파일을 교체하면 상단바 로고가 바뀝니다.</p>
-              <div style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--parkie-surface-3);border-radius:var(--parkie-radius-md);"><img src="brand/logo.svg" alt="HL Robotics" width="40" height="40" style="border-radius:var(--parkie-radius-md);"><span style="font-family:var(--parkie-font-mono);font-size:12px;color:var(--parkie-text-secondary);">HL Robotics · current brand</span></div>
+              <div style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--parkie-surface-3);border-radius:var(--parkie-radius-md);"><img src="brand/logo.svg?v=2" alt="HL Robotics" width="40" height="40"><span style="font-family:var(--parkie-font-mono);font-size:12px;color:var(--parkie-text-secondary);">HL Robotics · current brand</span></div>
             </div>
           </div>
           <div style="padding:16px 18px;background:var(--parkie-brand-subtle);border:1px solid var(--parkie-brand-border);border-radius:var(--parkie-radius-md);font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">💡 우측 <b style="color:var(--parkie-text);">Tweaks</b> 패널의 <code style="font-family:var(--parkie-font-mono);color:var(--parkie-brand-text);">brandPrimary</code> 로 액센트 색을 즉석에서 미리볼 수 있습니다. 현재 운영 테마는 다크로 고정되며 <code style="font-family:var(--parkie-font-mono);color:var(--parkie-brand-text);">defaultLang</code> 으로 기본 언어를 정할 수 있습니다.</div>
