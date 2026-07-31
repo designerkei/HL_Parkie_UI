@@ -194,6 +194,49 @@
   color: var(--parkie-info-text);
 }
 
+/* ---------------------------------------------------------------------
+   Semantic (status) icons.
+
+   A warning triangle is never hovered or pressed — it reports a condition.
+   So these rows replace the interaction axis with an emphasis axis, and the
+   colour carries meaning instead of interaction state. Previously warning,
+   error, emergency stop and complete all rendered grey → cyan → blue, which
+   made a hazard indistinguishable from a success tick.
+   --------------------------------------------------------------------- */
+
+/* Tone can be set on the row (whole icon shares one meaning) or on a single
+   cell (battery goes success → warning → emergency across its levels). */
+.pk-icon-row.tone-warning,   .pk-icon-state.tone-warning   { --sem: var(--parkie-warning);   --sem-subtle: var(--parkie-operation-warning-subtle); --sem-on: var(--parkie-operation-on-warning); }
+.pk-icon-row.tone-danger,    .pk-icon-state.tone-danger    { --sem: var(--parkie-danger);    --sem-subtle: var(--parkie-operation-danger-subtle);  --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-row.tone-success,   .pk-icon-state.tone-success   { --sem: var(--parkie-success);   --sem-subtle: var(--parkie-operation-success-subtle); --sem-on: var(--parkie-operation-on-success); }
+.pk-icon-row.tone-info,      .pk-icon-state.tone-info      { --sem: var(--parkie-info);      --sem-subtle: var(--parkie-operation-info-subtle);    --sem-on: var(--parkie-operation-on-info); }
+.pk-icon-row.tone-emergency, .pk-icon-state.tone-emergency { --sem: var(--parkie-emergency); --sem-subtle: var(--parkie-emergency-subtle);         --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-row.tone-neutral,   .pk-icon-state.tone-neutral   { --sem: var(--parkie-text-secondary); --sem-subtle: var(--parkie-surface-elevation-12); --sem-on: var(--parkie-operation-on-info); }
+
+.pk-icon-state.is-outline { color: var(--sem); }
+
+.pk-icon-state.is-subtle {
+  color: var(--sem);
+  background: var(--sem-subtle);
+}
+
+/* Solid fills take the per-tone ink — white only reads on danger and
+   emergency; success and warning are far too bright for it. */
+.pk-icon-state.is-solid {
+  color: var(--sem-on);
+  background: var(--sem);
+}
+
+.pk-icon-state.is-muted { color: var(--parkie-icon-disabled); }
+
+/* Chips need room around the glyph, so they opt out of the 24px glyph slot. */
+.pk-icon-spec-row .pk-icon-state.is-subtle,
+.pk-icon-spec-row .pk-icon-state.is-solid {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--parkie-radius-sm);
+}
+
 .pk-icon-state svg,
 .pk-domain-icon svg {
   width: 24px;

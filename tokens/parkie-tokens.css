@@ -260,6 +260,15 @@
   --parkie-operation-danger-subtle: rgba(223,0,0,0.30);
   --parkie-operation-danger-strong: var(--parkie-operation-danger);
 
+  /* Emergency stop sits above danger. The value is the supplied original
+     (SMS --emergency). It reads 4.81:1 on the darkest surface, clearing the
+     3:1 WCAG bar for non-text graphics.
+     SCOPE — status and glyphs only. Do NOT use it as a background under a
+     text label: white on #FF1D1D is 3.86:1, short of AA 4.5:1. Destructive
+     buttons keep --parkie-danger (#DF0000, 5.08:1). */
+  --parkie-emergency: #FF1D1D;
+  --parkie-emergency-subtle: rgba(255,29,29,0.18);
+
   /* ---- Independent interaction and robot-state axes ----
      Selection is an interaction state. It must never inherit the current
      robot health, connection, motion or battery severity. */

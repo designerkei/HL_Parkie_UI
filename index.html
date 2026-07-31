@@ -660,7 +660,7 @@
                 </div>
                 <div class="pk-icon-specs">
                   <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="6">
-                    <div class="pk-icon-row">
+                    <div class="{{ icon.rowClassName }}">
                       <div class="pk-icon-name">
                         <span class="pk-icon-name-ko">{{ icon.ko }}</span>
                         <span class="pk-icon-name-en">{{ icon.en }}</span>
@@ -3159,6 +3159,7 @@ class Component extends DCLogic {
     const iconRow = (koLabel, enLabel, source, data) => ({
       ko: koLabel,
       en: enLabel,
+      rowClassName: 'pk-icon-row',
       source: source === 'MS Adopted' ? 'Adopted' : source,
       sourceClassName: sourceClass(source),
       states: stateDefs.map((state) => ({
@@ -3166,6 +3167,22 @@ class Component extends DCLogic {
         label: `${koLabel} · ${state.label}`,
         stateName: state.short,
         svg: iconSvg(data, `${enLabel}-${state.id}`),
+      })),
+    });
+    /* Status icons report a condition, so they never take the interaction
+       axis. Each cell carries its own glyph, emphasis and label — the colour
+       is the meaning. `tone` sets --sem for the whole row. */
+    const statusRow = (koLabel, enLabel, source, tone, cells) => ({
+      ko: koLabel,
+      en: enLabel,
+      rowClassName: `pk-icon-row tone-${tone}`,
+      source: source === 'MS Adopted' ? 'Adopted' : source,
+      sourceClassName: sourceClass(source),
+      states: cells.map((cell) => ({
+        className: `pk-icon-state ${cell.emphasis}${cell.tone ? ` tone-${cell.tone}` : ''}`,
+        label: `${koLabel} · ${cell.name}`,
+        stateName: cell.name,
+        svg: iconSvg(cell.data, `${enLabel}-${cell.name}`),
       })),
     });
     const iconGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
@@ -3188,8 +3205,6 @@ class Component extends DCLogic {
       iconRow('차량 운반', 'Vehicle transport', 'Parkie Custom', parkieData('VehicleTransport')),
       iconRow('주차 구역', 'Parking bay', 'Parkie Custom', parkieData('ParkingBay')),
       iconRow('충전기', 'Charger', 'Parkie Original', parkieData('Charger')),
-      iconRow('배터리', 'Battery', 'Parkie Original', parkieData('BatteryFull')),
-      iconRow('통신', 'Connection', 'Parkie Original', parkieData('Connection')),
       iconRow('이동 경로', 'Route', 'Parkie Custom', parkieData('Route')),
       iconRow('장애물', 'Obstacle', 'Parkie Custom', parkieData('Obstacle')),
       iconRow('수동 제어', 'Manual control', 'Parkie Custom', parkieData('ManualControl')),
@@ -3206,11 +3221,34 @@ class Component extends DCLogic {
       iconRow('필터', 'Filter', 'MS Adopted', msData('FilterSize24ThemeRegular')),
       iconRow('더보기', 'More', 'MS Adopted', msData('MoreHorizontalSize24ThemeRegular')),
     ];
+    /* Emphasis levels for a status icon whose meaning is fixed. */
+    const emphasisCells = (data) => [
+      { name: 'Outline', emphasis: 'is-outline', data },
+      { name: 'Subtle', emphasis: 'is-subtle', data },
+      { name: 'Solid', emphasis: 'is-solid', data },
+      { name: 'Muted', emphasis: 'is-muted', data },
+    ];
     const safetyIcons = [
-      iconRow('주의', 'Warning', 'MS Adopted', msData('WarningSize24ThemeRegular')),
-      iconRow('오류', 'Error', 'MS Adopted', msData('ErrorCircleSize24ThemeRegular')),
-      iconRow('비상정지', 'Emergency stop', 'Parkie Custom', parkieData('EmergencyStop')),
-      iconRow('완료', 'Complete', 'MS Adopted', msData('CheckmarkCircleSize24ThemeRegular')),
+      statusRow('주의', 'Warning', 'MS Adopted', 'warning', emphasisCells(msData('WarningSize24ThemeRegular'))),
+      statusRow('오류', 'Error', 'MS Adopted', 'danger', emphasisCells(msData('ErrorCircleSize24ThemeRegular'))),
+      statusRow('비상정지', 'Emergency stop', 'Parkie Custom', 'emergency', emphasisCells(parkieData('EmergencyStop'))),
+      statusRow('완료', 'Complete', 'MS Adopted', 'success', emphasisCells(msData('CheckmarkCircleSize24ThemeRegular'))),
+    ];
+    /* Battery and connection are read, not pressed. Their axis is level, so
+       each cell carries its own glyph and tone. */
+    const robotStatusIcons = [
+      statusRow('배터리', 'Battery', 'Parkie Original', 'neutral', [
+        { name: '정상 26% 이상', emphasis: 'is-outline', data: parkieData('BatteryFull'), tone: 'success' },
+        { name: '부족 25–11%', emphasis: 'is-outline', data: parkieData('BatteryMedium'), tone: 'warning' },
+        { name: '위험 10% 이하', emphasis: 'is-solid', data: parkieData('BatteryCritical'), tone: 'emergency' },
+        { name: '충전 중', emphasis: 'is-outline', data: parkieData('BatteryChargingHigh'), tone: 'info' },
+      ]),
+      statusRow('통신', 'Connection', 'Parkie Original', 'neutral', [
+        { name: '양호', emphasis: 'is-outline', data: parkieData('ConnectionGood'), tone: 'success' },
+        { name: '약함', emphasis: 'is-outline', data: parkieData('ConnectionWeak'), tone: 'warning' },
+        { name: '끊김', emphasis: 'is-solid', data: parkieData('ConnectionLost'), tone: 'emergency' },
+        { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'info' },
+      ]),
     ];
     const parkieIconGroups = [
       iconGroup(
@@ -3235,10 +3273,17 @@ class Component extends DCLogic {
         controlIcons
       ),
       iconGroup(
+        '로봇 상태',
+        'Robot status',
+        '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 상호작용 상태가 아니라 잔량·연결 단계로 색이 결정되며, 항상 수치나 상태 텍스트를 함께 표시합니다.',
+        'Battery and connection are read, not pressed. Colour follows level and link state rather than interaction, and always ships alongside a number or status label.',
+        robotStatusIcons
+      ),
+      iconGroup(
         '안전·결과',
         'Safety & results',
-        '경고·오류·비상·완료처럼 운영 결과를 즉시 구분해야 하는 아이콘입니다.',
-        'Icons for operational outcomes that require immediate distinction: warning, error, emergency and complete.',
+        '경고·오류·비상·완료는 색이 곧 의미입니다. 상호작용 4상태를 쓰지 않고 강조 단계(Outline·Subtle·Solid)로 표현합니다. 비상정지는 실제 화면에서 Solid만 사용합니다 — Outline은 오류와 혼동되므로 목록에 쓰지 않습니다.',
+        'For warning, error, emergency and complete the colour is the meaning, so these use emphasis levels (outline, subtle, solid) rather than interaction states. Emergency stop ships as solid only; its outline form is too close to error to use in a list.',
         safetyIcons
       ),
     ];
