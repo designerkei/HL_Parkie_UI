@@ -196,6 +196,52 @@
   --parkie-status-error: var(--parkie-danger);
   --parkie-status-offline: var(--parkie-color-neutral-700);
 
+  /* ---- Operations semantic colors ----
+     These aliases are extracted from the Parkie control-view artwork.
+     They describe operational meaning, not generic decoration:
+     complete/healthy · active/in progress · recoverable warning · critical stop. */
+  --parkie-operation-success: #0FDC4C;
+  --parkie-operation-info: #00C8FF;
+  --parkie-operation-warning: #F5DE2E;
+  --parkie-operation-danger: #DF0000;
+  --parkie-operation-on-solid: var(--parkie-color-common-white);
+
+  --parkie-operation-success-subtle: rgba(15,220,76,0.14);
+  --parkie-operation-info-subtle: rgba(0,200,255,0.14);
+  --parkie-operation-warning-subtle: rgba(245,222,46,0.14);
+  --parkie-operation-danger-subtle: rgba(223,0,0,0.30);
+  --parkie-operation-danger-strong: var(--parkie-operation-danger);
+
+  /* ---- Application shell ---- */
+  --parkie-appbar-height: 46px;
+  --parkie-appbar-surface: var(--parkie-surface-elevation-06);
+  --parkie-appbar-control-height: 30px;
+  --parkie-appbar-search-height: 32px;
+  --parkie-nav-rail-width: 80px;
+  --parkie-context-panel-width: 320px;
+  --parkie-context-panel-wide: 360px;
+  --parkie-shell-divider: rgba(255,255,255,0.12);
+
+  /* ---- Site select / popup ---- */
+  --parkie-select-width-site: 270px;
+  --parkie-select-surface: var(--parkie-surface-elevation-06);
+  --parkie-select-menu-surface: var(--parkie-surface-elevation-48);
+  --parkie-select-border: rgba(255,255,255,0.12);
+  --parkie-select-border-focus: rgba(255,255,255,0.70);
+  --parkie-select-option-hover: rgba(255,255,255,0.20);
+  --parkie-select-disabled: rgba(255,255,255,0.35);
+
+  /* ---- Operations event feed ---- */
+  --parkie-feed-width: 448px;
+  --parkie-feed-row-height: 48px;
+  --parkie-feed-row-height-multiline: 70px;
+  --parkie-feed-row-radius: 10px;
+  --parkie-feed-row-surface: var(--parkie-surface-elevation-06);
+  --parkie-feed-row-latest: var(--parkie-surface-elevation-12);
+  --parkie-feed-icon-surface: var(--parkie-surface-elevation-24);
+  --parkie-feed-latest-stroke-opacity: 0.80;
+  --parkie-feed-latest-shadow: 0 4px 6px rgba(0,0,0,0.80);
+
   /* ---- Modal component aliases ----
      The Parkie operations references use a low-luminance dialog surface.
      Surface 01 is the normalized 5% overlay match for that source artwork. */

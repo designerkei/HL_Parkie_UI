@@ -1,6 +1,7 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css";
+@import "./tokens/parkie-tokens.css?v=0.2";
+@import "./components/operations.css?v=0.2";
 
 :root {
   color-scheme: dark;
@@ -14,6 +15,14 @@ body {
 
 img {
   max-width: 100%;
+}
+
+[data-theme] > div > main {
+  min-width: 0;
+}
+
+[data-theme] > div > main > div {
+  box-sizing: border-box;
 }
 
 /* =====================================================================
@@ -716,10 +725,15 @@ img {
   }
 
   [data-theme] > div > main {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0 !important;
     overflow: visible !important;
   }
 
   [data-theme] > div > main > div {
+    max-width: 100%;
+    overflow-x: clip;
     padding: var(--parkie-space-7) var(--parkie-space-4) var(--parkie-space-10) !important;
   }
 

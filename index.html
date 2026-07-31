@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=0.2">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -1140,22 +1140,334 @@
           </div>
         </sc-if>
 
+        <!-- ===== PARKIE TOP BAR ===== -->
+        <sc-if value="{{ isTopbar }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-ops-doc">
+            <section class="pk-ops-section" aria-labelledby="topbar-overview-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">GLOBAL CONTROL BAR · 46PX</div>
+                  <h2 id="topbar-overview-title" style="font-size:var(--parkie-font-2xl);">운영 컨텍스트를 한 줄에 고정합니다</h2>
+                  <p>서비스 상태, 권한 역할, 사이트, 통합 검색, 언어처럼 화면 전체에 영향을 주는 제어만 배치합니다. 로봇·차단기·카메라 제어는 Context Panel로 내려 전역 제어와 분리합니다.</p>
+                </div>
+                <span class="pk-ops-chip">App chrome</span>
+              </div>
+              <div class="pk-ops-metrics">
+                <div class="pk-ops-metric"><strong>46px</strong><span>고정 높이 · Height</span></div>
+                <div class="pk-ops-metric"><strong>#2D2D2F</strong><span>Surface Elevation 06</span></div>
+                <div class="pk-ops-metric"><strong>30 / 32</strong><span>Control / Search</span></div>
+                <div class="pk-ops-metric"><strong>4px</strong><span>Control radius</span></div>
+              </div>
+            </section>
+
+            <section class="pk-ops-section" aria-labelledby="topbar-live-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">LIVE COMPOSITION</div>
+                  <h2 id="topbar-live-title" style="font-size:var(--parkie-font-2xl);">Top Bar 조합</h2>
+                  <p>서비스 스위치, 역할 세그먼트, Site Select를 직접 조작할 수 있습니다. 사이트 메뉴는 combobox/listbox 규칙을 사용합니다.</p>
+                </div>
+              </div>
+              <div class="pk-appbar-stage">
+                <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
+                  <div class="pk-appbar-brand"><img src="brand/hl-robotics-symbol.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-service-control">
+                    <span>서비스 활성화</span>
+                    <button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button>
+                  </div>
+                  <div class="pk-role-segment" role="tablist" aria-label="사용자 역할">
+                    <button type="button" role="tab" aria-selected="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
+                    <button type="button" role="tab" aria-selected="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                  </div>
+                  <div class="{{ siteSelectClass }}">
+                    <button class="pk-site-select-button" type="button" role="combobox" aria-controls="topbar-site-listbox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}">
+                      <span>{{ siteLabel }}</span>
+                      <span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <sc-if value="{{ siteMenuOpen }}" hint-placeholder-val="{{ false }}">
+                      <div class="pk-site-menu" id="topbar-site-listbox" role="listbox" aria-label="사이트 선택">
+                        <sc-for list="{{ siteOptions }}" as="site" hint-placeholder-count="3">
+                          <button class="pk-site-option" type="button" role="option" aria-selected="{{ site.selected }}" onClick="{{ site.onClick }}">{{ site.label }}</button>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div class="pk-appbar-spacer"></div>
+                  <label class="pk-app-search">
+                    <svg aria-hidden="true" width="17" height="17" viewBox="0 0 20 20" fill="none"><circle cx="8.7" cy="8.7" r="5.7" stroke="currentColor" stroke-width="2"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <input type="search" aria-label="차량 통합 검색" placeholder="Search vehicles by VIN, Brand, Model, uuid etc.">
+                  </label>
+                  <button class="pk-language-button" type="button" aria-label="언어 선택">
+                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 10h13M10 3c2 2.2 3 4.5 3 7s-1 4.8-3 7c-2-2.2-3-4.5-3-7s1-4.8 3-7Z" stroke="currentColor" stroke-width="1.2"/></svg>
+                    <span>KOR</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-ops-section" aria-labelledby="topbar-rules-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">PLACEMENT RULES</div>
+                  <h2 id="topbar-rules-title" style="font-size:var(--parkie-font-2xl);">배치 원칙</h2>
+                </div>
+              </div>
+              <div class="pk-ops-rule-grid">
+                <div class="pk-ops-rule"><strong>01 · Global only</strong><span>전체 화면에 영향을 주는 상태와 전환만 상단에 둡니다.</span></div>
+                <div class="pk-ops-rule"><strong>02 · Stable order</strong><span>서비스 → 역할 → 사이트 → 검색 → 언어 순서를 유지합니다.</span></div>
+                <div class="pk-ops-rule"><strong>03 · One row</strong><span>46px 한 줄을 유지하고 좁은 화면에서는 보조 라벨부터 감춥니다.</span></div>
+                <div class="pk-ops-rule"><strong>04 · No danger</strong><span>비상정지처럼 오작동 비용이 큰 액션은 상단 바에 배치하지 않습니다.</span></div>
+              </div>
+            </section>
+          </div>
+        </sc-if>
+
+        <!-- ===== PARKIE ALERT FEED ITEM ===== -->
+        <sc-if value="{{ isAlertFeed }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-ops-doc">
+            <section class="pk-ops-section" aria-labelledby="feed-overview-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">OPERATIONS EVENT FEED</div>
+                  <h2 id="feed-overview-title" style="font-size:var(--parkie-font-2xl);">색은 의미, 선은 최신성을 나타냅니다</h2>
+                  <p>Green은 완료·정상, Cyan은 진행·정보, Yellow는 복구 가능한 주의, Red는 중단·긴급을 뜻합니다. 최신 이벤트 한 건만 1px 인텐트 선과 강한 그림자를 사용합니다.</p>
+                </div>
+                <span class="pk-ops-chip">448 × 48 / 70</span>
+              </div>
+              <div class="pk-ops-rule-grid">
+                <div class="pk-ops-rule"><strong><i class="pk-ops-swatch pk-ops-swatch--success"></i>Success</strong><span><code>#0FDC4C</code><br>완료 · 정상 · 복구</span></div>
+                <div class="pk-ops-rule"><strong><i class="pk-ops-swatch pk-ops-swatch--info"></i>Info / Active</strong><span><code>#00C8FF</code><br>진행 · 활성 · 정보</span></div>
+                <div class="pk-ops-rule"><strong><i class="pk-ops-swatch pk-ops-swatch--warning"></i>Warning</strong><span><code>#F5DE2E</code><br>주의 · 확인 필요</span></div>
+                <div class="pk-ops-rule"><strong><i class="pk-ops-swatch pk-ops-swatch--danger"></i>Critical</strong><span><code>#DF0000</code><br>중단 · 긴급 조치</span></div>
+              </div>
+            </section>
+
+            <section class="pk-ops-section" aria-labelledby="feed-live-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">STATE MODEL</div>
+                  <h2 id="feed-live-title" style="font-size:var(--parkie-font-2xl);">Default · Latest · Critical</h2>
+                  <p>‘새 이벤트 수신’을 누르면 최신 강조가 다음 행으로 이동합니다. Red가 최신이 되면 높은 긴급도를 표현하는 Solid Critical 상태로 전환됩니다.</p>
+                </div>
+              </div>
+              <div class="pk-feed-stage">
+                <sc-if value="{{ criticalEventLatest }}" hint-placeholder-val="{{ false }}">
+                  <span class="pk-sr-only" role="alert">긴급 이벤트가 수신되었습니다. 배터리 부족으로 인해 로봇이 즉시 중단됩니다.</span>
+                </sc-if>
+                <div class="pk-feed-list" role="list" aria-live="polite" aria-label="운영 이벤트 예시">
+                  <sc-for list="{{ alertFeedItems }}" as="event" hint-placeholder-count="4">
+                    <article class="{{ event.className }}" role="listitem">
+                      <span class="pk-feed-icon" aria-hidden="true">{{ event.glyph }}</span>
+                      <span class="pk-feed-status">{{ event.status }}</span>
+                      <span class="pk-feed-message">{{ event.message }}</span>
+                      <time class="pk-feed-time">{{ event.time }}</time>
+                    </article>
+                  </sc-for>
+                </div>
+                <aside class="pk-feed-anatomy">
+                  <h3>상태 조합 규칙</h3>
+                  <ol>
+                    <li><strong>Intent</strong> — neutral · info · success · warning · danger</li>
+                    <li><strong>Emphasis</strong> — default · latest · critical</li>
+                    <li><strong>Size</strong> — 48px single · 70px multiline</li>
+                    <li><strong>Latest</strong> — 동시에 한 건만 허용</li>
+                    <li><strong>Text</strong> — 최대 2줄, 시간은 우측 고정</li>
+                  </ol>
+                  <button class="pk-feed-action" type="button" onClick="{{ advanceLatestEvent }}">새 이벤트 수신</button>
+                </aside>
+              </div>
+            </section>
+          </div>
+        </sc-if>
+
+        <!-- ===== PARKIE ALERT CENTER ===== -->
+        <sc-if value="{{ isAlertCenter }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-ops-doc">
+            <section class="pk-ops-section" aria-labelledby="alert-center-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">PATTERN · ALERT CENTER</div>
+                  <h2 id="alert-center-title" style="font-size:var(--parkie-font-2xl);">알림과 주차기록은 같은 Feed 구조를 공유합니다</h2>
+                  <p>탭은 정보 범주를 전환하고, 행은 동일한 Status Icon · Label · Message · Time 해부 구조를 유지합니다. 새 Critical 이벤트만 assertive 공지 대상으로 취급합니다.</p>
+                </div>
+                <span class="pk-ops-chip">Pattern</span>
+              </div>
+              <div class="pk-alert-center-stage">
+                <section class="pk-alert-center" aria-label="알림 센터">
+                  <header class="pk-alert-center-head" role="tablist" aria-label="알림 센터 범주">
+                    <button class="pk-alert-tab" type="button" role="tab" aria-selected="{{ alertTabSelected }}" onClick="{{ showAlertTab }}">알림</button>
+                    <button class="pk-alert-tab" type="button" role="tab" aria-selected="{{ historyTabSelected }}" onClick="{{ showHistoryTab }}">주차기록</button>
+                    <button class="pk-alert-close" type="button" aria-label="알림 센터 닫기">
+                      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="m3 3 12 12M15 3 3 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                    </button>
+                  </header>
+                  <div class="pk-alert-center-body pk-scroll">
+                    <sc-if value="{{ alertTabSelected }}" hint-placeholder-val="{{ true }}">
+                      <sc-if value="{{ criticalEventLatest }}" hint-placeholder-val="{{ false }}">
+                        <span class="pk-sr-only" role="alert">긴급 이벤트가 수신되었습니다. 배터리 부족으로 인해 로봇이 즉시 중단됩니다.</span>
+                      </sc-if>
+                      <div class="pk-feed-list" role="list" aria-live="polite" aria-label="알림 이벤트">
+                        <sc-for list="{{ alertCenterItems }}" as="event" hint-placeholder-count="4">
+                          <article class="{{ event.className }}" role="listitem">
+                            <span class="pk-feed-icon" aria-hidden="true">{{ event.glyph }}</span>
+                            <span class="pk-feed-status">{{ event.status }}</span>
+                            <span class="pk-feed-message">{{ event.message }}</span>
+                            <time class="pk-feed-time">{{ event.time }}</time>
+                          </article>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ historyTabSelected }}" hint-placeholder-val="{{ false }}">
+                      <div class="pk-feed-list" role="list" aria-label="주차 기록">
+                        <article class="pk-feed-item pk-feed-item--success pk-feed-item--latest" role="listitem"><span class="pk-feed-icon" aria-hidden="true">✓</span><span class="pk-feed-status">입차완료</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:25:07</time></article>
+                        <article class="pk-feed-item pk-feed-item--info" role="listitem"><span class="pk-feed-icon" aria-hidden="true">↗</span><span class="pk-feed-status">입차중</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:24:31</time></article>
+                        <article class="pk-feed-item pk-feed-item--warning" role="listitem"><span class="pk-feed-icon" aria-hidden="true">!</span><span class="pk-feed-status">입차실패</span><span class="pk-feed-message">차량 위치를 다시 확인해 주세요.</span><time class="pk-feed-time">13:20:14</time></article>
+                      </div>
+                    </sc-if>
+                  </div>
+                </section>
+              </div>
+            </section>
+          </div>
+        </sc-if>
+
+        <!-- ===== PARKIE CONTROL WORKSPACE / APP SHELL ===== -->
+        <sc-if value="{{ isAppShell }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-ops-doc">
+            <section class="pk-ops-section" aria-labelledby="shell-overview-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">TEMPLATE · CONTROL WORKSPACE</div>
+                  <h2 id="shell-overview-title" style="font-size:var(--parkie-font-2xl);">Global → Navigate → Control → Observe</h2>
+                  <p>상단 바와 좌측 탭은 단순 장식이 아니라 정보 위계의 기준입니다. 전역 상태는 Top Bar, 제품 이동은 Rail, 현재 화면 제어는 Context Panel, 실시간 상황은 Workspace에 둡니다.</p>
+                </div>
+                <span class="pk-ops-chip">Desktop-first</span>
+              </div>
+              <table class="pk-layer-table">
+                <thead><tr><th>Layer</th><th>책임</th><th>기준 크기</th><th>포함 요소</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Global Top Bar</code></td><td>전역 운영 컨텍스트</td><td>46px</td><td>서비스 · 역할 · 사이트 · 검색 · 언어</td></tr>
+                  <tr><td><code>Primary Rail</code></td><td>제품 영역 이동</td><td>80px</td><td>홈 · 로봇 · 충전기 · 카메라 · 설정</td></tr>
+                  <tr><td><code>Context Panel</code></td><td>현재 화면의 개체 제어</td><td>320 / 360px</td><td>로봇 · 차단기 · 카메라 · 인프라</td></tr>
+                  <tr><td><code>Workspace</code></td><td>실시간 지도와 작업 결과</td><td>Flexible</td><td>Map · Alert Center · Emergency action</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="pk-ops-section" aria-labelledby="shell-live-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">INTEGRATED EXAMPLE</div>
+                  <h2 id="shell-live-title" style="font-size:var(--parkie-font-2xl);">Parking Control Workspace</h2>
+                  <p>제공된 상단 바와 좌측 탭 구조에 Site Select, Context Panel, 운영 이벤트, 비상 액션을 같은 토큰 체계로 배치한 통합 예제입니다.</p>
+                </div>
+              </div>
+              <div class="pk-shell-frame">
+                <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
+                  <div class="pk-appbar-brand"><img src="brand/hl-robotics-symbol.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-service-control"><span>서비스 활성화</span><button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button></div>
+                  <div class="pk-role-segment" role="tablist" aria-label="사용자 역할">
+                    <button type="button" role="tab" aria-selected="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
+                    <button type="button" role="tab" aria-selected="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                  </div>
+                  <div class="{{ siteSelectClass }}">
+                    <button class="pk-site-select-button" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}"><span>{{ siteLabel }}</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+                    <sc-if value="{{ siteMenuOpen }}" hint-placeholder-val="{{ false }}">
+                      <div class="pk-site-menu" role="listbox" aria-label="사이트 선택">
+                        <sc-for list="{{ siteOptions }}" as="site" hint-placeholder-count="3"><button class="pk-site-option" type="button" role="option" aria-selected="{{ site.selected }}" onClick="{{ site.onClick }}">{{ site.label }}</button></sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div class="pk-appbar-spacer"></div>
+                  <label class="pk-app-search"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 20 20" fill="none"><circle cx="8.7" cy="8.7" r="5.7" stroke="currentColor" stroke-width="2"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" aria-label="차량 통합 검색" placeholder="Search vehicles"></label>
+                  <button class="pk-language-button" type="button" aria-label="언어 선택"><span>KOR</span></button>
+                </div>
+                <div class="pk-shell-body">
+                  <nav class="pk-nav-rail" aria-label="주요 기능">
+                    <button class="pk-nav-rail-item" type="button" aria-current="page"><span aria-hidden="true">▣</span><span>홈</span></button>
+                    <button class="pk-nav-rail-item" type="button"><span aria-hidden="true">▱</span><span>로봇관리</span></button>
+                    <button class="pk-nav-rail-item" type="button"><span aria-hidden="true">↯</span><span>충전기</span></button>
+                    <button class="pk-nav-rail-item" type="button"><span aria-hidden="true">●</span><span>카메라</span></button>
+                    <span class="pk-nav-rail-spacer" aria-hidden="true"></span>
+                    <button class="pk-nav-rail-item" type="button"><span aria-hidden="true">⚙</span><span>설정</span></button>
+                  </nav>
+                  <aside class="pk-context-panel pk-scroll" aria-label="현재 사이트 제어 패널">
+                    <h3>로봇</h3>
+                    <div class="pk-context-section">
+                      <div class="pk-robot-card"><strong>01</strong><div><div>12 km/h</div><small>연결됨 · 100%</small></div><span>⌄</span></div>
+                      <div class="pk-robot-card pk-robot-card--info"><strong>02</strong><div><div>12 km/h</div><small>선택됨 · 100%</small></div><span>⌃</span></div>
+                      <div class="pk-device-row"><span>전원</span><span>끄기</span></div>
+                      <div class="pk-device-row"><span>로봇카메라</span><span>ON</span></div>
+                    </div>
+                    <div class="pk-context-section">
+                      <div class="pk-context-label">차단기</div>
+                      <div class="pk-device-row"><strong>01</strong><span>열기</span><span>정상</span></div>
+                      <div class="pk-device-row"><strong>02</strong><span>닫기</span><span>정상</span></div>
+                    </div>
+                    <div class="pk-context-section">
+                      <div class="pk-context-label">카메라</div>
+                      <div class="pk-device-row"><strong>01</strong><span>녹화중</span><span>ON</span></div>
+                    </div>
+                  </aside>
+                  <main class="pk-workspace" aria-label="주차 관제 지도">
+                    <div class="pk-map-lot" aria-hidden="true"></div>
+                    <div class="pk-map-bay pk-map-bay--1" aria-hidden="true"></div>
+                    <div class="pk-map-bay pk-map-bay--2" aria-hidden="true"></div>
+                    <div class="pk-map-bay pk-map-bay--3" aria-hidden="true"></div>
+                    <div class="pk-map-bay pk-map-bay--4" aria-hidden="true"></div>
+                    <div class="pk-map-path" aria-hidden="true"></div>
+                    <div class="pk-map-robot" aria-label="로봇 02">R02</div>
+                    <div class="pk-map-alert" aria-label="오류 1건">!</div>
+                    <div class="pk-workspace-toolbar"><span aria-hidden="true">♧</span><span>주차로봇은 주차를 시작합니다. 알람 내용 예시입니다.</span></div>
+                    <div class="pk-workspace-alert-preview" aria-label="최근 알림">
+                      <article class="pk-feed-item pk-feed-item--danger pk-feed-item--critical pk-feed-item--multiline"><span class="pk-feed-icon" aria-hidden="true">!</span><span class="pk-feed-status">긴급</span><span class="pk-feed-message">배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.</span><time class="pk-feed-time">13:25:07</time></article>
+                    </div>
+                    <button class="pk-emergency-button" type="button">비상정지</button>
+                  </main>
+                </div>
+              </div>
+            </section>
+          </div>
+        </sc-if>
+
         <!-- ===== PARKIE SELECT ===== -->
         <sc-if value="{{ isSelect }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">기본 · Default</h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--parkie-space-5);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);max-width:640px;">
-            <div>
-              <label style="display:block;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);margin-bottom:6px;">구역 · Zone</label>
-              <select style="width:100%;padding:9px 12px;border:1px solid var(--parkie-border-strong);border-radius:var(--parkie-radius-md);background:var(--parkie-surface);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);outline:none;cursor:pointer;" style-focus="border-color:var(--parkie-brand-primary);box-shadow:var(--parkie-ring);">
-                <option>전체 구역</option><option>B1</option><option>B2</option><option>B3</option>
-              </select>
-            </div>
-            <div>
-              <label style="display:block;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);margin-bottom:6px;">Disabled</label>
-              <select disabled style="width:100%;padding:9px 12px;border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);background:var(--parkie-surface-3);color:var(--parkie-text-disabled);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);cursor:not-allowed;">
-                <option>선택 불가</option>
-              </select>
-            </div>
+          <div class="pk-ops-doc">
+            <section class="pk-ops-section" aria-labelledby="site-select-title">
+              <div class="pk-ops-section-head">
+                <div>
+                  <div class="pk-ops-kicker">DOMAIN SELECT · SITE</div>
+                  <h2 id="site-select-title" style="font-size:var(--parkie-font-2xl);">Site Select</h2>
+                  <p>사이트는 전역 운영 컨텍스트이므로 270×30px 고정 폭을 기본으로 사용합니다. 화살표 24px 영역의 hover·pressed는 시각 피드백이며 전체 컨트롤이 하나의 클릭 타깃입니다.</p>
+                </div>
+                <span class="pk-ops-chip">Combobox</span>
+              </div>
+              <div class="pk-site-state-grid">
+                <div class="pk-site-state-card">
+                  <div class="pk-site-state-label">Default · interactive</div>
+                  <div class="{{ siteSelectClass }}">
+                    <button class="pk-site-select-button" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}"><span>{{ siteLabel }}</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+                    <sc-if value="{{ siteMenuOpen }}" hint-placeholder-val="{{ false }}">
+                      <div class="pk-site-menu" role="listbox" aria-label="사이트 선택">
+                        <sc-for list="{{ siteOptions }}" as="site" hint-placeholder-count="3"><button class="pk-site-option" type="button" role="option" aria-selected="{{ site.selected }}" onClick="{{ site.onClick }}">{{ site.label }}</button></sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+                <div class="pk-site-state-card">
+                  <div class="pk-site-state-label">Default · selected</div>
+                  <div class="pk-site-select pk-site-select--selected"><button class="pk-site-select-button" type="button"><span>곤지암 테스트존.v.1.3.0</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+                </div>
+                <div class="pk-site-state-card pk-site-state-card--menu">
+                  <div class="pk-site-state-label">Expanded · option hover</div>
+                  <div class="pk-site-select pk-site-select--open"><button class="pk-site-select-button" type="button" aria-expanded="true"><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="pk-site-menu" role="listbox"><button class="pk-site-option pk-site-option--hover" type="button">곤지암 테스트존</button><button class="pk-site-option" type="button">충북도청 운영존</button><button class="pk-site-option" type="button">넥스트엠 테스트존</button></div></div>
+                </div>
+                <div class="pk-site-state-card">
+                  <div class="pk-site-state-label">Disabled</div>
+                  <div class="pk-site-select pk-site-select--disabled"><button class="pk-site-select-button" type="button" disabled><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+                </div>
+              </div>
+            </section>
           </div>
         </sc-if>
 
@@ -1478,6 +1790,12 @@ class Component extends DCLogic {
     active: 'overview',
     icons: null,
     modalDemo: 'critical',
+    serviceActive: true,
+    role: 'engineer',
+    siteMenuOpen: false,
+    selectedSite: '',
+    latestEventIndex: 0,
+    alertCenterTab: 'alert',
   };
 
   componentDidMount() {
@@ -1495,8 +1813,9 @@ class Component extends DCLogic {
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'principles', 'changelog'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography'] },
-      { ko: '컴포넌트', en: 'Components', items: ['button', 'badge', 'statuslabel', 'input', 'select', 'checkbox', 'avatar', 'alert', 'card', 'table', 'tabs', 'modal', 'breadcrumb'] },
-      { ko: '템플릿', en: 'Templates', items: ['dashboard'] },
+      { ko: '컴포넌트', en: 'Components', items: ['button', 'badge', 'statuslabel', 'input', 'topbar', 'select', 'checkbox', 'avatar', 'alert', 'alertfeed', 'card', 'table', 'tabs', 'modal', 'breadcrumb'] },
+      { ko: '패턴', en: 'Patterns', items: ['alertcenter'] },
+      { ko: '템플릿', en: 'Templates', items: ['appshell', 'dashboard'] },
       { ko: '리소스', en: 'Resources', items: ['brand', 'downloads'] },
     ] },
     { source: 'MS 참조', sub: 'Microsoft Teams UI Kit · reference', groups: [
@@ -1520,10 +1839,13 @@ class Component extends DCLogic {
     button:      { ko: '버튼', en: 'Button', impl: true, dko: '액션을 유도하는 기본 버튼. 6가지 종류 · 3가지 크기 · 상태.', den: 'The primary action component — 6 variants, 3 sizes, and states.' },
     badge:       { ko: '뱃지', en: 'Badge', impl: true, dko: '상태와 분류를 표시하는 라벨. 로봇 상태 인디케이터 포함.', den: 'Status and category labels, including robot-status indicators.' },
     input:       { ko: '입력 필드', en: 'Input', impl: true, dko: '텍스트 입력 필드. default·focus·disabled·error·success 상태.', den: 'Text input field — default, focus, disabled, error and success states.' },
-    select:      { ko: '셀렉트', en: 'Select', impl: true, dko: '드롭다운 선택. default·disabled 상태.', den: 'Dropdown select — default and disabled states.' },
+    topbar:      { ko: '상단 바', en: 'Top Bar', impl: true, dko: '서비스·역할·사이트·검색·언어를 고정하는 46px 전역 운영 바.', den: 'A 46px global operations bar for service, role, site, search and language.' },
+    select:      { ko: '사이트 셀렉트', en: 'Site Select', impl: true, dko: '전역 사이트 컨텍스트를 선택하는 270×30px combobox.', den: 'A 270×30px combobox for selecting the global site context.' },
     checkbox:    { ko: '체크박스', en: 'Checkbox', impl: true, dko: '체크박스와 라디오. 브랜드 액센트 컬러 적용.', den: 'Checkbox and radio, using the brand accent color.' },
     avatar:      { ko: '아바타', en: 'Avatar', impl: true, dko: '사용자 프로필. 이니셜·크기·프레즌스·모양.', den: 'User profile — initials, sizes, presence and shape.' },
     alert:       { ko: '알림', en: 'Alert', impl: true, dko: '인라인 알림. info·success·warning·danger 인텐트.', den: 'Inline alerts — info, success, warning and danger intents.' },
+    alertfeed:   { ko: '이벤트 피드 행', en: 'Alert Feed Item', impl: true, dko: '운영 이벤트를 표시하는 행. 시맨틱 인텐트와 최신·긴급 강조를 분리합니다.', den: 'An operations event row separating semantic intent from latest and critical emphasis.' },
+    alertcenter: { ko: '알림 센터', en: 'Alert Center', impl: true, dko: '알림과 주차기록을 동일한 이벤트 피드 구조로 제공하는 패턴.', den: 'A pattern serving alerts and parking history through one event-feed structure.' },
     card:        { ko: '카드', en: 'Card', impl: true, dko: '콘텐츠 컨테이너. 로봇 카드·통계·강조 카드.', den: 'Content containers — robot card, stat and emphasis cards.' },
     table:       { ko: '테이블', en: 'Table', impl: true, dko: '관제 데이터 그리드. 로봇 상태·배터리·위치를 한눈에.', den: 'Control-view data grid — robot status, battery and location at a glance.' },
     tabs:        { ko: '탭', en: 'Tabs', impl: true, dko: '탭 내비게이션. 하단 인디케이터 스타일.', den: 'Tab navigation with an underline indicator.' },
@@ -1531,6 +1853,7 @@ class Component extends DCLogic {
     statuslabel: { ko: '상태 라벨', en: 'Status Label', impl: true, dko: '로봇 상태를 pill로 표시. 관제 리스트·상세에서 상태를 강조합니다.', den: 'Robot status shown as a pill — emphasizes state in the control list and detail views.' },
     breadcrumb:  { ko: '브레드크럼', en: 'Breadcrumb', impl: true, dko: '현재 위치 경로. 구역 → 로봇 상세 등 계층 탐색.', den: 'Path to the current location — hierarchy like zone → robot detail.' },
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
+    appshell:    { ko: '관제 앱 셸', en: 'Control App Shell', impl: true, dko: 'Top Bar·Primary Rail·Context Panel·Workspace를 조합한 주차 관제 화면 구조.', den: 'The parking-control structure combining Top Bar, Primary Rail, Context Panel and Workspace.' },
     brand:       { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: 'RMS 구조에 적용된 HL Robotics 로고와 Parkie 색상 스왑 지점.', den: 'HL Robotics logo and Parkie color swap points applied to the RMS structure.' },
     downloads:   { ko: '다운로드', en: 'Downloads', impl: false, dko: '토큰 · 자산 패키지.', den: 'Token and asset packages.' },
     'ms-icons':    { ko: 'Icons', en: 'Icons', impl: true, dko: 'Teams UI Kit 아이콘 세트 (참조용). 24px · Regular 대표 글리프.', den: 'Teams UI Kit icon set (reference) — 24px Regular representative glyphs.' },
@@ -1564,13 +1887,24 @@ class Component extends DCLogic {
   };
 
   select(id) {
-    this.setState({ active: id });
+    this.setState({ active: id, siteMenuOpen: false });
     const m = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
     if (m) m.scrollTop = 0;
   }
 
   renderVals() {
-    const { theme, lang, active, modalDemo } = this.state;
+    const {
+      theme,
+      lang,
+      active,
+      modalDemo,
+      serviceActive,
+      role,
+      siteMenuOpen,
+      selectedSite,
+      latestEventIndex,
+      alertCenterTab,
+    } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
     const cur = this.META[active] || this.META.overview;
@@ -1592,6 +1926,44 @@ class Component extends DCLogic {
       source: s.source, sub: s.sub,
       groups: s.groups.map((g) => ({ label: L(g.ko, g.en), sub: ko ? g.en : g.ko, items: buildItems(g.items) })),
     }));
+
+    const siteData = [
+      { id: 'gonjiam', label: '곤지암 테스트존.v.1.3.0' },
+      { id: 'chungbuk', label: '충북도청 운영존.v.1.3.0' },
+      { id: 'nextm', label: '넥스트엠 테스트존.v.1.3.2' },
+    ];
+    const siteOptions = siteData.map((site) => ({
+      ...site,
+      selected: selectedSite === site.id,
+      onClick: () => this.setState({ selectedSite: site.id, siteMenuOpen: false }),
+    }));
+    const selectedSiteData = siteData.find((site) => site.id === selectedSite);
+    const siteLabel = selectedSiteData ? selectedSiteData.label : L('사이트를 선택해 주세요.', 'Select a site.');
+    const siteSelectClass = [
+      'pk-site-select',
+      selectedSiteData ? 'pk-site-select--selected' : '',
+      siteMenuOpen ? 'pk-site-select--open' : '',
+    ].filter(Boolean).join(' ');
+
+    const eventData = [
+      { intent: 'success', glyph: '✓', status: '완료', message: '임무가 정상적으로 완료되었습니다.', time: '13:25:07' },
+      { intent: 'info', glyph: '↗', status: '입차중', message: '213바5502 차량이 B2F_23A 구역으로 이동 중입니다.', time: '13:24:31' },
+      { intent: 'warning', glyph: '!', status: '주의', message: '로봇 02의 배터리가 25% 이하입니다. 모니터링이 필요합니다.', time: '13:22:18' },
+      { intent: 'danger', glyph: '!', status: '긴급', message: '배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.', time: '13:20:04' },
+    ];
+    const rotatedEvents = eventData.slice(latestEventIndex).concat(eventData.slice(0, latestEventIndex));
+    const alertFeedItems = rotatedEvents.map((event, index) => {
+      const isLatest = index === 0;
+      const isCritical = isLatest && event.intent === 'danger';
+      const className = [
+        'pk-feed-item',
+        `pk-feed-item--${event.intent}`,
+        event.message.length > 34 ? 'pk-feed-item--multiline' : '',
+        isLatest ? 'pk-feed-item--latest' : '',
+        isCritical ? 'pk-feed-item--critical' : '',
+      ].filter(Boolean).join(' ');
+      return { ...event, className };
+    });
 
     const msButtons = [
       { label: 'default', appearance: 'default', size: 'md', state: 'rest', loading: false },
@@ -1860,6 +2232,10 @@ class Component extends DCLogic {
       isCheckbox: active === 'checkbox',
       isTable: active === 'table',
       isAlert: active === 'alert',
+      isTopbar: active === 'topbar',
+      isAlertFeed: active === 'alertfeed',
+      isAlertCenter: active === 'alertcenter',
+      isAppShell: active === 'appshell',
       isCard: active === 'card',
       isTabs: active === 'tabs',
       isModal: active === 'modal',
@@ -1917,6 +2293,26 @@ class Component extends DCLogic {
       showModalChecklist: () => this.setState({ modalDemo: 'checklist' }),
       showModalProgress: () => this.setState({ modalDemo: 'progress' }),
       showModalResult: () => this.setState({ modalDemo: 'result' }),
+      serviceChecked: serviceActive,
+      toggleService: () => this.setState({ serviceActive: !serviceActive }),
+      operatorSelected: role === 'operator',
+      engineerSelected: role === 'engineer',
+      selectOperator: () => this.setState({ role: 'operator' }),
+      selectEngineer: () => this.setState({ role: 'engineer' }),
+      siteMenuOpen,
+      siteExpanded: siteMenuOpen,
+      siteLabel,
+      siteSelectClass,
+      siteOptions,
+      toggleSiteMenu: () => this.setState({ siteMenuOpen: !siteMenuOpen }),
+      alertFeedItems,
+      alertCenterItems: alertFeedItems,
+      criticalEventLatest: alertFeedItems[0].intent === 'danger',
+      advanceLatestEvent: () => this.setState({ latestEventIndex: (latestEventIndex + 1) % eventData.length }),
+      alertTabSelected: alertCenterTab === 'alert',
+      historyTabSelected: alertCenterTab === 'history',
+      showAlertTab: () => this.setState({ alertCenterTab: 'alert' }),
+      showHistoryTab: () => this.setState({ alertCenterTab: 'history' }),
       typeScale, spacingScale, radiusScale, elevationScale,
     };
   }
