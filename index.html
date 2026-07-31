@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.2">
+<link rel="stylesheet" href="styles.css?v=0.3">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -337,51 +337,111 @@
 
         <!-- ===== BUTTON ===== -->
         <sc-if value="{{ isButton }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">종류 · Variants</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-brand-primary-hover);">Primary</button>
-            <button style="padding:9px 18px;border:1px solid var(--parkie-border-strong);border-radius:var(--parkie-radius-md);background:var(--parkie-surface);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-surface-2);">Secondary</button>
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-subtle);color:var(--parkie-brand-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-brand-subtle-hover);">Subtle</button>
-            <button style="padding:9px 18px;border:1px solid var(--parkie-brand-border);border-radius:var(--parkie-radius-md);background:transparent;color:var(--parkie-brand-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-brand-subtle);">Outline</button>
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:transparent;color:var(--parkie-text-secondary);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="background:var(--parkie-surface-2);">Ghost</button>
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-danger);color:#fff;font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;" style-hover="filter:brightness(0.93);">Danger</button>
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h3>종류 · Variants</h3>
+              <p>Primary는 화면당 한 개의 대표 행동에 사용합니다. Danger는 되돌리기 어려운 중단·초기화·삭제에만 사용합니다.</p>
+              <div class="pk-control-stage">
+                <button class="pk-button">Primary</button>
+                <button class="pk-button pk-button--secondary">Secondary</button>
+                <button class="pk-button pk-button--subtle">Subtle</button>
+                <button class="pk-button pk-button--outline">Outline</button>
+                <button class="pk-button pk-button--ghost">Ghost</button>
+                <button class="pk-button pk-button--danger">Danger</button>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>크기 · Sizes</h3>
+              <div class="pk-control-stage">
+                <button class="pk-button pk-button--compact">Compact 30</button>
+                <button class="pk-button">Default 36</button>
+                <button class="pk-button pk-button--large">Large 48</button>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>상태 · States</h3>
+              <div class="pk-control-grid">
+                <div class="pk-control-state"><span class="pk-control-state-label">Rest</span><button class="pk-button">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button" disabled>확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>아이콘 버튼 · Icon Button</h3>
+              <p>Chevron·닫기·검색처럼 아이콘 자체가 널리 이해되는 보조 행동에 사용합니다. 모든 아이콘 버튼에는 접근 가능한 이름을 제공합니다.</p>
+              <div class="pk-control-stage">
+                <button class="pk-icon-button" type="button" aria-label="위로 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 14 5-5 5 5"/></svg></button>
+                <button class="pk-icon-button is-hover" type="button" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                <button class="pk-icon-button is-pressed" type="button" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+                <button class="pk-icon-button is-focus" type="button" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
+                <button class="pk-icon-button" type="button" aria-label="사용할 수 없음" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+              </div>
+            </section>
           </div>
+        </sc-if>
 
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">크기 · Sizes</h3>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <button style="padding:6px 12px;border:none;border-radius:var(--parkie-radius-sm);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);font-weight:600;cursor:pointer;">Small</button>
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;">Medium</button>
-            <button style="padding:12px 24px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-lg);font-weight:600;cursor:pointer;">Large</button>
+        <!-- ===== SEGMENTED CONTROL ===== -->
+        <sc-if value="{{ isSegmented }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h3>단일 선택 · Single selection</h3>
+              <p>같은 맥락 안에서 2–4개의 상호 배타적인 값을 즉시 전환합니다. 페이지 이동용 Tab과 구분하며 radiogroup 의미를 사용합니다.</p>
+              <div class="pk-control-stage">
+                <div class="pk-segmented pk-segmented--default" role="radiogroup" aria-label="사용자 역할">
+                  <button role="radio" aria-checked="false">관리자</button>
+                  <button role="radio" aria-checked="true">엔지니어</button>
+                </div>
+                <div class="pk-segmented" role="radiogroup" aria-label="지도 보기">
+                  <button role="radio" aria-checked="true">2D</button>
+                  <button role="radio" aria-checked="false">3D</button>
+                </div>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>상태 · States</h3>
+              <div class="pk-control-grid">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled"><button disabled role="radio" aria-checked="true">열기</button><button disabled role="radio" aria-checked="false">닫기</button></div></div>
+              </div>
+            </section>
           </div>
+        </sc-if>
 
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">상태 · States</h3>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;">Default</button>
-            <button style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary-active);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;">Active</button>
-            <button disabled style="padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-surface-3);color:var(--parkie-text-disabled);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:not-allowed;">Disabled</button>
-            <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;border:none;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;"><span style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:pk-spin 0.7s linear infinite;"></span>Loading</button>
+        <!-- ===== SWITCH ===== -->
+        <sc-if value="{{ isSwitch }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h3>이진 설정 · Binary setting</h3>
+              <p>누르는 즉시 적용되는 On/Off 설정에 사용합니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
+              <div class="pk-control-stage">
+                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label>
+                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label>
+                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="비활성 설정" disabled></button><span>Disabled</span></label>
+              </div>
+            </section>
           </div>
         </sc-if>
 
         <!-- ===== BADGE ===== -->
         <sc-if value="{{ isBadge }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">인텐트 · Intent</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-surface-3);color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);font-weight:600;">Neutral</span>
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-brand-subtle);color:var(--parkie-brand-text);font-size:var(--parkie-font-sm);font-weight:600;">Brand</span>
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-success-subtle);color:var(--parkie-success-text);font-size:var(--parkie-font-sm);font-weight:600;">Success</span>
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-warning-subtle);color:var(--parkie-warning-text);font-size:var(--parkie-font-sm);font-weight:600;">Warning</span>
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-danger-subtle);color:var(--parkie-danger-text);font-size:var(--parkie-font-sm);font-weight:600;">Danger</span>
-            <span style="padding:3px 10px;border-radius:var(--parkie-radius-pill);background:var(--parkie-info-subtle);color:var(--parkie-info-text);font-size:var(--parkie-font-sm);font-weight:600;">Info</span>
-          </div>
-
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">로봇 상태 · Robot status</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--parkie-space-4);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:var(--parkie-font-base);font-weight:500;color:var(--parkie-text);"><span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-status-active);"></span>운행중 Active</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:var(--parkie-font-base);font-weight:500;color:var(--parkie-text);"><span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-status-charging);"></span>충전중 Charging</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:var(--parkie-font-base);font-weight:500;color:var(--parkie-text);"><span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-status-idle);"></span>대기 Idle</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:var(--parkie-font-base);font-weight:500;color:var(--parkie-text);"><span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-status-error);"></span>오류 Error</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:var(--parkie-font-base);font-weight:500;color:var(--parkie-text);"><span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-status-offline);"></span>오프라인 Offline</span>
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h3>책임 · Responsibility</h3>
+              <p>Badge는 개수·버전·역할·신규 여부 같은 짧은 메타데이터를 표시합니다. 로봇의 동작·통신·배터리 상태는 Status Label과 Robot Status를 사용합니다.</p>
+              <div class="pk-control-stage">
+                <span class="pk-badge">v1.3.0</span>
+                <span class="pk-badge">Engineer</span>
+                <span class="pk-badge pk-badge--brand">NEW</span>
+                <span class="pk-badge pk-badge--count" aria-label="읽지 않은 알림 12개">12</span>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>사용 규칙 · Usage</h3>
+              <p>한두 단어 또는 1–3자리 숫자를 권장합니다. 긴 문장, 진행 상태, 위험 메시지는 Badge에 넣지 않습니다.</p>
+            </section>
           </div>
         </sc-if>
 
@@ -426,21 +486,122 @@
 
         <!-- ===== PARKIE STATUS LABEL ===== -->
         <sc-if value="{{ isStatusLabel }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">Solid</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-status-active);color:#fff;font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#fff;"></span>운행중 Active</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-status-charging);color:#fff;font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#fff;"></span>충전중 Charging</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-status-idle);color:#fff;font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#fff;"></span>대기 Idle</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-status-error);color:#fff;font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#fff;"></span>오류 Error</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-status-offline);color:#fff;font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#fff;"></span>오프라인 Offline</span>
+          <div class="pk-status-doc">
+            <section class="pk-control-section">
+              <h3>Dot · 기본</h3>
+              <p>반복 목록에서 밀도를 낮게 유지할 때 사용합니다. 색에만 의존하지 않도록 항상 텍스트를 병기합니다.</p>
+              <div class="pk-control-stage">
+                <span class="pk-status-label pk-status--success">정상</span>
+                <span class="pk-status-label pk-status--info">진행 중</span>
+                <span class="pk-status-label pk-status--warning">주의</span>
+                <span class="pk-status-label pk-status--danger">오류</span>
+                <span class="pk-status-label pk-status--offline">오프라인</span>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>Subtle · 보조 강조</h3>
+              <div class="pk-control-stage">
+                <span class="pk-status-label pk-status-label--subtle pk-status--running">운행 중</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--charging">충전 중</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--paused">일시정지</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--fault">고장</span>
+              </div>
+            </section>
+            <section class="pk-control-section">
+              <h3>Solid · 강한 강조</h3>
+              <p>최신 경고나 즉시 조치가 필요한 단일 상태에 제한합니다. 목록 전체를 Solid로 채우지 않습니다.</p>
+              <div class="pk-control-stage">
+                <span class="pk-status-label pk-status-label--solid pk-status--success">완료</span>
+                <span class="pk-status-label pk-status-label--solid pk-status--warning">점검 필요</span>
+                <span class="pk-status-label pk-status-label--solid pk-status--danger">즉시 중단</span>
+              </div>
+            </section>
           </div>
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">Subtle</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--parkie-space-3);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-success-subtle);color:var(--parkie-success-text);font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--parkie-status-active);"></span>운행중 Active</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-info-subtle);color:var(--parkie-info-text);font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--parkie-status-charging);"></span>충전중 Charging</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-surface-3);color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--parkie-status-idle);"></span>대기 Idle</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-danger-subtle);color:var(--parkie-danger-text);font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--parkie-status-error);"></span>오류 Error</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--parkie-radius-pill);background:var(--parkie-surface-3);color:var(--parkie-text-tertiary);font-size:var(--parkie-font-sm);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--parkie-status-offline);"></span>오프라인 Offline</span>
+        </sc-if>
+
+        <!-- ===== ROBOT STATUS ===== -->
+        <sc-if value="{{ isRobotStatus }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-status-doc">
+            <div class="pk-status-axis-grid">
+              <section class="pk-status-axis-card">
+                <h4>통신 · Connection</h4>
+                <p>로봇과 관제 서버 간 신호 상태입니다.</p>
+                <div class="pk-status-samples">
+                  <span class="pk-status-indicator pk-status--connected">연결 양호</span>
+                  <span class="pk-status-indicator pk-status--weak">신호 약함</span>
+                  <span class="pk-status-indicator pk-status--reconnecting">재연결 중</span>
+                  <span class="pk-status-indicator pk-status--lost">연결 끊김</span>
+                  <span class="pk-status-indicator pk-status--offline">오프라인</span>
+                </div>
+              </section>
+              <section class="pk-status-axis-card">
+                <h4>동작 · Motion</h4>
+                <p>로봇의 현재 작업 및 이동 상태입니다.</p>
+                <div class="pk-status-samples">
+                  <span class="pk-status-indicator pk-status--running">운행 중</span>
+                  <span class="pk-status-indicator pk-status--paused">일시정지</span>
+                  <span class="pk-status-indicator pk-status--idle">대기</span>
+                  <span class="pk-status-indicator pk-status--fault">고장</span>
+                </div>
+              </section>
+              <section class="pk-status-axis-card">
+                <h4>배터리 · Battery</h4>
+                <p>수치와 의미 색상을 함께 제공하며 임계값은 정책으로 관리합니다.</p>
+                <div class="pk-status-samples">
+                  <span class="pk-status-indicator pk-status--success">정상 80%</span>
+                  <span class="pk-status-indicator pk-status--battery-low">부족 20%</span>
+                  <span class="pk-status-indicator pk-status--battery-critical">위험 8%</span>
+                  <span class="pk-status-indicator pk-status--charging">충전 중</span>
+                </div>
+              </section>
+              <section class="pk-status-axis-card">
+                <h4>선택 · Selection</h4>
+                <p>파란 좌측 라인은 사용자가 선택한 대상만 의미합니다. 정상·경고·오류 색상과 결합하지 않습니다.</p>
+                <div class="pk-status-samples">
+                  <span class="pk-badge pk-badge--brand">Selected = Brand blue</span>
+                </div>
+              </section>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ===== ROBOT CARD ===== -->
+        <sc-if value="{{ isRobotCard }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-robot-card-doc">
+            <div class="pk-robot-stack">
+              <article class="pk-robot-control-card is-selected">
+                <div class="pk-robot-control-card__summary">
+                  <strong class="pk-robot-control-card__id">01</strong>
+                  <span class="pk-robot-control-card__signal" aria-label="연결 양호"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0ZM1 8.5 2.5 10a13.4 13.4 0 0 1 19 0L23 8.5a15.5 15.5 0 0 0-22 0Z"/></svg></span>
+                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">12 km/h</span><span class="pk-robot-control-card__motion">운행 중</span></span>
+                  <span class="pk-robot-control-card__battery-value">100%</span>
+                  <span class="pk-robot-control-card__battery" aria-label="배터리 정상"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 2h6v10H9V8Z"/></svg></span>
+                  <button class="pk-robot-card-toggle" aria-label="로봇 01 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                </div>
+              </article>
+              <article class="pk-robot-control-card is-expanded">
+                <div class="pk-robot-control-card__summary">
+                  <strong class="pk-robot-control-card__id">02</strong>
+                  <span class="pk-robot-control-card__signal is-weak" aria-label="신호 약함"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0Z"/></svg></span>
+                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">0 km/h</span><span class="pk-robot-control-card__motion">일시정지</span></span>
+                  <span class="pk-robot-control-card__battery-value">18%</span>
+                  <span class="pk-robot-control-card__battery is-low" aria-label="배터리 부족"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 9h6v3H9v-3Z"/></svg></span>
+                  <button class="pk-robot-card-toggle" aria-expanded="true" aria-label="로봇 02 상세 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                </div>
+                <div class="pk-robot-control-card__details">
+                  <div class="pk-robot-command"><span>⏻</span><span>전원</span><button class="pk-button pk-button--ghost pk-button--compact">끄기</button></div>
+                  <div class="pk-robot-command"><span>↻</span><span>재시작</span><button class="pk-button pk-button--ghost pk-button--compact">실행</button></div>
+                  <div class="pk-robot-command"><span>●</span><span>로봇 카메라</span><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button></div>
+                </div>
+              </article>
+            </div>
+            <ol class="pk-robot-card-anatomy">
+              <li><strong>선택 표시:</strong> 좌측 Brand blue rail만 사용합니다.</li>
+              <li><strong>통신:</strong> Wi-Fi 아이콘의 형태와 색으로 full·low·lost를 구분합니다.</li>
+              <li><strong>동작:</strong> 속도 아래 텍스트로 운행·일시정지·대기·고장을 명시합니다.</li>
+              <li><strong>배터리:</strong> 퍼센트와 아이콘을 함께 제공하고 low/critical만 의미 색을 적용합니다.</li>
+              <li><strong>상세:</strong> chevron은 카드 확장만 담당하며 카드 선택과 분리합니다.</li>
+            </ol>
           </div>
         </sc-if>
 
@@ -1268,9 +1429,9 @@
                     <span>서비스 활성화</span>
                     <button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button>
                   </div>
-                  <div class="pk-role-segment" role="tablist" aria-label="사용자 역할">
-                    <button type="button" role="tab" aria-selected="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
-                    <button type="button" role="tab" aria-selected="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                  <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
+                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
+                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
                   </div>
                   <div class="{{ siteSelectClass }}">
                     <button class="pk-site-select-button" type="button" role="combobox" aria-controls="topbar-site-listbox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}">
@@ -1459,9 +1620,9 @@
                 <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
                   <div class="pk-appbar-brand"><img src="brand/hl-robotics-symbol.svg" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control"><span>서비스 활성화</span><button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button></div>
-                  <div class="pk-role-segment" role="tablist" aria-label="사용자 역할">
-                    <button type="button" role="tab" aria-selected="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
-                    <button type="button" role="tab" aria-selected="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                  <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
+                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
+                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
                   </div>
                   <div class="{{ siteSelectClass }}">
                     <button class="pk-site-select-button" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}"><span>{{ siteLabel }}</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
@@ -1487,10 +1648,45 @@
                   <aside class="pk-context-panel pk-scroll" aria-label="현재 사이트 제어 패널">
                     <h3>로봇</h3>
                     <div class="pk-context-section">
-                      <div class="pk-robot-card"><strong>01</strong><div><div>12 km/h</div><small>연결됨 · 100%</small></div><span>⌄</span></div>
-                      <div class="pk-robot-card pk-robot-card--info"><strong>02</strong><div><div>12 km/h</div><small>선택됨 · 100%</small></div><span>⌃</span></div>
-                      <div class="pk-device-row"><span>전원</span><span>끄기</span></div>
-                      <div class="pk-device-row"><span>로봇카메라</span><span>ON</span></div>
+                      <div class="pk-robot-stack">
+                        <article class="{{ robot01CardClass }}">
+                          <div class="pk-robot-control-card__summary">
+                            <strong class="pk-robot-control-card__id">01</strong>
+                            <span class="pk-robot-control-card__signal" aria-label="연결 양호"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0Z"/></svg></span>
+                            <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">12 km/h</span><span class="pk-robot-control-card__motion">운행 중</span></span>
+                            <span class="pk-robot-control-card__battery-value">100%</span>
+                            <span class="pk-robot-control-card__battery" aria-label="배터리 정상"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Z"/></svg></span>
+                            <button class="pk-robot-card-toggle" type="button" aria-expanded="{{ robot01Expanded }}" aria-label="로봇 01 상세 전환" onClick="{{ toggleRobot01 }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                          </div>
+                        </article>
+                        <article class="{{ robot02CardClass }}">
+                          <div class="pk-robot-control-card__summary">
+                            <strong class="pk-robot-control-card__id">02</strong>
+                            <span class="pk-robot-control-card__signal is-weak" aria-label="신호 약함"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0Z"/></svg></span>
+                            <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">0 km/h</span><span class="pk-robot-control-card__motion">일시정지</span></span>
+                            <span class="pk-robot-control-card__battery-value">18%</span>
+                            <span class="pk-robot-control-card__battery is-low" aria-label="배터리 부족"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 9h6v3H9v-3Z"/></svg></span>
+                            <button class="pk-robot-card-toggle" type="button" aria-expanded="{{ robot02Expanded }}" aria-label="로봇 02 상세 전환" onClick="{{ toggleRobot02 }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                          </div>
+                          <sc-if value="{{ robot02Expanded }}" hint-placeholder-val="{{ true }}">
+                            <div class="pk-robot-control-card__details">
+                              <div class="pk-robot-command"><span aria-hidden="true">⏻</span><span>전원</span><button class="pk-button pk-button--ghost pk-button--compact" type="button">끄기</button></div>
+                              <div class="pk-robot-command"><span aria-hidden="true">↻</span><span>재시작</span><button class="pk-button pk-button--ghost pk-button--compact" type="button">실행</button></div>
+                              <div class="pk-robot-command"><span aria-hidden="true">●</span><span>로봇 카메라</span><button class="pk-switch" type="button" role="switch" aria-checked="{{ robotCameraActive }}" aria-label="로봇 02 카메라" onClick="{{ toggleRobotCamera }}"></button></div>
+                            </div>
+                          </sc-if>
+                        </article>
+                        <article class="{{ robot03CardClass }}">
+                          <div class="pk-robot-control-card__summary">
+                            <strong class="pk-robot-control-card__id">03</strong>
+                            <span class="pk-robot-control-card__signal is-lost" aria-label="연결 끊김"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.3 2 18.7 18.7-1.3 1.3-3.3-3.3A8.4 8.4 0 0 0 12 16.8c-1.2 0-2.3.2-3.4.7l-1.7-1.7a10.6 10.6 0 0 1 8.3-.9l-2.5-2.5H12c-2.8 0-5.4 1-7.4 2.8l-1.5-1.5a13.2 13.2 0 0 1 7.4-3.3L8.2 8.1A15.4 15.4 0 0 0 1.5 12L0 10.5a17.3 17.3 0 0 1 6.5-4.1L2 3.3 3.3 2ZM12 18.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6Z"/></svg></span>
+                            <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">— km/h</span><span class="pk-robot-control-card__motion">통신 끊김</span></span>
+                            <span class="pk-robot-control-card__battery-value">62%</span>
+                            <span class="pk-robot-control-card__battery" aria-label="배터리 62퍼센트"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Z"/></svg></span>
+                            <button class="pk-robot-card-toggle" type="button" aria-expanded="{{ robot03Expanded }}" aria-label="로봇 03 상세 전환" onClick="{{ toggleRobot03 }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                          </div>
+                        </article>
+                      </div>
                     </div>
                     <div class="pk-context-section">
                       <div class="pk-context-label">차단기</div>
@@ -1880,7 +2076,7 @@ class Component extends DCLogic {
   state = {
     theme: 'dark',
     lang: this.props.defaultLang || 'ko',
-    active: 'overview',
+    active: 'robotcard',
     icons: null,
     modalDemo: 'critical',
     serviceActive: true,
@@ -1889,6 +2085,9 @@ class Component extends DCLogic {
     selectedSite: '',
     latestEventIndex: 0,
     alertCenterTab: 'alert',
+    selectedRobot: '02',
+    expandedRobot: '02',
+    robotCameraActive: false,
   };
 
   componentDidMount() {
@@ -1906,7 +2105,7 @@ class Component extends DCLogic {
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'principles', 'changelog'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography'] },
-      { ko: '컴포넌트', en: 'Components', items: ['button', 'badge', 'statuslabel', 'input', 'topbar', 'select', 'checkbox', 'avatar', 'alert', 'alertfeed', 'card', 'table', 'tabs', 'modal', 'breadcrumb'] },
+      { ko: '컴포넌트', en: 'Components', items: ['button', 'segmented', 'switch', 'badge', 'statuslabel', 'robotstatus', 'robotcard', 'input', 'topbar', 'select', 'checkbox', 'avatar', 'alert', 'alertfeed', 'card', 'table', 'tabs', 'modal', 'breadcrumb'] },
       { ko: '패턴', en: 'Patterns', items: ['alertcenter'] },
       { ko: '템플릿', en: 'Templates', items: ['appshell', 'dashboard'] },
       { ko: '리소스', en: 'Resources', items: ['brand', 'downloads'] },
@@ -1930,7 +2129,9 @@ class Component extends DCLogic {
     elevation:   { ko: '그림자', en: 'Elevation', impl: true, dko: '깊이를 표현하는 그림자 레벨.', den: 'Shadow levels expressing depth.' },
     iconography: { ko: '아이콘', en: 'Iconography', impl: false, dko: '아이콘 세트와 사용 규칙.', den: 'Icon set and usage rules.' },
     button:      { ko: '버튼', en: 'Button', impl: true, dko: '액션을 유도하는 기본 버튼. 6가지 종류 · 3가지 크기 · 상태.', den: 'The primary action component — 6 variants, 3 sizes, and states.' },
-    badge:       { ko: '뱃지', en: 'Badge', impl: true, dko: '상태와 분류를 표시하는 라벨. 로봇 상태 인디케이터 포함.', den: 'Status and category labels, including robot-status indicators.' },
+    segmented:   { ko: '세그먼트', en: 'Segmented Control', impl: true, dko: '2–4개의 상호 배타적인 값을 전환하는 단일 선택 컨트롤.', den: 'A single-select control for switching between 2–4 mutually exclusive values.' },
+    switch:      { ko: '스위치', en: 'Switch', impl: true, dko: '즉시 적용되는 이진 설정을 위한 On/Off 컨트롤.', den: 'An On/Off control for binary settings that apply immediately.' },
+    badge:       { ko: '뱃지', en: 'Badge', impl: true, dko: '개수·버전·역할·신규 여부를 표시하는 짧은 메타데이터 라벨.', den: 'A compact metadata label for counts, versions, roles and newness.' },
     input:       { ko: '입력 필드', en: 'Input', impl: true, dko: '텍스트 입력 필드. default·focus·disabled·error·success 상태.', den: 'Text input field — default, focus, disabled, error and success states.' },
     topbar:      { ko: '상단 바', en: 'Top Bar', impl: true, dko: '서비스·역할·사이트·검색·언어를 고정하는 46px 전역 운영 바.', den: 'A 46px global operations bar for service, role, site, search and language.' },
     select:      { ko: '사이트 셀렉트', en: 'Site Select', impl: true, dko: '전역 사이트 컨텍스트를 선택하는 270×30px combobox.', den: 'A 270×30px combobox for selecting the global site context.' },
@@ -1943,7 +2144,9 @@ class Component extends DCLogic {
     table:       { ko: '테이블', en: 'Table', impl: true, dko: '관제 데이터 그리드. 로봇 상태·배터리·위치를 한눈에.', den: 'Control-view data grid — robot status, battery and location at a glance.' },
     tabs:        { ko: '탭', en: 'Tabs', impl: true, dko: '탭 내비게이션. 하단 인디케이터 스타일.', den: 'Tab navigation with an underline indicator.' },
     modal:       { ko: '모달', en: 'Modal', impl: true, dko: '운영 안전을 위한 모달 패밀리. 확인·인증·점검·처리·완료 상태를 하나의 체계로 관리합니다.', den: 'An operations-safe modal family covering confirmation, authentication, checklist, progress and result states.' },
-    statuslabel: { ko: '상태 라벨', en: 'Status Label', impl: true, dko: '로봇 상태를 pill로 표시. 관제 리스트·상세에서 상태를 강조합니다.', den: 'Robot status shown as a pill — emphasizes state in the control list and detail views.' },
+    statuslabel: { ko: '상태 라벨', en: 'Status Label', impl: true, dko: '의미 상태를 dot·subtle·solid 강도로 표시하는 텍스트 라벨.', den: 'A semantic state label with dot, subtle and solid emphasis levels.' },
+    robotstatus: { ko: '로봇 상태', en: 'Robot Status', impl: true, dko: '선택·통신·동작·배터리 상태를 독립된 축으로 관리합니다.', den: 'Independent axes for selection, connection, motion and battery state.' },
+    robotcard:   { ko: '로봇 카드', en: 'Robot Card', impl: true, dko: '로봇 핵심 상태와 보조 명령을 한 카드에 계층적으로 배치합니다.', den: 'A hierarchical card combining robot health, telemetry and secondary commands.' },
     breadcrumb:  { ko: '브레드크럼', en: 'Breadcrumb', impl: true, dko: '현재 위치 경로. 구역 → 로봇 상세 등 계층 탐색.', den: 'Path to the current location — hierarchy like zone → robot detail.' },
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
     appshell:    { ko: '관제 앱 셸', en: 'Control App Shell', impl: true, dko: 'Top Bar·Primary Rail·Context Panel·Workspace를 조합한 주차 관제 화면 구조.', den: 'The parking-control structure combining Top Bar, Primary Rail, Context Panel and Workspace.' },
@@ -1997,6 +2200,9 @@ class Component extends DCLogic {
       selectedSite,
       latestEventIndex,
       alertCenterTab,
+      selectedRobot,
+      expandedRobot,
+      robotCameraActive,
     } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
@@ -2252,14 +2458,27 @@ class Component extends DCLogic {
     ];
 
     const typeRows = [
-      ['Display', '5xl', 700, '38 / Bold'], ['Headline', '4xl', 700, '30 / Bold'], ['Title', '3xl', 600, '24 / Semibold'],
-      ['Subtitle', '2xl', 600, '20 / Semibold'], ['Section', 'xl', 600, '18 / Semibold'], ['Body Large', 'lg', 400, '16 / Regular'],
-      ['Body', 'base', 400, '14 / Regular'], ['Small', 'sm', 400, '13 / Regular'], ['Caption', 'xs', 500, '12 / Medium'],
+      ['Display', '5xl', 700, '38px · 2.375rem · Bold'],
+      ['Headline', '4xl', 700, '30px · 1.875rem · Bold'],
+      ['Title', '3xl', 600, '24px · 1.5rem · Semibold'],
+      ['Subtitle', '2xl', 600, '20px · 1.25rem · Semibold'],
+      ['Section', 'xl', 600, '18px · 1.125rem · Semibold'],
+      ['Body Large', 'lg', 400, '16px · 1rem · Regular'],
+      ['Body', 'base', 400, '14px · 0.875rem · Regular'],
+      ['Small', 'sm', 400, '13px · 0.8125rem · Regular'],
+      ['Caption', 'xs', 500, '12px · 0.75rem · Medium'],
+      ['Mono', 'sm', 500, '13px · 0.8125rem · Medium · Roboto Mono', 'mono'],
     ];
-    const typeScale = typeRows.map(([label, key, w, meta]) => ({
+    const typeScale = typeRows.map(([label, key, w, meta, family]) => ({
       label: `${label} · ${meta}`,
-      token: `--parkie-font-${key}`,
-      style: { fontSize: `var(--parkie-font-${key})`, fontWeight: w, lineHeight: 1.25, color: 'var(--parkie-text)', fontFamily: 'var(--parkie-font-sans)' },
+      token: family === 'mono' ? '--parkie-font-mono' : `--parkie-font-${key}`,
+      style: {
+        fontSize: `var(--parkie-font-${key})`,
+        fontWeight: w,
+        lineHeight: 1.25,
+        color: 'var(--parkie-text)',
+        fontFamily: family === 'mono' ? 'var(--parkie-font-mono)' : 'var(--parkie-font-sans)',
+      },
     }));
 
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
@@ -2320,6 +2539,8 @@ class Component extends DCLogic {
       isRadius: active === 'radius',
       isElevation: active === 'elevation',
       isButton: active === 'button',
+      isSegmented: active === 'segmented',
+      isSwitch: active === 'switch',
       isBadge: active === 'badge',
       isInput: active === 'input',
       isCheckbox: active === 'checkbox',
@@ -2333,6 +2554,8 @@ class Component extends DCLogic {
       isTabs: active === 'tabs',
       isModal: active === 'modal',
       isStatusLabel: active === 'statuslabel',
+      isRobotStatus: active === 'robotstatus',
+      isRobotCard: active === 'robotcard',
       isBreadcrumb: active === 'breadcrumb',
       isDashboard: active === 'dashboard',
       isSelect: active === 'select',
@@ -2406,6 +2629,23 @@ class Component extends DCLogic {
       historyTabSelected: alertCenterTab === 'history',
       showAlertTab: () => this.setState({ alertCenterTab: 'alert' }),
       showHistoryTab: () => this.setState({ alertCenterTab: 'history' }),
+      robot01Selected: selectedRobot === '01',
+      robot02Selected: selectedRobot === '02',
+      robot03Selected: selectedRobot === '03',
+      robot01Expanded: expandedRobot === '01',
+      robot02Expanded: expandedRobot === '02',
+      robot03Expanded: expandedRobot === '03',
+      robot01CardClass: `pk-robot-control-card${selectedRobot === '01' ? ' is-selected' : ''}${expandedRobot === '01' ? ' is-expanded' : ''}`,
+      robot02CardClass: `pk-robot-control-card${selectedRobot === '02' ? ' is-selected' : ''}${expandedRobot === '02' ? ' is-expanded' : ''}`,
+      robot03CardClass: `pk-robot-control-card${selectedRobot === '03' ? ' is-selected' : ''}${expandedRobot === '03' ? ' is-expanded' : ''}`,
+      robotCameraActive,
+      selectRobot01: () => this.setState({ selectedRobot: '01' }),
+      selectRobot02: () => this.setState({ selectedRobot: '02' }),
+      selectRobot03: () => this.setState({ selectedRobot: '03' }),
+      toggleRobot01: () => this.setState({ selectedRobot: '01', expandedRobot: expandedRobot === '01' ? '' : '01' }),
+      toggleRobot02: () => this.setState({ selectedRobot: '02', expandedRobot: expandedRobot === '02' ? '' : '02' }),
+      toggleRobot03: () => this.setState({ selectedRobot: '03', expandedRobot: expandedRobot === '03' ? '' : '03' }),
+      toggleRobotCamera: () => this.setState({ robotCameraActive: !robotCameraActive }),
       typeScale, spacingScale, radiusScale, elevationScale,
     };
   }
