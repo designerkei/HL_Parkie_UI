@@ -160,6 +160,78 @@
 
         <!-- ===== COLORS ===== -->
         <sc-if value="{{ isColors }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-token-layers" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--parkie-space-3);margin-bottom:var(--parkie-space-9);">
+            <sc-for list="{{ tokenLayers }}" as="layer" hint-placeholder-count="3">
+              <div style="padding:var(--parkie-space-5);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
+                <div style="font-family:var(--parkie-font-mono);font-size:11px;font-weight:600;color:var(--parkie-brand-text);margin-bottom:8px;">{{ layer.index }}</div>
+                <div style="font-size:var(--parkie-font-lg);font-weight:600;color:var(--parkie-text);">{{ layer.title }}</div>
+                <p style="margin:6px 0 0;font-size:var(--parkie-font-sm);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);">{{ layer.desc }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
+            <div>
+              <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ primitiveTitle }}</h3>
+              <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ primitiveNote }}</p>
+            </div>
+            <span style="flex-shrink:0;padding:4px 9px;border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-pill);font-family:var(--parkie-font-mono);font-size:10px;color:var(--parkie-text-tertiary);">50 → 950</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-10);">
+            <sc-for list="{{ primitiveRamps }}" as="ramp" hint-placeholder-count="5">
+              <div>
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--parkie-space-4);margin-bottom:8px;">
+                  <div style="font-size:var(--parkie-font-base);font-weight:600;color:var(--parkie-text);">{{ ramp.title }}</div>
+                  <div style="font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ ramp.note }}</div>
+                </div>
+                <div class="pk-scroll" style="overflow-x:auto;padding-bottom:4px;">
+                  <div style="display:grid;grid-template-columns:repeat(11,minmax(68px,1fr));min-width:820px;border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow:hidden;">
+                    <sc-for list="{{ ramp.items }}" as="tone" hint-placeholder-count="11">
+                      <div style="min-width:0;background:var(--parkie-surface);border-right:1px solid var(--parkie-border);">
+                        <div style="{{ tone.swatch }}"></div>
+                        <div style="padding:8px 8px 9px;">
+                          <div style="font-family:var(--parkie-font-mono);font-size:11px;font-weight:600;color:var(--parkie-text);">{{ tone.step }}</div>
+                          <div style="font-family:var(--parkie-font-mono);font-size:9px;color:var(--parkie-text-tertiary);margin-top:2px;">{{ tone.hex }}</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-bottom:var(--parkie-space-10);">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
+              <div>
+                <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ elevationColorTitle }}</h3>
+                <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ elevationColorNote }}</p>
+              </div>
+              <span style="flex-shrink:0;font-family:var(--parkie-font-mono);font-size:11px;color:var(--parkie-text-secondary);">BASE · #131315</span>
+            </div>
+            <div style="padding:var(--parkie-space-4);background:var(--parkie-bg);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-xl);">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ elevationSurfaces }}" as="level" hint-placeholder-count="11">
+                  <div class="pk-elevation-row" style="{{ level.bar }}">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                      <span style="width:40px;font-family:var(--parkie-font-mono);font-size:11px;font-weight:600;color:var(--parkie-text);">{{ level.dp }}</span>
+                      <span style="font-family:var(--parkie-font-mono);font-size:10px;color:var(--parkie-text-tertiary);">{{ level.hex }}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                      <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-secondary);">{{ level.use }}</span>
+                      <span style="font-family:var(--parkie-font-mono);font-size:10px;color:var(--parkie-text-tertiary);">{{ level.overlay }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:var(--parkie-space-4);">
+            <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h3>
+            <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ semanticNote }}</p>
+          </div>
           <sc-for list="{{ colorSections }}" as="cs" hint-placeholder-count="5">
             <div style="margin-bottom:var(--parkie-space-8);">
               <h3 style="margin:0 0 4px;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">{{ cs.title }}</h3>
@@ -177,6 +249,25 @@
               </div>
             </div>
           </sc-for>
+
+          <div style="margin-top:var(--parkie-space-10);">
+            <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ contrastTitle }}</h3>
+            <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ contrastNote }}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--parkie-space-3);">
+              <sc-for list="{{ contrastPairs }}" as="pair" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--parkie-space-4);padding:var(--parkie-space-4);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
+                  <div>
+                    <div style="font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text);">{{ pair.label }}</div>
+                    <div style="font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);margin-top:3px;">{{ pair.usage }}</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="{{ pair.sample }}">Aa</div>
+                    <span style="font-family:var(--parkie-font-mono);font-size:11px;font-weight:600;color:var(--parkie-success-text);">{{ pair.ratio }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
         </sc-if>
 
         <!-- ===== TYPOGRAPHY ===== -->
@@ -1177,6 +1268,61 @@ class Component extends DCLogic {
       ? { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--parkie-text-secondary)', boxShadow: 'inset -3px -3px 0 0 var(--parkie-surface-2)' }
       : { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--parkie-warning)' };
 
+    const toneRamp = (key, title, note, values) => ({
+      title, note,
+      items: values.map(([step, hex]) => ({
+        step, hex,
+        token: `--parkie-color-${key}-${step}`,
+        swatch: { height: '64px', background: `var(--parkie-color-${key}-${step})`, borderBottom: '1px solid var(--parkie-border)' },
+      })),
+    });
+    const primitiveRamps = [
+      toneRamp('brand', 'Brand · Parkie Blue', L('500은 브랜드 기준색입니다.', '500 is the brand anchor.'), [
+        ['50','#EDFDFF'],['100','#D1FAFF'],['200','#A5F4FC'],['300','#16DCF2'],['400','#00C8FF'],['500','#00AAFF'],['600','#009BE9'],['700','#007CBD'],['800','#08638F'],['900','#0D4F70'],['950','#06222E'],
+      ]),
+      toneRamp('neutral', 'Neutral · Cool Gray', L('Surface와 콘텐츠 위계를 위한 무채색입니다.', 'Neutral ramp for surfaces and content hierarchy.'), [
+        ['50','#FAFAFA'],['100','#F4F4F5'],['200','#E4E4E7'],['300','#D4D4D8'],['400','#A1A1AA'],['500','#71717A'],['600','#5A5A61'],['700','#4C4C4D'],['800','#343436'],['900','#242426'],['950','#131315'],
+      ]),
+      toneRamp('green', 'Green · Success', L('운행 및 정상 상태의 원시 팔레트입니다.', 'Primitive ramp for active and success states.'), [
+        ['50','#ECFDF1'],['100','#D1FADE'],['200','#A7F3BE'],['300','#4ADE8B'],['400','#22E267'],['500','#0FDC4C'],['600','#0BB83D'],['700','#0C9134'],['800','#10712F'],['900','#105D2A'],['950','#052F15'],
+      ]),
+      toneRamp('yellow', 'Yellow · Warning', L('주의와 배터리 경고를 위한 원시 팔레트입니다.', 'Primitive ramp for caution and battery warnings.'), [
+        ['50','#FFFDE7'],['100','#FFF9C2'],['200','#FFF28A'],['300','#FFE44D'],['400','#FFDE1F'],['500','#FFD900'],['600','#D9B600'],['700','#A88900'],['800','#806A00'],['900','#695700'],['950','#3D3200'],
+      ]),
+      toneRamp('red', 'Red · Danger', L('오류와 위험 상태의 원시 팔레트입니다.', 'Primitive ramp for error and danger states.'), [
+        ['50','#FFF1F1'],['100','#FFE1E1'],['200','#FFC7C7'],['300','#FF6B6B'],['400','#F43F3F'],['500','#EC2020'],['600','#DF0000'],['700','#B80000'],['800','#970707'],['900','#7D0C0C'],['950','#450303'],
+      ]),
+    ];
+
+    const tokenLayers = [
+      { index: '01 · PRIMITIVE', title: L('원시 팔레트', 'Primitive ramps'), desc: L('50–950 밝기 단계. 직접 사용하지 않고 의미 토큰에서 참조합니다.', '50–950 tonal scales. Referenced by semantic tokens, never bound directly.') },
+      { index: '02 · SEMANTIC', title: L('의미 토큰', 'Semantic aliases'), desc: L('배경·텍스트·경계·액션처럼 사용 목적을 이름으로 표현합니다.', 'Names communicate intent: background, text, border, action and status.') },
+      { index: '03 · DOMAIN', title: L('Parkie 도메인', 'Parkie domain'), desc: L('운행·충전·대기·오류 등 관제 상태를 제품 언어로 연결합니다.', 'Maps control-domain language such as active, charging, idle and error.') },
+    ];
+
+    const elevationDefs = [
+      ['00','0%','#131315',L('기본 Surface', 'Base surface')],
+      ['01','5%','#1F1F21',L('Card', 'Card')],
+      ['02','7%','#242425',L('Raised control', 'Raised control')],
+      ['03','8%','#262628',L('Scrolled header', 'Scrolled header')],
+      ['04','9%','#28282A',L('Hover card', 'Hover card')],
+      ['06','11%','#2D2D2F',L('Toast · Snackbar', 'Toast · Snackbar')],
+      ['08','12%','#2F2F31',L('Menu · Popover', 'Menu · Popover')],
+      ['12','14%','#343436',L('Floating action', 'Floating action')],
+      ['16','15%','#363638',L('Drawer · Side panel', 'Drawer · Side panel')],
+      ['24','16%','#39393A',L('Dialog · Modal', 'Dialog · Modal')],
+      ['48','18%','#3D3D3F',L('최상위 임시 레이어', 'Top temporary layer')],
+    ];
+    const elevationSurfaces = elevationDefs.map(([dp, overlay, hex, use], i) => ({
+      dp: `${dp} dp`, overlay: `${overlay} · On Surface`, hex, use,
+      bar: {
+        minHeight: '58px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
+        padding: '0 14px', background: `var(--parkie-surface-elevation-${dp})`,
+        border: '1px solid var(--parkie-border)', borderRadius: 'var(--parkie-radius-md)',
+        boxShadow: i === 0 ? 'none' : i < 5 ? 'var(--parkie-shadow-sm)' : i < 9 ? 'var(--parkie-shadow-md)' : 'var(--parkie-shadow-lg)',
+      },
+    }));
+
     const mk = (name, varName, note) => ({ name, varName, note: note || '', chip: { height: '58px', background: `var(${varName})`, borderBottom: '1px solid var(--parkie-border)' } });
     const colorSections = [
       { title: L('브랜드 · Brand', 'Brand'), note: L('기본 액션과 강조에 사용', 'Primary actions and emphasis'), items: [
@@ -1192,6 +1338,19 @@ class Component extends DCLogic {
       { title: L('로봇 상태 · Robot status', 'Robot status'), note: L('관제 화면 전용 상태 색상', 'Domain colors for the control view'), items: [
         mk('Active 운행중', '--parkie-status-active'), mk('Charging 충전중', '--parkie-status-charging'), mk('Idle 대기', '--parkie-status-idle'),
         mk('Error 오류', '--parkie-status-error'), mk('Offline 오프라인', '--parkie-status-offline') ] },
+    ];
+
+    const contrastSample = (color, background) => ({
+      width: '42px', height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: 'var(--parkie-radius-sm)', border: '1px solid var(--parkie-border)',
+      fontFamily: 'var(--parkie-font-mono)', fontSize: '12px', fontWeight: 700, color, background,
+    });
+    const contrastPairs = [
+      { label: L('기본 텍스트', 'Primary text'), usage: L('일반 본문 · AA/AAA', 'Body copy · AA/AAA'), ratio: '16.72:1', sample: contrastSample('var(--parkie-text)', 'var(--parkie-surface)') },
+      { label: L('보조 텍스트', 'Secondary text'), usage: L('설명과 메타 정보', 'Description and metadata'), ratio: '7.18:1', sample: contrastSample('var(--parkie-text-secondary)', 'var(--parkie-surface)') },
+      { label: L('브랜드 액션', 'Brand action'), usage: L('Primary 버튼', 'Primary button'), ratio: '6.42:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-brand-primary)') },
+      { label: L('위험 텍스트', 'Danger text'), usage: L('오류 메시지', 'Error messaging'), ratio: '6.69:1', sample: contrastSample('var(--parkie-danger-text)', 'var(--parkie-surface)') },
+      { label: L('경고 위 콘텐츠', 'On warning'), usage: L('경고 배경의 아이콘·텍스트', 'Content on warning background'), ratio: '11.89:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-warning)') },
     ];
 
     const typeRows = [
@@ -1284,7 +1443,20 @@ class Component extends DCLogic {
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
       msRefNote: L('참조용입니다. Parkie 버전으로 가져오려면 알려주세요.', 'Reference only — tell me to build the Parkie version.'),
       isSoon: !cur.impl,
-      colorSections, typeScale, spacingScale, radiusScale, elevationScale,
+      tokenLayers,
+      primitiveTitle: L('원시 팔레트 · Primitive ramps', 'Primitive ramps'),
+      primitiveNote: L('밝기 순서를 나타내는 원시값입니다. 제품 UI에는 아래 Semantic 토큰을 사용합니다.', 'Raw tonal values ordered by lightness. Use the semantic aliases below in product UI.'),
+      primitiveRamps,
+      elevationColorTitle: L('Surface Elevation · 다크 높이 색상', 'Surface elevation'),
+      elevationColorNote: L('기본 Surface #131315 위에 흰색 Overlay를 합성합니다. 높을수록 더 밝아집니다.', 'White overlays are composited over #131315. Higher surfaces become lighter.'),
+      elevationSurfaces,
+      semanticTitle: L('의미 토큰 · Semantic colors', 'Semantic colors'),
+      semanticNote: L('컴포넌트는 숫자 팔레트가 아니라 역할과 상태가 명시된 토큰을 사용합니다.', 'Components consume role- and state-based tokens rather than numbered primitives.'),
+      colorSections,
+      contrastTitle: L('접근성 기준 조합 · Accessibility', 'Accessibility pairs'),
+      contrastNote: L('대표 전경·배경 조합의 WCAG 대비율입니다. Tertiary와 Disabled는 본문 텍스트에 사용하지 않습니다.', 'WCAG contrast for key foreground/background pairs. Tertiary and disabled colors are not for body copy.'),
+      contrastPairs,
+      typeScale, spacingScale, radiusScale, elevationScale,
     };
   }
 }

@@ -72,6 +72,16 @@ img {
     grid-template-columns: 1fr !important;
   }
 
+  .pk-token-layers {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pk-elevation-row {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    padding-block: var(--parkie-space-3) !important;
+  }
+
   x-import {
     max-width: 100%;
   }

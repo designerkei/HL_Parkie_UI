@@ -59,51 +59,142 @@
   --parkie-radius-pill: 999px;
   --parkie-radius-round: 50%;
 
-  /* ---- Brand ---- */
-  --parkie-brand-primary: #00AAFF;
-  --parkie-brand-primary-hover: #16DCF2;
-  --parkie-brand-primary-active: #009BE9;
-  --parkie-brand-on: #06222E;
+  /* ===================================================================
+     COLOR PRIMITIVES
+     50 is the lightest tint; 950 is the darkest shade. Components must
+     consume semantic aliases below instead of these raw values.
+     =================================================================== */
+  --parkie-color-brand-50: #EDFDFF;
+  --parkie-color-brand-100: #D1FAFF;
+  --parkie-color-brand-200: #A5F4FC;
+  --parkie-color-brand-300: #16DCF2;
+  --parkie-color-brand-400: #00C8FF;
+  --parkie-color-brand-500: #00AAFF;
+  --parkie-color-brand-600: #009BE9;
+  --parkie-color-brand-700: #007CBD;
+  --parkie-color-brand-800: #08638F;
+  --parkie-color-brand-900: #0D4F70;
+  --parkie-color-brand-950: #06222E;
+
+  --parkie-color-neutral-50: #FAFAFA;
+  --parkie-color-neutral-100: #F4F4F5;
+  --parkie-color-neutral-200: #E4E4E7;
+  --parkie-color-neutral-300: #D4D4D8;
+  --parkie-color-neutral-400: #A1A1AA;
+  --parkie-color-neutral-500: #71717A;
+  --parkie-color-neutral-600: #5A5A61;
+  --parkie-color-neutral-700: #4C4C4D;
+  --parkie-color-neutral-800: #343436;
+  --parkie-color-neutral-900: #242426;
+  --parkie-color-neutral-950: #131315;
+
+  --parkie-color-green-50: #ECFDF1;
+  --parkie-color-green-100: #D1FADE;
+  --parkie-color-green-200: #A7F3BE;
+  --parkie-color-green-300: #4ADE8B;
+  --parkie-color-green-400: #22E267;
+  --parkie-color-green-500: #0FDC4C;
+  --parkie-color-green-600: #0BB83D;
+  --parkie-color-green-700: #0C9134;
+  --parkie-color-green-800: #10712F;
+  --parkie-color-green-900: #105D2A;
+  --parkie-color-green-950: #052F15;
+
+  --parkie-color-yellow-50: #FFFDE7;
+  --parkie-color-yellow-100: #FFF9C2;
+  --parkie-color-yellow-200: #FFF28A;
+  --parkie-color-yellow-300: #FFE44D;
+  --parkie-color-yellow-400: #FFDE1F;
+  --parkie-color-yellow-500: #FFD900;
+  --parkie-color-yellow-600: #D9B600;
+  --parkie-color-yellow-700: #A88900;
+  --parkie-color-yellow-800: #806A00;
+  --parkie-color-yellow-900: #695700;
+  --parkie-color-yellow-950: #3D3200;
+
+  --parkie-color-red-50: #FFF1F1;
+  --parkie-color-red-100: #FFE1E1;
+  --parkie-color-red-200: #FFC7C7;
+  --parkie-color-red-300: #FF6B6B;
+  --parkie-color-red-400: #F43F3F;
+  --parkie-color-red-500: #EC2020;
+  --parkie-color-red-600: #DF0000;
+  --parkie-color-red-700: #B80000;
+  --parkie-color-red-800: #970707;
+  --parkie-color-red-900: #7D0C0C;
+  --parkie-color-red-950: #450303;
+
+  --parkie-color-common-white: #FFFFFF;
+  --parkie-color-common-canvas: #0F0F11;
+
+  /* ---- Alpha primitives ---- */
+  --parkie-alpha-white-00: rgba(255,255,255,0);
+  --parkie-alpha-white-05: rgba(255,255,255,0.05);
+  --parkie-alpha-white-07: rgba(255,255,255,0.07);
+  --parkie-alpha-white-08: rgba(255,255,255,0.08);
+  --parkie-alpha-white-09: rgba(255,255,255,0.09);
+  --parkie-alpha-white-11: rgba(255,255,255,0.11);
+  --parkie-alpha-white-12: rgba(255,255,255,0.12);
+  --parkie-alpha-white-14: rgba(255,255,255,0.14);
+  --parkie-alpha-white-15: rgba(255,255,255,0.15);
+  --parkie-alpha-white-16: rgba(255,255,255,0.16);
+  --parkie-alpha-white-18: rgba(255,255,255,0.18);
+
+  /* ---- Dark surface elevation: #131315 + white overlay ---- */
+  --parkie-surface-elevation-00: #131315;
+  --parkie-surface-elevation-01: #1F1F21;
+  --parkie-surface-elevation-02: #242425;
+  --parkie-surface-elevation-03: #262628;
+  --parkie-surface-elevation-04: #28282A;
+  --parkie-surface-elevation-06: #2D2D2F;
+  --parkie-surface-elevation-08: #2F2F31;
+  --parkie-surface-elevation-12: #343436;
+  --parkie-surface-elevation-16: #363638;
+  --parkie-surface-elevation-24: #39393A;
+  --parkie-surface-elevation-48: #3D3D3F;
+
+  /* ===================================================================
+     SEMANTIC ALIASES — use these in UI and components
+     =================================================================== */
+  --parkie-brand-primary: var(--parkie-color-brand-500);
+  --parkie-brand-primary-hover: var(--parkie-color-brand-300);
+  --parkie-brand-primary-active: var(--parkie-color-brand-600);
+  --parkie-brand-on: var(--parkie-color-brand-950);
   --parkie-brand-subtle: rgba(0,170,255,0.14);
   --parkie-brand-subtle-hover: rgba(0,170,255,0.20);
   --parkie-brand-border: rgba(0,170,255,0.42);
-  --parkie-brand-text: #00C8FF;
+  --parkie-brand-text: var(--parkie-color-brand-400);
 
-  /* ---- Neutral surfaces & text (cool slate) ---- */
-  --parkie-bg: #0F0F11;
-  --parkie-surface: #161618;
-  --parkie-surface-2: #1E1E21;
-  --parkie-surface-3: #242426;
-  --parkie-border: rgba(255,255,255,0.09);
-  --parkie-border-strong: #4C4C4D;
+  --parkie-bg: var(--parkie-color-common-canvas);
+  --parkie-surface: var(--parkie-surface-elevation-00);
+  --parkie-surface-2: var(--parkie-surface-elevation-01);
+  --parkie-surface-3: var(--parkie-surface-elevation-02);
+  --parkie-border: var(--parkie-alpha-white-09);
+  --parkie-border-strong: var(--parkie-color-neutral-700);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.40);
   --parkie-text-disabled: rgba(255,255,255,0.30);
 
-  /* ---- Semantic: success ---- */
-  --parkie-success: #0FDC4C;
+  --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);
-  --parkie-success-text: #4ADE8B;
-  /* ---- Semantic: warning ---- */
-  --parkie-warning: #FFD900;
+  --parkie-success-text: var(--parkie-color-green-300);
+  --parkie-warning: var(--parkie-color-yellow-500);
   --parkie-warning-subtle: rgba(255,217,0,0.14);
-  --parkie-warning-text: #FFE44D;
-  /* ---- Semantic: danger ---- */
-  --parkie-danger: #DF0000;
+  --parkie-warning-text: var(--parkie-color-yellow-300);
+  --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
-  --parkie-danger-text: #FF6B6B;
-  /* ---- Semantic: info ---- */
-  --parkie-info: #00AAFF;
+  --parkie-danger-text: var(--parkie-color-red-300);
+  --parkie-info: var(--parkie-color-brand-500);
   --parkie-info-subtle: rgba(0,170,255,0.14);
-  --parkie-info-text: #00C8FF;
+  --parkie-info-text: var(--parkie-color-brand-400);
 
-  /* ---- Robot status (domain tokens — 관제 상태) ---- */
-  --parkie-status-active: #0FDC4C;   /* 운행중 / active */
-  --parkie-status-charging: #00AAFF; /* 충전중 / charging */
-  --parkie-status-idle: #98A1AD;     /* 대기 / idle */
-  --parkie-status-error: #DF0000;    /* 오류 / error */
-  --parkie-status-offline: #4C4C4D;  /* 오프라인 / offline */
+  /* ---- Parkie domain aliases — robot control states ---- */
+  --parkie-status-active: var(--parkie-success);
+  --parkie-status-charging: var(--parkie-info);
+  --parkie-status-idle: #98A1AD;
+  --parkie-status-error: var(--parkie-danger);
+  --parkie-status-offline: var(--parkie-color-neutral-700);
 
   /* ---- Elevation ---- */
   --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
@@ -119,44 +210,44 @@
    Dark theme — applied via [data-theme="dark"] on the app root
    ===================================================================== */
 [data-theme="dark"] {
-  --parkie-brand-primary: #00AAFF;
-  --parkie-brand-primary-hover: #16DCF2;
-  --parkie-brand-primary-active: #009BE9;
-  --parkie-brand-on: #06222E;
+  --parkie-brand-primary: var(--parkie-color-brand-500);
+  --parkie-brand-primary-hover: var(--parkie-color-brand-300);
+  --parkie-brand-primary-active: var(--parkie-color-brand-600);
+  --parkie-brand-on: var(--parkie-color-brand-950);
   --parkie-brand-subtle: rgba(0,170,255,0.14);
   --parkie-brand-subtle-hover: rgba(0,170,255,0.20);
   --parkie-brand-border: rgba(0,170,255,0.42);
-  --parkie-brand-text: #00C8FF;
+  --parkie-brand-text: var(--parkie-color-brand-400);
 
-  --parkie-bg: #0F0F11;
-  --parkie-surface: #161618;
-  --parkie-surface-2: #1E1E21;
-  --parkie-surface-3: #242426;
-  --parkie-border: rgba(255,255,255,0.09);
-  --parkie-border-strong: #4C4C4D;
+  --parkie-bg: var(--parkie-color-common-canvas);
+  --parkie-surface: var(--parkie-surface-elevation-00);
+  --parkie-surface-2: var(--parkie-surface-elevation-01);
+  --parkie-surface-3: var(--parkie-surface-elevation-02);
+  --parkie-border: var(--parkie-alpha-white-09);
+  --parkie-border-strong: var(--parkie-color-neutral-700);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.40);
   --parkie-text-disabled: rgba(255,255,255,0.30);
 
-  --parkie-success: #0FDC4C;
+  --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);
-  --parkie-success-text: #4ADE8B;
-  --parkie-warning: #FFD900;
+  --parkie-success-text: var(--parkie-color-green-300);
+  --parkie-warning: var(--parkie-color-yellow-500);
   --parkie-warning-subtle: rgba(255,217,0,0.14);
-  --parkie-warning-text: #FFE44D;
-  --parkie-danger: #DF0000;
+  --parkie-warning-text: var(--parkie-color-yellow-300);
+  --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
-  --parkie-danger-text: #FF6B6B;
-  --parkie-info: #00AAFF;
+  --parkie-danger-text: var(--parkie-color-red-300);
+  --parkie-info: var(--parkie-color-brand-500);
   --parkie-info-subtle: rgba(0,170,255,0.14);
-  --parkie-info-text: #00C8FF;
+  --parkie-info-text: var(--parkie-color-brand-400);
 
-  --parkie-status-active: #0FDC4C;
-  --parkie-status-charging: #00AAFF;
+  --parkie-status-active: var(--parkie-success);
+  --parkie-status-charging: var(--parkie-info);
   --parkie-status-idle: #98A1AD;
-  --parkie-status-error: #DF0000;
-  --parkie-status-offline: #4C4C4D;
+  --parkie-status-error: var(--parkie-danger);
+  --parkie-status-offline: var(--parkie-color-neutral-700);
 
   --parkie-shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.40);
   --parkie-shadow-md: 0 2px 4px -2px rgba(0,0,0,0.35), 0 4px 8px -2px rgba(0,0,0,0.45);
