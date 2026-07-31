@@ -70,3 +70,40 @@ test('capture reference-critical component pages', async ({ page }) => {
     path: path.join('test-results', 'review', 'emergency-confirm-detail.png'),
   });
 });
+
+test('capture System Summary at planned breakpoints', async ({ page }) => {
+  const breakpoints = [
+    { width: 1920, height: 1080, file: 'system-summary-1920.png' },
+    { width: 1400, height: 1000, file: 'system-summary-1400.png' },
+    { width: 900, height: 1000, file: 'system-summary-900.png' },
+  ];
+
+  await page.goto('/');
+  for (const breakpoint of breakpoints) {
+    await page.setViewportSize({ width: breakpoint.width, height: breakpoint.height });
+    const item = page.locator('nav.pk-scroll button').filter({ hasText: '전체 요약' }).first();
+    await item.click();
+    await expect(page.locator('[data-system-summary]')).toBeVisible();
+    await page.screenshot({
+      path: path.join('test-results', 'review', breakpoint.file),
+      fullPage: false,
+    });
+  }
+
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.locator('[data-system-summary]').screenshot({
+    path: path.join('test-results', 'review', 'system-summary-full.png'),
+  });
+  const summarySections = [
+    ['iconography', 'system-summary-iconography.png'],
+    ['form-controls', 'system-summary-form-controls.png'],
+    ['buttons', 'system-summary-buttons.png'],
+    ['robot-operations', 'system-summary-robot-operations.png'],
+    ['component-index', 'system-summary-component-index.png'],
+  ];
+  for (const [section, file] of summarySections) {
+    await page.locator(`[data-summary-section="${section}"]`).screenshot({
+      path: path.join('test-results', 'review', file),
+    });
+  }
+});

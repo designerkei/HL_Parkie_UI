@@ -6,6 +6,7 @@
 @import "./components/operations.css?v=0.3";
 @import "./components/iconography.css?v=0.4";
 @import "./components/media-emergency.css?v=0.1";
+@import "./components/system-summary.css?v=0.1";
 
 :root {
   color-scheme: dark;

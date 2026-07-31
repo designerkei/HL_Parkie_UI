@@ -291,6 +291,109 @@ test('CCTV feed layout adapts to two columns and then one column', async ({ page
   expect(narrowBoxes[0].y).toBeLessThan(narrowBoxes[1].y);
 });
 
+test('System Summary composes eight live-token sections and links to detail pages', async ({ page }) => {
+  await openComponent(page, '전체 요약');
+  await expect(page.locator('h1')).toContainText('전체 요약');
+  await expect(page.locator('.pk-content-frame')).toHaveClass(/pk-content-frame--summary/);
+  await expect(page.locator('[data-summary-section]')).toHaveCount(8);
+
+  const typeRows = page.locator('[data-summary-type-row]');
+  await expect(typeRows).toHaveCount(9);
+  await expect(typeRows.first().locator('.pk-summary-type-row__sample')).toHaveCSS(
+    'font-family',
+    /Pretendard/
+  );
+  await expect(page.locator('[data-summary-mono-sample]')).toHaveCSS(
+    'font-family',
+    /Roboto Mono/
+  );
+
+  const firstColor = page.locator('[data-summary-color]').first();
+  const colorParity = await firstColor.evaluate((chip) => {
+    const probe = document.createElement('span');
+    probe.style.background = `var(${chip.dataset.token})`;
+    document.body.appendChild(probe);
+    const result = {
+      actual: getComputedStyle(chip).backgroundColor,
+      expected: getComputedStyle(probe).backgroundColor,
+    };
+    probe.remove();
+    return result;
+  });
+  expect(colorParity.actual).toBe(colorParity.expected);
+
+  await expect(page.locator('[data-summary-icon-row]')).toHaveCount(3);
+  await expect(page.locator('[data-summary-icon-row] .pk-icon-state')).toHaveCount(12);
+  await expect(page.locator('[data-summary-icon-row] .pk-icon-source')).toHaveText([
+    'Original',
+    'Custom',
+    'Adopted',
+  ]);
+  expect(await page.locator('[data-summary-section="iconography"]').innerText()).not.toMatch(/\bMS\b/);
+
+  await expect(page.locator('.pk-summary-input')).toHaveCount(5);
+  await expect(page.locator('.pk-summary-input.is-focus')).toHaveCSS(
+    'border-color',
+    'rgb(0, 170, 255)'
+  );
+  await expect(page.locator('[data-summary-section="buttons"] .pk-button--danger')).toHaveCSS(
+    'background-color',
+    'rgb(223, 0, 0)'
+  );
+  await expect(page.locator('[data-summary-section="buttons"] .pk-button.is-disabled')).toHaveCSS(
+    'background-color',
+    'rgba(255, 255, 255, 0.35)'
+  );
+  await expect(page.locator('[data-summary-operation]')).toHaveCount(5);
+  await expect(page.locator('[data-summary-destination]')).toHaveCount(10);
+
+  const unnamedButtons = await page.locator('[data-system-summary] button').evaluateAll((buttons) => (
+    buttons
+      .filter((button) => !(button.getAttribute('aria-label') || button.textContent.trim()))
+      .map((button) => button.outerHTML)
+  ));
+  expect(unnamedButtons).toEqual([]);
+
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('System Summary');
+  await expect(page.locator('[data-summary-section="identity"]')).toContainText('Dark fixed');
+  await page.getByRole('button', { name: 'KO', exact: true }).click();
+
+  await page
+    .locator('[data-summary-section="typography"]')
+    .getByRole('button', { name: '타이포그래피 상세 보기' })
+    .click();
+  await expect(page.locator('h1')).toContainText('타이포그래피');
+});
+
+test('System Summary switches from two columns to one without page overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1000 });
+  await openComponent(page, '전체 요약');
+
+  for (const [width, expectedColumns] of [[1920, 2], [1400, 2], [900, 1]]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const pairedCards = page.locator(
+      '[data-summary-section="typography"], [data-summary-section="colors"]'
+    );
+    const positions = await pairedCards.evaluateAll((nodes) => nodes.map((node) => {
+      const rect = node.getBoundingClientRect();
+      return { x: Math.round(rect.x), y: Math.round(rect.y) };
+    }));
+    if (expectedColumns === 2) {
+      expect(positions[0].x).toBeLessThan(positions[1].x);
+      expect(positions[0].y).toBe(positions[1].y);
+    } else {
+      expect(positions[0].x).toBe(positions[1].x);
+      expect(positions[0].y).toBeLessThan(positions[1].y);
+    }
+
+    const hasOverflow = await page.locator('[data-system-summary]').evaluate(
+      (node) => node.scrollWidth > node.clientWidth + 1
+    );
+    expect(hasOverflow).toBe(false);
+  }
+});
+
 test('new icon and media controls retain accessible names, focus disclosure and reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await openComponent(page, '미디어·비상 제어');

@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.4">
+<link rel="stylesheet" href="styles.css?v=0.5">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -158,6 +158,293 @@
             <div style="padding:var(--parkie-space-5);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
               <div style="font-weight:600;font-size:var(--parkie-font-lg);color:var(--parkie-text);margin-bottom:6px;">교체 가능 · Swappable</div>
               <p style="margin:0;font-size:var(--parkie-font-sm);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);">브랜드·로고·색을 토큰 한 곳에서 교체. 컴포넌트는 그대로 유지됩니다.</p>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ===== SYSTEM SUMMARY ===== -->
+        <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-system-summary" data-system-summary>
+            <div class="pk-summary-guide">
+              <div>
+                <strong>RMS 구조 × Parkie 시각 언어</strong>
+                <p>핵심 규정을 빠르게 확인하는 인덱스입니다. 각 카드의 전체 보기를 누르면 실제 상세 규정으로 이동합니다.</p>
+              </div>
+              <span class="pk-summary-guide__meta">8 SECTIONS · LIVE TOKENS</span>
+            </div>
+
+            <div class="pk-summary-grid">
+              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="identity" aria-labelledby="summary-identity-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">01</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Foundation</span>
+                    <h2 id="summary-identity-title">Identity · 아이덴티티</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryIdentityLink.onClick }}" aria-label="{{ summaryIdentityLink.ariaLabel }}">
+                    {{ summaryIdentityLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-identity">
+                    <div class="pk-summary-identity__brand">
+                      <img src="brand/hl-robotics-wordmark-white.svg" alt="HL Robotics">
+                      <div>
+                        <strong>Parkie UI</strong>
+                        <span>RMS DESIGN SYSTEM</span>
+                      </div>
+                    </div>
+                    <dl class="pk-summary-facts">
+                      <sc-for list="{{ summaryIdentityFacts }}" as="fact" hint-placeholder-count="4">
+                        <div class="pk-summary-fact">
+                          <dt>{{ fact.label }}</dt>
+                          <dd>{{ fact.value }}</dd>
+                        </div>
+                      </sc-for>
+                    </dl>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section" data-summary-section="typography" aria-labelledby="summary-typography-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">02</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Foundation</span>
+                    <h2 id="summary-typography-title">Typography · 타이포그래피</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryTypographyLink.onClick }}" aria-label="{{ summaryTypographyLink.ariaLabel }}">
+                    {{ summaryTypographyLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-font-families">
+                    <div class="pk-summary-font-family" data-summary-font="sans">
+                      <span>UI · KO / EN</span>
+                      <strong>Pretendard</strong>
+                    </div>
+                    <div class="pk-summary-font-family pk-summary-font-family--mono" data-summary-font="mono">
+                      <span>DATA · CODE</span>
+                      <strong>Roboto Mono</strong>
+                    </div>
+                  </div>
+                  <div class="pk-summary-type-list">
+                    <sc-for list="{{ summaryTypeScale }}" as="type" hint-placeholder-count="9">
+                      <div class="pk-summary-type-row" data-summary-type-row>
+                        <div class="pk-summary-type-row__meta">
+                          <strong>{{ type.label }}</strong>
+                          <code>{{ type.token }}</code>
+                        </div>
+                        <div class="pk-summary-type-row__sample" style="{{ type.style }}">가나다 Aa 123</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div class="pk-summary-mono-sample" data-summary-mono-sample>
+                    <span>PK-001 · B2F_23A · 14:01:35</span>
+                    <code>{{ summaryMonoType.token }}</code>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section" data-summary-section="colors" aria-labelledby="summary-colors-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">03</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Foundation</span>
+                    <h2 id="summary-colors-title">Colors · 색상</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryColorsLink.onClick }}" aria-label="{{ summaryColorsLink.ariaLabel }}">
+                    {{ summaryColorsLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-color-groups">
+                    <sc-for list="{{ summaryColorSections }}" as="group" hint-placeholder-count="5">
+                      <div class="pk-summary-color-group">
+                        <div class="pk-summary-color-group__head">
+                          <h3>{{ group.title }}</h3>
+                          <span>{{ group.note }}</span>
+                        </div>
+                        <div class="pk-summary-swatches">
+                          <sc-for list="{{ group.items }}" as="color" hint-placeholder-count="5">
+                            <div class="pk-summary-swatch">
+                              <div class="pk-summary-swatch__chip" style="{{ color.summaryChip }}" data-summary-color data-token="{{ color.varName }}"></div>
+                              <strong>{{ color.name }}</strong>
+                              <code>{{ color.varName }}</code>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="iconography" aria-labelledby="summary-iconography-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">04</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Foundation</span>
+                    <h2 id="summary-iconography-title">Iconography · 아이콘</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryIconographyLink.onClick }}" aria-label="{{ summaryIconographyLink.ariaLabel }}">
+                    {{ summaryIconographyLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-icon-scroll pk-scroll">
+                    <div class="pk-summary-icon-matrix">
+                      <div class="pk-summary-icon-head" aria-hidden="true">
+                        <span>Icon · Source</span>
+                        <span>Enabled</span>
+                        <span>Hover</span>
+                        <span>Pressed</span>
+                        <span>Disabled</span>
+                      </div>
+                      <sc-for list="{{ summaryIconRows }}" as="icon" hint-placeholder-count="3">
+                        <div class="pk-summary-icon-row" data-summary-icon-row>
+                          <div class="pk-summary-icon-name">
+                            <strong>{{ icon.ko }} · {{ icon.en }}</strong>
+                            <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
+                          </div>
+                          <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
+                            <div class="{{ state.className }}" aria-label="{{ state.label }}">
+                              {{ state.svg }}
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section" data-summary-section="form-controls" aria-labelledby="summary-form-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">05</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Action &amp; Input</span>
+                    <h2 id="summary-form-title">Form controls · 입력</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryInputLink.onClick }}" aria-label="{{ summaryInputLink.ariaLabel }}">
+                    {{ summaryInputLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-field-grid">
+                    <label class="pk-summary-field">
+                      <span>Default</span>
+                      <input class="pk-summary-input" aria-label="Default input example" placeholder="PK-001">
+                    </label>
+                    <label class="pk-summary-field">
+                      <span>Focus</span>
+                      <input class="pk-summary-input is-focus" aria-label="Focus input example" value="PK-001">
+                    </label>
+                    <label class="pk-summary-field">
+                      <span>Disabled</span>
+                      <input class="pk-summary-input" aria-label="Disabled input example" value="PK-001" disabled>
+                    </label>
+                    <label class="pk-summary-field">
+                      <span>Error</span>
+                      <input class="pk-summary-input is-error" aria-label="Error input example" aria-invalid="true" value="PK-###">
+                    </label>
+                    <label class="pk-summary-field">
+                      <span>Success</span>
+                      <input class="pk-summary-input is-success" aria-label="Success input example" value="PK-001">
+                    </label>
+                  </div>
+                  <div class="pk-summary-form-controls">
+                    <label class="pk-summary-check"><input type="checkbox" checked>운행중 포함</label>
+                    <label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="요약 서비스 활성화"></button><span>서비스 활성화</span></label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section" data-summary-section="buttons" aria-labelledby="summary-buttons-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">06</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Action &amp; Input</span>
+                    <h2 id="summary-buttons-title">Buttons · 버튼</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryButtonLink.onClick }}" aria-label="{{ summaryButtonLink.ariaLabel }}">
+                    {{ summaryButtonLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-button-block">
+                    <h3>Variants</h3>
+                    <div class="pk-summary-button-row">
+                      <button class="pk-button" type="button">Primary</button>
+                      <button class="pk-button pk-button--secondary" type="button">Secondary</button>
+                      <button class="pk-button pk-button--danger" type="button">Danger</button>
+                    </div>
+                  </div>
+                  <div class="pk-summary-button-block">
+                    <h3>Interaction states</h3>
+                    <div class="pk-summary-button-states">
+                      <div class="pk-summary-button-state"><span>Enabled</span><button class="pk-button" type="button">확인</button></div>
+                      <div class="pk-summary-button-state"><span>Hover</span><button class="pk-button is-hover" type="button">확인</button></div>
+                      <div class="pk-summary-button-state"><span>Pressed</span><button class="pk-button is-pressed" type="button">확인</button></div>
+                      <div class="pk-summary-button-state"><span>Disabled</span><button class="pk-button is-disabled" type="button" disabled>확인</button></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="robot-operations" aria-labelledby="summary-operations-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">07</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Robot Operations</span>
+                    <h2 id="summary-operations-title">Robot operations · 로봇 운영</h2>
+                  </div>
+                  <button class="pk-summary-link" type="button" onClick="{{ summaryRobotLink.onClick }}" aria-label="{{ summaryRobotLink.ariaLabel }}">
+                    {{ summaryRobotLink.label }}
+                    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-operations">
+                    <sc-for list="{{ summaryDomainItems }}" as="operation" hint-placeholder-count="5">
+                      <article class="pk-summary-operation" data-summary-operation>
+                        <div class="{{ operation.item.className }}" aria-hidden="true">{{ operation.item.svg }}</div>
+                        <strong>{{ operation.title }}</strong>
+                        <span>{{ operation.item.label }}</span>
+                      </article>
+                    </sc-for>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pk-summary-section pk-summary-section--wide" data-summary-section="component-index" aria-labelledby="summary-index-title">
+                <header class="pk-summary-section__head">
+                  <span class="pk-summary-section__index">08</span>
+                  <div class="pk-summary-section__title">
+                    <span class="pk-summary-section__eyebrow">Index</span>
+                    <h2 id="summary-index-title">Component index · 상세 문서</h2>
+                  </div>
+                </header>
+                <div class="pk-summary-section__body">
+                  <div class="pk-summary-index">
+                    <sc-for list="{{ summaryIndexItems }}" as="item" hint-placeholder-count="10">
+                      <button class="pk-summary-index-item" type="button" onClick="{{ item.onClick }}" aria-label="{{ item.ariaLabel }}" data-summary-destination="{{ item.id }}">
+                        <span class="pk-summary-index-item__category">{{ item.category }}</span>
+                        <span class="pk-summary-index-item__label">
+                          {{ item.label }}
+                          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
         </sc-if>
@@ -2439,7 +2726,7 @@ class Component extends DCLogic {
 
   NAV = [
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
-      { ko: '시작하기', en: 'Get started', items: ['overview', 'principles', 'changelog'] },
+      { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles', 'changelog'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography'] },
       { ko: '액션·입력', en: 'Actions & Input', items: ['button', 'segmented', 'switch', 'input', 'select', 'checkbox'] },
       { ko: '상태·피드백', en: 'Status & Feedback', items: ['badge', 'statuslabel', 'alert', 'alertfeed'] },
@@ -2459,6 +2746,7 @@ class Component extends DCLogic {
 
   META = {
     overview:    { ko: '개요', en: 'Overview', impl: true, dko: 'Parkie RMS 관제 시스템을 위한 디자인 시스템입니다. 토큰 · 컴포넌트 · 가이드라인을 한 곳에서 관리하고, 브랜드를 손쉽게 교체합니다.', den: 'The design system for the Parkie RMS robot control platform — tokens, components and guidelines in one place, with a swappable brand.' },
+    systemsummary: { ko: '전체 요약', en: 'System Summary', impl: true, dko: 'RMS의 전체 규정 위에 적용된 Parkie 아이덴티티, 타입, 색상, 아이콘, 입력과 로봇 운영 컴포넌트를 한 화면에서 확인합니다.', den: 'A single-page index of Parkie identity, type, color, icon, input and robot-operation rules applied across the RMS system.' },
     principles:  { ko: '디자인 원칙', en: 'Principles', impl: true, dko: 'Parkie RMS 디자인 시스템을 관통하는 네 가지 핵심 원칙.', den: 'The four core principles behind the Parkie RMS design system.' },
     changelog:   { ko: '변경 이력', en: 'Change log', impl: true, dko: '버전별 변경 사항.', den: 'What changed in each version.' },
     colors:      { ko: '색상', en: 'Colors', impl: true, dko: '브랜드 · 중립 · 시맨틱 · 로봇 상태 색상. 운영 UI는 Parkie 다크 토큰을 사용합니다.', den: 'Brand, neutral, semantic and robot-status colors powered by the Parkie dark tokens.' },
@@ -2552,6 +2840,7 @@ class Component extends DCLogic {
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
     const cur = this.META[active] || this.META.overview;
+    const version = 'v0.1';
 
     const buildItems = (ids) => ids.map((id) => {
       const m = this.META[id];
@@ -3051,6 +3340,59 @@ class Component extends DCLogic {
       },
     }));
 
+    const summaryIdentityFacts = [
+      { label: L('제품', 'Product'), value: 'Parkie UI' },
+      { label: L('버전', 'Version'), value: version },
+      { label: L('테마', 'Theme'), value: L('다크 고정', 'Dark fixed') },
+      { label: L('언어', 'Language'), value: 'KO · EN' },
+    ];
+    const summaryTypeScale = typeScale.slice(0, 9);
+    const summaryMonoType = typeScale[typeScale.length - 1];
+    const summaryColorSections = colorSections.map((section) => ({
+      ...section,
+      items: section.items.slice(0, 5).map((item) => ({
+        ...item,
+        summaryChip: { background: `var(${item.varName})` },
+      })),
+    }));
+    const summaryIconRows = [coreIcons[1], robotOperationIcons[1], coreIcons[0]].map((row) => ({
+      ...row,
+      source: row.source.replace(/^Parkie /, ''),
+    }));
+    const summaryDomainItems = parkieDomainGroups.map((group) => ({
+      title: group.title,
+      item: group.items[0],
+    }));
+    const summaryLink = (id) => {
+      const meta = this.META[id];
+      return {
+        label: L('전체 보기', 'View all'),
+        ariaLabel: L(`${meta.ko} 상세 보기`, `View ${meta.en} details`),
+        onClick: () => this.select(id),
+      };
+    };
+    const summaryIndexItems = [
+      ['typography', '파운데이션', 'Foundation'],
+      ['colors', '파운데이션', 'Foundation'],
+      ['iconography', '파운데이션', 'Foundation'],
+      ['button', '액션', 'Action'],
+      ['input', '입력', 'Input'],
+      ['checkbox', '입력', 'Input'],
+      ['robotstatus', '로봇 운영', 'Robot operations'],
+      ['media', '로봇 운영', 'Robot operations'],
+      ['dashboard', '템플릿', 'Template'],
+      ['brand', '리소스', 'Resource'],
+    ].map(([id, categoryKo, categoryEn]) => {
+      const meta = this.META[id];
+      return {
+        id,
+        category: L(categoryKo, categoryEn),
+        label: L(meta.ko, meta.en),
+        ariaLabel: L(`${meta.ko} 상세 보기`, `View ${meta.en} details`),
+        onClick: () => this.select(id),
+      };
+    });
+
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
     const spacingScale = Object.keys(spx).map((n) => ({
       token: `--parkie-space-${n}`, px: spx[n],
@@ -3086,7 +3428,7 @@ class Component extends DCLogic {
       theme, lang,
       brandName: 'Parkie UI',
       subtitle: L('RMS 디자인 시스템', 'RMS Design System'),
-      ver: 'v0.1',
+      ver: version,
       searchPh: L('컴포넌트 검색', 'Search components'),
       themeLabel: theme === 'dark' ? L('다크', 'Dark') : L('라이트', 'Light'),
       themeDotStyle,
@@ -3096,12 +3438,17 @@ class Component extends DCLogic {
       setKo: () => this.setState({ lang: 'ko' }),
       setEn: () => this.setState({ lang: 'en' }),
       navSources,
-      contentFrameClass: active === 'media' ? 'pk-content-frame pk-content-frame--wide' : 'pk-content-frame',
+      contentFrameClass: active === 'media'
+        ? 'pk-content-frame pk-content-frame--wide'
+        : active === 'systemsummary'
+          ? 'pk-content-frame pk-content-frame--summary'
+          : 'pk-content-frame',
       msButtons, msButtonStates, msButtonMore, msCheckboxStatus, msCheckboxStates, msToggles,
       curTitle: L(cur.ko, cur.en),
       curSub: ko ? cur.en : cur.ko,
       curDesc: L(cur.dko, cur.den),
       isOverview: active === 'overview',
+      isSystemSummary: active === 'systemsummary',
       isPrinciples: active === 'principles',
       isChangelog: active === 'changelog',
       isColors: active === 'colors',
@@ -3155,6 +3502,20 @@ class Component extends DCLogic {
       parkieIconSummary,
       parkieIconGroups,
       parkieDomainGroups,
+      summaryIdentityFacts,
+      summaryTypeScale,
+      summaryMonoType,
+      summaryColorSections,
+      summaryIconRows,
+      summaryDomainItems,
+      summaryIndexItems,
+      summaryIdentityLink: summaryLink('brand'),
+      summaryTypographyLink: summaryLink('typography'),
+      summaryColorsLink: summaryLink('colors'),
+      summaryIconographyLink: summaryLink('iconography'),
+      summaryInputLink: summaryLink('input'),
+      summaryButtonLink: summaryLink('button'),
+      summaryRobotLink: summaryLink('robotstatus'),
       cameraFeeds,
       mediaEmergencyOpen,
       mediaEmergencyActive,
