@@ -53,7 +53,7 @@ test('icon controls, segment and switch keep their reference geometry', async ({
   await expect(segment).toHaveCSS('width', '200px');
   await expect(segment).toHaveCSS('height', '36px');
 
-  await openComponent(page, '스위치');
+  await openComponent(page, '선택 컨트롤');
   const toggle = page.locator('.pk-switch').first();
   const box = await toggle.boundingBox();
   expect(box.width).toBe(36);

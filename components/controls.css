@@ -340,13 +340,31 @@
 
 /* Switch -------------------------------------------------------------- */
 
-.pk-switch-field {
+/* Label row shared by all three selection controls. */
+.pk-switch-field,
+.pk-choice-field {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   color: var(--parkie-text-secondary);
   font-size: var(--parkie-font-sm);
   cursor: pointer;
+}
+
+.pk-choice-field input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--parkie-brand-primary);
+  cursor: pointer;
+}
+
+.pk-choice-field:has(input:disabled) {
+  color: var(--parkie-text-disabled);
+  cursor: not-allowed;
+}
+
+.pk-choice-field input:disabled {
+  cursor: not-allowed;
 }
 
 .pk-switch {

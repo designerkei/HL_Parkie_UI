@@ -803,16 +803,63 @@
         </sc-if>
 
         <!-- ===== SWITCH ===== -->
-        <sc-if value="{{ isSwitch }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ isSelection }}" hint-placeholder-val="{{ false }}">
           <div class="pk-control-doc">
             <section class="pk-control-section">
-              <h3>이진 설정 · Binary setting</h3>
-              <p>누르는 즉시 적용되는 On/Off 설정에 사용합니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
+              <h3>무엇을 언제 쓰는가 · Choosing a control</h3>
+              <p>세 컨트롤을 가르는 기준은 <b>적용 시점</b>입니다. 스위치는 누르는 즉시 장비에 전달되고, 체크박스와 라디오는 적용 버튼을 눌러야 반영됩니다. 즉시 적용이 아니라면 스위치를 쓰지 않습니다.</p>
+              <table class="pk-layer-table">
+                <thead><tr><th>컨트롤</th><th>쓰는 때</th><th>적용 시점</th><th>관제 예시</th></tr></thead>
+                <tbody>
+                  <tr><td>스위치 · Switch</td><td>되돌릴 수 있는 On/Off 설정</td><td>누르는 즉시</td><td>로봇 카메라, 알림 음소거</td></tr>
+                  <tr><td>체크박스 · Checkbox</td><td>여러 항목 다중 선택</td><td>적용 버튼 후</td><td>목록 필터, 점검 항목</td></tr>
+                  <tr><td>라디오 · Radio</td><td>배타적 단일 선택</td><td>적용 버튼 후</td><td>지도 보기 / 목록 보기</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="pk-control-section">
+              <h3>스위치 · Switch</h3>
+              <p>즉시 적용되는 이진 설정입니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
               <div class="pk-control-stage">
                 <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label>
                 <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label>
                 <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="비활성 설정" disabled></button><span>Disabled</span></label>
               </div>
+            </section>
+
+            <section class="pk-control-section">
+              <h3>체크박스 · Checkbox</h3>
+              <p>서로 독립적인 항목을 여러 개 고를 때 씁니다. 선택은 적용 버튼을 누른 뒤 반영됩니다.</p>
+              <div class="pk-control-stage">
+                <label class="pk-choice-field"><input type="checkbox"><span>오류 로봇만 표시</span></label>
+                <label class="pk-choice-field"><input type="checkbox" checked><span>운행중 포함</span></label>
+                <label class="pk-choice-field"><input type="checkbox" disabled><span>오프라인 (비활성)</span></label>
+              </div>
+            </section>
+
+            <section class="pk-control-section">
+              <h3>라디오 · Radio</h3>
+              <p>서로 배타적인 보기 중 하나만 고를 때 씁니다. 항목이 다섯 개를 넘으면 셀렉트로 바꿉니다.</p>
+              <div class="pk-control-stage">
+                <label class="pk-choice-field"><input type="radio" name="pk-view" checked><span>지도 보기</span></label>
+                <label class="pk-choice-field"><input type="radio" name="pk-view"><span>목록 보기</span></label>
+              </div>
+            </section>
+
+            <section class="pk-control-section">
+              <h3>관제 규칙 · Control rules</h3>
+              <p>스위치는 물리 장비에 즉시 작용하므로 일반 웹 설정과 다른 제약을 받습니다.</p>
+              <table class="pk-layer-table">
+                <thead><tr><th>규칙</th><th>내용</th></tr></thead>
+                <tbody>
+                  <tr><td>복구 불가한 명령 금지</td><td>로봇 전원 차단·비상정지는 스위치로 만들지 않습니다. 되돌릴 수 없는 명령은 Button과 확인 모달을 씁니다.</td></tr>
+                  <tr><td>전송 중 상태</td><td>명령이 로봇에 전달되는 동안에는 전송 중임을 표시합니다. 누른 즉시 반영된 것처럼 보이면 안 됩니다.</td></tr>
+                  <tr><td>실패 시 롤백</td><td>명령이 실패하면 스위치를 원래 위치로 되돌리고 이유를 함께 알립니다.</td></tr>
+                  <tr><td>역할별 잠금</td><td>권한이 없는 역할에서는 비활성으로 두고, 왜 잠겼는지 알 수 있게 합니다.</td></tr>
+                  <tr><td>색만으로 전달 금지</td><td>On/Off는 위치와 라벨로 구분합니다. 색 하나에 의존하지 않습니다.</td></tr>
+                </tbody>
+              </table>
             </section>
           </div>
         </sc-if>
@@ -1311,21 +1358,6 @@
               <input value="PK-001" style="width:100%;padding:9px 12px;border:1px solid var(--parkie-success);border-radius:var(--parkie-radius-md);background:var(--parkie-surface);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);outline:none;">
               <div style="font-size:var(--parkie-font-xs);color:var(--parkie-success-text);margin-top:6px;">사용 가능한 ID입니다.</div>
             </div>
-          </div>
-        </sc-if>
-
-        <!-- ===== PARKIE CHECKBOX ===== -->
-        <sc-if value="{{ isCheckbox }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">체크박스 · Checkbox</h3>
-          <div style="display:flex;flex-direction:column;gap:var(--parkie-space-4);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <label style="display:flex;align-items:center;gap:10px;font-size:var(--parkie-font-base);color:var(--parkie-text);cursor:pointer;"><input type="checkbox" style="width:18px;height:18px;accent-color:var(--parkie-brand-primary);cursor:pointer;">오류 로봇만 표시</label>
-            <label style="display:flex;align-items:center;gap:10px;font-size:var(--parkie-font-base);color:var(--parkie-text);cursor:pointer;"><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--parkie-brand-primary);cursor:pointer;">운행중 포함</label>
-            <label style="display:flex;align-items:center;gap:10px;font-size:var(--parkie-font-base);color:var(--parkie-text-disabled);cursor:not-allowed;"><input type="checkbox" disabled style="width:18px;height:18px;cursor:not-allowed;">오프라인 (비활성)</label>
-          </div>
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">라디오 · Radio</h3>
-          <div style="display:flex;gap:var(--parkie-space-6);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <label style="display:flex;align-items:center;gap:10px;font-size:var(--parkie-font-base);color:var(--parkie-text);cursor:pointer;"><input type="radio" name="pk-view" checked style="width:18px;height:18px;accent-color:var(--parkie-brand-primary);cursor:pointer;">지도 보기</label>
-            <label style="display:flex;align-items:center;gap:10px;font-size:var(--parkie-font-base);color:var(--parkie-text);cursor:pointer;"><input type="radio" name="pk-view" style="width:18px;height:18px;accent-color:var(--parkie-brand-primary);cursor:pointer;">목록 보기</label>
           </div>
         </sc-if>
 
@@ -2731,7 +2763,7 @@ class Component extends DCLogic {
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles', 'changelog'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography'] },
-      { ko: '액션·입력', en: 'Actions & Input', items: ['button', 'segmented', 'switch', 'input', 'select', 'checkbox'] },
+      { ko: '액션·입력', en: 'Actions & Input', items: ['button', 'segmented', 'selection', 'input', 'select'] },
       { ko: '상태·피드백', en: 'Status & Feedback', items: ['badge', 'statuslabel', 'alert', 'alertfeed'] },
       { ko: '내비게이션·구조', en: 'Navigation & Structure', items: ['topbar', 'tabs', 'breadcrumb', 'card', 'table', 'avatar'] },
       { ko: '로봇 운영', en: 'Robot Operations', items: ['robotstatus', 'robotcard', 'media'] },
@@ -2760,12 +2792,11 @@ class Component extends DCLogic {
     iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: 'Parkie 원본·로봇 전용·범용 채택 아이콘을 출처별로 분리하고 상호작용·운영 상태 규칙을 함께 관리합니다.', den: 'Parkie originals, robot-specific icons and adopted utilities, separated by source with interaction and operational-state rules.' },
     button:      { ko: '버튼', en: 'Button', impl: true, dko: '액션을 유도하는 기본 버튼. 6가지 종류 · 3가지 크기 · 상태.', den: 'The primary action component — 6 variants, 3 sizes, and states.' },
     segmented:   { ko: '세그먼트', en: 'Segmented Control', impl: true, dko: '2–4개의 상호 배타적인 값을 전환하는 단일 선택 컨트롤.', den: 'A single-select control for switching between 2–4 mutually exclusive values.' },
-    switch:      { ko: '스위치', en: 'Switch', impl: true, dko: '즉시 적용되는 이진 설정을 위한 On/Off 컨트롤.', den: 'An On/Off control for binary settings that apply immediately.' },
+    selection:   { ko: '선택 컨트롤', en: 'Selection controls', impl: true, dko: '스위치 · 체크박스 · 라디오를 적용 시점 기준으로 구분해 사용합니다.', den: 'Switch, checkbox and radio, chosen by when the change takes effect.' },
     badge:       { ko: '뱃지', en: 'Badge', impl: true, dko: '개수·버전·역할·신규 여부를 표시하는 짧은 메타데이터 라벨.', den: 'A compact metadata label for counts, versions, roles and newness.' },
     input:       { ko: '입력 필드', en: 'Input', impl: true, dko: '텍스트 입력 필드. default·focus·disabled·error·success 상태.', den: 'Text input field — default, focus, disabled, error and success states.' },
     topbar:      { ko: '상단 바', en: 'Top Bar', impl: true, dko: '서비스·역할·사이트·검색·언어를 고정하는 46px 전역 운영 바.', den: 'A 46px global operations bar for service, role, site, search and language.' },
     select:      { ko: '사이트 셀렉트', en: 'Site Select', impl: true, dko: '전역 사이트 컨텍스트를 선택하는 270×30px combobox.', den: 'A 270×30px combobox for selecting the global site context.' },
-    checkbox:    { ko: '체크박스', en: 'Checkbox', impl: true, dko: '체크박스와 라디오. 브랜드 액센트 컬러 적용.', den: 'Checkbox and radio, using the brand accent color.' },
     avatar:      { ko: '아바타', en: 'Avatar', impl: true, dko: '사용자 프로필. 이니셜·크기·프레즌스·모양.', den: 'User profile — initials, sizes, presence and shape.' },
     alert:       { ko: '알림', en: 'Alert', impl: true, dko: '인라인 알림. info·success·warning·danger 인텐트.', den: 'Inline alerts — info, success, warning and danger intents.' },
     alertfeed:   { ko: '이벤트 피드 행', en: 'Alert Feed Item', impl: true, dko: '운영 이벤트를 표시하는 행. 시맨틱 인텐트와 최신·긴급 강조를 분리합니다.', den: 'An operations event row separating semantic intent from latest and critical emphasis.' },
@@ -3419,7 +3450,7 @@ class Component extends DCLogic {
       ['iconography', '파운데이션', 'Foundation'],
       ['button', '액션', 'Action'],
       ['input', '입력', 'Input'],
-      ['checkbox', '입력', 'Input'],
+      ['selection', '입력', 'Input'],
       ['robotstatus', '로봇 운영', 'Robot operations'],
       ['media', '로봇 운영', 'Robot operations'],
       ['dashboard', '템플릿', 'Template'],
@@ -3504,10 +3535,9 @@ class Component extends DCLogic {
       isIconography: active === 'iconography',
       isButton: active === 'button',
       isSegmented: active === 'segmented',
-      isSwitch: active === 'switch',
+      isSelection: active === 'selection',
       isBadge: active === 'badge',
       isInput: active === 'input',
-      isCheckbox: active === 'checkbox',
       isTable: active === 'table',
       isAlert: active === 'alert',
       isTopbar: active === 'topbar',
