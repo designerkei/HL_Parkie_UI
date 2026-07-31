@@ -130,9 +130,16 @@
 .pk-status--lost,
 .pk-status--fault,
 .pk-status--battery-critical {
-  --status-color: var(--parkie-status-danger);
+  --status-color: var(--parkie-danger-text);
   --status-subtle: rgba(223, 0, 0, 0.18);
   --status-on: var(--parkie-operation-on-danger);
+}
+
+.pk-status-label--solid.pk-status--danger,
+.pk-status-label--solid.pk-status--lost,
+.pk-status-label--solid.pk-status--fault,
+.pk-status-label--solid.pk-status--battery-critical {
+  background: var(--parkie-status-danger);
 }
 
 .pk-status--offline,

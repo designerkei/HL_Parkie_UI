@@ -14,11 +14,13 @@
   gap: var(--parkie-space-4);
 }
 
+.pk-control-section h2,
 .pk-control-section h3,
 .pk-control-section p {
   margin: 0;
 }
 
+.pk-control-section h2,
 .pk-control-section h3 {
   color: var(--parkie-text);
   font-size: var(--parkie-font-xl);

@@ -153,8 +153,9 @@
 
 .pk-appbar-stage {
   position: relative;
+  max-width: 100%;
   min-height: 170px;
-  overflow: visible;
+  overflow-x: auto;
   padding: var(--parkie-space-6);
   background:
     linear-gradient(135deg, rgba(0,170,255,0.06), transparent 45%),
@@ -283,7 +284,7 @@
 }
 
 .pk-role-segment button[aria-checked="true"] {
-  color: var(--parkie-brand-primary);
+  color: var(--parkie-brand-text);
   background: rgba(0,170,255,0.12);
 }
 
@@ -449,12 +450,13 @@
 }
 
 .pk-site-option:hover,
-.pk-site-option--hover {
+.pk-site-option--hover,
+.pk-site-option.is-active {
   background: var(--parkie-select-option-hover);
 }
 
 .pk-site-option[aria-selected="true"] {
-  color: var(--parkie-brand-primary);
+  color: var(--parkie-brand-text);
 }
 
 .pk-site-state-grid {
@@ -650,7 +652,7 @@
   gap: 7px;
   margin-top: var(--parkie-space-3);
   padding: 0 12px;
-  color: var(--parkie-color-common-white);
+  color: var(--parkie-brand-on);
   font-family: var(--parkie-font-sans);
   font-size: 11px;
   font-weight: var(--parkie-weight-semibold);

@@ -1,0 +1,110 @@
+.pk-doc-contract {
+  margin-top: var(--parkie-space-10);
+  padding-top: var(--parkie-space-7);
+  border-top: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--parkie-space-6);
+  margin-bottom: var(--parkie-space-5);
+}
+
+.pk-doc-contract__head > div {
+  max-width: 680px;
+}
+
+.pk-doc-contract__eyebrow,
+.pk-doc-contract__gate,
+.pk-doc-contract__index {
+  color: var(--parkie-brand-text);
+  font-family: var(--parkie-font-mono);
+  font-size: 10px;
+  font-weight: var(--parkie-weight-semibold);
+  letter-spacing: var(--parkie-tracking-wide);
+}
+
+.pk-doc-contract__head h2 {
+  margin: 7px 0 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+  letter-spacing: var(--parkie-tracking-tight);
+}
+
+.pk-doc-contract__head p {
+  margin: 8px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-doc-contract__gate {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  color: var(--parkie-text-secondary);
+  background: var(--parkie-surface-2);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-pill);
+}
+
+.pk-doc-contract__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+  overflow: hidden;
+}
+
+.pk-doc-contract__item {
+  position: relative;
+  min-height: 154px;
+  padding: var(--parkie-space-5);
+  background: var(--parkie-surface);
+}
+
+.pk-doc-contract__item:nth-child(2n) {
+  border-left: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__item:nth-child(n + 3) {
+  border-top: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__item h3 {
+  margin: var(--parkie-space-4) 0 7px;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-doc-contract__item p {
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+@media (max-width: 760px) {
+  .pk-doc-contract__head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pk-doc-contract__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pk-doc-contract__item {
+    min-height: 0;
+  }
+
+  .pk-doc-contract__item:nth-child(2n) {
+    border-left: 0;
+  }
+
+  .pk-doc-contract__item:nth-child(n + 2) {
+    border-top: 1px solid var(--parkie-border);
+  }
+}

@@ -176,6 +176,7 @@
   --parkie-action-danger-bg-hover: #EF2020;
   --parkie-action-danger-bg-pressed: #C00000;
   --parkie-action-danger-fg: var(--parkie-color-common-white);
+  --parkie-action-danger-hover-fg: #000000;
   --parkie-action-neutral-bg: var(--parkie-surface-elevation-12);
   --parkie-action-neutral-fg: var(--parkie-color-common-white);
   --parkie-action-disabled-bg: rgba(255,255,255,0.35);
@@ -189,7 +190,7 @@
   --parkie-border-strong: var(--parkie-color-neutral-700);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
-  --parkie-text-tertiary: rgba(255,255,255,0.40);
+  --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
   --parkie-icon-default: rgba(255,255,255,0.70);
   --parkie-icon-hover: var(--parkie-color-brand-300);
@@ -371,6 +372,7 @@
    Dark theme — applied via [data-theme="dark"] on the app root
    ===================================================================== */
 [data-theme="dark"] {
+  --parkie-action-danger-hover-fg: #000000;
   --parkie-brand-primary: var(--parkie-color-brand-500);
   --parkie-brand-primary-hover: var(--parkie-color-brand-300);
   --parkie-brand-primary-active: var(--parkie-color-brand-600);
@@ -388,7 +390,7 @@
   --parkie-border-strong: var(--parkie-color-neutral-700);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
-  --parkie-text-tertiary: rgba(255,255,255,0.40);
+  --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
   --parkie-icon-default: rgba(255,255,255,0.70);
   --parkie-icon-hover: var(--parkie-color-brand-300);

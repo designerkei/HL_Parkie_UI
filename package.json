@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "test": "playwright test",
-    "test:ui": "playwright test tests/ui.spec.js"
+    "test:ui": "playwright test tests/ui.spec.js",
+    "test:audit": "playwright test tests/design-system-audit.spec.js"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "1.62.1"
   }
 }

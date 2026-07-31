@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function openComponent(page, label) {
-  const item = page.locator('nav.pk-scroll button').filter({ hasText: label }).first();
+  const item = page.locator('nav.pk-scroll [data-nav-id]').filter({ hasText: label }).first();
   await expect(item).toBeVisible();
   await item.click();
 }
@@ -347,7 +347,7 @@ test('System Summary composes eight live-token sections and links to detail page
     'rgba(255, 255, 255, 0.35)'
   );
   await expect(page.locator('[data-summary-operation]')).toHaveCount(5);
-  await expect(page.locator('[data-summary-destination]')).toHaveCount(10);
+  await expect(page.locator('[data-summary-destination]')).toHaveCount(17);
 
   const unnamedButtons = await page.locator('[data-system-summary] button').evaluateAll((buttons) => (
     buttons

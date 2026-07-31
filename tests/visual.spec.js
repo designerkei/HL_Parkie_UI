@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const path = require('node:path');
 
 async function capture(page, label, file) {
-  const item = page.locator('nav.pk-scroll button').filter({ hasText: label }).first();
+  const item = page.locator('nav.pk-scroll [data-nav-id]').filter({ hasText: label }).first();
   await expect(item).toBeVisible();
   await item.click();
   await expect(page.locator('h1')).toContainText(label);
@@ -81,7 +81,7 @@ test('capture System Summary at planned breakpoints', async ({ page }) => {
   await page.goto('/');
   for (const breakpoint of breakpoints) {
     await page.setViewportSize({ width: breakpoint.width, height: breakpoint.height });
-    const item = page.locator('nav.pk-scroll button').filter({ hasText: '전체 요약' }).first();
+    const item = page.locator('nav.pk-scroll [data-nav-id]').filter({ hasText: '전체 요약' }).first();
     await item.click();
     await expect(page.locator('[data-system-summary]')).toBeVisible();
     await page.screenshot({

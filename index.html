@@ -60,10 +60,10 @@
 
     <div style="flex:1;"></div>
 
-    <div style="display:flex;align-items:center;gap:8px;background:var(--parkie-surface-2);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);padding:6px 10px;width:240px;">
+    <label style="display:flex;align-items:center;gap:8px;background:var(--parkie-surface-2);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);padding:6px 10px;width:240px;">
       <span style="width:13px;height:13px;border:2px solid var(--parkie-text-tertiary);border-radius:50%;position:relative;flex-shrink:0;"></span>
-      <input placeholder="{{ searchPh }}" style="border:none;background:transparent;outline:none;font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);color:var(--parkie-text);width:100%;">
-    </div>
+      <input type="search" value="{{ searchQuery }}" onInput="{{ onSearchInput }}" aria-label="{{ searchPh }}" placeholder="{{ searchPh }}" data-navigation-search style="border:none;background:transparent;outline:none;font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);color:var(--parkie-text);width:100%;">
+    </label>
 
     <div style="display:flex;padding:2px;background:var(--parkie-surface-2);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);">
       <button onClick="{{ setKo }}" style="{{ koSegStyle }}">KO</button>
@@ -77,7 +77,7 @@
 
   <div style="flex:1;display:flex;min-height:0;">
     <!-- ============ SIDEBAR ============ -->
-    <nav class="pk-scroll" style="width:264px;flex-shrink:0;overflow-y:auto;background:var(--parkie-surface);border-right:1px solid var(--parkie-border);padding:var(--parkie-space-5) var(--parkie-space-4);">
+    <nav class="pk-scroll" aria-label="{{ navigationLabel }}" style="width:264px;flex-shrink:0;overflow-y:auto;background:var(--parkie-surface);border-right:1px solid var(--parkie-border);padding:var(--parkie-space-5) var(--parkie-space-4);">
       <sc-for list="{{ navSources }}" as="src" hint-placeholder-count="2">
         <div style="margin-bottom:var(--parkie-space-7);">
           <div style="display:flex;align-items:baseline;gap:7px;padding:0 10px;margin-bottom:var(--parkie-space-4);">
@@ -85,36 +85,39 @@
             <span style="font-size:10px;color:var(--parkie-text-tertiary);">{{ src.sub }}</span>
           </div>
           <sc-for list="{{ src.groups }}" as="group" hint-placeholder-count="4">
-            <div style="margin-bottom:var(--parkie-space-5);">
+            <div role="group" aria-label="{{ group.ariaLabel }}" style="margin-bottom:var(--parkie-space-5);">
               <div style="display:flex;align-items:baseline;gap:6px;padding:0 10px;margin-bottom:var(--parkie-space-2);">
                 <span style="font-size:11px;font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-wide);text-transform:uppercase;color:var(--parkie-text-tertiary);">{{ group.label }}</span>
-                <span style="font-size:10px;color:var(--parkie-text-disabled);">{{ group.sub }}</span>
+                <span style="font-size:10px;color:var(--parkie-text-tertiary);">{{ group.sub }}</span>
               </div>
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="5">
-                  <button onClick="{{ item.onClick }}" style="{{ item.style }}">
+                  <a href="{{ item.href }}" onClick="{{ item.onClick }}" aria-current="{{ item.ariaCurrent }}" data-nav-id="{{ item.id }}" style="{{ item.style }}">
                     <span style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-base);font-weight:{{ item.weight }};">
                       {{ item.label }}
                       <sc-if value="{{ item.soon }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--parkie-font-mono);font-size:9px;padding:1px 5px;border-radius:var(--parkie-radius-pill);background:var(--parkie-surface-3);color:var(--parkie-text-tertiary);font-weight:500;">soon</span></sc-if>
                     </span>
                     <span style="font-size:11px;color:var(--parkie-text-tertiary);">{{ item.sub }}</span>
-                  </button>
+                  </a>
                 </sc-for>
               </div>
             </div>
           </sc-for>
         </div>
       </sc-for>
+      <sc-if value="{{ showNoNavResults }}" hint-placeholder-val="{{ false }}">
+        <p role="status" style="margin:var(--parkie-space-4) 10px;color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);line-height:var(--parkie-leading-relaxed);">{{ noSearchResults }}</p>
+      </sc-if>
     </nav>
 
     <!-- ============ MAIN ============ -->
-    <main class="pk-scroll" data-scroll style="flex:1;overflow-y:auto;">
+    <main class="pk-scroll" data-scroll tabindex="0" aria-labelledby="pk-page-title" style="flex:1;overflow-y:auto;">
       <div class="{{ contentFrameClass }}">
 
         <!-- page header -->
         <div class="pk-page-header" style="margin-bottom:var(--parkie-space-8);">
           <div class="pk-page-header__eyebrow" style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-brand-text);font-weight:600;letter-spacing:var(--parkie-tracking-wide);margin-bottom:8px;">{{ curSub }}</div>
-          <h1 class="pk-page-header__title" style="margin:0;font-size:var(--parkie-font-4xl);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ curTitle }}</h1>
+          <h1 id="pk-page-title" class="pk-page-header__title" style="margin:0;font-size:var(--parkie-font-4xl);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ curTitle }}</h1>
           <p class="pk-page-header__description" style="margin:12px 0 0;font-size:var(--parkie-font-lg);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);max-width:640px;">{{ curDesc }}</p>
         </div>
 
@@ -320,7 +323,7 @@
                             <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
                           </div>
                           <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
-                            <div class="{{ state.className }}" aria-label="{{ state.label }}">
+                            <div class="{{ state.className }}" role="img" aria-label="{{ state.label }}">
                               {{ state.svg }}
                             </div>
                           </sc-for>
@@ -441,7 +444,7 @@
                 </header>
                 <div class="pk-summary-section__body">
                   <div class="pk-summary-index">
-                    <sc-for list="{{ summaryIndexItems }}" as="item" hint-placeholder-count="10">
+                    <sc-for list="{{ summaryIndexItems }}" as="item" hint-placeholder-count="17">
                       <button class="pk-summary-index-item" type="button" onClick="{{ item.onClick }}" aria-label="{{ item.ariaLabel }}" data-summary-destination="{{ item.id }}">
                         <span class="pk-summary-index-item__category">{{ item.category }}</span>
                         <span class="pk-summary-index-item__label">
@@ -471,7 +474,7 @@
 
           <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
             <div>
-              <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ primitiveTitle }}</h3>
+              <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ primitiveTitle }}</h2>
               <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ primitiveNote }}</p>
             </div>
             <span style="flex-shrink:0;padding:4px 9px;border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-pill);font-family:var(--parkie-font-mono);font-size:10px;color:var(--parkie-text-tertiary);">50 → 950</span>
@@ -504,7 +507,7 @@
           <div style="margin-bottom:var(--parkie-space-10);">
             <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
               <div>
-                <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ elevationColorTitle }}</h3>
+                <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ elevationColorTitle }}</h2>
                 <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ elevationColorNote }}</p>
               </div>
               <span style="flex-shrink:0;font-family:var(--parkie-font-mono);font-size:11px;color:var(--parkie-text-secondary);">BASE · #131315</span>
@@ -528,7 +531,7 @@
           </div>
 
           <div style="margin-bottom:var(--parkie-space-4);">
-            <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h3>
+            <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h2>
             <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ semanticNote }}</p>
           </div>
           <sc-for list="{{ colorSections }}" as="cs" hint-placeholder-count="5">
@@ -550,7 +553,7 @@
           </sc-for>
 
           <div style="margin-top:var(--parkie-space-10);">
-            <h3 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ contrastTitle }}</h3>
+            <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ contrastTitle }}</h2>
             <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ contrastNote }}</p>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--parkie-space-3);">
               <sc-for list="{{ contrastPairs }}" as="pair" hint-placeholder-count="5">
@@ -868,7 +871,7 @@
         <sc-if value="{{ isBadge }}" hint-placeholder-val="{{ false }}">
           <div class="pk-control-doc">
             <section class="pk-control-section">
-              <h3>책임 · Responsibility</h3>
+              <h2>책임 · Responsibility</h2>
               <p>Badge는 개수·버전·역할·신규 여부 같은 짧은 메타데이터를 표시합니다. 로봇의 동작·통신·배터리 상태는 Status Label과 Robot Status를 사용합니다.</p>
               <div class="pk-control-stage">
                 <span class="pk-badge">v1.3.0</span>
@@ -878,7 +881,7 @@
               </div>
             </section>
             <section class="pk-control-section">
-              <h3>사용 규칙 · Usage</h3>
+              <h2>사용 규칙 · Usage</h2>
               <p>한두 단어 또는 1–3자리 숫자를 권장합니다. 긴 문장, 진행 상태, 위험 메시지는 Badge에 넣지 않습니다.</p>
             </section>
           </div>
@@ -927,7 +930,7 @@
         <sc-if value="{{ isStatusLabel }}" hint-placeholder-val="{{ false }}">
           <div class="pk-status-doc">
             <section class="pk-control-section">
-              <h3>Dot · 기본</h3>
+              <h2>Dot · 기본</h2>
               <p>반복 목록에서 밀도를 낮게 유지할 때 사용합니다. 색에만 의존하지 않도록 항상 텍스트를 병기합니다.</p>
               <div class="pk-control-stage">
                 <span class="pk-status-label pk-status--success">정상</span>
@@ -938,7 +941,7 @@
               </div>
             </section>
             <section class="pk-control-section">
-              <h3>Subtle · 보조 강조</h3>
+              <h2>Subtle · 보조 강조</h2>
               <div class="pk-control-stage">
                 <span class="pk-status-label pk-status-label--subtle pk-status--running">운행 중</span>
                 <span class="pk-status-label pk-status-label--subtle pk-status--charging">충전 중</span>
@@ -947,7 +950,7 @@
               </div>
             </section>
             <section class="pk-control-section">
-              <h3>Solid · 강한 강조</h3>
+              <h2>Solid · 강한 강조</h2>
               <p>최신 경고나 즉시 조치가 필요한 단일 상태에 제한합니다. 목록 전체를 Solid로 채우지 않습니다.</p>
               <div class="pk-control-stage">
                 <span class="pk-status-label pk-status-label--solid pk-status--success">완료</span>
@@ -1240,21 +1243,21 @@
         <!-- ===== PARKIE BREADCRUMB ===== -->
         <sc-if value="{{ isBreadcrumb }}" hint-placeholder-val="{{ false }}">
           <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <nav style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-base);">
-              <a href="#" style="color:var(--parkie-text-secondary);font-weight:500;">관제</a>
-              <span style="color:var(--parkie-text-tertiary);">/</span>
-              <a href="#" style="color:var(--parkie-text-secondary);font-weight:500;">B2 구역</a>
-              <span style="color:var(--parkie-text-tertiary);">/</span>
-              <span style="color:var(--parkie-text);font-weight:600;">PK-001</span>
+            <nav aria-label="로봇 상세 경로" style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-base);">
+              <a href="#dashboard" style="color:var(--parkie-text-secondary);font-weight:500;">관제</a>
+              <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
+              <a href="#table" style="color:var(--parkie-text-secondary);font-weight:500;">B2 구역</a>
+              <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
+              <span aria-current="page" style="color:var(--parkie-text);font-weight:600;">PK-001</span>
             </nav>
           </div>
           <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <nav style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-sm);">
-              <a href="#" style="color:var(--parkie-text-tertiary);">…</a>
-              <span style="color:var(--parkie-text-tertiary);">/</span>
-              <a href="#" style="color:var(--parkie-text-secondary);font-weight:500;">B3 구역</a>
-              <span style="color:var(--parkie-text-tertiary);">/</span>
-              <span style="color:var(--parkie-text);font-weight:600;">대기구역</span>
+            <nav aria-label="압축 위치 경로" style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-sm);">
+              <a href="#dashboard" aria-label="상위 경로 모두 보기" style="color:var(--parkie-text-tertiary);">…</a>
+              <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
+              <a href="#table" style="color:var(--parkie-text-secondary);font-weight:500;">B3 구역</a>
+              <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
+              <span aria-current="page" style="color:var(--parkie-text);font-weight:600;">대기구역</span>
             </nav>
           </div>
         </sc-if>
@@ -1363,15 +1366,16 @@
 
         <!-- ===== PARKIE TABLE ===== -->
         <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
-          <div style="border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow:hidden;background:var(--parkie-surface);">
-            <table style="width:100%;border-collapse:collapse;font-family:var(--parkie-font-sans);">
+          <div class="pk-scroll" style="border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow-x:auto;background:var(--parkie-surface);">
+            <table style="width:100%;min-width:720px;border-collapse:collapse;font-family:var(--parkie-font-sans);">
+              <caption class="pk-sr-only">로봇 운영 상태 현황</caption>
               <thead>
                 <tr style="background:var(--parkie-surface-2);">
-                  <th style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">로봇 ID</th>
-                  <th style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">위치 · Zone</th>
-                  <th style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">상태</th>
-                  <th style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">배터리</th>
-                  <th style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">최근 업데이트</th>
+                  <th scope="col" style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">로봇 ID</th>
+                  <th scope="col" style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">위치 · Zone</th>
+                  <th scope="col" style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">상태</th>
+                  <th scope="col" style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">배터리</th>
+                  <th scope="col" style="text-align:left;padding:13px 16px;font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text-secondary);">최근 업데이트</th>
                 </tr>
               </thead>
               <tbody style="font-size:var(--parkie-font-base);color:var(--parkie-text);">
@@ -1437,7 +1441,7 @@
           </div>
 
           <div style="margin-top:var(--parkie-space-8);">
-            <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">알림 배지 · Alert Badge</h3>
+            <h2 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">알림 배지 · Alert Badge</h2>
             <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">발열 등 즉시 인지가 필요한 이벤트를 지도·대시보드 위에 오버레이하는 배지. 원형은 위치 마커, 알약형은 액션 가능한 알림 CTA로 사용합니다.</p>
             <div class="pk-alert-badge-group">
               <div class="pk-alert-badge pk-alert-badge--danger" aria-label="발열 알림 Default">
@@ -1454,7 +1458,7 @@
               </div>
               <button class="pk-alert-pill" aria-label="발열 알림 CTA">
                 <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M5.705 4.71l-1.41-1.42C1 6.563 1 8.935 1 12h1l1-.063C3 9.009 3 7.396 5.705 4.71ZM19.704 3.29l-1.408 1.42C21 7.396 21 9.009 21 12l2-.063C23 8.935 23 6.563 19.704 3.29ZM12 23c.62 0 1.224-.192 1.729-.55.505-.359.885-.865 1.089-1.45H9.182c.204.585.583 1.091 1.088 1.45.505.358 1.11.55 1.73.55ZM19 15.586V11c0-3.217-2.185-5.927-5.145-6.742A2.001 2.001 0 0 0 12 3c-.846 0-1.562.52-1.855 1.258C7.184 5.073 5 7.783 5 11v4.586L3.293 17.293A1 1 0 0 0 3 18v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-.293-.707L19 15.586Z" fill="#EF2020"/>
+                  <path d="M5.705 4.71l-1.41-1.42C1 6.563 1 8.935 1 12h1l1-.063C3 9.009 3 7.396 5.705 4.71ZM19.704 3.29l-1.408 1.42C21 7.396 21 9.009 21 12l2-.063C23 8.935 23 6.563 19.704 3.29ZM12 23c.62 0 1.224-.192 1.729-.55.505-.359.885-.865 1.089-1.45H9.182c.204.585.583 1.091 1.088 1.45.505.358 1.11.55 1.73.55ZM19 15.586V11c0-3.217-2.185-5.927-5.145-6.742A2.001 2.001 0 0 0 12 3c-.846 0-1.562.52-1.855 1.258C7.184 5.073 5 7.783 5 11v4.586L3.293 17.293A1 1 0 0 0 3 18v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-.293-.707L19 15.586Z" fill="var(--parkie-danger)"/>
                 </svg>
                 <span>발열 알림</span>
               </button>
@@ -1465,34 +1469,33 @@
         <!-- ===== PARKIE CARD ===== -->
         <sc-if value="{{ isCard }}" hint-placeholder-val="{{ false }}">
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--parkie-space-4);">
-            <div style="background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow:hidden;box-shadow:var(--parkie-shadow-sm);">
+            <article aria-labelledby="robot-summary-card-title" style="background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);overflow:hidden;box-shadow:var(--parkie-shadow-sm);">
               <div style="padding:var(--parkie-space-5);">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><span style="font-family:var(--parkie-font-mono);font-weight:600;color:var(--parkie-text);">PK-001</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);"><span style="width:8px;height:8px;border-radius:50%;background:var(--parkie-status-active);"></span>운행중</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><h2 id="robot-summary-card-title" style="margin:0;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-base);font-weight:600;color:var(--parkie-text);">PK-001</h2><span style="display:inline-flex;align-items:center;gap:6px;font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);"><span style="width:8px;height:8px;border-radius:50%;background:var(--parkie-status-active);"></span>운행중</span></div>
                 <div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">위치 B2 · A-14<br>배터리 87% · 오늘 128대 처리</div>
               </div>
-              <div style="padding:12px var(--parkie-space-5);border-top:1px solid var(--parkie-border);background:var(--parkie-surface-2);"><a href="#" style="font-size:var(--parkie-font-sm);font-weight:600;">상세 보기 →</a></div>
-            </div>
-            <div style="background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-5);box-shadow:var(--parkie-shadow-sm);">
-              <div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">전체 로봇</div>
+              <div style="padding:12px var(--parkie-space-5);border-top:1px solid var(--parkie-border);background:var(--parkie-surface-2);"><a href="#robotcard" style="font-size:var(--parkie-font-sm);font-weight:600;">상세 보기 →</a></div>
+            </article>
+            <article aria-labelledby="fleet-stat-card-title" style="background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-5);box-shadow:var(--parkie-shadow-sm);">
+              <h2 id="fleet-stat-card-title" style="margin:0;font-size:var(--parkie-font-sm);font-weight:500;color:var(--parkie-text-tertiary);">전체 로봇</h2>
               <div style="font-size:var(--parkie-font-5xl);font-weight:700;color:var(--parkie-text);font-family:var(--parkie-font-mono);line-height:1.1;margin:4px 0;">24</div>
               <div style="font-size:var(--parkie-font-sm);color:var(--parkie-success-text);">운행중 21 · 오류 1</div>
-            </div>
-            <div style="background:var(--parkie-brand-subtle);border:1px solid var(--parkie-brand-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-5);">
-              <div style="font-weight:600;font-size:var(--parkie-font-lg);color:var(--parkie-text);margin-bottom:6px;">강조 카드</div>
+            </article>
+            <article aria-labelledby="emphasis-card-title" style="background:var(--parkie-brand-subtle);border:1px solid var(--parkie-brand-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-5);">
+              <h2 id="emphasis-card-title" style="margin:0 0 6px;font-weight:600;font-size:var(--parkie-font-lg);color:var(--parkie-text);">강조 카드</h2>
               <div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">브랜드 subtle 배경으로 주요 안내를 강조합니다.</div>
-            </div>
+            </article>
           </div>
         </sc-if>
 
         <!-- ===== PARKIE TABS ===== -->
         <sc-if value="{{ isTabs }}" hint-placeholder-val="{{ false }}">
-          <div style="border-bottom:1px solid var(--parkie-border);display:flex;gap:var(--parkie-space-6);margin-bottom:var(--parkie-space-5);">
-            <button style="padding:10px 2px;border:none;background:transparent;border-bottom:2px solid var(--parkie-brand-primary);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:600;cursor:pointer;margin-bottom:-1px;">전체</button>
-            <button style="padding:10px 2px;border:none;background:transparent;border-bottom:2px solid transparent;color:var(--parkie-text-secondary);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:500;cursor:pointer;margin-bottom:-1px;" style-hover="color:var(--parkie-text);">운행중</button>
-            <button style="padding:10px 2px;border:none;background:transparent;border-bottom:2px solid transparent;color:var(--parkie-text-secondary);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:500;cursor:pointer;margin-bottom:-1px;" style-hover="color:var(--parkie-text);">오류</button>
-            <button style="padding:10px 2px;border:none;background:transparent;border-bottom:2px solid transparent;color:var(--parkie-text-secondary);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);font-weight:500;cursor:pointer;margin-bottom:-1px;" style-hover="color:var(--parkie-text);">오프라인</button>
+          <div role="tablist" aria-label="로봇 상태 필터" style="border-bottom:1px solid var(--parkie-border);display:flex;gap:var(--parkie-space-6);margin-bottom:var(--parkie-space-5);overflow-x:auto;">
+            <sc-for list="{{ tabDemoItems }}" as="tab" hint-placeholder-count="4">
+              <button id="demo-tab-{{ tab.id }}" role="tab" type="button" aria-selected="{{ tab.selected }}" aria-controls="demo-tab-panel" tabindex="{{ tab.tabIndex }}" data-demo-tab="{{ tab.id }}" onClick="{{ tab.onClick }}" onKeyDown="{{ tab.onKeyDown }}" style="{{ tab.style }}">{{ tab.label }}</button>
+            </sc-for>
           </div>
-          <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);">"전체" 탭의 콘텐츠 영역입니다.</div>
+          <div id="demo-tab-panel" role="tabpanel" aria-labelledby="demo-tab-{{ tabsDemo }}" tabindex="0" style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);">{{ activeTabLabel }} 탭의 콘텐츠 영역입니다.</div>
         </sc-if>
 
         <!-- ===== PARKIE MODAL ===== -->
@@ -2077,18 +2080,18 @@
                     <button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button>
                   </div>
                   <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
-                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
-                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" tabindex="{{ operatorTabIndex }}" data-role-option="operator" onClick="{{ selectOperator }}" onKeyDown="{{ onRoleKeyDown }}">관리자</button>
+                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" tabindex="{{ engineerTabIndex }}" data-role-option="engineer" onClick="{{ selectEngineer }}" onKeyDown="{{ onRoleKeyDown }}">엔지니어</button>
                   </div>
                   <div class="{{ siteSelectClass }}">
-                    <button class="pk-site-select-button" type="button" role="combobox" aria-controls="topbar-site-listbox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}">
+                    <button class="pk-site-select-button" type="button" role="combobox" aria-label="{{ siteSelectAriaLabel }}" aria-controls="topbar-site-listbox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" aria-activedescendant="{{ siteActiveDescendant }}" onClick="{{ toggleSiteMenu }}" onKeyDown="{{ onSiteKeyDown }}">
                       <span>{{ siteLabel }}</span>
                       <span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                     </button>
                     <sc-if value="{{ siteMenuOpen }}" hint-placeholder-val="{{ false }}">
                       <div class="pk-site-menu" id="topbar-site-listbox" role="listbox" aria-label="사이트 선택">
                         <sc-for list="{{ siteOptions }}" as="site" hint-placeholder-count="3">
-                          <button class="pk-site-option" type="button" role="option" aria-selected="{{ site.selected }}" onClick="{{ site.onClick }}">{{ site.label }}</button>
+                          <button id="{{ site.optionId }}" class="{{ site.className }}" type="button" role="option" tabindex="-1" aria-selected="{{ site.selected }}" onClick="{{ site.onClick }}">{{ site.label }}</button>
                         </sc-for>
                       </div>
                     </sc-if>
@@ -2157,12 +2160,12 @@
                 </sc-if>
                 <div class="pk-feed-list" role="list" aria-live="polite" aria-label="운영 이벤트 예시">
                   <sc-for list="{{ alertFeedItems }}" as="event" hint-placeholder-count="4">
-                    <article class="{{ event.className }}" role="listitem">
+                    <div class="{{ event.className }}" role="listitem">
                       <span class="pk-feed-icon" aria-hidden="true">{{ event.glyph }}</span>
                       <span class="pk-feed-status">{{ event.status }}</span>
                       <span class="pk-feed-message">{{ event.message }}</span>
                       <time class="pk-feed-time">{{ event.time }}</time>
-                    </article>
+                    </div>
                   </sc-for>
                 </div>
                 <aside class="pk-feed-anatomy">
@@ -2209,20 +2212,20 @@
                       </sc-if>
                       <div class="pk-feed-list" role="list" aria-live="polite" aria-label="알림 이벤트">
                         <sc-for list="{{ alertCenterItems }}" as="event" hint-placeholder-count="4">
-                          <article class="{{ event.className }}" role="listitem">
+                          <div class="{{ event.className }}" role="listitem">
                             <span class="pk-feed-icon" aria-hidden="true">{{ event.glyph }}</span>
                             <span class="pk-feed-status">{{ event.status }}</span>
                             <span class="pk-feed-message">{{ event.message }}</span>
                             <time class="pk-feed-time">{{ event.time }}</time>
-                          </article>
+                          </div>
                         </sc-for>
                       </div>
                     </sc-if>
                     <sc-if value="{{ historyTabSelected }}" hint-placeholder-val="{{ false }}">
                       <div class="pk-feed-list" role="list" aria-label="주차 기록">
-                        <article class="pk-feed-item pk-feed-item--success pk-feed-item--latest" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></span><span class="pk-feed-status">입차완료</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:25:07</time></article>
-                        <article class="pk-feed-item pk-feed-item--info" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11M6.5 16a1.5 1.5 0 110-3 1.5 1.5 0 010 3m11 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3M18.9 6c-.2-.6-.8-1-1.4-1H6.5c-.6 0-1.2.4-1.4 1L3 12v6h2v-1h14v1h2v-6z"/></svg></span><span class="pk-feed-status">입차중</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:24:31</time></article>
-                        <article class="pk-feed-item pk-feed-item--warning" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><span class="pk-feed-status">입차실패</span><span class="pk-feed-message">차량 위치를 다시 확인해 주세요.</span><time class="pk-feed-time">13:20:14</time></article>
+                        <div class="pk-feed-item pk-feed-item--success pk-feed-item--latest" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></span><span class="pk-feed-status">입차완료</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:25:07</time></div>
+                        <div class="pk-feed-item pk-feed-item--info" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11M6.5 16a1.5 1.5 0 110-3 1.5 1.5 0 010 3m11 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3M18.9 6c-.2-.6-.8-1-1.4-1H6.5c-.6 0-1.2.4-1.4 1L3 12v6h2v-1h14v1h2v-6z"/></svg></span><span class="pk-feed-status">입차중</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:24:31</time></div>
+                        <div class="pk-feed-item pk-feed-item--warning" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><span class="pk-feed-status">입차실패</span><span class="pk-feed-message">차량 위치를 다시 확인해 주세요.</span><time class="pk-feed-time">13:20:14</time></div>
                       </div>
                     </sc-if>
                   </div>
@@ -2268,8 +2271,8 @@
                   <div class="pk-appbar-brand"><img src="brand/logo.svg?v=2" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control"><span>서비스 활성화</span><button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button></div>
                   <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
-                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
-                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" onClick="{{ selectEngineer }}">엔지니어</button>
+                    <button type="button" role="radio" aria-checked="{{ operatorSelected }}" tabindex="{{ operatorTabIndex }}" data-role-option="operator" onClick="{{ selectOperator }}" onKeyDown="{{ onRoleKeyDown }}">관리자</button>
+                    <button type="button" role="radio" aria-checked="{{ engineerSelected }}" tabindex="{{ engineerTabIndex }}" data-role-option="engineer" onClick="{{ selectEngineer }}" onKeyDown="{{ onRoleKeyDown }}">엔지니어</button>
                   </div>
                   <div class="{{ siteSelectClass }}">
                     <button class="pk-site-select-button" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}"><span>{{ siteLabel }}</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
@@ -2409,18 +2412,18 @@
 
         <!-- ===== PARKIE AVATAR ===== -->
         <sc-if value="{{ isAvatar }}" hint-placeholder-val="{{ false }}">
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">크기 · Sizes</h3>
+          <h2 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">크기 · Sizes</h2>
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--parkie-space-4);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
-            <span style="width:24px;height:24px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;">한</span>
-            <span style="width:32px;height:32px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">한</span>
-            <span style="width:40px;height:40px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">한</span>
-            <span style="width:56px;height:56px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;">한</span>
+            <span role="img" aria-label="24px 한 아바타" style="width:24px;height:24px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;">한</span>
+            <span role="img" aria-label="32px 한 아바타" style="width:32px;height:32px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">한</span>
+            <span role="img" aria-label="40px 한 아바타" style="width:40px;height:40px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">한</span>
+            <span role="img" aria-label="56px 한 아바타" style="width:56px;height:56px;border-radius:50%;background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;">한</span>
           </div>
-          <h3 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">상태 · Presence &amp; shape</h3>
+          <h2 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">상태 · Presence &amp; shape</h2>
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--parkie-space-5);padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
-            <span style="position:relative;width:40px;height:40px;border-radius:50%;background:var(--parkie-info);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">KM<span style="position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:var(--parkie-status-active);border:2px solid var(--parkie-surface);"></span></span>
-            <span style="position:relative;width:40px;height:40px;border-radius:50%;background:var(--parkie-danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">YS<span style="position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:var(--parkie-status-idle);border:2px solid var(--parkie-surface);"></span></span>
-            <span style="width:40px;height:40px;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">PK</span>
+            <span role="img" aria-label="KM 사용자, 접속 중" style="position:relative;width:40px;height:40px;border-radius:50%;background:var(--parkie-info);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">KM<span aria-hidden="true" style="position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:var(--parkie-status-active);border:2px solid var(--parkie-surface);"></span></span>
+            <span role="img" aria-label="YS 사용자, 자리 비움" style="position:relative;width:40px;height:40px;border-radius:50%;background:var(--parkie-danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">YS<span aria-hidden="true" style="position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:var(--parkie-status-idle);border:2px solid var(--parkie-surface);"></span></span>
+            <span role="img" aria-label="PK 정사각형 아바타" style="width:40px;height:40px;border-radius:var(--parkie-radius-md);background:var(--parkie-brand-primary);color:var(--parkie-brand-on);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;">PK</span>
           </div>
         </sc-if>
 
@@ -2701,6 +2704,28 @@
           </div>
         </sc-if>
 
+        <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
+          <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
+            <div class="pk-doc-contract__head">
+              <div>
+                <span class="pk-doc-contract__eyebrow">DOCUMENTATION STANDARD</span>
+                <h2 id="pk-doc-contract-title">{{ documentationGuideTitle }}</h2>
+                <p>{{ documentationGuideDescription }}</p>
+              </div>
+              <span class="pk-doc-contract__gate">04 QUALITY GATES</span>
+            </div>
+            <div class="pk-doc-contract__grid">
+              <sc-for list="{{ documentationGuide }}" as="rule" hint-placeholder-count="4">
+                <article class="pk-doc-contract__item">
+                  <span class="pk-doc-contract__index">{{ rule.code }}</span>
+                  <h3>{{ rule.title }}</h3>
+                  <p>{{ rule.body }}</p>
+                </article>
+              </sc-for>
+            </div>
+          </section>
+        </sc-if>
+
         <!-- ===== COMING SOON ===== -->
         <sc-if value="{{ isSoon }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--parkie-space-12) var(--parkie-space-6);background:var(--parkie-surface);border:1px dashed var(--parkie-border-strong);border-radius:var(--parkie-radius-xl);">
@@ -2731,6 +2756,7 @@ class Component extends DCLogic {
     role: 'engineer',
     siteMenuOpen: false,
     selectedSite: '',
+    activeSiteIndex: 0,
     latestEventIndex: 0,
     alertCenterTab: 'alert',
     selectedRobot: '02',
@@ -2741,6 +2767,8 @@ class Component extends DCLogic {
     mediaEmergencyOpen: false,
     mediaEmergencyActive: false,
     mediaMicActive: false,
+    searchQuery: '',
+    tabsDemo: 'all',
   };
 
   componentDidMount() {
@@ -2757,6 +2785,14 @@ class Component extends DCLogic {
     } else {
       (window.__parkieIconsCbs = window.__parkieIconsCbs || []).push((parkieIcons) => this.setState({ parkieIcons }));
     }
+    window.addEventListener('popstate', this.handleLocationChange);
+    window.addEventListener('hashchange', this.handleLocationChange);
+    this.handleLocationChange();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handleLocationChange);
+    window.removeEventListener('hashchange', this.handleLocationChange);
   }
 
   NAV = [
@@ -2844,7 +2880,21 @@ class Component extends DCLogic {
     'ms-messaging': { ko: 'Messaging extensions', en: 'Messaging extensions', impl: false, dko: 'Teams 메시징 확장 (참조용).', den: 'Teams messaging extensions (reference).' },
   };
 
+  handleLocationChange = () => {
+    const id = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+    if (id && this.META[id] && id !== this.state.active) {
+      this.setState({ active: id, siteMenuOpen: false });
+      const main = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
+      if (main) main.scrollTop = 0;
+    }
+  };
+
   select(id) {
+    if (!this.META[id]) return;
+    const nextHash = `#${encodeURIComponent(id)}`;
+    if (window.location.hash !== nextHash) {
+      window.history.pushState({ parkiePage: id }, '', nextHash);
+    }
     this.setState({ active: id, siteMenuOpen: false });
     const m = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
     if (m) m.scrollTop = 0;
@@ -2860,6 +2910,7 @@ class Component extends DCLogic {
       role,
       siteMenuOpen,
       selectedSite,
+      activeSiteIndex,
       latestEventIndex,
       alertCenterTab,
       selectedRobot,
@@ -2870,20 +2921,29 @@ class Component extends DCLogic {
       mediaEmergencyOpen,
       mediaEmergencyActive,
       mediaMicActive,
+      searchQuery,
+      tabsDemo,
     } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
     const cur = this.META[active] || this.META.overview;
     const version = 'v0.1';
 
-    const buildItems = (ids) => ids.map((id) => {
+    const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+    const buildItems = (ids) => ids.filter((id) => {
+      if (!normalizedQuery) return true;
+      const meta = this.META[id];
+      return [id, meta.ko, meta.en].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
+    }).map((id) => {
       const m = this.META[id];
       const isActive = id === active;
-      const base = { display: 'flex', flexDirection: 'column', gap: '1px', width: '100%', textAlign: 'left', padding: '7px 10px', border: 'none', borderRadius: 'var(--parkie-radius-sm)', cursor: 'pointer', fontFamily: 'var(--parkie-font-sans)' };
+      const base = { display: 'flex', flexDirection: 'column', gap: '1px', width: '100%', textAlign: 'left', padding: '7px 10px', border: 'none', borderRadius: 'var(--parkie-radius-sm)', cursor: 'pointer', fontFamily: 'var(--parkie-font-sans)', textDecoration: 'none' };
       return {
         id, label: L(m.ko, m.en), sub: ko ? m.en : m.ko, soon: !m.impl,
         weight: isActive ? 600 : 500,
-        onClick: () => this.select(id),
+        href: `#${id}`,
+        ariaCurrent: isActive ? 'page' : 'false',
+        onClick: (event) => { event.preventDefault(); this.select(id); },
         style: isActive
           ? { ...base, background: 'var(--parkie-brand-subtle)', color: 'var(--parkie-brand-text)' }
           : { ...base, background: 'transparent', color: 'var(--parkie-text-secondary)' },
@@ -2891,18 +2951,25 @@ class Component extends DCLogic {
     });
     const navSources = this.NAV.map((s) => ({
       source: s.source, sub: s.sub,
-      groups: s.groups.map((g) => ({ label: L(g.ko, g.en), sub: ko ? g.en : g.ko, items: buildItems(g.items) })),
-    }));
+      groups: s.groups.map((g) => ({
+        label: L(g.ko, g.en),
+        sub: ko ? g.en : g.ko,
+        ariaLabel: L(`${g.ko} 문서`, `${g.en} documentation`),
+        items: buildItems(g.items),
+      })).filter((group) => group.items.length > 0),
+    })).filter((source) => source.groups.length > 0);
 
     const siteData = [
       { id: 'gonjiam', label: '곤지암 테스트존.v.1.3.0' },
       { id: 'chungbuk', label: '충북도청 운영존.v.1.3.0' },
       { id: 'nextm', label: '넥스트엠 테스트존.v.1.3.2' },
     ];
-    const siteOptions = siteData.map((site) => ({
+    const siteOptions = siteData.map((site, index) => ({
       ...site,
+      optionId: `topbar-site-option-${site.id}`,
+      className: `pk-site-option${activeSiteIndex === index ? ' is-active' : ''}`,
       selected: selectedSite === site.id,
-      onClick: () => this.setState({ selectedSite: site.id, siteMenuOpen: false }),
+      onClick: () => this.setState({ selectedSite: site.id, activeSiteIndex: index, siteMenuOpen: false }),
     }));
     const selectedSiteData = siteData.find((site) => site.id === selectedSite);
     const siteLabel = selectedSiteData ? selectedSiteData.label : L('사이트를 선택해 주세요.', 'Select a site.');
@@ -2911,6 +2978,50 @@ class Component extends DCLogic {
       selectedSiteData ? 'pk-site-select--selected' : '',
       siteMenuOpen ? 'pk-site-select--open' : '',
     ].filter(Boolean).join(' ');
+    const openSiteMenu = (index = activeSiteIndex) => this.setState({
+      siteMenuOpen: true,
+      activeSiteIndex: Math.max(0, Math.min(siteData.length - 1, index)),
+    });
+    const onSiteKeyDown = (event) => {
+      if (event.key === 'Escape' && siteMenuOpen) {
+        event.preventDefault();
+        this.setState({ siteMenuOpen: false });
+        return;
+      }
+      if (event.key === 'Tab') {
+        this.setState({ siteMenuOpen: false });
+        return;
+      }
+      if (event.key === 'Enter' && siteMenuOpen) {
+        event.preventDefault();
+        const site = siteData[activeSiteIndex];
+        this.setState({ selectedSite: site.id, siteMenuOpen: false });
+        return;
+      }
+      const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      const nextIndex = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? siteData.length - 1
+          : (activeSiteIndex + (event.key === 'ArrowDown' ? 1 : -1) + siteData.length) % siteData.length;
+      openSiteMenu(nextIndex);
+    };
+    const onRoleKeyDown = (event) => {
+      const direction = ['ArrowRight', 'ArrowDown'].includes(event.key)
+        ? 1
+        : ['ArrowLeft', 'ArrowUp'].includes(event.key)
+          ? -1
+          : 0;
+      if (!direction) return;
+      event.preventDefault();
+      const nextRole = role === 'operator' ? 'engineer' : 'operator';
+      this.setState({ role: nextRole }, () => {
+        const next = this.rootRef.current && this.rootRef.current.querySelector(`[data-role-option="${nextRole}"]`);
+        if (next) next.focus();
+      });
+    };
 
     /* Feed glyphs come from the supplied Parkie reference, not text stand-ins:
        a check for complete, the vehicle mark for in-progress and the warning
@@ -3445,16 +3556,23 @@ class Component extends DCLogic {
       };
     };
     const summaryIndexItems = [
+      ['systemsummary', '시작하기', 'Get started'],
       ['typography', '파운데이션', 'Foundation'],
       ['colors', '파운데이션', 'Foundation'],
+      ['spacing', '파운데이션', 'Foundation'],
+      ['radius', '파운데이션', 'Foundation'],
+      ['elevation', '파운데이션', 'Foundation'],
       ['iconography', '파운데이션', 'Foundation'],
-      ['button', '액션', 'Action'],
-      ['input', '입력', 'Input'],
-      ['selection', '입력', 'Input'],
-      ['robotstatus', '로봇 운영', 'Robot operations'],
-      ['media', '로봇 운영', 'Robot operations'],
-      ['dashboard', '템플릿', 'Template'],
-      ['brand', '리소스', 'Resource'],
+      ['badge', '상태·피드백', 'Status & Feedback'],
+      ['statuslabel', '상태·피드백', 'Status & Feedback'],
+      ['alert', '상태·피드백', 'Status & Feedback'],
+      ['alertfeed', '상태·피드백', 'Status & Feedback'],
+      ['topbar', '내비게이션·구조', 'Navigation & Structure'],
+      ['tabs', '내비게이션·구조', 'Navigation & Structure'],
+      ['breadcrumb', '내비게이션·구조', 'Navigation & Structure'],
+      ['card', '내비게이션·구조', 'Navigation & Structure'],
+      ['table', '내비게이션·구조', 'Navigation & Structure'],
+      ['avatar', '내비게이션·구조', 'Navigation & Structure'],
     ].map(([id, categoryKo, categoryEn]) => {
       const meta = this.META[id];
       return {
@@ -3465,6 +3583,76 @@ class Component extends DCLogic {
         onClick: () => this.select(id),
       };
     });
+
+    const tabDemoSource = [
+      ['all', '전체', 'All'],
+      ['running', '운행중', 'Running'],
+      ['fault', '오류', 'Fault'],
+      ['offline', '오프라인', 'Offline'],
+    ];
+    const moveDemoTab = (event, index) => {
+      const keyOffsets = { ArrowRight: 1, ArrowLeft: -1, Home: -index, End: tabDemoSource.length - 1 - index };
+      if (!(event.key in keyOffsets)) return;
+      event.preventDefault();
+      const nextIndex = (index + keyOffsets[event.key] + tabDemoSource.length) % tabDemoSource.length;
+      const nextId = tabDemoSource[nextIndex][0];
+      this.setState({ tabsDemo: nextId }, () => {
+        const next = this.rootRef.current && this.rootRef.current.querySelector(`[data-demo-tab="${nextId}"]`);
+        if (next) next.focus();
+      });
+    };
+    const tabDemoItems = tabDemoSource.map(([id, labelKo, labelEn], index) => {
+      const selected = tabsDemo === id;
+      return {
+        id,
+        label: L(labelKo, labelEn),
+        selected,
+        tabIndex: selected ? 0 : -1,
+        onClick: () => this.setState({ tabsDemo: id }),
+        onKeyDown: (event) => moveDemoTab(event, index),
+        style: {
+          padding: '10px 2px',
+          border: 'none',
+          background: 'transparent',
+          borderBottom: selected ? '2px solid var(--parkie-brand-primary)' : '2px solid transparent',
+          color: selected ? 'var(--parkie-text)' : 'var(--parkie-text-secondary)',
+          fontFamily: 'var(--parkie-font-sans)',
+          fontSize: 'var(--parkie-font-base)',
+          fontWeight: selected ? 600 : 500,
+          cursor: 'pointer',
+          marginBottom: '-1px',
+        },
+      };
+    });
+    const activeTabLabel = tabDemoItems.find((item) => item.selected).label;
+
+    const buildDocGuide = (usageKo, usageEn, behaviorKo, behaviorEn, accessKo, accessEn, implementationKo, implementationEn) => [
+      { code: '01', title: L('사용 기준', 'When to use'), body: L(usageKo, usageEn) },
+      { code: '02', title: L('동작·구조', 'Behavior & structure'), body: L(behaviorKo, behaviorEn) },
+      { code: '03', title: L('접근성', 'Accessibility'), body: L(accessKo, accessEn) },
+      { code: '04', title: L('구현 규칙', 'Implementation'), body: L(implementationKo, implementationEn) },
+    ];
+    const documentationGuides = {
+      systemsummary: buildDocGuide('전체 규정을 빠르게 훑고 상세 문서로 진입하는 출발점입니다.', 'Use as the entry point for scanning the system and opening detailed guidance.', '장식적 포트폴리오 히어로 대신 RMS 구조·Parkie 표현·상세 색인을 순서대로 배치합니다.', 'Order RMS structure, Parkie expression and the detail index instead of using a decorative portfolio hero.', '섹션 제목 계층과 링크 이름을 명확히 하고, 상태를 색에만 의존하지 않습니다.', 'Use a clear heading hierarchy and named links; never encode status with color alone.', '요약 샘플은 별도 이미지가 아닌 실제 토큰과 컴포넌트를 재사용합니다.', 'Summary specimens reuse live tokens and components rather than detached images.'),
+      colors: buildDocGuide('제품 UI에서는 원시 팔레트가 아닌 의미·컴포넌트 토큰을 선택합니다.', 'Bind product UI to semantic and component tokens, never directly to primitive ramps.', '다크 고정 운영 UI에서 표면 상승과 상태 색을 분리하고 강조색은 의미에만 쓸 것.', 'Separate elevation surfaces from semantic status colors in the dark fixed UI.', '일반 텍스트 4.5:1, 대형 텍스트·UI 경계 3:1을 최소 기준으로 검증합니다.', 'Verify at least 4.5:1 for normal text and 3:1 for large text and UI boundaries.', '운영 토큰은 :root와 [data-theme="dark"]에 동일하게 정의합니다.', 'Define operational tokens identically in :root and [data-theme="dark"].'),
+      typography: buildDocGuide('한글·영문 UI는 Pretendard, ID·시간·수치·코드는 Roboto Mono를 쓸 것.', 'Use Pretendard for Korean and English UI; reserve Roboto Mono for IDs, time, metrics and code.', '페이지 제목부터 본문·보조 라벨까지 고정 레벨을 유지하고 임의 px 값을 추가하지 않습니다.', 'Keep the documented hierarchy from page title to body and helper text; do not add arbitrary sizes.', '200% 확대와 한글 단어 바꿈에서 잘림·중첩·의미 손실이 없어야 합니다.', 'At 200% zoom, Korean wrapping must not clip, overlap or lose meaning.', '글꼴·크기·행간·자간·굵기는 타입 토큰을 통해서만 소비합니다.', 'Consume family, size, leading, tracking and weight only through type tokens.'),
+      spacing: buildDocGuide('4px 기반 스케일로 요소 내부, 그룹, 섹션 간격을 구분합니다.', 'Use the 4px scale to distinguish inset, group and section spacing.', '밀집 관제 정보는 4·8px, 기본 그룹은 16·24px, 큰 섹션은 32px 이상을 기준으로 합니다.', 'Use 4–8px for dense telemetry, 16–24px for groups and 32px+ between major sections.', '포커스 표시가 잘리지 않고 필수 조작 타깃은 최소 24px, 안전 액션은 44·48px을 확보합니다.', 'Do not clip focus rings; keep controls at least 24px and safety actions 44–48px.', '임의 margin·gap 대신 --parkie-space-* 토큰을 사용합니다.', 'Use --parkie-space-* instead of arbitrary margin or gap values.'),
+      radius: buildDocGuide('곡률은 컨트롤·카드·상태 칩의 역할을 구분하는 보조 언어입니다.', 'Use curvature as a supporting cue for controls, containers and status chips.', '작은 컨트롤은 xs·sm, 카드는 md·lg, 순환 상태와 pill은 전용 토큰을 쓸 것.', 'Use xs/sm for compact controls, md/lg for cards, and dedicated round/pill tokens.', '포커스 링과 클릭 영역이 시각적 모양과 일치해야 합니다.', 'Focus rings and hit areas must follow the visible control shape.', '개별 border-radius 값을 새로 만들지 말고 --parkie-radius-* 토큰을 재사용합니다.', 'Reuse --parkie-radius-* and do not introduce one-off curvature.'),
+      elevation: buildDocGuide('깊이는 기본 레이아웃이 아닌 뜨있는 오버레이·포커스·임시 제어에만 사용합니다.', 'Reserve elevation for floating overlays, focus and temporary controls, not basic layout.', '다크 UI는 표면 밝기·경계선으로 레벨을 먼저 나누고 그림자는 보조로 쓸 것.', 'In dark UI, establish depth with surfaces and borders first; shadows are secondary.', '그림자만으로 경계를 전달하지 말고 최소 3:1 UI 경계를 확보합니다.', 'Do not rely on shadow alone; maintain a perceivable 3:1 UI boundary where required.', '표면 토큰과 --parkie-shadow-* 레벨을 짝지어 적용합니다.', 'Pair surface tokens with the documented --parkie-shadow-* level.'),
+      iconography: buildDocGuide('기본 탐색·편집은 Adopted, Parkie 고유 항목과 로봇 상태는 Original·Custom을 사용합니다.', 'Use Adopted for standard utilities and Original/Custom for Parkie or robot-specific meaning.', '24px 기준 그리드에 Enabled·Hover·Pressed·Disabled를 유지하고 운영 상태 변형과 구분합니다.', 'Keep the 24px grid and four interaction states separate from operational variants.', '아이콘 버튼은 접근 가능한 이름을, 상태 아이콘은 텍스트·수치 대안을 함께 제공합니다.', 'Name icon buttons and pair status icons with a text or numeric alternative.', '색은 currentColor와 의미 토큰으로 제어하고 출처 메타데이터를 보존합니다.', 'Drive color with currentColor and semantic tokens while preserving source metadata.'),
+      badge: buildDocGuide('개수·버전·역할·신규 여부 같은 짧은 메타데이터에만 사용합니다.', 'Use only for short metadata such as count, version, role or newness.', '배지 자체는 상태 또는 액션이 아니며 클릭 기능이 필요하면 Button으로 구성합니다.', 'A badge is not status or an action; use a Button when interaction is required.', '숫자는 문맥을 포함한 이름(예: 읽지 않은 알림 12개)을 제공합니다.', 'Give numeric badges a contextual name, for example “12 unread alerts.”', '동작·위험·연결 상태는 Status Label이나 Robot Status로 대체합니다.', 'Use Status Label or Robot Status for motion, danger and connectivity.'),
+      statuslabel: buildDocGuide('반복 목록의 진행·성공·주의·오류 상태를 짧게 표시합니다.', 'Show concise progress, success, warning and fault states in repeated lists.', 'Dot은 기본, Subtle은 보조 강조, Solid는 즉시 조치가 필요한 단일 상태에 제한합니다.', 'Use Dot by default, Subtle for emphasis and Solid only for a single urgent state.', '색·점·텍스트를 함께 제공하고 일반 텍스트 대비 4.5:1을 지킵니다.', 'Combine color, marker and text, keeping 4.5:1 contrast for normal text.', '연결·동작·배터리 축을 하나의 다중 상태로 합치지 않습니다.', 'Do not collapse connection, motion and battery axes into one overloaded status.'),
+      alert: buildDocGuide('현재 문맥 안에서 사용자가 알아야 할 정보·성공·경고·오류를 제공합니다.', 'Use for information, success, warning or error that belongs in the current context.', '제목·설명·선택 액션 순서를 유지하고 위험 행동은 별도 확인으로 연결합니다.', 'Keep title, message and optional action in order; route destructive actions through confirmation.', '새로 발생한 정보는 polite, 즉시 조치 긴급 알림만 assertive 라이브 영역을 쓹니다.', 'Use polite announcements for updates and assertive only for newly raised urgent events.', '인텐트별 텍스트·배경·경계 토큰을 함께 묶어 적용합니다.', 'Apply the text, surface and border tokens for each intent as one recipe.'),
+      alertfeed: buildDocGuide('최근 순서와 즉시성이 중요한 관제 이벤트 목록에 사용합니다.', 'Use for chronological operations events where recency and urgency matter.', '인텐트 색은 의미, 외곽선과 그림자는 최신성을 나타내며 Latest는 한 건만 허용합니다.', 'Intent color conveys meaning; outline and shadow convey recency; allow only one Latest row.', '목록·항목 의미를 유지하고 긴급 신규 항목만 별도 alert로 공지합니다.', 'Keep list/listitem semantics and announce only newly raised critical events as alerts.', '48px 단일 행·70px 다중 행, 상태·메시지·시간 열의 위치를 공통 레시피로 관리합니다.', 'Manage 48px single-line and 70px multiline rows with the same status, message and time anatomy.'),
+      topbar: buildDocGuide('서비스·역할·사이트·검색·언어 같은 전역 운영 문맥을 고정합니다.', 'Pin global operating context such as service, role, site, search and language.', '왼쪽에서 오른쪽으로 브랜드→서비스→역할→사이트→검색→언어 순서를 유지합니다.', 'Preserve brand → service → role → site → search → language order.', '스위치·라디오·콤보박스·검색에 역할과 이름을 제공하고 키보드 순서를 유지합니다.', 'Name switch, radio, combobox and search controls and preserve a logical keyboard order.', '46px 앱바 높이와 고정 컨트롤 토큰을 유지하되 작은 화면은 내부 패널을 스크롤합니다.', 'Keep the 46px bar and control tokens; scroll the specimen internally on narrow screens.'),
+      tabs: buildDocGuide('같은 문맥 안의 형제 뷰나 필터를 빠르게 전환할 때 사용합니다.', 'Use for sibling views or filters within the same context.', '한 개의 활성 탭만 유지하고 화살표·Home·End로 포커스와 선택을 이동합니다.', 'Keep one active tab and move focus/selection with arrows, Home and End.', 'tablist·tab·tabpanel, aria-selected·aria-controls·aria-labelledby를 완전히 연결합니다.', 'Connect tablist, tab and tabpanel with selection, controls and labelled-by relationships.', 'URL이 바뀌는 상위 탐색은 Tabs가 아닌 Navigation 링크를 사용합니다.', 'Use navigation links, not Tabs, when the destination changes the URL or hierarchy.'),
+      breadcrumb: buildDocGuide('사용자가 현재 자신의 계층 위치를 이해하고 상위로 이동할 때 사용합니다.', 'Use to understand the current hierarchy and navigate to ancestors.', '이동 기록이 아닌 정보 구조를 표시하고, 좁은 화면은 중간 경로를 축약합니다.', 'Represent information hierarchy, not history; collapse middle ancestors on narrow screens.', 'nav에 고유한 이름을 주고 현재 위치는 aria-current="page"를 적용합니다.', 'Give each breadcrumb nav a unique name and mark the current item with aria-current="page".', '상위 항목은 실제 목적지를 가진 링크, 현재 항목은 링크가 아닌 텍스트로 구성합니다.', 'Ancestors are real links; the current item is plain text.'),
+      card: buildDocGuide('하나의 대상·지표·안내를 독립적으로 스캔해야 할 때 사용합니다.', 'Use when an object, metric or message must scan as an independent unit.', '제목→핵심 상태→보조 정보→액션 순서를 유지하고 카드 전체 클릭은 단일 액션일 때만 허용합니다.', 'Order title, key status, supporting data and action; make the whole card clickable only for one action.', '독립 카드는 article과 제목으로 구조화하고 상태는 텍스트를 포함합니다.', 'Structure standalone cards as labelled articles and pair status color with text.', '표면·경계·곡률·그림자 토큰을 역할별 카드 레시피로 묶습니다.', 'Bundle surface, border, radius and elevation tokens as role-specific card recipes.'),
+      table: buildDocGuide('여러 대상의 동일한 속성을 열별로 비교할 때 사용합니다.', 'Use to compare the same attributes across many objects.', '핵심 열은 왼쪽에 고정하고 수치 정렬·선택·최신 상태를 일관되게 표시합니다.', 'Keep key columns left, and represent numeric alignment, selection and freshness consistently.', 'caption, scope="col", 정렬 상태와 상태 텍스트를 제공하고 표를 레이아웃으로 쓰지 않습니다.', 'Provide caption, scoped headers, sort state and text status; never use tables for layout.', '작은 화면에서 중요 열을 삭제하지 말고 내부 수평 스크롤 또는 대체 뷰를 제공합니다.', 'On narrow screens preserve columns with internal scroll or provide a purpose-built alternate view.'),
+      avatar: buildDocGuide('사람·운영자·서비스 주체의 식별에만 사용합니다.', 'Use only to identify a person, operator or service actor.', '이미지→이니셜→기본 글리프 순으로 대체하고 프레젠스는 별도 상태로 붙입니다.', 'Fallback from image to initials to a default glyph; layer presence as a separate state.', '인접 텍스트가 식별자를 제공하면 이미지는 장식으로, 단독이면 이름을 제공합니다.', 'Treat the image as decorative when adjacent text identifies it; otherwise provide a name.', '24·32·40·56px 크기와 round·square 토큰을 사용하고 이니셜 생성 규칙을 고정합니다.', 'Use the 24/32/40/56px sizes and round/square tokens with a deterministic initials rule.'),
+    };
+    const documentationGuide = documentationGuides[active] || [];
+    const showDocumentationGuide = documentationGuide.length > 0;
 
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
     const spacingScale = Object.keys(spx).map((n) => ({
@@ -3498,11 +3686,17 @@ class Component extends DCLogic {
 
     return {
       rootRef: this.rootRef,
-      theme, lang,
+      theme, lang, tabsDemo,
       brandName: 'Parkie UI',
       subtitle: L('RMS 디자인 시스템', 'RMS Design System'),
       ver: version,
       searchPh: L('컴포넌트 검색', 'Search components'),
+      searchQuery,
+      onSearchInput: (event) => this.setState({ searchQuery: event.target.value }),
+      showNoNavResults: navSources.length === 0,
+      noSearchResults: L(`'${searchQuery}'에 맞는 문서가 없습니다.`, `No documentation matches '${searchQuery}'.`),
+      navigationLabel: L('디자인 시스템 문서 탐색', 'Design system documentation'),
+      siteSelectAriaLabel: L('사이트 선택', 'Select site'),
       themeLabel: theme === 'dark' ? L('다크', 'Dark') : L('라이트', 'Light'),
       themeDotStyle,
       koSegStyle: seg(ko),
@@ -3511,6 +3705,12 @@ class Component extends DCLogic {
       setKo: () => this.setState({ lang: 'ko' }),
       setEn: () => this.setState({ lang: 'en' }),
       navSources,
+      tabDemoItems,
+      activeTabLabel,
+      documentationGuide,
+      showDocumentationGuide,
+      documentationGuideTitle: L('운영·구현 계약', 'Usage & implementation contract'),
+      documentationGuideDescription: L('실제 RMS 화면에 적용할 때 시각 샘플과 함께 지켜야 할 최소 규칙입니다.', 'Minimum rules to apply alongside the visual specimen in production RMS screens.'),
       /* Pages whose specimens are designed at full application width. The top
          bar recipe needs 1214px and the control shell needs rail 80 + panel
          320 + workspace, neither of which fits the 960px reading column. */
@@ -3637,14 +3837,19 @@ class Component extends DCLogic {
       toggleService: () => this.setState({ serviceActive: !serviceActive }),
       operatorSelected: role === 'operator',
       engineerSelected: role === 'engineer',
+      operatorTabIndex: role === 'operator' ? 0 : -1,
+      engineerTabIndex: role === 'engineer' ? 0 : -1,
       selectOperator: () => this.setState({ role: 'operator' }),
       selectEngineer: () => this.setState({ role: 'engineer' }),
+      onRoleKeyDown,
       siteMenuOpen,
       siteExpanded: siteMenuOpen,
+      siteActiveDescendant: siteMenuOpen ? siteOptions[activeSiteIndex].optionId : '',
       siteLabel,
       siteSelectClass,
       siteOptions,
       toggleSiteMenu: () => this.setState({ siteMenuOpen: !siteMenuOpen }),
+      onSiteKeyDown,
       alertFeedItems,
       alertCenterItems: alertFeedItems,
       criticalEventLatest: alertFeedItems[0].intent === 'danger',

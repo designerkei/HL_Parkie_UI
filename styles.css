@@ -7,6 +7,7 @@
 @import "./components/iconography.css?v=0.4";
 @import "./components/media-emergency.css?v=0.1";
 @import "./components/system-summary.css?v=0.2";
+@import "./components/documentation.css?v=0.1";
 
 :root {
   color-scheme: dark;
@@ -435,7 +436,11 @@ img {
   user-select: none;
 }
 .pk-alert-badge--danger { background: #DF0000; }
-.pk-alert-badge--danger.pk-alert-badge--state-hover { background: #EF2020; }
+.pk-alert-badge--danger.pk-alert-badge--state-hover {
+  color: var(--parkie-action-danger-hover-fg);
+  background: #EF2020;
+}
+.pk-alert-badge--danger.pk-alert-badge--state-hover svg path { fill: currentColor; }
 .pk-alert-badge svg { display: block; }
 
 .pk-alert-pill {
@@ -444,8 +449,8 @@ img {
   padding: 0 24px;
   border-radius: 40px;
   background: #fff;
-  border: 2px solid #EF2020;
-  color: #EF2020;
+  border: 2px solid var(--parkie-danger);
+  color: var(--parkie-danger);
   display: inline-flex;
   align-items: center;
   justify-content: center;
