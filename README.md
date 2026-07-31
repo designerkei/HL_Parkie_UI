@@ -19,7 +19,11 @@ RMS 디자인 시스템의 정보 구조, 타이포그래피 규정, 컴포넌�
 - `styles.css` — 전역 진입점과 반응형 보완
 - `tokens/parkie-tokens.css` — Parkie UI 테마가 적용된 RMS 토큰
 - `brand/logo.svg` — RMS 본체가 사용하는 HL Robotics 심볼
+- `icons/` — Parkie 원본·로봇 전용 아이콘과 출처 정책
+- `components/iconography.css` — 아이콘 상태 매트릭스와 도메인 상태 카탈로그
+- `components/media-emergency.css` — 4채널 CCTV와 비상 제어 패널
 - `ms/`, `ms2/`, `ms3/`, `ms4/`, `ms6/` — RMS의 MS 참조 컴포넌트
+- `tests/` — 기능·치수·상태·반응형·시각 캡처 검증
 - `PARKIE_MERGE_PLAN.md` — 병합 방향과 검증 기준
 
 운영 사이트는 GitHub Pages의 `main` 브랜치 루트에서 배포됩니다.

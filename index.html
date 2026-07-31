@@ -8,9 +8,13 @@
 <script src="./support.js"></script>
 <script type="module">
   import icons from './ms/icon-data.js';
+  import parkieIcons from './icons/parkie-icon-data.js';
   window.__msIcons = icons;
   (window.__msIconsCbs || []).forEach(fn => fn(icons));
   window.__msIconsLoaded = true;
+  window.__parkieIcons = parkieIcons;
+  (window.__parkieIconsCbs || []).forEach(fn => fn(parkieIcons));
+  window.__parkieIconsLoaded = true;
 </script>
 </head>
 <body>
@@ -20,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.3">
+<link rel="stylesheet" href="styles.css?v=0.4">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -102,7 +106,7 @@
 
     <!-- ============ MAIN ============ -->
     <main class="pk-scroll" data-scroll style="flex:1;overflow-y:auto;">
-      <div style="max-width:960px;margin:0 auto;padding:var(--parkie-space-9) var(--parkie-space-9) var(--parkie-space-12);">
+      <div class="{{ contentFrameClass }}">
 
         <!-- page header -->
         <div style="margin-bottom:var(--parkie-space-8);">
@@ -332,6 +336,104 @@
                 </div>
               </div>
             </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- ===== PARKIE ICONOGRAPHY ===== -->
+        <sc-if value="{{ isIconography }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-icon-doc">
+            <div class="pk-icon-summary" aria-label="Parkie 아이콘 시스템 요약">
+              <sc-for list="{{ parkieIconSummary }}" as="summary" hint-placeholder-count="4">
+                <div class="pk-icon-summary-item">
+                  <span class="pk-icon-summary-label">{{ summary.label }}</span>
+                  <strong class="pk-icon-summary-value">{{ summary.value }}</strong>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
+              <section class="pk-icon-group">
+                <div class="pk-icon-group-head">
+                  <div>
+                    <h2>{{ group.title }}</h2>
+                    <p>{{ group.description }}</p>
+                  </div>
+                  <span class="pk-icon-group-count">{{ group.count }}</span>
+                </div>
+                <div class="pk-icon-matrix-scroll pk-scroll">
+                  <div class="pk-icon-matrix">
+                    <div class="pk-icon-matrix-head" aria-hidden="true">
+                      <div>Icon · Source</div>
+                      <div>Enabled</div>
+                      <div>Hover</div>
+                      <div>Pressed &amp; On</div>
+                      <div>Disabled</div>
+                    </div>
+                    <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="5">
+                      <div class="pk-icon-row">
+                        <div class="pk-icon-name">
+                          <span class="pk-icon-name-ko">{{ icon.ko }}</span>
+                          <span class="pk-icon-name-en">{{ icon.en }}</span>
+                          <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
+                        </div>
+                        <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
+                          <div class="{{ state.className }}" aria-label="{{ state.label }}">
+                            {{ state.svg }}
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </section>
+            </sc-for>
+
+            <sc-for list="{{ parkieDomainGroups }}" as="group" hint-placeholder-count="5">
+              <section class="pk-icon-group">
+                <div class="pk-icon-group-head">
+                  <div>
+                    <h2>{{ group.title }}</h2>
+                    <p>{{ group.description }}</p>
+                  </div>
+                  <span class="pk-icon-group-count">{{ group.count }}</span>
+                </div>
+                <div class="pk-domain-grid">
+                  <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="5">
+                    <div class="{{ icon.className }}">
+                      {{ icon.svg }}
+                      <span class="pk-domain-icon-label">{{ icon.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </section>
+            </sc-for>
+
+            <section class="pk-icon-group">
+              <div class="pk-icon-group-head">
+                <div>
+                  <h2>사용 규칙 · Usage rules</h2>
+                  <p>아이콘만으로 의미를 추측하게 만들지 않고, 상호작용 상태와 운영 상태를 분리합니다.</p>
+                </div>
+              </div>
+              <div class="pk-icon-rules">
+                <article class="pk-icon-rule">
+                  <h3>24px 기본 그리드</h3>
+                  <p>기본 크기는 <code>24×24</code>, 선형 아이콘은 <code>2px</code> stroke와 round cap/join을 사용합니다. 16px 이하에서는 별도 소형 자산을 사용합니다.</p>
+                </article>
+                <article class="pk-icon-rule">
+                  <h3>상호작용 4상태</h3>
+                  <p>Enabled·Hover·Pressed/On·Disabled는 각각 <code>--parkie-icon-*</code> 토큰만 사용합니다. Pressed와 운영 오류 색상을 혼용하지 않습니다.</p>
+                </article>
+                <article class="pk-icon-rule">
+                  <h3>의미는 텍스트와 함께</h3>
+                  <p>버튼에는 접근 가능한 이름을 제공하고, 배터리·통신·경고는 수치나 상태 텍스트를 함께 표시합니다. 색만으로 상태를 전달하지 않습니다.</p>
+                </article>
+                <article class="pk-icon-rule">
+                  <h3>출처 분리</h3>
+                  <p><code>Parkie Original</code>, <code>Parkie Custom</code>, <code>MS Adopted</code>를 구현 메타데이터로 유지합니다. MS 참조 카탈로그 자체는 별도 메뉴에 보존합니다.</p>
+                </article>
+              </div>
+            </section>
           </div>
         </sc-if>
 
@@ -622,6 +724,179 @@
               <li><strong>배터리:</strong> 퍼센트와 아이콘을 함께 제공하고 low/critical만 의미 색을 적용합니다.</li>
               <li><strong>상세:</strong> chevron은 카드 확장만 담당하며 카드 선택과 분리합니다.</li>
             </ol>
+          </div>
+        </sc-if>
+
+        <!-- ===== MEDIA & EMERGENCY ===== -->
+        <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-media-doc">
+            <section class="pk-media-section" aria-labelledby="camera-feed-title">
+              <div class="pk-media-section__head">
+                <div>
+                  <h2 id="camera-feed-title">Camera Feed</h2>
+                  <p>관제자가 동시에 비교해야 하는 4개 채널을 한 패널에 유지합니다. 카드에는 채널명·실시간 상태·카메라 ID·마지막 프레임 시각을 고정합니다.</p>
+                </div>
+                <span class="pk-media-reference-tag">4 CHANNEL · 364:286</span>
+              </div>
+              <div class="pk-media-stage">
+                <div class="pk-camera-grid" aria-label="실시간 CCTV 카메라 피드">
+                  <sc-for list="{{ cameraFeeds }}" as="camera" hint-placeholder-count="4">
+                    <article class="{{ camera.className }}" data-camera-id="{{ camera.id }}">
+                      <header class="pk-camera-card__header">
+                        <span class="pk-camera-live-dot" aria-hidden="true"></span>
+                        <span>{{ camera.name }}</span>
+                      </header>
+                      <div class="pk-camera-card__viewport">
+                        <div class="pk-camera-card__state" role="status">
+                          <span class="pk-camera-state-spinner" aria-hidden="true"></span>
+                          <span>{{ camera.stateLabel }}</span>
+                        </div>
+                        <span class="pk-camera-card__meta">{{ camera.meta }}</span>
+                        <div class="pk-camera-card__controls">
+                          <button class="pk-camera-control" type="button" onClick="{{ camera.onRefresh }}" aria-label="{{ camera.refreshLabel }}">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </button>
+                          <button class="pk-camera-control" type="button" onClick="{{ camera.onFullscreen }}" aria-label="{{ camera.fullscreenLabel }}" aria-pressed="{{ camera.fullscreen }}">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M4 15v5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  </sc-for>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-media-section" aria-labelledby="camera-state-title">
+              <div class="pk-media-section__head">
+                <div>
+                  <h2 id="camera-state-title">Stream states · 스트림 상태</h2>
+                  <p>Live와 장애 상태를 점 색상만으로 구분하지 않습니다. 영상 영역 중앙의 아이콘·텍스트와 헤더 상태를 함께 변경합니다.</p>
+                </div>
+                <span class="pk-media-reference-tag">LIVE · RECONNECT · PAUSE · OFFLINE · ERROR</span>
+              </div>
+              <div class="pk-camera-state-grid">
+                <div class="pk-camera-state-sample">
+                  <article class="pk-camera-card">
+                    <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 1</span></header>
+                    <div class="pk-camera-card__viewport"><span class="pk-camera-card__meta">CAM_01 · 14:01:35</span></div>
+                  </article>
+                  <span class="pk-camera-state-sample__label">Live · 실시간</span>
+                </div>
+                <div class="pk-camera-state-sample">
+                  <article class="pk-camera-card is-reconnecting">
+                    <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 2</span></header>
+                    <div class="pk-camera-card__viewport">
+                      <div class="pk-camera-card__state" role="status"><span class="pk-camera-state-spinner" aria-hidden="true"></span><span>스트림 재연결 중</span></div>
+                    </div>
+                  </article>
+                  <span class="pk-camera-state-sample__label">Reconnecting · 재연결</span>
+                </div>
+                <div class="pk-camera-state-sample">
+                  <article class="pk-camera-card is-paused">
+                    <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 3</span></header>
+                    <div class="pk-camera-card__viewport">
+                      <div class="pk-camera-card__state" role="status">
+                        <svg class="pk-camera-state-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"/></svg>
+                        <span>영상 일시정지</span>
+                      </div>
+                    </div>
+                  </article>
+                  <span class="pk-camera-state-sample__label">Paused · 일시정지</span>
+                </div>
+                <div class="pk-camera-state-sample">
+                  <article class="pk-camera-card is-offline">
+                    <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 4</span></header>
+                    <div class="pk-camera-card__viewport">
+                      <div class="pk-camera-card__state" role="status">
+                        <svg class="pk-camera-state-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4 21 20M4 8h3l2-2h6l2 2h3v9H8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>신호 없음</span>
+                      </div>
+                    </div>
+                  </article>
+                  <span class="pk-camera-state-sample__label">Offline · 신호 없음</span>
+                </div>
+                <div class="pk-camera-state-sample">
+                  <article class="pk-camera-card is-error">
+                    <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 5</span></header>
+                    <div class="pk-camera-card__viewport">
+                      <div class="pk-camera-card__state" role="alert">
+                        <svg class="pk-camera-state-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 9 16H3L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <span>스트림 오류</span>
+                      </div>
+                    </div>
+                  </article>
+                  <span class="pk-camera-state-sample__label">Error · 스트림 오류</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-media-section" aria-labelledby="emergency-fab-title">
+              <div class="pk-media-section__head">
+                <div>
+                  <h2 id="emergency-fab-title">Emergency · FAB</h2>
+                  <p>비상정지는 카메라 제어보다 우선 접근되지만, 눌렀을 때 즉시 실행하지 않고 영향 범위를 명시한 확인 단계로 연결합니다.</p>
+                </div>
+                <span class="pk-media-reference-tag">SAFETY CRITICAL</span>
+              </div>
+              <div class="pk-emergency-control-panel">
+                <div class="pk-emergency-actions">
+                  <button class="pk-emergency-fab" type="button" onClick="{{ openMediaEmergency }}" aria-haspopup="dialog" aria-pressed="{{ mediaEmergencyActive }}">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h12v9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V6ZM12 2v4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>{{ emergencyFabLabel }}</span>
+                  </button>
+                  <button class="pk-mic-fab" type="button" onClick="{{ toggleMediaMic }}" aria-pressed="{{ mediaMicActive }}" aria-label="{{ micFabAriaLabel }}">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span>{{ micFabLabel }}</span>
+                  </button>
+                </div>
+                <div class="pk-emergency-copy">
+                  <strong>상시 고정 안전 액션 · Persistent safety action</strong>
+                  <p>실제 RMS에서는 좌측 하단 고정 영역에 배치하고 권한·대상·진행 중 작업을 확인 모달에 표시합니다. 마이크는 별도의 중립 액션으로 유지해 비상정지와 오조작 영역이 겹치지 않게 합니다.</p>
+                  <sc-if value="{{ mediaEmergencyActive }}" hint-placeholder-val="{{ false }}">
+                    <span class="pk-emergency-active-note"><span class="pk-camera-live-dot" aria-hidden="true"></span>문서 데모: 비상모드 활성 상태</span>
+                  </sc-if>
+                </div>
+              </div>
+            </section>
+
+            <section class="pk-media-section" aria-labelledby="media-rules-title">
+              <div class="pk-media-section__head">
+                <div>
+                  <h2 id="media-rules-title">운영 규칙 · Operating rules</h2>
+                  <p>카메라 피드는 감시용 정보, 비상 제어는 안전 액션이라는 역할을 레이아웃과 상호작용에서 분리합니다.</p>
+                </div>
+              </div>
+              <div class="pk-media-rules">
+                <article class="pk-media-rule"><h3>고정 정보</h3><p>채널명, 카메라 ID와 시각은 영상 프레임 위에서 항상 읽을 수 있어야 하며 제어 버튼이 이를 가리지 않습니다.</p></article>
+                <article class="pk-media-rule"><h3>복구 가능한 제어</h3><p>새로고침·전체화면은 32px 컨트롤과 명시적 접근성 이름을 사용합니다. Hover와 키보드 Focus에서 동일하게 노출합니다.</p></article>
+                <article class="pk-media-rule"><h3>안전 확인</h3><p>비상모드는 단일 클릭으로 실행하지 않습니다. 전체 정지 범위와 복구 절차를 확인한 뒤 Danger 액션을 수행합니다.</p></article>
+              </div>
+            </section>
+
+            <sc-if value="{{ mediaEmergencyOpen }}" hint-placeholder-val="{{ false }}">
+              <div class="pk-media-dialog-backdrop">
+                <div class="pk-modal-shell pk-modal-shell--reference-alert pk-media-emergency-dialog" role="dialog" aria-modal="true" aria-labelledby="media-emergency-dialog-title">
+                  <div class="pk-modal-context">
+                    <span aria-hidden="true"></span>
+                    <button class="pk-modal-close" type="button" onClick="{{ closeMediaEmergency }}" aria-label="비상모드 확인 닫기">
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                  <div class="pk-modal-body pk-modal-body--center">
+                    <div class="pk-modal-status-icon pk-modal-status-icon--danger" aria-hidden="true">
+                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M13.1 4.9a3.35 3.35 0 0 1 5.8 0l10.2 17.5A3.35 3.35 0 0 1 26.2 27H5.8a3.35 3.35 0 0 1-2.9-4.6L13.1 4.9Z" fill="currentColor"/><path d="M16 11v7M16 22.2v.3" stroke="white" stroke-width="2.4" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3 class="pk-modal-title" id="media-emergency-dialog-title">전체 로봇을 즉시 정지합니까?</h3>
+                    <p class="pk-modal-description">진행 중인 작업이 중단되고 신규 작업이 차단됩니다.</p>
+                  </div>
+                  <div class="pk-modal-actions pk-media-dialog-actions">
+                    <button class="pk-modal-button" type="button" onClick="{{ closeMediaEmergency }}">취소</button>
+                    <button class="pk-modal-button pk-modal-button--danger" type="button" onClick="{{ confirmMediaEmergency }}">비상모드 실행</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
           </div>
         </sc-if>
 
@@ -2128,6 +2403,7 @@ class Component extends DCLogic {
     lang: this.props.defaultLang || 'ko',
     active: 'overview',
     icons: null,
+    parkieIcons: null,
     modalDemo: 'critical',
     serviceActive: true,
     role: 'engineer',
@@ -2138,6 +2414,11 @@ class Component extends DCLogic {
     selectedRobot: '02',
     expandedRobot: '02',
     robotCameraActive: false,
+    cameraRefreshing: '',
+    cameraFullscreen: '',
+    mediaEmergencyOpen: false,
+    mediaEmergencyActive: false,
+    mediaMicActive: false,
   };
 
   componentDidMount() {
@@ -2149,6 +2430,11 @@ class Component extends DCLogic {
     } else {
       (window.__msIconsCbs = window.__msIconsCbs || []).push((icons) => this.setState({ icons }));
     }
+    if (window.__parkieIconsLoaded) {
+      this.setState({ parkieIcons: window.__parkieIcons });
+    } else {
+      (window.__parkieIconsCbs = window.__parkieIconsCbs || []).push((parkieIcons) => this.setState({ parkieIcons }));
+    }
   }
 
   NAV = [
@@ -2158,7 +2444,7 @@ class Component extends DCLogic {
       { ko: '액션·입력', en: 'Actions & Input', items: ['button', 'segmented', 'switch', 'input', 'select', 'checkbox'] },
       { ko: '상태·피드백', en: 'Status & Feedback', items: ['badge', 'statuslabel', 'alert', 'alertfeed'] },
       { ko: '내비게이션·구조', en: 'Navigation & Structure', items: ['topbar', 'tabs', 'breadcrumb', 'card', 'table', 'avatar'] },
-      { ko: '로봇 운영', en: 'Robot Operations', items: ['robotstatus', 'robotcard'] },
+      { ko: '로봇 운영', en: 'Robot Operations', items: ['robotstatus', 'robotcard', 'media'] },
       { ko: '오버레이·패턴', en: 'Overlays & Patterns', items: ['modal', 'alertcenter'] },
       { ko: '템플릿', en: 'Templates', items: ['appshell', 'dashboard'] },
       { ko: '리소스', en: 'Resources', items: ['brand', 'downloads'] },
@@ -2180,7 +2466,7 @@ class Component extends DCLogic {
     spacing:     { ko: '간격', en: 'Spacing', impl: true, dko: '4px 기반의 여유로운 간격 스케일.', den: 'A roomy 4px-based spacing scale.' },
     radius:      { ko: '모서리', en: 'Radius & Shape', impl: true, dko: '컴포넌트 곡률 스케일.', den: 'Corner-radius scale for components.' },
     elevation:   { ko: '그림자', en: 'Elevation', impl: true, dko: '깊이를 표현하는 그림자 레벨.', den: 'Shadow levels expressing depth.' },
-    iconography: { ko: '아이콘', en: 'Iconography', impl: false, dko: '아이콘 세트와 사용 규칙.', den: 'Icon set and usage rules.' },
+    iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: 'Parkie 원본·로봇 전용·MS 채택 아이콘을 출처별로 분리하고 상호작용·운영 상태 규칙을 함께 관리합니다.', den: 'Parkie originals, robot-specific icons and MS-adopted utilities, separated by source with interaction and operational-state rules.' },
     button:      { ko: '버튼', en: 'Button', impl: true, dko: '액션을 유도하는 기본 버튼. 6가지 종류 · 3가지 크기 · 상태.', den: 'The primary action component — 6 variants, 3 sizes, and states.' },
     segmented:   { ko: '세그먼트', en: 'Segmented Control', impl: true, dko: '2–4개의 상호 배타적인 값을 전환하는 단일 선택 컨트롤.', den: 'A single-select control for switching between 2–4 mutually exclusive values.' },
     switch:      { ko: '스위치', en: 'Switch', impl: true, dko: '즉시 적용되는 이진 설정을 위한 On/Off 컨트롤.', den: 'An On/Off control for binary settings that apply immediately.' },
@@ -2200,6 +2486,7 @@ class Component extends DCLogic {
     statuslabel: { ko: '상태 라벨', en: 'Status Label', impl: true, dko: '의미 상태를 dot·subtle·solid 강도로 표시하는 텍스트 라벨.', den: 'A semantic state label with dot, subtle and solid emphasis levels.' },
     robotstatus: { ko: '로봇 상태', en: 'Robot Status', impl: true, dko: '선택·통신·동작·배터리 상태를 독립된 축으로 관리합니다.', den: 'Independent axes for selection, connection, motion and battery state.' },
     robotcard:   { ko: '로봇 카드', en: 'Robot Card', impl: true, dko: '로봇 핵심 상태와 보조 명령을 한 카드에 계층적으로 배치합니다.', den: 'A hierarchical card combining robot health, telemetry and secondary commands.' },
+    media:       { ko: '미디어·비상 제어', en: 'Media & Emergency', impl: true, dko: '4채널 CCTV 피드, 스트림 상태와 상시 접근 가능한 비상 제어를 하나의 독립 운영 패널로 구성합니다.', den: 'An independent operations panel for four-channel CCTV, stream states and always-available emergency controls.' },
     breadcrumb:  { ko: '브레드크럼', en: 'Breadcrumb', impl: true, dko: '현재 위치 경로. 구역 → 로봇 상세 등 계층 탐색.', den: 'Path to the current location — hierarchy like zone → robot detail.' },
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
     appshell:    { ko: '관제 앱 셸', en: 'Control App Shell', impl: true, dko: 'Top Bar·Primary Rail·Context Panel·Workspace를 조합한 주차 관제 화면 구조.', den: 'The parking-control structure combining Top Bar, Primary Rail, Context Panel and Workspace.' },
@@ -2256,6 +2543,11 @@ class Component extends DCLogic {
       selectedRobot,
       expandedRobot,
       robotCameraActive,
+      cameraRefreshing,
+      cameraFullscreen,
+      mediaEmergencyOpen,
+      mediaEmergencyActive,
+      mediaMicActive,
     } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
@@ -2382,6 +2674,231 @@ class Component extends DCLogic {
       const ok = d && d.body && /<(path|circle|rect|line|polygon|polyline|ellipse|g)\b/.test(d.body);
       return { label: fam.replace(/([a-z])([A-Z])/g, '$1 $2'), name, ok, svg: ok ? React.createElement('svg', { width: 24, height: 24, viewBox: d.viewBox, fill: 'none', dangerouslySetInnerHTML: { __html: d.body } }) : null };
     }).filter((x) => x.ok);
+
+    const parkieIconData = this.state.parkieIcons || {};
+    const iconSvg = (data, key) => {
+      const ok = data && data.body && /<(path|circle|rect|line|polygon|polyline|ellipse|g)\b/.test(data.body);
+      return ok
+        ? React.createElement('svg', {
+          key,
+          width: 24,
+          height: 24,
+          viewBox: data.viewBox || '0 0 24 24',
+          fill: 'none',
+          focusable: 'false',
+          'aria-hidden': 'true',
+          dangerouslySetInnerHTML: { __html: data.body },
+        })
+        : null;
+    };
+    const parkieData = (name) => parkieIconData[name];
+    const msData = (name) => icoData[name];
+    const stateDefs = [
+      { id: 'enabled', label: 'Enabled · Default' },
+      { id: 'hover', label: 'Hover' },
+      { id: 'pressed', label: 'Pressed & On' },
+      { id: 'disabled', label: 'Disabled' },
+    ];
+    const sourceClass = (source) => {
+      if (source === 'Parkie Original') return 'pk-icon-source is-original';
+      if (source === 'Parkie Custom') return 'pk-icon-source is-custom';
+      return 'pk-icon-source is-ms';
+    };
+    const iconRow = (koLabel, enLabel, source, data) => ({
+      ko: koLabel,
+      en: enLabel,
+      source,
+      sourceClassName: sourceClass(source),
+      states: stateDefs.map((state) => ({
+        className: `pk-icon-state is-${state.id}`,
+        label: `${koLabel} · ${state.label}`,
+        svg: iconSvg(data, `${enLabel}-${state.id}`),
+      })),
+    });
+    const iconGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
+      title: L(titleKo, titleEn),
+      description: L(descriptionKo, descriptionEn),
+      count: `${items.length} ICONS`,
+      items,
+    });
+
+    const coreIcons = [
+      iconRow('홈', 'Home', 'MS Adopted', msData('HomeSize24ThemeRegular')),
+      iconRow('모니터링', 'Monitoring', 'Parkie Original', parkieData('Monitoring')),
+      iconRow('위치·지도', 'Location', 'MS Adopted', msData('LocationSize24ThemeRegular')),
+      iconRow('카메라', 'Camera', 'MS Adopted', msData('CameraSize24ThemeRegular')),
+      iconRow('알림', 'Alert', 'MS Adopted', msData('AlertSize24ThemeRegular')),
+      iconRow('설정', 'Settings', 'MS Adopted', msData('SettingsSize24ThemeRegular')),
+    ];
+    const robotOperationIcons = [
+      iconRow('로봇', 'Robot', 'Parkie Original', parkieData('Robot')),
+      iconRow('차량 운반', 'Vehicle transport', 'Parkie Custom', parkieData('VehicleTransport')),
+      iconRow('주차 구역', 'Parking bay', 'Parkie Custom', parkieData('ParkingBay')),
+      iconRow('충전기', 'Charger', 'Parkie Original', parkieData('Charger')),
+      iconRow('배터리', 'Battery', 'Parkie Original', parkieData('BatteryFull')),
+      iconRow('통신', 'Connection', 'Parkie Original', parkieData('Connection')),
+      iconRow('이동 경로', 'Route', 'Parkie Custom', parkieData('Route')),
+      iconRow('장애물', 'Obstacle', 'Parkie Custom', parkieData('Obstacle')),
+      iconRow('수동 제어', 'Manual control', 'Parkie Custom', parkieData('ManualControl')),
+    ];
+    const controlIcons = [
+      iconRow('새로고침·재연결', 'Refresh', 'MS Adopted', msData('ArrowSyncSize24ThemeRegular')),
+      iconRow('시작', 'Play', 'MS Adopted', msData('PlaySize24ThemeRegular')),
+      iconRow('일시정지', 'Pause', 'MS Adopted', msData('PauseSize24ThemeRegular')),
+      iconRow('마이크', 'Microphone', 'MS Adopted', msData('MicSize24ThemeRegular')),
+      iconRow('전체 화면', 'Expand', 'MS Adopted', msData('ArrowExpandSize24ThemeRegular')),
+      iconRow('보기', 'View', 'MS Adopted', msData('EyeSize24ThemeRegular')),
+      iconRow('숨기기', 'Hide', 'MS Adopted', msData('EyeOffSize24ThemeRegular')),
+      iconRow('검색', 'Search', 'MS Adopted', msData('SearchSize24ThemeRegular')),
+      iconRow('필터', 'Filter', 'MS Adopted', msData('FilterSize24ThemeRegular')),
+      iconRow('더보기', 'More', 'MS Adopted', msData('MoreHorizontalSize24ThemeRegular')),
+    ];
+    const safetyIcons = [
+      iconRow('주의', 'Warning', 'MS Adopted', msData('WarningSize24ThemeRegular')),
+      iconRow('오류', 'Error', 'MS Adopted', msData('ErrorCircleSize24ThemeRegular')),
+      iconRow('비상정지', 'Emergency stop', 'Parkie Custom', parkieData('EmergencyStop')),
+      iconRow('완료', 'Complete', 'MS Adopted', msData('CheckmarkCircleSize24ThemeRegular')),
+    ];
+    const parkieIconGroups = [
+      iconGroup(
+        '핵심 내비게이션',
+        'Core navigation',
+        'RMS 전역 이동과 관제 진입점입니다. 익숙한 범용 기호는 MS 원본을 Parkie 토큰으로 채택합니다.',
+        'Global RMS navigation and monitoring entry points. Familiar utilities adopt MS originals with Parkie tokens.',
+        coreIcons
+      ),
+      iconGroup(
+        '로봇·주차 운영',
+        'Robot & parking operations',
+        '차량 인식·운반·주차·충전·통신·경로·장애물·수동 제어에 필요한 Parkie 도메인 아이콘입니다.',
+        'Parkie domain icons for vehicle handling, parking, charging, connectivity, routing, obstacles and manual control.',
+        robotOperationIcons
+      ),
+      iconGroup(
+        '미디어·일반 제어',
+        'Media & utility controls',
+        '카메라와 관제 화면에서 반복되는 복구 가능한 범용 액션입니다.',
+        'Recoverable utility actions repeated across camera and operations surfaces.',
+        controlIcons
+      ),
+      iconGroup(
+        '안전·결과',
+        'Safety & results',
+        '경고·오류·비상·완료처럼 운영 결과를 즉시 구분해야 하는 아이콘입니다.',
+        'Icons for operational outcomes that require immediate distinction: warning, error, emergency and complete.',
+        safetyIcons
+      ),
+    ];
+    const totalParkieIcons = parkieIconGroups.reduce((sum, group) => sum + group.items.length, 0);
+    const parkieIconSummary = [
+      { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
+      { label: L('선형 두께', 'Outline stroke'), value: '2 px · ROUND' },
+      { label: L('문서화 아이콘', 'Documented icons'), value: `${totalParkieIcons} ICONS` },
+      { label: L('출처 체계', 'Source classes'), value: 'ORIGINAL · CUSTOM · MS' },
+    ];
+
+    const domainItem = (labelKo, labelEn, data, tone) => ({
+      label: L(labelKo, labelEn),
+      className: `pk-domain-icon ${tone || ''}`.trim(),
+      svg: iconSvg(data, `domain-${labelEn}`),
+    });
+    const domainGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
+      title: L(titleKo, titleEn),
+      description: L(descriptionKo, descriptionEn),
+      count: `${items.length} STATES`,
+      items,
+    });
+    const parkieDomainGroups = [
+      domainGroup(
+        '배터리 · Battery',
+        'Battery',
+        '잔량과 충전 여부는 아이콘 내부 채움, 의미 색상, 퍼센트 텍스트를 함께 사용합니다.',
+        'Charge level combines internal fill, semantic color and a percentage label in product UI.',
+        [
+          domainItem('충분', 'Full', parkieData('BatteryFull'), 'is-battery-full'),
+          domainItem('중간', 'Medium', parkieData('BatteryMedium'), 'is-battery-full'),
+          domainItem('위험', 'Critical', parkieData('BatteryCritical'), 'is-battery-critical'),
+          domainItem('충전 중 · 낮음', 'Charging low', parkieData('BatteryChargingLow'), 'is-charging'),
+          domainItem('충전 중 · 높음', 'Charging high', parkieData('BatteryChargingHigh'), 'is-charging'),
+        ]
+      ),
+      domainGroup(
+        '통신 · Connection',
+        'Connection',
+        '양호·약함·재연결·끊김·오프라인을 형태와 색상 두 축으로 구분합니다.',
+        'Good, weak, reconnecting, lost and offline states differ by both shape and color.',
+        [
+          domainItem('연결 양호', 'Good', parkieData('ConnectionGood'), 'is-connection-good'),
+          domainItem('신호 약함', 'Weak', parkieData('ConnectionWeak'), 'is-warning'),
+          domainItem('재연결 중', 'Reconnecting', msData('ArrowSyncSize24ThemeRegular'), 'is-info'),
+          domainItem('연결 끊김', 'Lost', parkieData('ConnectionLost'), 'is-danger'),
+          domainItem('오프라인', 'Offline', parkieData('ConnectionLost'), 'is-disabled'),
+        ]
+      ),
+      domainGroup(
+        '동작 · Motion',
+        'Motion',
+        '로봇의 이동·일시정지·대기·수동조작을 작업 결과와 분리해 표시합니다.',
+        'Moving, paused, idle and manual-control states remain separate from mission outcomes.',
+        [
+          domainItem('운행 중', 'Moving', msData('PlaySize24ThemeRegular'), 'is-success'),
+          domainItem('일시정지', 'Paused', msData('PauseSize24ThemeRegular'), 'is-neutral'),
+          domainItem('대기', 'Idle', parkieData('Robot'), 'is-disabled'),
+          domainItem('수동 조작', 'Manual', parkieData('ManualControl'), 'is-info'),
+        ]
+      ),
+      domainGroup(
+        '임무 · Mission',
+        'Mission',
+        '대기·진행·완료·실패를 로봇의 물리 상태와 별도 축으로 관리합니다.',
+        'Queued, in-progress, complete and failed remain independent from physical robot state.',
+        [
+          domainItem('작업 대기', 'Queued', msData('CalendarMonthSize24ThemeRegular'), 'is-neutral'),
+          domainItem('작업 진행', 'In progress', msData('ArrowSyncSize24ThemeRegular'), 'is-info'),
+          domainItem('작업 완료', 'Complete', msData('CheckmarkCircleSize24ThemeRegular'), 'is-success'),
+          domainItem('작업 실패', 'Failed', msData('ErrorCircleSize24ThemeRegular'), 'is-danger'),
+        ]
+      ),
+      domainGroup(
+        '안전 · Safety',
+        'Safety',
+        '장애물·주의·오류·비상정지는 위험도와 필요한 행동을 명시하는 텍스트를 동반합니다.',
+        'Obstacle, warning, error and emergency-stop icons pair with text describing severity and required action.',
+        [
+          domainItem('장애물 감지', 'Obstacle', parkieData('Obstacle'), 'is-warning'),
+          domainItem('주의 필요', 'Warning', msData('WarningSize24ThemeRegular'), 'is-warning'),
+          domainItem('오류 발생', 'Error', msData('ErrorCircleSize24ThemeRegular'), 'is-danger'),
+          domainItem('비상정지', 'Emergency stop', parkieData('EmergencyStop'), 'is-danger'),
+        ]
+      ),
+    ];
+
+    const cameraFeeds = ['01', '02', '03', '04'].map((id, index) => {
+      const refreshing = cameraRefreshing === id;
+      const fullscreen = cameraFullscreen === id;
+      const classes = [
+        'pk-camera-card',
+        index === 0 ? 'is-demo-hover' : '',
+        refreshing ? 'is-reconnecting' : '',
+        fullscreen ? 'is-fullscreen-demo' : '',
+      ].filter(Boolean).join(' ');
+      return {
+        id,
+        name: L(`카메라 ${index + 1}`, `Camera ${index + 1}`),
+        meta: `CAM_${id} · 14:01:35`,
+        className: classes,
+        stateLabel: L('스트림 재연결 중', 'Reconnecting stream'),
+        refreshLabel: refreshing
+          ? L(`카메라 ${index + 1} 재연결 취소`, `Cancel Camera ${index + 1} reconnect`)
+          : L(`카메라 ${index + 1} 스트림 새로고침`, `Refresh Camera ${index + 1} stream`),
+        fullscreenLabel: fullscreen
+          ? L(`카메라 ${index + 1} 전체 화면 해제`, `Exit Camera ${index + 1} expanded view`)
+          : L(`카메라 ${index + 1} 전체 화면`, `Expand Camera ${index + 1}`),
+        fullscreen,
+        onRefresh: () => this.setState({ cameraRefreshing: refreshing ? '' : id }),
+        onFullscreen: () => this.setState({ cameraFullscreen: fullscreen ? '' : id }),
+      };
+    });
     const msRadios = [
       { label: 'checked · rest', checked: true, state: 'rest' },
       { label: 'unchecked · rest', checked: false, state: 'rest' },
@@ -2579,6 +3096,7 @@ class Component extends DCLogic {
       setKo: () => this.setState({ lang: 'ko' }),
       setEn: () => this.setState({ lang: 'en' }),
       navSources,
+      contentFrameClass: active === 'media' ? 'pk-content-frame pk-content-frame--wide' : 'pk-content-frame',
       msButtons, msButtonStates, msButtonMore, msCheckboxStatus, msCheckboxStates, msToggles,
       curTitle: L(cur.ko, cur.en),
       curSub: ko ? cur.en : cur.ko,
@@ -2591,6 +3109,7 @@ class Component extends DCLogic {
       isSpacing: active === 'spacing',
       isRadius: active === 'radius',
       isElevation: active === 'elevation',
+      isIconography: active === 'iconography',
       isButton: active === 'button',
       isSegmented: active === 'segmented',
       isSwitch: active === 'switch',
@@ -2609,6 +3128,7 @@ class Component extends DCLogic {
       isStatusLabel: active === 'statuslabel',
       isRobotStatus: active === 'robotstatus',
       isRobotCard: active === 'robotcard',
+      isMedia: active === 'media',
       isBreadcrumb: active === 'breadcrumb',
       isDashboard: active === 'dashboard',
       isSelect: active === 'select',
@@ -2632,6 +3152,20 @@ class Component extends DCLogic {
       isMsProgress: active === 'ms-progress',
       isMsComp: ['ms-button', 'ms-checkbox', 'ms-toggle', 'ms-input', 'ms-badge', 'ms-tooltip', 'ms-colors', 'ms-type', 'ms-icons', 'ms-radio', 'ms-dropdown', 'ms-alert', 'ms-toast', 'ms-listitem', 'ms-searchbox', 'ms-progress'].includes(active),
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
+      parkieIconSummary,
+      parkieIconGroups,
+      parkieDomainGroups,
+      cameraFeeds,
+      mediaEmergencyOpen,
+      mediaEmergencyActive,
+      mediaMicActive,
+      emergencyFabLabel: mediaEmergencyActive ? L('비상모드 활성', 'Emergency active') : L('비상모드', 'Emergency'),
+      micFabLabel: mediaMicActive ? L('마이크 켜짐', 'Mic on') : L('마이크', 'Microphone'),
+      micFabAriaLabel: mediaMicActive ? L('관제 마이크 끄기', 'Turn off control microphone') : L('관제 마이크 켜기', 'Turn on control microphone'),
+      openMediaEmergency: () => this.setState({ mediaEmergencyOpen: true }),
+      closeMediaEmergency: () => this.setState({ mediaEmergencyOpen: false }),
+      confirmMediaEmergency: () => this.setState({ mediaEmergencyOpen: false, mediaEmergencyActive: true }),
+      toggleMediaMic: () => this.setState({ mediaMicActive: !mediaMicActive }),
       msRefNote: L('참조용입니다. Parkie 버전으로 가져오려면 알려주세요.', 'Reference only — tell me to build the Parkie version.'),
       isSoon: !cur.impl,
       tokenLayers,

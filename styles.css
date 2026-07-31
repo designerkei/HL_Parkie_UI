@@ -1,9 +1,11 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css?v=0.3";
+@import "./tokens/parkie-tokens.css?v=0.4";
 @import "./components/controls.css?v=0.3";
 @import "./components/robot-status.css?v=0.3";
 @import "./components/operations.css?v=0.3";
+@import "./components/iconography.css?v=0.4";
+@import "./components/media-emergency.css?v=0.1";
 
 :root {
   color-scheme: dark;
@@ -25,6 +27,23 @@ img {
 
 [data-theme] > div > main > div {
   box-sizing: border-box;
+}
+
+.pk-content-frame {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--parkie-space-9) var(--parkie-space-9) var(--parkie-space-12);
+}
+
+.pk-content-frame--wide {
+  max-width: 1660px;
+}
+
+@media (max-width: 760px) {
+  .pk-content-frame {
+    padding-right: var(--parkie-space-5);
+    padding-left: var(--parkie-space-5);
+  }
 }
 
 /* =====================================================================

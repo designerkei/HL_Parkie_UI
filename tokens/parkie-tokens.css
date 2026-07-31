@@ -191,6 +191,28 @@
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.40);
   --parkie-text-disabled: rgba(255,255,255,0.30);
+  --parkie-icon-default: rgba(255,255,255,0.70);
+  --parkie-icon-hover: var(--parkie-color-brand-300);
+  --parkie-icon-pressed: var(--parkie-color-brand-500);
+  --parkie-icon-disabled: rgba(255,255,255,0.35);
+  --parkie-icon-battery-full: #F4F4F4;
+  --parkie-icon-battery-critical: #EE0000;
+  --parkie-icon-charging: #00C000;
+
+  /* ---- Media & Emergency ---- */
+  --parkie-camera-stage: var(--parkie-surface-elevation-01);
+  --parkie-camera-card: var(--parkie-surface-elevation-48);
+  --parkie-camera-card-border: rgba(255,255,255,0.09);
+  --parkie-camera-card-border-hover: rgba(255,255,255,0.20);
+  --parkie-camera-video: #131315;
+  --parkie-camera-video-raised: #20242A;
+  --parkie-camera-meta: rgba(255,255,255,0.50);
+  --parkie-camera-control-bg: rgba(0,0,0,0.64);
+  --parkie-camera-control-fg: rgba(255,255,255,0.60);
+  --parkie-camera-live: #FF0000;
+  --parkie-camera-reconnecting: var(--parkie-operation-info);
+  --parkie-camera-offline: var(--parkie-color-neutral-500);
+  --parkie-camera-error: var(--parkie-operation-danger);
 
   --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);
@@ -359,6 +381,27 @@
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.40);
   --parkie-text-disabled: rgba(255,255,255,0.30);
+  --parkie-icon-default: rgba(255,255,255,0.70);
+  --parkie-icon-hover: var(--parkie-color-brand-300);
+  --parkie-icon-pressed: var(--parkie-color-brand-500);
+  --parkie-icon-disabled: rgba(255,255,255,0.35);
+  --parkie-icon-battery-full: #F4F4F4;
+  --parkie-icon-battery-critical: #EE0000;
+  --parkie-icon-charging: #00C000;
+
+  --parkie-camera-stage: var(--parkie-surface-elevation-01);
+  --parkie-camera-card: var(--parkie-surface-elevation-48);
+  --parkie-camera-card-border: rgba(255,255,255,0.09);
+  --parkie-camera-card-border-hover: rgba(255,255,255,0.20);
+  --parkie-camera-video: #131315;
+  --parkie-camera-video-raised: #20242A;
+  --parkie-camera-meta: rgba(255,255,255,0.50);
+  --parkie-camera-control-bg: rgba(0,0,0,0.64);
+  --parkie-camera-control-fg: rgba(255,255,255,0.60);
+  --parkie-camera-live: #FF0000;
+  --parkie-camera-reconnecting: var(--parkie-operation-info);
+  --parkie-camera-offline: var(--parkie-color-neutral-500);
+  --parkie-camera-error: var(--parkie-operation-danger);
 
   --parkie-success: var(--parkie-color-green-500);
   --parkie-success-subtle: rgba(15,220,76,0.14);

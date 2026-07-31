@@ -41,4 +41,32 @@ test('capture reference-critical component pages', async ({ page }) => {
   await page.locator('.pk-feed-list').first().screenshot({
     path: path.join('test-results', 'review', 'alert-feed-detail.png'),
   });
+  await capture(page, '아이콘', 'iconography.png');
+  await page.locator('.pk-icon-matrix').first().screenshot({
+    path: path.join('test-results', 'review', 'iconography-state-matrix.png'),
+  });
+  await page.locator('.pk-icon-matrix').nth(1).scrollIntoViewIfNeeded();
+  await page.locator('.pk-icon-matrix').nth(1).screenshot({
+    path: path.join('test-results', 'review', 'iconography-robot-matrix.png'),
+  });
+  await page.locator('.pk-domain-grid').first().scrollIntoViewIfNeeded();
+  await page.locator('.pk-domain-grid').first().screenshot({
+    path: path.join('test-results', 'review', 'iconography-battery-states.png'),
+  });
+  await capture(page, '미디어·비상 제어', 'media-emergency.png');
+  await page.locator('.pk-media-stage').screenshot({
+    path: path.join('test-results', 'review', 'camera-feed-detail.png'),
+  });
+  await page.locator('.pk-camera-state-grid').scrollIntoViewIfNeeded();
+  await page.locator('.pk-camera-state-grid').screenshot({
+    path: path.join('test-results', 'review', 'camera-state-detail.png'),
+  });
+  await page.locator('.pk-emergency-control-panel').scrollIntoViewIfNeeded();
+  await page.locator('.pk-emergency-control-panel').screenshot({
+    path: path.join('test-results', 'review', 'emergency-fab-detail.png'),
+  });
+  await page.getByRole('button', { name: '비상모드', exact: true }).click();
+  await page.getByRole('dialog', { name: '전체 로봇을 즉시 정지합니까?' }).screenshot({
+    path: path.join('test-results', 'review', 'emergency-confirm-detail.png'),
+  });
 });

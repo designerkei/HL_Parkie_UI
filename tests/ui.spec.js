@@ -191,3 +191,125 @@ test('the operations shell controls update their exposed UI state', async ({ pag
     initialExpanded === 'true' ? 'false' : 'true'
   );
 });
+
+test('Parkie iconography exposes sourced icons and all interaction states', async ({ page }) => {
+  await openComponent(page, '아이콘');
+  await expect(page.locator('h1')).toContainText('아이콘');
+
+  const rows = page.locator('.pk-icon-row');
+  await expect(rows).toHaveCount(29);
+  await expect(page.locator('.pk-icon-state')).toHaveCount(29 * 4);
+  await expect(page.locator('.pk-domain-icon')).toHaveCount(22);
+
+  await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
+  await expect(page.locator('.pk-icon-source.is-custom')).toHaveCount(6);
+  await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(18);
+
+  const firstRow = rows.first();
+  await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
+  await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgb(22, 220, 242)');
+  await expect(firstRow.locator('.is-pressed')).toHaveCSS('color', 'rgb(0, 170, 255)');
+  await expect(firstRow.locator('.is-disabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.35)');
+
+  await expect(page.locator('.pk-domain-icon.is-battery-critical rect')).toHaveCSS('fill', 'rgb(238, 0, 0)');
+  await expect(page.locator('.pk-domain-icon.is-charging').first().locator('rect')).toHaveCSS('fill', 'rgb(0, 192, 0)');
+});
+
+test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {
+  await openComponent(page, '미디어·비상 제어');
+  await expect(page.locator('h1')).toContainText('미디어·비상 제어');
+  await expect(page.locator('.pk-content-frame')).toHaveClass(/pk-content-frame--wide/);
+
+  const feeds = page.locator('.pk-camera-grid > .pk-camera-card');
+  await expect(feeds).toHaveCount(4);
+  const firstBox = await feeds.first().boundingBox();
+  expect(Math.round(firstBox.width)).toBeGreaterThanOrEqual(360);
+  expect(Math.round(firstBox.width)).toBeLessThanOrEqual(376);
+  expect(Math.round(firstBox.height)).toBeGreaterThanOrEqual(282);
+  expect(Math.round(firstBox.height)).toBeLessThanOrEqual(296);
+
+  await expect(feeds.first().locator('.pk-camera-live-dot')).toHaveCSS('background-color', 'rgb(255, 0, 0)');
+  await expect(feeds.first().locator('.pk-camera-card__controls')).toHaveCSS('opacity', '1');
+  await expect(feeds.first().getByRole('button', { name: '카메라 1 스트림 새로고침' })).toBeVisible();
+  await expect(feeds.first().getByRole('button', { name: '카메라 1 전체 화면' })).toBeVisible();
+  await expect(page.locator('.pk-camera-state-sample')).toHaveCount(5);
+});
+
+test('camera recovery, expanded view, microphone and emergency confirmation are operable', async ({ page }) => {
+  await openComponent(page, '미디어·비상 제어');
+  const firstFeed = page.locator('.pk-camera-grid > .pk-camera-card').first();
+
+  await firstFeed.getByRole('button', { name: '카메라 1 스트림 새로고침' }).click();
+  await expect(firstFeed).toHaveClass(/is-reconnecting/);
+  await expect(firstFeed.getByRole('status')).toContainText('스트림 재연결 중');
+  await firstFeed.getByRole('button', { name: '카메라 1 재연결 취소' }).click();
+  await expect(firstFeed).not.toHaveClass(/is-reconnecting/);
+
+  const expand = firstFeed.getByRole('button', { name: '카메라 1 전체 화면' });
+  await expand.click();
+  await expect(firstFeed).toHaveClass(/is-fullscreen-demo/);
+  await expect(firstFeed.getByRole('button', { name: '카메라 1 전체 화면 해제' })).toHaveAttribute('aria-pressed', 'true');
+
+  const mic = page.getByRole('button', { name: '관제 마이크 켜기' });
+  await mic.click();
+  await expect(page.getByRole('button', { name: '관제 마이크 끄기' })).toHaveAttribute('aria-pressed', 'true');
+
+  const emergency = page.getByRole('button', { name: '비상모드', exact: true });
+  await emergency.click();
+  const dialog = page.getByRole('dialog', { name: '전체 로봇을 즉시 정지합니까?' });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: '취소' }).click();
+  await expect(dialog).toBeHidden();
+
+  await emergency.click();
+  await page.getByRole('dialog').getByRole('button', { name: '비상모드 실행' }).click();
+  await expect(page.getByText('문서 데모: 비상모드 활성 상태')).toBeVisible();
+  await expect(page.getByRole('button', { name: '비상모드 활성', exact: true })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('CCTV feed layout adapts to two columns and then one column', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await openComponent(page, '미디어·비상 제어');
+  let feeds = page.locator('.pk-camera-grid > .pk-camera-card');
+  const wideBoxes = await feeds.evaluateAll((nodes) => nodes.map((node) => {
+    const rect = node.getBoundingClientRect();
+    return { x: Math.round(rect.x), y: Math.round(rect.y) };
+  }));
+  expect(wideBoxes[0].x).toBe(wideBoxes[2].x);
+  expect(wideBoxes[0].y).toBeLessThan(wideBoxes[2].y);
+  expect(wideBoxes[0].x).toBeLessThan(wideBoxes[1].x);
+
+  await page.setViewportSize({ width: 900, height: 1000 });
+  feeds = page.locator('.pk-camera-grid > .pk-camera-card');
+  const narrowBoxes = await feeds.evaluateAll((nodes) => nodes.map((node) => {
+    const rect = node.getBoundingClientRect();
+    return { x: Math.round(rect.x), y: Math.round(rect.y) };
+  }));
+  expect(new Set(narrowBoxes.map((box) => box.x)).size).toBe(1);
+  expect(narrowBoxes[0].y).toBeLessThan(narrowBoxes[1].y);
+});
+
+test('new icon and media controls retain accessible names, focus disclosure and reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await openComponent(page, '미디어·비상 제어');
+  const unnamedButtons = await page.locator('.pk-media-doc button').evaluateAll((buttons) => (
+    buttons
+      .filter((button) => !(button.getAttribute('aria-label') || button.textContent.trim()))
+      .map((button) => button.outerHTML)
+  ));
+  expect(unnamedButtons).toEqual([]);
+
+  const secondControls = page.locator('.pk-camera-grid > .pk-camera-card').nth(1).locator('.pk-camera-card__controls');
+  await expect(secondControls).toHaveCSS('opacity', '0');
+  await secondControls.getByRole('button', { name: '카메라 2 스트림 새로고침' }).focus();
+  await expect(secondControls).toHaveCSS('opacity', '1');
+
+  await expect(page.locator('.pk-camera-live-dot').first()).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.pk-camera-state-spinner').first()).toHaveCSS('animation-name', 'none');
+
+  await openComponent(page, '아이콘');
+  const stateLabels = await page.locator('.pk-icon-state').evaluateAll((cells) => (
+    cells.filter((cell) => !cell.getAttribute('aria-label')).length
+  ));
+  expect(stateLabels).toBe(0);
+});

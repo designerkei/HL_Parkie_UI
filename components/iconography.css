@@ -1,0 +1,325 @@
+/* Parkie iconography — 24px robot-operations icons and state matrices. */
+
+.pk-icon-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-9);
+}
+
+.pk-icon-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-summary-item {
+  min-height: 94px;
+  padding: var(--parkie-space-4);
+  border-right: 1px solid var(--parkie-border);
+}
+
+.pk-icon-summary-item:last-child {
+  border-right: 0;
+}
+
+.pk-icon-summary-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-icon-summary-value {
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-icon-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-group-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-group-head h2,
+.pk-icon-group-head h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+}
+
+.pk-icon-group-head p {
+  margin: 5px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-icon-group-count {
+  flex-shrink: 0;
+  color: var(--parkie-brand-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-icon-matrix-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-matrix {
+  min-width: 760px;
+  background: var(--parkie-surface);
+}
+
+.pk-icon-matrix-head,
+.pk-icon-row {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.25fr) repeat(4, minmax(120px, 1fr));
+}
+
+.pk-icon-matrix-head {
+  min-height: 54px;
+  align-items: center;
+  background: var(--parkie-surface-2);
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-icon-matrix-head > div {
+  padding: 0 var(--parkie-space-4);
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+  text-align: center;
+}
+
+.pk-icon-matrix-head > div:first-child {
+  text-align: left;
+}
+
+.pk-icon-row {
+  min-height: 104px;
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-icon-row:last-child {
+  border-bottom: 0;
+}
+
+.pk-icon-name,
+.pk-icon-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--parkie-space-4);
+  border-right: 1px solid var(--parkie-border);
+}
+
+.pk-icon-name {
+  align-items: flex-start;
+  flex-direction: column;
+  background: var(--parkie-surface-2);
+}
+
+.pk-icon-name-ko {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-icon-name-en {
+  margin-top: 3px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: 11px;
+}
+
+.pk-icon-source {
+  margin-top: 8px;
+  padding: 2px 6px;
+  color: var(--parkie-text-tertiary);
+  background: var(--parkie-surface-3);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-pill);
+  font-family: var(--parkie-font-mono);
+  font-size: 9px;
+  letter-spacing: .02em;
+}
+
+.pk-icon-source.is-original {
+  color: var(--parkie-brand-text);
+  border-color: var(--parkie-brand-border);
+}
+
+.pk-icon-source.is-custom {
+  color: var(--parkie-warning-text);
+  border-color: rgba(245,222,46,0.35);
+}
+
+.pk-icon-source.is-ms {
+  color: var(--parkie-info-text);
+}
+
+.pk-icon-state:last-child {
+  border-right: 0;
+}
+
+.pk-icon-state svg,
+.pk-domain-icon svg {
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+  overflow: visible;
+}
+
+.pk-icon-state.is-enabled {
+  color: var(--parkie-icon-default);
+}
+
+.pk-icon-state.is-hover {
+  color: var(--parkie-icon-hover);
+}
+
+.pk-icon-state.is-pressed {
+  color: var(--parkie-icon-pressed);
+}
+
+.pk-icon-state.is-disabled {
+  color: var(--parkie-icon-disabled);
+}
+
+.pk-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--parkie-space-3);
+}
+
+.pk-domain-icon {
+  min-height: 126px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--parkie-space-4);
+  color: var(--parkie-text);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-domain-icon.is-success {
+  color: var(--parkie-success);
+}
+
+.pk-domain-icon.is-neutral {
+  color: var(--parkie-text-secondary);
+}
+
+.pk-domain-icon.is-warning {
+  color: var(--parkie-warning);
+}
+
+.pk-domain-icon.is-danger {
+  color: var(--parkie-danger);
+}
+
+.pk-domain-icon.is-info {
+  color: var(--parkie-info);
+}
+
+.pk-domain-icon.is-disabled {
+  color: var(--parkie-icon-disabled);
+}
+
+.pk-domain-icon.is-battery-full {
+  color: var(--parkie-icon-battery-full);
+}
+
+.pk-domain-icon.is-battery-critical {
+  color: var(--parkie-icon-battery-full);
+}
+
+.pk-domain-icon.is-charging {
+  color: var(--parkie-icon-battery-full);
+}
+
+.pk-domain-icon.is-connection-good {
+  color: var(--parkie-connection-good);
+}
+
+.pk-domain-icon-label {
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  text-align: center;
+}
+
+.pk-icon-rules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-rule {
+  padding: var(--parkie-space-5);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-rule h3 {
+  margin: 0 0 8px;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+}
+
+.pk-icon-rule p,
+.pk-icon-rule ul {
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-icon-rule ul {
+  padding-left: 18px;
+}
+
+.pk-icon-rule code {
+  color: var(--parkie-brand-text);
+  font-family: var(--parkie-font-mono);
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+  .pk-icon-summary,
+  .pk-icon-rules {
+    grid-template-columns: 1fr;
+  }
+
+  .pk-icon-summary-item {
+    border-right: 0;
+    border-bottom: 1px solid var(--parkie-border);
+  }
+
+  .pk-icon-summary-item:last-child {
+    border-bottom: 0;
+  }
+
+  .pk-icon-group-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
