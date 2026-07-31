@@ -430,7 +430,7 @@
                 </article>
                 <article class="pk-icon-rule">
                   <h3>출처 분리</h3>
-                  <p><code>Parkie Original</code>, <code>Parkie Custom</code>, <code>MS Adopted</code>를 구현 메타데이터로 유지합니다. MS 참조 카탈로그 자체는 별도 메뉴에 보존합니다.</p>
+                  <p><code>Parkie Original</code>, <code>Parkie Custom</code>, <code>Adopted</code>를 화면 출처로 구분합니다. 전체 참조 카탈로그는 별도 메뉴에 보존합니다.</p>
                 </article>
               </div>
             </section>
@@ -2466,7 +2466,7 @@ class Component extends DCLogic {
     spacing:     { ko: '간격', en: 'Spacing', impl: true, dko: '4px 기반의 여유로운 간격 스케일.', den: 'A roomy 4px-based spacing scale.' },
     radius:      { ko: '모서리', en: 'Radius & Shape', impl: true, dko: '컴포넌트 곡률 스케일.', den: 'Corner-radius scale for components.' },
     elevation:   { ko: '그림자', en: 'Elevation', impl: true, dko: '깊이를 표현하는 그림자 레벨.', den: 'Shadow levels expressing depth.' },
-    iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: 'Parkie 원본·로봇 전용·MS 채택 아이콘을 출처별로 분리하고 상호작용·운영 상태 규칙을 함께 관리합니다.', den: 'Parkie originals, robot-specific icons and MS-adopted utilities, separated by source with interaction and operational-state rules.' },
+    iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: 'Parkie 원본·로봇 전용·범용 채택 아이콘을 출처별로 분리하고 상호작용·운영 상태 규칙을 함께 관리합니다.', den: 'Parkie originals, robot-specific icons and adopted utilities, separated by source with interaction and operational-state rules.' },
     button:      { ko: '버튼', en: 'Button', impl: true, dko: '액션을 유도하는 기본 버튼. 6가지 종류 · 3가지 크기 · 상태.', den: 'The primary action component — 6 variants, 3 sizes, and states.' },
     segmented:   { ko: '세그먼트', en: 'Segmented Control', impl: true, dko: '2–4개의 상호 배타적인 값을 전환하는 단일 선택 컨트롤.', den: 'A single-select control for switching between 2–4 mutually exclusive values.' },
     switch:      { ko: '스위치', en: 'Switch', impl: true, dko: '즉시 적용되는 이진 설정을 위한 On/Off 컨트롤.', den: 'An On/Off control for binary settings that apply immediately.' },
@@ -2707,7 +2707,7 @@ class Component extends DCLogic {
     const iconRow = (koLabel, enLabel, source, data) => ({
       ko: koLabel,
       en: enLabel,
-      source,
+      source: source === 'MS Adopted' ? 'Adopted' : source,
       sourceClassName: sourceClass(source),
       states: stateDefs.map((state) => ({
         className: `pk-icon-state is-${state.id}`,
@@ -2763,8 +2763,8 @@ class Component extends DCLogic {
       iconGroup(
         '핵심 내비게이션',
         'Core navigation',
-        'RMS 전역 이동과 관제 진입점입니다. 익숙한 범용 기호는 MS 원본을 Parkie 토큰으로 채택합니다.',
-        'Global RMS navigation and monitoring entry points. Familiar utilities adopt MS originals with Parkie tokens.',
+        'RMS 전역 이동과 관제 진입점입니다. 익숙한 범용 기호는 검증된 원본을 Parkie 토큰으로 채택합니다.',
+        'Global RMS navigation and monitoring entry points. Familiar utilities adopt established originals with Parkie tokens.',
         coreIcons
       ),
       iconGroup(
@@ -2794,7 +2794,7 @@ class Component extends DCLogic {
       { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
       { label: L('선형 두께', 'Outline stroke'), value: '2 px · ROUND' },
       { label: L('문서화 아이콘', 'Documented icons'), value: `${totalParkieIcons} ICONS` },
-      { label: L('출처 체계', 'Source classes'), value: 'ORIGINAL · CUSTOM · MS' },
+      { label: L('출처 체계', 'Source classes'), value: 'ORIGINAL · CUSTOM · ADOPTED' },
     ];
 
     const domainItem = (labelKo, labelEn, data, tone) => ({

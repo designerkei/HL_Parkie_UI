@@ -154,3 +154,55 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
 - 새로고침, 확장 보기, 마이크, 비상 확인 흐름이 키보드 접근 가능한 버튼과
   명시적 접근성 이름을 가진다.
 - 기존 RMS 회귀 테스트와 신규 기능·시각 캡처 테스트가 모두 통과한다.
+
+## 11. 전체 요약 탭 계획
+
+### 목적과 위치
+
+- 기존 `개요 · Overview`는 제품과 병합 원칙을 설명하는 시작 페이지로 유지한다.
+- `전체 요약 · System Summary`를 `시작하기 · Get started`의 두 번째 항목으로
+  추가한다.
+- 상세 규정을 대체하지 않고, 주요 파운데이션과 컴포넌트를 한 페이지에서
+  훑고 각 상세 페이지로 이동하는 인덱스 역할을 맡는다.
+
+### 레이아웃 방향
+
+- Parkie의 다크 고정 테마와 RMS 콘텐츠 계층을 유지한다.
+- 제공된 첫 번째 레퍼런스의 좌측 섹션 라벨·구분선 구조와 두 번째 레퍼런스의
+  2열 모듈 구성을 결합한다.
+- 콘텐츠 프레임은 이 탭에만 최대 1320px로 확장한다.
+- 1200px 이상은 2열, 760–1199px는 단일 열, 760px 미만은 카드 패딩과
+  샘플 밀도를 줄여 한 열로 표시한다.
+
+### 요약 섹션
+
+1. `Identity`: HL Robotics 로고, Parkie UI, 버전, 다크 고정, KO/EN
+2. `Typography`: RMS의 9단계 타입 규정과 Pretendard·Roboto Mono
+3. `Colors`: Brand·Surface·Text·Semantic·Robot status 대표 토큰
+4. `Iconography`: Parkie Original·Custom·Adopted 대표 아이콘과 4상태 예시
+5. `Form controls`: Input의 Default·Focus·Disabled·Error·Success와
+   Checkbox·Switch
+6. `Buttons`: Primary·Secondary·Danger 및 Hover·Pressed·Disabled
+7. `Robot operations`: Battery·Connection·Motion·Mission·Safety 대표 상태
+8. `Component index`: 각 상세 문서로 이동하는 `전체 보기` 액션
+
+### 구현 원칙
+
+- 요약 페이지를 위해 색상, 타이포그래피, 아이콘 데이터를 다시 하드코딩하지
+  않는다.
+- 기존 `typeScale`, Parkie 토큰, `parkieIconGroups`,
+  `parkieDomainGroups`와 현재 컴포넌트 클래스를 재사용한다.
+- 전용 레이아웃만 `components/system-summary.css`에 추가한다.
+- 아이콘 요약에는 벤더 이름을 노출하지 않고 `Original·Custom·Adopted`만
+  표시한다.
+- 각 섹션의 `전체 보기`는 기존 `select()`를 사용해 상세 탭으로 이동한다.
+
+### 검증 기준
+
+- 새 탭에서 8개 요약 섹션이 모두 렌더링된다.
+- 타입 샘플은 실제 Pretendard·Roboto Mono 계산 스타일을 사용한다.
+- 색상 샘플은 실제 CSS 변수의 계산된 값과 일치한다.
+- 아이콘과 버튼 상태가 상세 페이지의 토큰과 일치한다.
+- 1920·1400·900px에서 2열·1열 전환과 잘림 여부를 검증한다.
+- 모든 상세 이동 버튼에 접근 가능한 이름이 있고 키보드로 작동한다.
+- 기존 전체 회귀 테스트와 신규 시각 캡처 테스트를 모두 통과한 뒤 배포한다.

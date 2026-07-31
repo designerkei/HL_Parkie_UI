@@ -204,6 +204,8 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
   await expect(page.locator('.pk-icon-source.is-custom')).toHaveCount(6);
   await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(18);
+  await expect(page.locator('.pk-icon-source.is-ms').first()).toHaveText('Adopted');
+  expect(await page.locator('main').innerText()).not.toMatch(/\bMS\b/);
 
   const firstRow = rows.first();
   await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
