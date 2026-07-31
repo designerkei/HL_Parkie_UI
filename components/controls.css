@@ -67,7 +67,7 @@
 .pk-control-state-label {
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
 }
 
 /* Button -------------------------------------------------------------- */
@@ -196,7 +196,7 @@
 .pk-button-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255,255,255,0.36);
+  border: 2px solid rgba(6,34,46,0.30);
   border-top-color: currentColor;
   border-radius: var(--parkie-radius-round);
   animation: pk-spin 700ms linear infinite;
@@ -226,7 +226,7 @@
 .pk-icon-button:hover:not(:disabled),
 .pk-icon-button.is-hover {
   color: var(--parkie-text);
-  background: rgba(255,255,255,0.35);
+  background: var(--parkie-surface-elevation-12);
 }
 
 .pk-icon-button:active:not(:disabled),
@@ -332,7 +332,8 @@
 
 .pk-segmented button:disabled,
 .pk-segmented.is-disabled button {
-  color: var(--parkie-text-disabled);
+  color: var(--parkie-text-tertiary);
+  background: var(--parkie-surface-2);
   cursor: not-allowed;
 }
 

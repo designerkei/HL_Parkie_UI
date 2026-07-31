@@ -18,16 +18,16 @@ test.afterEach(async ({ page }) => {
   expect(page.__runtimeErrors, 'the UI must not throw runtime errors').toEqual([]);
 });
 
-test('primary actions use the supplied reference colors', async ({ page }) => {
+test('primary actions use the accessible Parkie action palette', async ({ page }) => {
   await openComponent(page, '버튼');
   const button = page.locator('.pk-control-stage .pk-button').first();
   await expect(button).toBeVisible();
   await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
-  await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(button).toHaveCSS('color', 'rgb(6, 34, 46)');
   await expect(button).toHaveCSS('height', '36px');
 
   const disabled = page.locator('.pk-button.is-disabled');
-  await expect(disabled).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.35)');
+  await expect(disabled).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.1)');
   await expect(page.locator('.pk-button.pk-button--danger')).toHaveCSS(
     'background-color',
     'rgb(223, 0, 0)'
@@ -147,7 +147,7 @@ test('latest event stroke is 50 percent and feed rows keep source sizes', async 
 
   const rows = page.locator('.pk-feed-list').first().locator('.pk-feed-item');
   await expect(rows.nth(0).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(15, 220, 76)');
-  await expect(rows.nth(1).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(0, 200, 255)');
+  await expect(rows.nth(1).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(124, 199, 232)');
   await expect(rows.nth(2).locator('.pk-feed-status')).toHaveCSS('color', 'rgb(245, 222, 46)');
   await expect(rows.nth(3)).toHaveCSS('background-color', 'rgba(223, 0, 0, 0.3)');
   await expect(rows.nth(3)).toHaveCSS('color', 'rgb(255, 255, 255)');
@@ -197,20 +197,24 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(page.locator('h1')).toContainText('아이콘');
 
   const rows = page.locator('.pk-icon-row');
-  await expect(rows).toHaveCount(29);
-  await expect(page.locator('.pk-icon-state')).toHaveCount(29 * 4);
+  await expect(rows).toHaveCount(30);
+  await expect(page.locator('.pk-icon-row.is-interaction-axis')).toHaveCount(24);
+  await expect(page.locator('.pk-icon-row.is-semantic-axis')).toHaveCount(6);
+  await expect(page.locator('.pk-icon-state')).toHaveCount((24 * 6) + (6 * 4));
   await expect(page.locator('.pk-domain-icon')).toHaveCount(22);
 
   await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
   await expect(page.locator('.pk-icon-source.is-custom')).toHaveCount(6);
-  await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(18);
+  await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(19);
   await expect(page.locator('.pk-icon-source.is-ms').first()).toHaveText('Adopted');
   expect(await page.locator('main').innerText()).not.toMatch(/\bMS\b/);
 
   const firstRow = rows.first();
   await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
-  await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgb(22, 220, 242)');
-  await expect(firstRow.locator('.is-pressed')).toHaveCSS('color', 'rgb(0, 170, 255)');
+  await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(firstRow.locator('.is-focus')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(firstRow.locator('.is-pressed')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(firstRow.locator('.is-selected')).toHaveCSS('color', 'rgb(0, 170, 255)');
   await expect(firstRow.locator('.is-disabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.35)');
 
   await expect(page.locator('.pk-domain-icon.is-battery-critical rect')).toHaveCSS('fill', 'rgb(238, 0, 0)');
@@ -234,7 +238,8 @@ test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide
   await expect(feeds.first().locator('.pk-camera-card__controls')).toHaveCSS('opacity', '1');
   await expect(feeds.first().getByRole('button', { name: '카메라 1 스트림 새로고침' })).toBeVisible();
   await expect(feeds.first().getByRole('button', { name: '카메라 1 전체 화면' })).toBeVisible();
-  await expect(page.locator('.pk-camera-state-sample')).toHaveCount(5);
+  await expect(page.locator('.pk-camera-state-sample')).toHaveCount(6);
+  await expect(page.locator('.pk-camera-card.is-stale')).toContainText('마지막 프레임 18초 전');
 });
 
 test('camera recovery, expanded view, microphone and emergency confirmation are operable', async ({ page }) => {
@@ -260,8 +265,13 @@ test('camera recovery, expanded view, microphone and emergency confirmation are 
   await emergency.click();
   const dialog = page.getByRole('dialog', { name: '전체 로봇을 즉시 정지합니까?' });
   await expect(dialog).toBeVisible();
-  await dialog.getByRole('button', { name: '취소' }).click();
-  await expect(dialog).toBeHidden();
+  await expect(dialog.getByRole('button', { name: '취소' })).toBeFocused();
+  await dialog.getByRole('button', { name: '비상모드 실행' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(dialog.getByRole('button', { name: '비상모드 확인 닫기' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(emergency).toBeFocused();
 
   await emergency.click();
   await page.getByRole('dialog').getByRole('button', { name: '비상모드 실행' }).click();
@@ -325,7 +335,7 @@ test('System Summary composes eight live-token sections and links to detail page
   expect(colorParity.actual).toBe(colorParity.expected);
 
   await expect(page.locator('[data-summary-icon-row]')).toHaveCount(3);
-  await expect(page.locator('[data-summary-icon-row] .pk-icon-state')).toHaveCount(12);
+  await expect(page.locator('[data-summary-icon-row] .pk-icon-state')).toHaveCount(18);
   await expect(page.locator('[data-summary-icon-row] .pk-icon-source')).toHaveText([
     'Original',
     'Custom',
@@ -344,10 +354,10 @@ test('System Summary composes eight live-token sections and links to detail page
   );
   await expect(page.locator('[data-summary-section="buttons"] .pk-button.is-disabled')).toHaveCSS(
     'background-color',
-    'rgba(255, 255, 255, 0.35)'
+    'rgba(255, 255, 255, 0.1)'
   );
   await expect(page.locator('[data-summary-operation]')).toHaveCount(5);
-  await expect(page.locator('[data-summary-destination]')).toHaveCount(17);
+  await expect(page.locator('[data-summary-destination]')).toHaveCount(33);
 
   const unnamedButtons = await page.locator('[data-system-summary] button').evaluateAll((buttons) => (
     buttons

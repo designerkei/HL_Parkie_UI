@@ -166,12 +166,12 @@
   --parkie-brand-text: var(--parkie-color-brand-400);
 
   /* ---- Action colors
-     Solid actions always use white foreground in the Parkie references.
-     Keep this separate from brand-on, which is not an action token. */
+     Parkie blue is intentionally bright. Dark ink preserves the supplied
+     brand surface while clearing WCAG AA for compact control labels. */
   --parkie-action-primary-bg: #00AAFF;
   --parkie-action-primary-bg-hover: #16DCF2;
   --parkie-action-primary-bg-pressed: #009BE9;
-  --parkie-action-primary-fg: var(--parkie-color-common-white);
+  --parkie-action-primary-fg: var(--parkie-color-brand-950);
   --parkie-action-danger-bg: #DF0000;
   --parkie-action-danger-bg-hover: #EF2020;
   --parkie-action-danger-bg-pressed: #C00000;
@@ -179,8 +179,8 @@
   --parkie-action-danger-hover-fg: #000000;
   --parkie-action-neutral-bg: var(--parkie-surface-elevation-12);
   --parkie-action-neutral-fg: var(--parkie-color-common-white);
-  --parkie-action-disabled-bg: rgba(255,255,255,0.35);
-  --parkie-action-disabled-fg: rgba(255,255,255,0.70);
+  --parkie-action-disabled-bg: rgba(255,255,255,0.10);
+  --parkie-action-disabled-fg: rgba(255,255,255,0.60);
 
   --parkie-bg: var(--parkie-color-common-canvas);
   --parkie-surface: var(--parkie-surface-elevation-00);
@@ -193,8 +193,10 @@
   --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
   --parkie-icon-default: rgba(255,255,255,0.70);
-  --parkie-icon-hover: var(--parkie-color-brand-300);
-  --parkie-icon-pressed: var(--parkie-color-brand-500);
+  --parkie-icon-hover: rgba(255,255,255,0.95);
+  --parkie-icon-focus: rgba(255,255,255,0.95);
+  --parkie-icon-pressed: rgba(255,255,255,0.95);
+  --parkie-icon-selected: var(--parkie-color-brand-500);
   --parkie-icon-disabled: rgba(255,255,255,0.35);
   --parkie-icon-battery-full: #F4F4F4;
   --parkie-icon-battery-critical: #EE0000;
@@ -224,13 +226,13 @@
   --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
   --parkie-danger-text: var(--parkie-color-red-300);
-  --parkie-info: var(--parkie-color-brand-400);
-  --parkie-info-subtle: rgba(0,200,255,0.14);
-  --parkie-info-text: var(--parkie-color-brand-400);
+  --parkie-info: #7CC7E8;
+  --parkie-info-subtle: rgba(124,199,232,0.14);
+  --parkie-info-text: #9BD8F2;
 
   /* ---- Parkie domain aliases — robot control states ---- */
-  --parkie-status-active: var(--parkie-success);
-  --parkie-status-charging: var(--parkie-info);
+  --parkie-status-active: var(--parkie-text);
+  --parkie-status-charging: var(--parkie-icon-charging);
   --parkie-status-idle: #98A1AD;
   --parkie-status-error: var(--parkie-danger);
   --parkie-status-offline: var(--parkie-color-neutral-700);
@@ -240,7 +242,7 @@
      They describe operational meaning, not generic decoration:
      complete/healthy · active/in progress · recoverable warning · critical stop. */
   --parkie-operation-success: #0FDC4C;
-  --parkie-operation-info: #00C8FF;
+  --parkie-operation-info: #7CC7E8;
   --parkie-operation-warning: #F5DE2E;
   --parkie-operation-danger: #DF0000;
   --parkie-operation-on-solid: var(--parkie-color-common-white);
@@ -250,12 +252,12 @@
      that white drops to 1.4–2.0:1, so they take the dark inks carried over
      from the supplied Parkie reference (9.2:1 · 8.4:1 · 12.8:1). */
   --parkie-operation-on-success: #06210F;
-  --parkie-operation-on-info: var(--parkie-color-brand-950);
+  --parkie-operation-on-info: #07151B;
   --parkie-operation-on-warning: #241800;
   --parkie-operation-on-danger: var(--parkie-operation-on-solid);
 
   --parkie-operation-success-subtle: rgba(15,220,76,0.14);
-  --parkie-operation-info-subtle: rgba(0,200,255,0.14);
+  --parkie-operation-info-subtle: rgba(124,199,232,0.14);
   --parkie-operation-warning-subtle: rgba(245,222,46,0.14);
   --parkie-operation-danger-subtle: rgba(223,0,0,0.30);
   --parkie-operation-danger-strong: var(--parkie-operation-danger);
@@ -287,7 +289,7 @@
   --parkie-connection-lost: var(--parkie-status-danger);
   --parkie-connection-offline: var(--parkie-color-neutral-400);
 
-  --parkie-motion-running: var(--parkie-status-success);
+  --parkie-motion-running: var(--parkie-text);
   --parkie-motion-paused: var(--parkie-text-secondary);
   --parkie-motion-idle: var(--parkie-status-neutral);
   --parkie-motion-fault: var(--parkie-status-danger);
@@ -295,7 +297,7 @@
   --parkie-battery-normal: var(--parkie-text);
   --parkie-battery-low: var(--parkie-status-warning);
   --parkie-battery-critical: var(--parkie-status-danger);
-  --parkie-battery-charging: var(--parkie-status-info);
+  --parkie-battery-charging: var(--parkie-icon-charging);
 
   /* ---- Reference geometry: robot summary card ---- */
   --parkie-robot-card-width: 266px;
@@ -323,7 +325,7 @@
   --parkie-select-border: rgba(255,255,255,0.12);
   --parkie-select-border-focus: rgba(255,255,255,0.70);
   --parkie-select-option-hover: rgba(255,255,255,0.20);
-  --parkie-select-disabled: rgba(255,255,255,0.35);
+  --parkie-select-disabled: rgba(255,255,255,0.50);
 
   /* ---- Operations event feed ---- */
   --parkie-feed-width: 448px;
@@ -402,8 +404,10 @@
   --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
   --parkie-icon-default: rgba(255,255,255,0.70);
-  --parkie-icon-hover: var(--parkie-color-brand-300);
-  --parkie-icon-pressed: var(--parkie-color-brand-500);
+  --parkie-icon-hover: rgba(255,255,255,0.95);
+  --parkie-icon-focus: rgba(255,255,255,0.95);
+  --parkie-icon-pressed: rgba(255,255,255,0.95);
+  --parkie-icon-selected: var(--parkie-color-brand-500);
   --parkie-icon-disabled: rgba(255,255,255,0.35);
   --parkie-icon-battery-full: #F4F4F4;
   --parkie-icon-battery-critical: #EE0000;
@@ -432,12 +436,12 @@
   --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
   --parkie-danger-text: var(--parkie-color-red-300);
-  --parkie-info: var(--parkie-color-brand-400);
-  --parkie-info-subtle: rgba(0,200,255,0.14);
-  --parkie-info-text: var(--parkie-color-brand-400);
+  --parkie-info: #7CC7E8;
+  --parkie-info-subtle: rgba(124,199,232,0.14);
+  --parkie-info-text: #9BD8F2;
 
-  --parkie-status-active: var(--parkie-success);
-  --parkie-status-charging: var(--parkie-info);
+  --parkie-status-active: var(--parkie-text);
+  --parkie-status-charging: var(--parkie-icon-charging);
   --parkie-status-idle: #98A1AD;
   --parkie-status-error: var(--parkie-danger);
   --parkie-status-offline: var(--parkie-color-neutral-700);

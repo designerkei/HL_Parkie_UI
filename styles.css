@@ -89,7 +89,7 @@ img {
   margin-bottom: 6px;
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   letter-spacing: var(--parkie-tracking-wide);
 }
@@ -155,6 +155,7 @@ img {
 
 .pk-modal-shell {
   width: min(100%, var(--parkie-modal-width-md));
+  height: var(--parkie-modal-compact-height);
   min-height: var(--parkie-modal-compact-height);
   overflow: hidden;
   color: var(--parkie-text);
@@ -166,11 +167,13 @@ img {
 
 .pk-modal-shell--sm {
   width: min(100%, var(--parkie-modal-width-sm));
+  height: var(--parkie-modal-compact-height);
   min-height: var(--parkie-modal-compact-height);
 }
 
 .pk-modal-shell--lg {
   width: min(100%, var(--parkie-modal-width-lg));
+  height: var(--parkie-modal-checklist-height);
   min-height: var(--parkie-modal-checklist-height);
 }
 
@@ -317,7 +320,7 @@ img {
   margin: 8px auto 0;
   max-width: 330px;
   color: var(--parkie-text-secondary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   line-height: var(--parkie-leading-relaxed);
 }
 
@@ -380,7 +383,7 @@ img {
 .pk-modal-button--state-pressed.pk-modal-button--danger  { background: var(--parkie-action-danger-bg-pressed); filter: none; }
 .pk-modal-button--state-hover:not(.pk-modal-button--primary):not(.pk-modal-button--danger)   { background: rgba(255, 255, 255, 0.35); color: #fff; filter: none; }
 .pk-modal-button--state-pressed:not(.pk-modal-button--primary):not(.pk-modal-button--danger) { background: #131315; box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.18); color: #fff; filter: none; }
-.pk-modal-button--state-disabled { background: rgba(255, 255, 255, 0.35); color: #fff; cursor: not-allowed; filter: none; opacity: 1; }
+.pk-modal-button--state-disabled { background: var(--parkie-action-disabled-bg); color: var(--parkie-action-disabled-fg); cursor: not-allowed; filter: none; opacity: 1; }
 
 .pk-modal-btn-showcase {
   display: grid;
@@ -498,7 +501,7 @@ img {
 .pk-emergency-caption {
   margin: 0;
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   color: var(--parkie-text-tertiary);
   text-align: center;
   max-width: 320px;
@@ -552,7 +555,7 @@ img {
   gap: 4px;
   padding: 6px 0;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 9px;
+  font-size:var(--parkie-font-xs);
   font-weight: 500;
   letter-spacing: -0.03em;
 }
@@ -593,7 +596,7 @@ img {
   border-radius: 999px;
   color: #fff;
   font-family: var(--parkie-font-sans);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -641,7 +644,7 @@ img {
 .pk-modal-helper {
   margin: 4px 0 0 56px;
   color: var(--parkie-text-tertiary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-modal-error {
@@ -652,7 +655,7 @@ img {
   margin: 4px 0 0 56px;
   padding: 2px 6px;
   color: var(--parkie-danger-text);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   background: var(--parkie-modal-error-surface);
   border-radius: var(--parkie-radius-xs);
 }
@@ -740,7 +743,7 @@ img {
   padding: 3px 8px;
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   background: var(--parkie-brand-subtle);
   border: 1px solid var(--parkie-brand-border);
   border-radius: var(--parkie-radius-pill);
@@ -778,7 +781,7 @@ img {
   display: block;
   margin-top: 3px;
   color: var(--parkie-text-tertiary);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-modal-flow-steps {
@@ -792,7 +795,7 @@ img {
   min-width: 0;
   padding: 8px 10px;
   color: var(--parkie-text-secondary);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   text-align: center;
   background: var(--parkie-surface-2);
   border: 1px solid var(--parkie-border);
@@ -824,7 +827,7 @@ img {
   margin-bottom: var(--parkie-space-3);
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-modal-rule-grid {
@@ -876,7 +879,7 @@ img {
 
 .pk-modal-token-table th {
   color: var(--parkie-text-tertiary);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   background: var(--parkie-surface-2);
 }
@@ -889,7 +892,7 @@ img {
 .pk-modal-token-table code {
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
 }
 
 @media (max-width: 900px) {

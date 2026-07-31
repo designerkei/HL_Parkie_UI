@@ -110,3 +110,23 @@ test('capture System Summary at planned breakpoints', async ({ page }) => {
     });
   }
 });
+
+test('capture parking-control product compositions', async ({ page }) => {
+  await page.goto('/#dashboard');
+  await expect(page.locator('[data-dashboard]')).toBeVisible();
+  await page.locator('[data-dashboard]').screenshot({
+    path: path.join('test-results', 'review', 'control-dashboard.png'),
+  });
+
+  await page.goto('/#appshell');
+  await expect(page.locator('.pk-shell-frame')).toBeVisible();
+  await page.locator('.pk-shell-frame').screenshot({
+    path: path.join('test-results', 'review', 'control-app-shell.png'),
+  });
+
+  await page.goto('/#robotstatus');
+  await expect(page.locator('.pk-status-axis-grid')).toBeVisible();
+  await page.locator('.pk-status-axis-grid').screenshot({
+    path: path.join('test-results', 'review', 'robot-status-axes.png'),
+  });
+});

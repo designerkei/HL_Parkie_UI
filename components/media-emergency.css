@@ -41,7 +41,7 @@
   border: 1px solid var(--parkie-border);
   border-radius: var(--parkie-radius-pill);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-media-stage {
@@ -138,7 +138,7 @@
   left: 16px;
   color: var(--parkie-camera-meta);
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   letter-spacing: .01em;
 }
 
@@ -212,6 +212,7 @@
 }
 
 .pk-camera-card.is-reconnecting .pk-camera-card__state,
+.pk-camera-card.is-stale .pk-camera-card__state,
 .pk-camera-card.is-offline .pk-camera-card__state,
 .pk-camera-card.is-error .pk-camera-card__state,
 .pk-camera-card.is-paused .pk-camera-card__state {
@@ -220,6 +221,16 @@
 
 .pk-camera-card.is-reconnecting .pk-camera-live-dot {
   background: var(--parkie-camera-reconnecting);
+}
+
+.pk-camera-card.is-stale .pk-camera-live-dot {
+  background: var(--parkie-warning);
+  animation: none;
+  box-shadow: none;
+}
+
+.pk-camera-card.is-stale .pk-camera-card__state {
+  color: var(--parkie-warning-text);
 }
 
 .pk-camera-card.is-offline .pk-camera-live-dot,
@@ -255,7 +266,7 @@
 
 .pk-camera-state-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--parkie-space-3);
 }
 
@@ -277,7 +288,7 @@
   margin-top: 8px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-emergency-control-panel {

@@ -46,10 +46,13 @@ RMS의 타입 규정은 유지하고 폰트 패밀리만 Parkie UI로 교체한�
 - 배경: `#0F0F11`
 - 표면: `#161618`, `#1E1E21`, `#242426`
 - 텍스트: 흰색 95/60/40/30% 계층
-- 성공·운행: `#0FDC4C`
-- 경고: `#FFD900`
+- 성공·복구: `#0FDC4C`
+- 경고: `#F5DE2E`
 - 오류·위험: `#DF0000`
-- 정보·충전: `#00AAFF`
+- 정보·재연결: `#7CC7E8`
+- 충전: 사용자 제공 배터리 원색 `#00C000`
+- 정상 운행·연결·배터리: 중립 텍스트 계층
+- 선택·포커스·주요 행동: Brand blue `#00AAFF`
 
 RMS 컴포넌트는 직접 색상을 참조하지 않고 `--parkie-*` 토큰을 통해 이 값을
 사용한다.
@@ -121,8 +124,9 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
   학습된 범용 기호
 - MS 전체 카탈로그는 `MS 참조` 메뉴에 그대로 보존하고, 채택된 아이콘만
   Parkie 토큰으로 렌더링한다.
-- 모든 조작 아이콘은 Enabled·Hover·Pressed/On·Disabled 4상태를 같은 행에
-  나열한다.
+- 모든 조작 아이콘은 Default·Hover·Focus·Pressed·Selected/On·Disabled
+  6상태를 같은 행에 나열한다. Hover와 Pressed는 중립, Selected/On만 Brand
+  blue를 사용한다.
 - 배터리·통신·동작·임무·안전은 상호작용 색과 별개인 운영 상태군으로
   문서화한다.
 
@@ -132,8 +136,8 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
   4개 채널을 한 행에 배치한다.
 - 각 카드에는 채널명, Live 상태, 카메라 ID, 마지막 프레임 시각,
   새로고침과 전체화면 제어를 제공한다.
-- 스트림 상태는 Live·Reconnecting·Paused·Offline·Error를 아이콘과 텍스트로
-  함께 표시한다.
+- 스트림 상태는 Live·Stale·Reconnecting·Paused·Offline·Error를 아이콘,
+  텍스트와 마지막 프레임 경과 시간으로 함께 표시한다.
 - 1500px 이하에서는 2열, 980px 이하에서는 1열로 전환한다.
 - 이 페이지에만 RMS 콘텐츠 프레임을 확장하고 다른 컴포넌트 문서의 960px
   기준 폭은 변경하지 않는다.
@@ -148,7 +152,8 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
 
 ### 완료 조건
 
-- Parkie 아이콘 29개가 출처와 4개 상호작용 상태를 모두 표시한다.
+- Parkie 아이콘 30개가 출처를 표시하고, 24개 조작 아이콘은 6개 상호작용
+  상태를 모두 표시한다.
 - 배터리·통신·동작·임무·안전 상태 아이콘 22개가 별도로 표시된다.
 - 4개 CCTV 카드의 데스크톱 치수와 2열·1열 반응형이 자동 테스트를 통과한다.
 - 새로고침, 확장 보기, 마이크, 비상 확인 흐름이 키보드 접근 가능한 버튼과
@@ -182,7 +187,7 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
 1. `Identity`: HL Robotics 로고, Parkie UI, 버전, 다크 고정, KO/EN
 2. `Typography`: RMS의 9단계 타입 규정과 Pretendard·Roboto Mono
 3. `Colors`: Brand·Surface·Text·Semantic·Robot status 대표 토큰
-4. `Iconography`: Parkie Original·Custom·Adopted 대표 아이콘과 4상태 예시
+4. `Iconography`: Parkie Original·Custom·Adopted 대표 아이콘과 6상태 예시
 5. `Form controls`: Input의 Default·Focus·Disabled·Error·Success와
    Checkbox·Switch
 6. `Buttons`: Primary·Secondary·Danger 및 Hover·Pressed·Disabled
@@ -209,3 +214,19 @@ RMS 상단바와 브랜드 가이드의 로고 경로는 `brand/logo.svg`를 유
 - 1920·1400·900px에서 2열·1열 전환과 잘림 여부를 검증한다.
 - 모든 상세 이동 버튼에 접근 가능한 이름이 있고 키보드로 작동한다.
 - 기존 전체 회귀 테스트와 신규 시각 캡처 테스트를 모두 통과한 뒤 배포한다.
+
+## 12. 전체 완성도 감사와 릴리스 게이트
+
+- Parkie 33개 목적지 모두 `사용 기준·동작/구조·접근성·구현 규칙`을 가진다.
+- 33개 화면의 axe 위반, duplicate ID와 페이지 overflow가 0이어야 한다.
+- Parkie 문서의 최소 캡션은 RMS 규정대로 12px이며 임의 8–11px 리터럴을
+  허용하지 않는다.
+- Control Dashboard는 데이터 신선도, 5개 운영 지표, 동작·통신·배터리 독립
+  상태축, P1/P2 원인·영향·권장 조치를 제공한다.
+- Control App Shell의 좌측 Rail은 문자 기호가 아닌 Parkie/Adopted SVG를 쓴다.
+- 100개 로봇 행과 200개 알림 행 합성 시 페이지 overflow 없이 로컬 스크롤이
+  유지되어야 한다.
+- 최종 변경 이후 `npm test`를 3회 연속 통과해야 하며, 변경 또는 실패가 생기면
+  연속 통과 카운트를 0으로 되돌린다.
+- 신규 토큰 한쪽 선언을 제거한 가상 mutation이 패리티 테스트에 잡혀야 한다.
+- 통과한 커밋을 push·GitHub Pages 배포하고 운영 자산과 화면을 다시 확인한다.

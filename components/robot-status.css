@@ -17,7 +17,7 @@
   background: var(--parkie-surface-elevation-08);
 }
 
-.pk-status-axis-card h4 {
+.pk-status-axis-card h2 {
   margin: 0 0 var(--parkie-space-2);
   color: var(--parkie-text);
 }
@@ -101,25 +101,27 @@
   color: var(--status-on);
 }
 
-.pk-status--success,
-.pk-status--connected,
-.pk-status--running,
-.pk-status--charging {
+.pk-status--success {
   --status-color: var(--parkie-status-success);
   --status-subtle: rgba(15, 220, 76, 0.14);
   --status-on: var(--parkie-operation-on-success);
 }
 
+.pk-status--charging {
+  --status-color: var(--parkie-battery-charging);
+  --status-subtle: rgba(15, 220, 76, 0.14);
+  --status-on: var(--parkie-operation-on-success);
+}
+
 .pk-status--info,
-.pk-status--idle {
+.pk-status--reconnecting {
   --status-color: var(--parkie-status-info);
-  --status-subtle: rgba(0, 200, 255, 0.14);
+  --status-subtle: var(--parkie-info-subtle);
   --status-on: var(--parkie-operation-on-info);
 }
 
 .pk-status--warning,
 .pk-status--weak,
-.pk-status--paused,
 .pk-status--battery-low {
   --status-color: var(--parkie-status-warning);
   --status-subtle: rgba(245, 222, 46, 0.14);
@@ -142,11 +144,23 @@
   background: var(--parkie-status-danger);
 }
 
+.pk-status--connected,
+.pk-status--running,
+.pk-status--paused,
+.pk-status--idle,
+.pk-status--battery-normal,
 .pk-status--offline,
 .pk-status--neutral {
   --status-color: var(--parkie-status-neutral);
   --status-subtle: var(--parkie-surface-elevation-12);
+  --status-on: var(--parkie-text);
 }
+
+.pk-status--connected { --status-color: var(--parkie-connection-good); }
+.pk-status--running { --status-color: var(--parkie-motion-running); }
+.pk-status--paused { --status-color: var(--parkie-motion-paused); }
+.pk-status--idle { --status-color: var(--parkie-motion-idle); }
+.pk-status--battery-normal { --status-color: var(--parkie-battery-normal); }
 
 .pk-status--reconnecting::before {
   background: transparent;

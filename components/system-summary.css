@@ -63,7 +63,7 @@
 .pk-summary-story__label {
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   letter-spacing: .12em;
 }
@@ -139,7 +139,7 @@
   border: 0;
   border-radius: 0;
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
   letter-spacing: .1em;
 }
 
@@ -152,7 +152,7 @@
   margin-bottom: 7px;
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   letter-spacing: .16em;
   text-transform: uppercase;
@@ -284,7 +284,7 @@
   margin-top: 4px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 11px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-summary-facts {
@@ -343,7 +343,7 @@
   margin-bottom: 5px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-summary-font-family strong {
@@ -398,7 +398,7 @@
   overflow: hidden;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 9px;
+  font-size:var(--parkie-font-xs);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -427,7 +427,7 @@
 
 .pk-summary-mono-sample code {
   color: var(--parkie-text-tertiary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 /* Colors ------------------------------------------------------------- */
@@ -460,7 +460,7 @@
 .pk-summary-color-group__head span {
   overflow: hidden;
   color: var(--parkie-text-tertiary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -501,7 +501,7 @@
 
 .pk-summary-swatch strong {
   color: var(--parkie-text-secondary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-medium);
 }
 
@@ -509,7 +509,7 @@
   margin-top: 2px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 8px;
+  font-size:var(--parkie-font-xs);
 }
 
 /* Iconography -------------------------------------------------------- */
@@ -521,14 +521,14 @@
 }
 
 .pk-summary-icon-matrix {
-  min-width: 560px;
+  min-width: 820px;
   background: var(--parkie-surface);
 }
 
 .pk-summary-icon-head,
 .pk-summary-icon-row {
   display: grid;
-  grid-template-columns: minmax(160px, 1.25fr) repeat(4, minmax(74px, 1fr));
+  grid-template-columns: minmax(160px, 1.25fr) repeat(6, minmax(74px, 1fr));
 }
 
 .pk-summary-icon-head {
@@ -542,7 +542,7 @@
   padding: 0 8px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 9px;
+  font-size: var(--parkie-font-xs);
   text-align: center;
 }
 
@@ -609,7 +609,7 @@
   margin-bottom: 6px;
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 9px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-summary-input {
@@ -683,7 +683,7 @@
   margin: 0 0 var(--parkie-space-3);
   color: var(--parkie-text-secondary);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-medium);
   letter-spacing: var(--parkie-tracking-wide);
   text-transform: uppercase;
@@ -712,7 +712,7 @@
 .pk-summary-button-state span {
   color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
-  font-size: 9px;
+  font-size:var(--parkie-font-xs);
 }
 
 .pk-summary-button-state .pk-button {
@@ -788,7 +788,7 @@
 .pk-summary-operation span {
   margin-top: 4px;
   color: var(--parkie-text-tertiary);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
 }
 
 /* Component index --------------------------------------------------- */
@@ -829,7 +829,7 @@
 .pk-summary-index-item__category {
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 9px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   letter-spacing: .08em;
   text-transform: uppercase;

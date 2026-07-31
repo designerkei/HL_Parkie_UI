@@ -4,13 +4,21 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
 const TARGET_PAGES = [
+  'overview',
   'systemsummary',
+  'principles',
+  'changelog',
   'colors',
   'typography',
   'spacing',
   'radius',
   'elevation',
   'iconography',
+  'button',
+  'segmented',
+  'selection',
+  'input',
+  'select',
   'badge',
   'statuslabel',
   'alert',
@@ -21,6 +29,14 @@ const TARGET_PAGES = [
   'card',
   'table',
   'avatar',
+  'robotstatus',
+  'robotcard',
+  'media',
+  'modal',
+  'alertcenter',
+  'appshell',
+  'dashboard',
+  'brand',
 ];
 
 test.describe.configure({ mode: 'serial' });
@@ -35,13 +51,21 @@ test.afterEach(async ({ page }) => {
   expect(page.__runtimeErrors, 'audited pages must not throw runtime errors').toEqual([]);
 });
 
-test('all 17 audited destinations are deep-linkable and fully documented', async ({ page }) => {
+test('all 33 Parkie destinations are deep-linkable and fully documented', async ({ page }) => {
   for (const id of TARGET_PAGES) {
     await page.goto(`/#${id}`);
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator(`nav.pk-scroll [data-nav-id="${id}"]`)).toHaveAttribute('aria-current', 'page');
     await expect(page.locator('[data-documentation-contract]')).toHaveCount(1);
     await expect(page.locator('[data-documentation-contract] .pk-doc-contract__item')).toHaveCount(4);
+    const duplicateIds = await page.evaluate(() => {
+      const counts = [...document.querySelectorAll('[id]')].reduce((map, node) => {
+        map.set(node.id, (map.get(node.id) || 0) + 1);
+        return map;
+      }, new Map());
+      return [...counts].filter(([, count]) => count > 1);
+    });
+    expect(duplicateIds, `${id} must not render duplicate IDs`).toEqual([]);
   }
 
   await page.goto('/#systemsummary');
@@ -52,24 +76,33 @@ test('all 17 audited destinations are deep-linkable and fully documented', async
   expect(new Set(destinations)).toEqual(new Set(TARGET_PAGES));
 });
 
-test('all 17 audited destinations have no automated accessibility violations', async ({ page }) => {
-  test.setTimeout(90_000);
+test('all 33 Parkie destinations have no automated accessibility violations', async ({ page }) => {
+  test.setTimeout(180_000);
+
+  const defects = [];
 
   for (const id of TARGET_PAGES) {
     await page.goto(`/#${id}`);
     await expect(page.locator('h1')).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
-    expect(
-      results.violations,
-      `${id} accessibility violations:\n${results.violations.map((violation) => (
-        `${violation.id}: ${violation.nodes.length}`
-      )).join('\n')}`
-    ).toEqual([]);
+    for (const violation of results.violations) {
+      defects.push({
+        page: id,
+        rule: violation.id,
+        impact: violation.impact,
+        nodes: violation.nodes.map((node) => ({
+          target: node.target,
+          summary: node.failureSummary,
+        })),
+      });
+    }
   }
+
+  expect(defects, JSON.stringify(defects, null, 2)).toEqual([]);
 });
 
 test('audited destinations reflow without page-level horizontal overflow', async ({ page }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(240_000);
   const viewports = [
     { width: 1440, height: 1000 },
     { width: 900, height: 1000 },
@@ -158,10 +191,195 @@ test('dark fixed token contract and hidden theme control remain intact', async (
   const source = fs.readFileSync(tokenPath, 'utf8');
   expect(source.match(/--parkie-text-tertiary:\s*rgba\(255,255,255,0\.50\);/g)).toHaveLength(2);
   expect(source.match(/--parkie-action-danger-hover-fg:\s*#000000;/g)).toHaveLength(2);
+  expect(source.match(/--parkie-icon-focus:\s*rgba\(255,255,255,0\.95\);/g)).toHaveLength(2);
+  expect(source.match(/--parkie-icon-selected:\s*var\(--parkie-color-brand-500\);/g)).toHaveLength(2);
+  expect(source.match(/--parkie-info:\s*#7CC7E8;/g)).toHaveLength(2);
+
+  const countToken = (css, token) => (css.match(new RegExp(`${token}:`, 'g')) || []).length;
+  const mutated = source.replace(/\s+--parkie-icon-focus:[^\n]+\n/, '\n');
+  expect(countToken(mutated, '--parkie-icon-focus'), 'parity gate must detect a one-scope mutation').toBe(1);
 
   await page.goto('/#systemsummary');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('body [data-theme]').first()).toHaveAttribute('data-theme', 'dark');
   const themeControl = page.locator('button[aria-hidden="true"][tabindex="-1"]');
   await expect(themeControl).toBeHidden();
+});
+
+test('Parkie documentation never falls below the 12px RMS caption floor', async () => {
+  const files = [
+    path.join(process.cwd(), 'index.html'),
+    path.join(process.cwd(), 'styles.css'),
+    ...fs.readdirSync(path.join(process.cwd(), 'components'))
+      .filter((name) => name.endsWith('.css'))
+      .map((name) => path.join(process.cwd(), 'components', name)),
+  ];
+  const defects = [];
+  for (const file of files) {
+    const source = fs.readFileSync(file, 'utf8');
+    const matches = source.match(/font-size:\s*(?:8|9|10|11)px/g) || [];
+    if (matches.length) defects.push({ file: path.relative(process.cwd(), file), matches });
+  }
+  expect(defects).toEqual([]);
+});
+
+test('interaction, operation and severity colors remain independent', async ({ page }) => {
+  await page.goto('/#robotstatus');
+  await expect(page.locator('.pk-status--connected').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--running').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--paused').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.6)');
+  await expect(page.locator('.pk-status--battery-normal').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--charging').first()).toHaveCSS('color', 'rgb(0, 192, 0)');
+  await expect(page.locator('.pk-status--reconnecting').first()).toHaveCSS('color', 'rgb(124, 199, 232)');
+
+  const semanticColors = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    document.body.appendChild(probe);
+    const read = (token) => {
+      probe.style.color = `var(${token})`;
+      return getComputedStyle(probe).color;
+    };
+    const result = {
+      selected: read('--parkie-interaction-selected'),
+      info: read('--parkie-info'),
+      running: read('--parkie-motion-running'),
+      charging: read('--parkie-battery-charging'),
+    };
+    probe.remove();
+    return result;
+  });
+  expect(semanticColors.info).not.toBe(semanticColors.selected);
+  expect(semanticColors.running).not.toBe(semanticColors.selected);
+  expect(semanticColors.charging).not.toBe(semanticColors.selected);
+});
+
+test('parking-control templates expose freshness, independent state axes and actionable alerts', async ({ page }) => {
+  await page.goto('/#dashboard');
+  await expect(page.locator('[data-dashboard]')).toBeVisible();
+  await expect(page.locator('.pk-dashboard-freshness')).toContainText('2초 전');
+  await expect(page.locator('.pk-dashboard-metric')).toHaveCount(5);
+  await expect(page.locator('.pk-dashboard-table thead th')).toHaveCount(7);
+  await expect(page.locator('.pk-dashboard-table tbody tr')).toHaveCount(4);
+  await expect(page.locator('.pk-dashboard-alert')).toHaveCount(2);
+  await expect(page.locator('.pk-dashboard-alert dt')).toHaveText([
+    '원인', '영향', '권장 조치', '원인', '영향', '권장 조치',
+  ]);
+  await expect(page.locator('.pk-dashboard-alert button')).toHaveCount(2);
+
+  await page.goto('/#media');
+  await expect(page.locator('.pk-camera-state-sample')).toHaveCount(6);
+  await expect(page.locator('.pk-camera-card.is-stale')).toContainText('18초 전');
+
+  await page.goto('/#appshell');
+  await expect(page.locator('.pk-nav-rail-icon svg')).toHaveCount(5);
+  const shellText = await page.locator('.pk-shell-frame').innerText();
+  expect(shellText).not.toMatch(/[▣▱↯●⚙♧]/);
+});
+
+test('alert-center tabs use roving keyboard focus and preserve panel relationships', async ({ page }) => {
+  await page.goto('/#alertcenter');
+  const alerts = page.getByRole('tab', { name: '알림' });
+  const history = page.getByRole('tab', { name: '주차기록' });
+  await alerts.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(history).toBeFocused();
+  await expect(history).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', 'alert-center-history-tab');
+  await page.keyboard.press('Home');
+  await expect(alerts).toBeFocused();
+  await expect(alerts).toHaveAttribute('aria-selected', 'true');
+});
+
+test('fleet and alarm specimens remain bounded with 100 robots and 200 alarms', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/#dashboard');
+  const fleet = await page.evaluate(() => {
+    const start = performance.now();
+    const body = document.querySelector('.pk-dashboard-table tbody');
+    const sourceRows = [...body.children];
+    while (body.children.length < 100) {
+      body.appendChild(sourceRows[body.children.length % sourceRows.length].cloneNode(true));
+    }
+    return {
+      count: body.children.length,
+      duration: performance.now() - start,
+      documentOverflow: document.documentElement.scrollWidth - innerWidth,
+      localScroll: document.querySelector('.pk-dashboard-table-wrap').scrollWidth
+        >= document.querySelector('.pk-dashboard-table-wrap').clientWidth,
+    };
+  });
+  expect(fleet.count).toBe(100);
+  expect(fleet.duration).toBeLessThan(1000);
+  expect(fleet.documentOverflow).toBeLessThanOrEqual(1);
+  expect(fleet.localScroll).toBe(true);
+
+  await page.goto('/#alertcenter');
+  const alarms = await page.evaluate(() => {
+    const start = performance.now();
+    const list = document.querySelector('.pk-alert-center-body .pk-feed-list');
+    const sourceRows = [...list.children];
+    while (list.children.length < 200) {
+      list.appendChild(sourceRows[list.children.length % sourceRows.length].cloneNode(true));
+    }
+    const panel = document.querySelector('.pk-alert-center-body');
+    return {
+      count: list.children.length,
+      duration: performance.now() - start,
+      scrollable: panel.scrollHeight > panel.clientHeight,
+      documentOverflow: document.documentElement.scrollWidth - innerWidth,
+    };
+  });
+  expect(alarms.count).toBe(200);
+  expect(alarms.duration).toBeLessThan(1000);
+  expect(alarms.scrollable).toBe(true);
+  expect(alarms.documentOverflow).toBeLessThanOrEqual(1);
+});
+
+test('all release-critical local assets are served and all Parkie token references resolve', async ({ request }) => {
+  const requiredAssets = [
+    '/support.js',
+    '/styles.css',
+    '/tokens/parkie-tokens.css',
+    '/components/controls.css',
+    '/components/documentation.css',
+    '/components/iconography.css',
+    '/components/media-emergency.css',
+    '/components/operations.css',
+    '/components/robot-status.css',
+    '/components/system-summary.css',
+    '/icons/parkie-icon-data.js',
+    '/ms/icon-data.js',
+    '/ms/Components.bundle.js',
+    '/ms2/Components.bundle.js',
+    '/ms3/Components.bundle.js',
+    '/ms4/Components.bundle.js',
+    '/ms6/Components.bundle.js',
+    '/brand/logo.svg',
+    '/brand/hl-robotics-symbol.svg',
+    '/brand/hl-robotics-wordmark-white.svg',
+    '/brand/hl-robotics-wordmark-black.svg',
+  ];
+  for (const asset of requiredAssets) {
+    const response = await request.get(asset);
+    expect(response.status(), `${asset} must be served`).toBe(200);
+  }
+
+  const sourceFiles = [
+    path.join(process.cwd(), 'index.html'),
+    path.join(process.cwd(), 'styles.css'),
+    ...fs.readdirSync(path.join(process.cwd(), 'components'))
+      .filter((name) => name.endsWith('.css'))
+      .map((name) => path.join(process.cwd(), 'components', name)),
+  ];
+  const tokenSource = fs.readFileSync(path.join(process.cwd(), 'tokens', 'parkie-tokens.css'), 'utf8');
+  const defined = new Set([...tokenSource.matchAll(/(--parkie-[\w-]+)\s*:/g)].map((match) => match[1]));
+  const referenced = new Set(sourceFiles.flatMap((file) => (
+    [...fs.readFileSync(file, 'utf8').matchAll(/var\((--parkie-[\w-]+)/g)].map((match) => match[1])
+  )));
+  const missing = [...referenced]
+    .filter((token) => !token.endsWith('-')) // JavaScript template prefixes resolve at runtime.
+    .filter((token) => !defined.has(token))
+    .sort();
+  expect(missing).toEqual([]);
 });

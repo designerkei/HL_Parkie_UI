@@ -21,7 +21,7 @@
 .pk-doc-contract__index {
   color: var(--parkie-brand-text);
   font-family: var(--parkie-font-mono);
-  font-size: 10px;
+  font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   letter-spacing: var(--parkie-tracking-wide);
 }
