@@ -244,6 +244,15 @@
   --parkie-operation-danger: #DF0000;
   --parkie-operation-on-solid: var(--parkie-color-common-white);
 
+  /* Ink for text and glyphs sitting ON a filled operation color. White only
+     survives on danger (5.08:1); success, info and warning are bright enough
+     that white drops to 1.4–2.0:1, so they take the dark inks carried over
+     from the supplied Parkie reference (9.2:1 · 8.4:1 · 12.8:1). */
+  --parkie-operation-on-success: #06210F;
+  --parkie-operation-on-info: var(--parkie-color-brand-950);
+  --parkie-operation-on-warning: #241800;
+  --parkie-operation-on-danger: var(--parkie-operation-on-solid);
+
   --parkie-operation-success-subtle: rgba(15,220,76,0.14);
   --parkie-operation-info-subtle: rgba(0,200,255,0.14);
   --parkie-operation-warning-subtle: rgba(245,222,46,0.14);

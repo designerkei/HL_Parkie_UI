@@ -577,9 +577,19 @@
 .pk-feed-item--info .pk-feed-status { color: var(--parkie-operation-info); }
 .pk-feed-item--warning .pk-feed-icon,
 .pk-feed-item--warning .pk-feed-status { color: var(--parkie-operation-warning); }
-.pk-feed-item--danger .pk-feed-icon { background: rgba(255,255,255,0.35); }
+/* Danger rows are a red tint, so the chip fills red and the glyph goes white.
+   Critical rows are already solid red, so the chip inverts to white with a red
+   glyph — carried over from the reference's crit-tint / crit-solid pair. A
+   translucent white chip under a white glyph is what made this unreadable. */
+.pk-feed-item--danger .pk-feed-icon {
+  color: var(--parkie-operation-on-danger);
+  background: var(--parkie-operation-danger);
+}
 .pk-feed-item--danger .pk-feed-status { color: var(--parkie-operation-on-solid); }
-.pk-feed-item--critical .pk-feed-icon { color: var(--parkie-operation-on-solid); background: rgba(255,255,255,0.35); }
+.pk-feed-item--critical .pk-feed-icon {
+  color: var(--parkie-operation-danger);
+  background: var(--parkie-color-common-white);
+}
 
 .pk-feed-status {
   min-width: 0;

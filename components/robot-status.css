@@ -66,6 +66,7 @@
 .pk-status-indicator {
   --status-color: var(--parkie-status-neutral);
   --status-subtle: var(--parkie-surface-elevation-12);
+  --status-on: var(--parkie-operation-on-solid);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -92,11 +93,12 @@
   background: var(--status-subtle);
 }
 
+/* Solid fills take the per-intent ink: white only reads on danger. */
 .pk-status-label--solid {
   padding: 4px 9px;
   border-radius: var(--parkie-radius-sm);
   background: var(--status-color);
-  color: #fff;
+  color: var(--status-on);
 }
 
 .pk-status--success,
@@ -105,12 +107,14 @@
 .pk-status--charging {
   --status-color: var(--parkie-status-success);
   --status-subtle: rgba(15, 220, 76, 0.14);
+  --status-on: var(--parkie-operation-on-success);
 }
 
 .pk-status--info,
 .pk-status--idle {
   --status-color: var(--parkie-status-info);
   --status-subtle: rgba(0, 200, 255, 0.14);
+  --status-on: var(--parkie-operation-on-info);
 }
 
 .pk-status--warning,
@@ -119,6 +123,7 @@
 .pk-status--battery-low {
   --status-color: var(--parkie-status-warning);
   --status-subtle: rgba(245, 222, 46, 0.14);
+  --status-on: var(--parkie-operation-on-warning);
 }
 
 .pk-status--danger,
@@ -127,6 +132,7 @@
 .pk-status--battery-critical {
   --status-color: var(--parkie-status-danger);
   --status-subtle: rgba(223, 0, 0, 0.18);
+  --status-on: var(--parkie-operation-on-danger);
 }
 
 .pk-status--offline,

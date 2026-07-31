@@ -2185,9 +2185,9 @@
                     </sc-if>
                     <sc-if value="{{ historyTabSelected }}" hint-placeholder-val="{{ false }}">
                       <div class="pk-feed-list" role="list" aria-label="주차 기록">
-                        <article class="pk-feed-item pk-feed-item--success pk-feed-item--latest" role="listitem"><span class="pk-feed-icon" aria-hidden="true">✓</span><span class="pk-feed-status">입차완료</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:25:07</time></article>
-                        <article class="pk-feed-item pk-feed-item--info" role="listitem"><span class="pk-feed-icon" aria-hidden="true">↗</span><span class="pk-feed-status">입차중</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:24:31</time></article>
-                        <article class="pk-feed-item pk-feed-item--warning" role="listitem"><span class="pk-feed-icon" aria-hidden="true">!</span><span class="pk-feed-status">입차실패</span><span class="pk-feed-message">차량 위치를 다시 확인해 주세요.</span><time class="pk-feed-time">13:20:14</time></article>
+                        <article class="pk-feed-item pk-feed-item--success pk-feed-item--latest" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z"/></svg></span><span class="pk-feed-status">입차완료</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:25:07</time></article>
+                        <article class="pk-feed-item pk-feed-item--info" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11M6.5 16a1.5 1.5 0 110-3 1.5 1.5 0 010 3m11 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3M18.9 6c-.2-.6-.8-1-1.4-1H6.5c-.6 0-1.2.4-1.4 1L3 12v6h2v-1h14v1h2v-6z"/></svg></span><span class="pk-feed-status">입차중</span><span class="pk-feed-message">213바5502 · B2F_23A</span><time class="pk-feed-time">13:24:31</time></article>
+                        <article class="pk-feed-item pk-feed-item--warning" role="listitem"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><span class="pk-feed-status">입차실패</span><span class="pk-feed-message">차량 위치를 다시 확인해 주세요.</span><time class="pk-feed-time">13:20:14</time></article>
                       </div>
                     </sc-if>
                   </div>
@@ -2321,7 +2321,7 @@
                     <div class="pk-map-alert" aria-label="오류 1건">!</div>
                     <div class="pk-workspace-toolbar"><span aria-hidden="true">♧</span><span>주차로봇은 주차를 시작합니다. 알람 내용 예시입니다.</span></div>
                     <div class="pk-workspace-alert-preview" aria-label="최근 알림">
-                      <article class="pk-feed-item pk-feed-item--danger pk-feed-item--critical pk-feed-item--multiline"><span class="pk-feed-icon" aria-hidden="true">!</span><span class="pk-feed-status">긴급</span><span class="pk-feed-message">배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.</span><time class="pk-feed-time">13:25:07</time></article>
+                      <article class="pk-feed-item pk-feed-item--danger pk-feed-item--critical pk-feed-item--multiline"><span class="pk-feed-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><span class="pk-feed-status">긴급</span><span class="pk-feed-message">배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.</span><time class="pk-feed-time">13:25:07</time></article>
                     </div>
                     <button class="pk-emergency-button" type="button">비상정지</button>
                   </main>
@@ -2878,12 +2878,30 @@ class Component extends DCLogic {
       siteMenuOpen ? 'pk-site-select--open' : '',
     ].filter(Boolean).join(' ');
 
+    /* Feed glyphs come from the supplied Parkie reference, not text stand-ins:
+       a check for complete, the vehicle mark for in-progress and the warning
+       triangle for both warning and critical. */
+    const FEED_GLYPH_PATHS = {
+      success: 'M9 16.2l-3.5-3.5L4 14.2 9 19 20 8l-1.5-1.5z',
+      info: 'M5 11l1.5-4.5h11L19 11M6.5 16a1.5 1.5 0 110-3 1.5 1.5 0 010 3m11 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3M18.9 6c-.2-.6-.8-1-1.4-1H6.5c-.6 0-1.2.4-1.4 1L3 12v6h2v-1h14v1h2v-6z',
+      warning: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',
+      danger: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',
+    };
+    const feedGlyph = (intent) => React.createElement('svg', {
+      key: `feed-glyph-${intent}`,
+      width: 18,
+      height: 18,
+      viewBox: '0 0 24 24',
+      focusable: 'false',
+      'aria-hidden': 'true',
+    }, React.createElement('path', { fill: 'currentColor', d: FEED_GLYPH_PATHS[intent] }));
+
     const eventData = [
-      { intent: 'success', glyph: '✓', status: '완료', message: '임무가 정상적으로 완료되었습니다.', time: '13:25:07' },
-      { intent: 'info', glyph: '↗', status: '입차중', message: '213바5502 차량이 B2F_23A 구역으로 이동 중입니다.', time: '13:24:31' },
-      { intent: 'warning', glyph: '!', status: '주의', message: '로봇 02의 배터리가 25% 이하입니다. 모니터링이 필요합니다.', time: '13:22:18' },
-      { intent: 'danger', glyph: '!', status: '긴급', message: '배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.', time: '13:20:04' },
-    ];
+      { intent: 'success', status: '완료', message: '임무가 정상적으로 완료되었습니다.', time: '13:25:07' },
+      { intent: 'info', status: '입차중', message: '213바5502 차량이 B2F_23A 구역으로 이동 중입니다.', time: '13:24:31' },
+      { intent: 'warning', status: '주의', message: '로봇 02의 배터리가 25% 이하입니다. 모니터링이 필요합니다.', time: '13:22:18' },
+      { intent: 'danger', status: '긴급', message: '배터리 부족으로 인해 로봇이 즉시 중단됩니다. 추가적인 해결이 필요합니다.', time: '13:20:04' },
+    ].map((event) => ({ ...event, glyph: feedGlyph(event.intent) }));
     const rotatedEvents = eventData.slice(latestEventIndex).concat(eventData.slice(0, latestEventIndex));
     const alertFeedItems = rotatedEvents.map((event, index) => {
       const isLatest = index === 0;
