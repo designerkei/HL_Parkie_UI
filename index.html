@@ -1638,7 +1638,7 @@
                 <div>
                   <div class="pk-modal-kicker">REFERENCE RECIPE · 500 × 320</div>
                   <h2 id="modal-reference-alert-title" style="font-size:var(--parkie-font-2xl);">비상 작업 단일 확인 알럿</h2>
-                  <p>제공된 SVG의 프레임, 200×48 액션, 위험 색상과 내부 정렬을 고정값으로 재현한 기준 레시피입니다.</p>
+                  <p>제공된 SVG의 프레임, 200×48 액션, 위험 색상과 내부 정렬을 고정값으로 재현한 기준 레시피입니다. 일반 모달과 달리 컨텍스트 라벨 없이 닫기만 두고 액션이 하나입니다 — <b>이미 발생한 비상 상황을 알리고 확인만 받는 경우</b>에만 사용하고, 선택지가 있는 확인에는 취소·확인 2버튼 모달을 씁니다. 위험 색상은 비상 문안과 함께일 때만 유효합니다.</p>
                 </div>
               </div>
               <div class="pk-modal-stage" style="min-height:380px;">
@@ -1653,7 +1653,7 @@
                     <div class="pk-modal-status-icon pk-modal-status-icon--danger" aria-hidden="true">
                       <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M13.1 4.9a3.35 3.35 0 0 1 5.8 0l10.2 17.5A3.35 3.35 0 0 1 26.2 27H5.8a3.35 3.35 0 0 1-2.9-4.6L13.1 4.9Z" fill="currentColor"/><path d="M16 11v7M16 22.2v.3" stroke="white" stroke-width="2.4" stroke-linecap="round"/></svg>
                     </div>
-                    <h3 class="pk-modal-title" id="reference-alert-heading">로봇 초기화 중…</h3>
+                    <h3 class="pk-modal-title" id="reference-alert-heading">비상정지가 실행되었습니다</h3>
                     <p class="pk-modal-description">로봇 수동조작을 통해 충전존으로 이동바랍니다.</p>
                   </div>
                   <div class="pk-modal-actions">
@@ -1728,7 +1728,7 @@
                 <div>
                   <div class="pk-modal-kicker">FORM STATES</div>
                   <h2 id="modal-auth-states-title" style="font-size:var(--parkie-font-2xl);">인증 상태</h2>
-                  <p>Empty, Ready, Error는 서로 다른 모달이 아니라 동일 컴포넌트의 상태입니다.</p>
+                  <p>Empty, Ready, Error는 서로 다른 모달이 아니라 동일 컴포넌트의 상태입니다. 점검 목록은 <b>전 항목이 체크될 때까지 확인 버튼을 비활성</b>으로 둡니다 — 미완료 상태에서 실행을 허용하면 점검을 건너뛴 채 서비스가 재개될 수 있습니다.</p>
                 </div>
               </div>
               <div class="pk-modal-state-grid">
