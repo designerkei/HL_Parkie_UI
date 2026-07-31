@@ -1137,6 +1137,99 @@
                 </div>
               </div>
             </section>
+
+            <section class="pk-modal-section" aria-labelledby="modal-emergency-title">
+              <div class="pk-modal-section-head">
+                <div>
+                  <div class="pk-modal-kicker">EMERGENCY MODE</div>
+                  <h2 id="modal-emergency-title" style="font-size:var(--parkie-font-2xl);">비상모드 · Emergency Mode</h2>
+                  <p>즉시 개입이 필요한 상황에 진입하는 상태. 사이드바가 <code style="font-family:var(--parkie-font-mono);color:var(--parkie-brand-text);">#C00000</code> 배경 + 붉은 드롭섀도 on/off로 깜빡이며, 진행 중이던 job 외 신규 작업은 거부됩니다.</p>
+                </div>
+              </div>
+
+              <div class="pk-emergency-grid">
+                <div class="pk-emergency-mockup">
+                  <div class="pk-emergency-stage">
+                    <div class="pk-emergency-sidebar" role="img" aria-label="비상모드 사이드바 (깜빡임)">
+                      <div class="pk-emergency-sidebar-logo">HL<em></em></div>
+                      <div class="pk-emergency-sidebar-item" data-active>
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10L12 3l10 7v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10Z"/></svg>
+                        <span>홈</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="10" rx="2"/><path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>
+                        <span>로봇관리</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h6l-1 7 9-11h-6l1-7Z"/></svg>
+                        <span>충전기</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item" data-muted>
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a2 2 0 0 1 2-2h3l2-2h6l2 2h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8Z"/><circle cx="12" cy="13" r="4"/></svg>
+                        <span>카메라</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M17 9l4-2v10l-4-2z"/></svg>
+                        <span>영상관리</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        <span>앱모드</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-spacer"></div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.3 1a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.3-1a7 7 0 0 0 2 1.2L10 21h4l.6-2.6a7 7 0 0 0 2-1.2l2.3 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"/></svg>
+                        <span>설정</span>
+                      </div>
+                      <div class="pk-emergency-sidebar-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                        <span>계정</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="pk-emergency-release-btn" type="button" aria-label="비상모드 해제">
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2a3 3 0 0 0-3 3v3H4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-1V5a3 3 0 0 0-3-3Z" stroke="#EF2020" stroke-width="1.4"/></svg>
+                    비상모드 해제
+                  </button>
+                  <p class="pk-emergency-caption">배경 #C00000 · 붉은 드롭섀도 on ↔ off · 1.4s ease-in-out infinite. <code>prefers-reduced-motion</code> 시 정적 표시.</p>
+                </div>
+
+                <div class="pk-emergency-modal-preview">
+                  <div class="pk-modal-shell pk-modal-shell--sm" role="group" aria-labelledby="emergency-modal-title">
+                    <div class="pk-modal-context">
+                      <span id="emergency-modal-title">비상모드 해제</span>
+                      <button class="pk-modal-close" aria-label="닫기" type="button">
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="pk-modal-body pk-modal-body--center" style="min-height:150px;">
+                      <h3 class="pk-modal-title">비상모드 해제 후,<br>서비스 작동 재개를 하겠습니까?</h3>
+                    </div>
+                    <div class="pk-modal-actions">
+                      <button class="pk-modal-button" type="button">아니요, 초기화</button>
+                      <button class="pk-modal-button pk-modal-button--primary" type="button">작동 재개</button>
+                    </div>
+                  </div>
+                  <p class="pk-emergency-caption">해제 확인 모달 · Neutral(취소·초기화) + Primary(작동 재개) Dual 액션 패턴</p>
+                </div>
+              </div>
+
+              <div class="pk-modal-btn-showcase">
+                <h3 class="pk-modal-btn-showcase-title">해제 CTA · "작동 재개" 상태</h3>
+                <div class="pk-modal-btn-showcase-label">Default</div>
+                <div class="pk-modal-btn-showcase-row">
+                  <button class="pk-modal-button pk-modal-button--primary">작동 재개</button>
+                </div>
+                <div class="pk-modal-btn-showcase-label">Hover</div>
+                <div class="pk-modal-btn-showcase-row">
+                  <button class="pk-modal-button pk-modal-button--primary pk-modal-button--state-hover">작동 재개</button>
+                </div>
+                <div class="pk-modal-btn-showcase-label">Pressed</div>
+                <div class="pk-modal-btn-showcase-row">
+                  <button class="pk-modal-button pk-modal-button--primary pk-modal-button--state-pressed">작동 재개</button>
+                </div>
+              </div>
+            </section>
           </div>
         </sc-if>
 
