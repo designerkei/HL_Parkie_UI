@@ -73,64 +73,79 @@
   font-size: var(--parkie-font-xs);
 }
 
-.pk-icon-matrix-scroll {
-  overflow-x: auto;
-  border: 1px solid var(--parkie-border);
-  border-radius: var(--parkie-radius-lg);
-}
-
-.pk-icon-matrix {
-  min-width: 760px;
-  background: var(--parkie-surface);
-}
-
-.pk-icon-matrix-head,
-.pk-icon-row {
+/* Spec-sheet layout: no panels or cell borders — a thin rule under each
+   icon label, then one row per state as [glyph] — [leader] — [state]. */
+.pk-icon-specs {
   display: grid;
-  grid-template-columns: minmax(170px, 1.25fr) repeat(4, minmax(120px, 1fr));
-}
-
-.pk-icon-matrix-head {
-  min-height: 54px;
-  align-items: center;
-  background: var(--parkie-surface-2);
-  border-bottom: 1px solid var(--parkie-border);
-}
-
-.pk-icon-matrix-head > div {
-  padding: 0 var(--parkie-space-4);
-  color: var(--parkie-text);
-  font-size: var(--parkie-font-sm);
-  font-weight: var(--parkie-weight-semibold);
-  text-align: center;
-}
-
-.pk-icon-matrix-head > div:first-child {
-  text-align: left;
+  grid-template-columns: repeat(auto-fit, minmax(228px, 1fr));
+  gap: var(--parkie-space-7) var(--parkie-space-8);
 }
 
 .pk-icon-row {
-  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pk-icon-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--parkie-space-2);
+  margin-bottom: var(--parkie-space-3);
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--parkie-border);
 }
 
-.pk-icon-row:last-child {
-  border-bottom: 0;
+/* The head stays on a single line so the rules align across every column:
+   the Korean name never breaks, the English name truncates, the badge holds. */
+.pk-icon-name .pk-icon-name-ko {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.pk-icon-name,
+.pk-icon-name .pk-icon-name-en {
+  min-width: 0;
+  margin-top: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pk-icon-name .pk-icon-source {
+  flex-shrink: 0;
+  margin-top: 0;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.pk-icon-spec-row {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: var(--parkie-space-3);
+}
+
 .pk-icon-state {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--parkie-space-4);
-  border-right: 1px solid var(--parkie-border);
 }
 
-.pk-icon-name {
-  align-items: flex-start;
-  flex-direction: column;
-  background: var(--parkie-surface-2);
+.pk-icon-spec-row .pk-icon-state {
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.pk-icon-spec-leader {
+  width: 20px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--parkie-border-strong);
+}
+
+.pk-icon-spec-state {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
 }
 
 .pk-icon-name-ko {
@@ -170,10 +185,6 @@
 
 .pk-icon-source.is-ms {
   color: var(--parkie-info-text);
-}
-
-.pk-icon-state:last-child {
-  border-right: 0;
 }
 
 .pk-icon-state svg,

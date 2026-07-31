@@ -42,11 +42,11 @@ test('capture reference-critical component pages', async ({ page }) => {
     path: path.join('test-results', 'review', 'alert-feed-detail.png'),
   });
   await capture(page, '아이콘', 'iconography.png');
-  await page.locator('.pk-icon-matrix').first().screenshot({
+  await page.locator('.pk-icon-specs').first().screenshot({
     path: path.join('test-results', 'review', 'iconography-state-matrix.png'),
   });
-  await page.locator('.pk-icon-matrix').nth(1).scrollIntoViewIfNeeded();
-  await page.locator('.pk-icon-matrix').nth(1).screenshot({
+  await page.locator('.pk-icon-specs').nth(1).scrollIntoViewIfNeeded();
+  await page.locator('.pk-icon-specs').nth(1).screenshot({
     path: path.join('test-results', 'review', 'iconography-robot-matrix.png'),
   });
   await page.locator('.pk-domain-grid').first().scrollIntoViewIfNeeded();

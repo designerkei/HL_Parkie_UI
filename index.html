@@ -652,30 +652,23 @@
                   </div>
                   <span class="pk-icon-group-count">{{ group.count }}</span>
                 </div>
-                <div class="pk-icon-matrix-scroll pk-scroll">
-                  <div class="pk-icon-matrix">
-                    <div class="pk-icon-matrix-head" aria-hidden="true">
-                      <div>Icon · Source</div>
-                      <div>Enabled</div>
-                      <div>Hover</div>
-                      <div>Pressed &amp; On</div>
-                      <div>Disabled</div>
-                    </div>
-                    <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="5">
-                      <div class="pk-icon-row">
-                        <div class="pk-icon-name">
-                          <span class="pk-icon-name-ko">{{ icon.ko }}</span>
-                          <span class="pk-icon-name-en">{{ icon.en }}</span>
-                          <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
-                        </div>
-                        <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
-                          <div class="{{ state.className }}" aria-label="{{ state.label }}">
-                            {{ state.svg }}
-                          </div>
-                        </sc-for>
+                <div class="pk-icon-specs">
+                  <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="6">
+                    <div class="pk-icon-row">
+                      <div class="pk-icon-name">
+                        <span class="pk-icon-name-ko">{{ icon.ko }}</span>
+                        <span class="pk-icon-name-en">{{ icon.en }}</span>
+                        <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
                       </div>
-                    </sc-for>
-                  </div>
+                      <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="4">
+                        <div class="pk-icon-spec-row">
+                          <span class="{{ state.className }}" role="img" aria-label="{{ state.label }}">{{ state.svg }}</span>
+                          <span class="pk-icon-spec-leader" aria-hidden="true"></span>
+                          <span class="pk-icon-spec-state">{{ state.stateName }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-for>
                 </div>
               </section>
             </sc-for>
@@ -2988,10 +2981,10 @@ class Component extends DCLogic {
     const parkieData = (name) => parkieIconData[name];
     const msData = (name) => icoData[name];
     const stateDefs = [
-      { id: 'enabled', label: 'Enabled · Default' },
-      { id: 'hover', label: 'Hover' },
-      { id: 'pressed', label: 'Pressed & On' },
-      { id: 'disabled', label: 'Disabled' },
+      { id: 'enabled', label: 'Enabled · Default', short: 'Default' },
+      { id: 'hover', label: 'Hover', short: 'Hover' },
+      { id: 'pressed', label: 'Pressed & On', short: 'Pressed' },
+      { id: 'disabled', label: 'Disabled', short: 'Disabled' },
     ];
     const sourceClass = (source) => {
       if (source === 'Parkie Original') return 'pk-icon-source is-original';
@@ -3006,6 +2999,7 @@ class Component extends DCLogic {
       states: stateDefs.map((state) => ({
         className: `pk-icon-state is-${state.id}`,
         label: `${koLabel} · ${state.label}`,
+        stateName: state.short,
         svg: iconSvg(data, `${enLabel}-${state.id}`),
       })),
     });
