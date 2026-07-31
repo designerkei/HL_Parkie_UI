@@ -229,10 +229,12 @@
   fill: currentColor;
 }
 
+/* The signal slot carries connection state only. Motion state (운행 중 ·
+   일시정지) belongs to .pk-robot-control-card__motion — mixing the two into one
+   slot made the position unreadable, so no motion modifier is defined here. */
 .pk-robot-control-card__signal.is-weak { color: var(--parkie-connection-weak); }
 .pk-robot-control-card__signal.is-lost,
-.pk-robot-control-card__signal.is-offline,
-.pk-robot-control-card__signal.is-paused { color: var(--parkie-text); }
+.pk-robot-control-card__signal.is-offline { color: var(--parkie-text); }
 .pk-robot-control-card__signal.is-reconnecting svg {
   animation: pk-status-pulse 1.2s ease-in-out infinite;
 }

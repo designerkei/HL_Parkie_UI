@@ -465,9 +465,12 @@
   white-space: nowrap;
 }
 
+/* 160px so the longest token name (--parkie-brand-primary-active, ~155px at
+   8px mono) is readable. At 86px it ellipsised to "--parkie-brand-prima…",
+   which makes the reference unusable — you cannot copy what you cannot read. */
 .pk-summary-swatches {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   overflow: hidden;
   background: var(--parkie-border);
   border: 1px solid var(--parkie-border);

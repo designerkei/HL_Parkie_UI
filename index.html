@@ -31,7 +31,10 @@
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body { background: var(--parkie-bg); font-family: var(--parkie-font-sans); -webkit-font-smoothing: antialiased; }
+  /* Korean line breaking: the CSS default lets a break fall between Hangul
+     syllables, so "로봇관리" splits mid-word in narrow containers. keep-all
+     prevents that; break-word is the safety net for unbreakable tokens. */
+  body { background: var(--parkie-bg); font-family: var(--parkie-font-sans); -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
   a { color: var(--parkie-brand-text); text-decoration: none; }
   a:hover { text-decoration: underline; }
   ::selection { background: var(--parkie-brand-subtle); }
@@ -996,8 +999,8 @@
               <article class="pk-robot-control-card">
                 <div class="pk-robot-control-card__summary">
                   <strong class="pk-robot-control-card__id">04</strong>
-                  <span class="pk-robot-control-card__signal is-paused" aria-label="일시정지"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"/></svg></span>
-                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">12 km/h</span></span>
+                  <span class="pk-robot-control-card__signal" aria-label="연결 양호"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0ZM1 8.5 2.5 10a13.4 13.4 0 0 1 19 0L23 8.5a15.5 15.5 0 0 0-22 0Z"/></svg></span>
+                  <span class="pk-robot-control-card__metrics"><span class="pk-robot-control-card__speed">0 km/h</span><span class="pk-robot-control-card__motion">일시정지</span></span>
                   <span class="pk-robot-control-card__battery-value">100%</span>
                   <span class="pk-robot-control-card__battery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm-2 4v14h10V6H7Zm2 2h6v10H9V8Z"/></svg></span>
                   <button class="pk-robot-card-toggle" aria-label="로봇 04 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
@@ -2036,7 +2039,7 @@
               </div>
               <div class="pk-appbar-stage">
                 <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
-                  <div class="pk-appbar-brand"><img src="brand/hl-robotics-symbol.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-appbar-brand"><img src="brand/logo.svg" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control">
                     <span>서비스 활성화</span>
                     <button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button>
@@ -2230,7 +2233,7 @@
               </div>
               <div class="pk-shell-frame">
                 <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
-                  <div class="pk-appbar-brand"><img src="brand/hl-robotics-symbol.svg" alt=""><span>HL Robotics</span></div>
+                  <div class="pk-appbar-brand"><img src="brand/logo.svg" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control"><span>서비스 활성화</span><button class="pk-service-switch" type="button" role="switch" aria-label="서비스 활성화" aria-checked="{{ serviceChecked }}" onClick="{{ toggleService }}"></button></div>
                   <div class="pk-role-segment pk-segmented" role="radiogroup" aria-label="사용자 역할">
                     <button type="button" role="radio" aria-checked="{{ operatorSelected }}" onClick="{{ selectOperator }}">관리자</button>
@@ -3477,7 +3480,10 @@ class Component extends DCLogic {
       setKo: () => this.setState({ lang: 'ko' }),
       setEn: () => this.setState({ lang: 'en' }),
       navSources,
-      contentFrameClass: active === 'media'
+      /* Pages whose specimens are designed at full application width. The top
+         bar recipe needs 1214px and the control shell needs rail 80 + panel
+         320 + workspace, neither of which fits the 960px reading column. */
+      contentFrameClass: ['media', 'topbar', 'appshell'].includes(active)
         ? 'pk-content-frame pk-content-frame--wide'
         : active === 'systemsummary'
           ? 'pk-content-frame pk-content-frame--summary'
