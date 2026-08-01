@@ -53,7 +53,7 @@
 
 .pk-ops-kicker {
   margin-bottom: 6px;
-  color: var(--parkie-brand-text);
+  color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
   font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);

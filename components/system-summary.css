@@ -61,7 +61,7 @@
 
 .pk-summary-story__index,
 .pk-summary-story__label {
-  color: var(--parkie-brand-text);
+  color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
   font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
@@ -103,17 +103,6 @@
     var(--parkie-surface);
   border: 1px solid var(--parkie-border);
   border-radius: var(--parkie-radius-2xl);
-  box-shadow: 0 16px 44px rgba(0,0,0,.16);
-}
-
-.pk-summary-section::before {
-  position: absolute;
-  top: 0;
-  right: var(--parkie-space-6);
-  left: var(--parkie-space-6);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--parkie-brand-border), transparent);
-  content: "";
 }
 
 .pk-summary-section__head {
@@ -150,7 +139,7 @@
 .pk-summary-section__eyebrow {
   display: block;
   margin-bottom: 7px;
-  color: var(--parkie-brand-text);
+  color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
   font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
@@ -166,28 +155,32 @@
   letter-spacing: var(--parkie-tracking-tight);
 }
 
+/* A neutral text link, not an outlined pill repeated on every card. Brand
+   blue is reserved for selection, focus and primary action, so it appears
+   here only once the pointer or keyboard is actually on the link. */
 .pk-summary-link {
   display: inline-flex;
   min-height: 34px;
   align-items: center;
   gap: 6px;
-  padding: 0 11px;
-  color: var(--parkie-brand-text);
+  padding: 0 2px;
+  color: var(--parkie-text-secondary);
   background: transparent;
-  border: 1px solid var(--parkie-brand-border);
-  border-radius: var(--parkie-radius-pill);
+  border: 0;
   font-family: var(--parkie-font-sans);
   font-size: var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
   cursor: pointer;
 }
 
-.pk-summary-link:hover {
-  background: var(--parkie-brand-subtle);
+.pk-summary-link:hover,
+.pk-summary-link:focus-visible {
+  color: var(--parkie-brand-text);
+  text-decoration: underline;
 }
 
 .pk-summary-link:active {
-  background: var(--parkie-brand-subtle-hover);
+  color: var(--parkie-brand-primary-active);
 }
 
 .pk-summary-link:focus-visible,
@@ -417,9 +410,9 @@
   gap: var(--parkie-space-3);
   margin-top: var(--parkie-space-3);
   padding: var(--parkie-space-3) var(--parkie-space-4);
-  color: var(--parkie-brand-text);
-  background: var(--parkie-brand-subtle);
-  border: 1px solid var(--parkie-brand-border);
+  color: var(--parkie-text-secondary);
+  background: var(--parkie-surface-2);
+  border: 1px solid var(--parkie-border);
   border-radius: var(--parkie-radius-md);
   font-family: var(--parkie-font-mono);
   font-size: var(--parkie-font-sm);
@@ -827,7 +820,7 @@
 }
 
 .pk-summary-index-item__category {
-  color: var(--parkie-brand-text);
+  color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
   font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);

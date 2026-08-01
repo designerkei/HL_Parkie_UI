@@ -68,7 +68,7 @@
 
 .pk-icon-group-count {
   flex-shrink: 0;
-  color: var(--parkie-brand-text);
+  color: var(--parkie-text-tertiary);
   font-family: var(--parkie-font-mono);
   font-size: var(--parkie-font-xs);
 }
