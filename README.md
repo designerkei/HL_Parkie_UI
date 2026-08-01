@@ -79,7 +79,6 @@ CPMS는 PM 툴이므로 패턴 슬롯은 전달받은 화면(보드 · 백로그
 - `styles.css` — 전역 진입점, `--guide-*` 크롬 토큰, 반응형, 크롬 고대비
 - `tokens/*-tokens.css` — 제품별 토큰(스왑 레이어)
 - `components/product-skeleton.css` — 공유 뼈대 스타일(`--guide-*` 기반)
-- `components/goalie.css` — Goalie 실제 디자인 도착 시 쓸 `gl-*` 어휘
 - `brand/logo.svg` — HL Robotics 심볼
 - `icons/` — Parkie 원본·로봇 전용 아이콘과 출처 정책
 - `components/iconography.css` — 아이콘 상태 매트릭스와 도메인 상태 카탈로그

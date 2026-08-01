@@ -1,7 +1,8 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
-const GOALIE_PAGES = [
+/* The page slots every skeleton product declares. */
+const SKELETON_PAGES = [
   'overview',
   'systemsummary',
   'principles',
@@ -17,10 +18,8 @@ const GOALIE_PAGES = [
   'brand',
 ];
 
-/* Pages shared by every product that is still a skeleton. Both Goalie and CPMS
-   declare the same slots; the ids collide across products by design, since the
-   route namespace is `#/system/page`. */
-const SKELETON_PAGES = GOALIE_PAGES;
+/* Goalie and CPMS declare the same slots; the ids collide across products by
+   design, since the route namespace is `#/system/page`. */
 const SKELETON_SYSTEMS = ['goalie', 'cpms'];
 
 /* Derive-and-pin. Per-route assertions read the registry from the page, so they

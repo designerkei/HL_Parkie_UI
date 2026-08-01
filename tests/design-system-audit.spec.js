@@ -288,7 +288,7 @@ const PRODUCT_TOKEN_SCOPES = [
     file: path.join('tokens', 'goalie-tokens.css'),
     scope: '[data-system="goalie"][data-color-mode="light"]',
     minTokens: 130,
-    consumers: ['components/goalie.css', 'styles.css', 'index.html'],
+    consumers: ['styles.css', 'index.html'],
   },
   {
     id: 'cpms',
@@ -546,7 +546,6 @@ test('all release-critical local assets are served and all Parkie token referenc
     '/ProductSkeleton.dc.html',
     '/tokens/parkie-tokens.css',
     '/tokens/goalie-tokens.css',
-    '/components/goalie.css',
     '/components/controls.css',
     '/components/documentation.css',
     '/components/iconography.css',
@@ -594,7 +593,6 @@ test('all release-critical local assets are served and all Parkie token referenc
     [...goalieTokenSource.matchAll(/(--goalie-[\w-]+)\s*:/g)].map((match) => match[1]));
   const goalieSourceFiles = [
     path.join(process.cwd(), 'ProductSkeleton.dc.html'),
-    path.join(process.cwd(), 'components', 'goalie.css'),
   ];
   const goalieReferenced = new Set(goalieSourceFiles.flatMap((file) => (
     [...fs.readFileSync(file, 'utf8').matchAll(/var\((--goalie-[\w-]+)/g)].map((match) => match[1])
