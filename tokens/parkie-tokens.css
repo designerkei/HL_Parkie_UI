@@ -436,6 +436,9 @@
   --parkie-danger: var(--parkie-color-red-600);
   --parkie-danger-subtle: rgba(223,0,0,0.16);
   --parkie-danger-text: var(--parkie-color-red-300);
+  /* Emergency stop — see the :root definition for the scope rule. */
+  --parkie-emergency: #FF1D1D;
+  --parkie-emergency-subtle: rgba(255,29,29,0.18);
   --parkie-info: #7CC7E8;
   --parkie-info-subtle: rgba(124,199,232,0.14);
   --parkie-info-text: #9BD8F2;
