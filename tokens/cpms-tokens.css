@@ -1,0 +1,227 @@
+/* =====================================================================
+   CPMS UI — Design Tokens (SWAP LAYER), fixed light theme
+   브랜드를 교체하려면 주로 이 파일만 수정하면 전체 시스템이 리테마됩니다.
+   To rebrand, edit this file — every component reads var(--cpms-*).
+
+   CPMS is the project-management tool for PMs (issues, boards, schedules),
+   a different domain from the robot-control products alongside it.
+
+   Contract
+   - Tokens exist only inside the explicit CPMS product scope.
+   - No :root defaults: a missing wrapper must fail visibly instead of
+     inheriting another product's theme.
+   - Components consume semantic/component aliases, not palette values.
+
+   Swap points — the three places a handover lands
+   1. Brand ramp   --cpms-color-brand-50 … 950   (PLACEHOLDER, see below)
+   2. Typography   --cpms-font-sans / --cpms-font-mono
+   3. Logo & mark  rendered by the shared skeleton's brand lockup
+
+   Delivered values must clear the contrast gate documented on the
+   `brand` page before they ship: 4.5:1 body text, 3:1 non-text, and dark
+   ink rather than white on any light brand fill.
+   ===================================================================== */
+
+[data-system="cpms"][data-color-mode="light"] {
+  color-scheme: light;
+
+  /* Typography */
+  --cpms-font-sans: "Pretendard", "Noto Sans KR", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cpms-font-mono: "Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+
+  --cpms-font-xs: 12px;
+  --cpms-font-sm: 13px;
+  --cpms-font-base: 14px;
+  --cpms-font-md: 16px;
+  --cpms-font-lg: 18px;
+  --cpms-font-xl: 22px;
+  --cpms-font-2xl: 28px;
+  --cpms-font-3xl: 36px;
+
+  --cpms-leading-tight: 1.2;
+  --cpms-leading-snug: 1.35;
+  --cpms-leading-normal: 1.5;
+  --cpms-leading-relaxed: 1.65;
+
+  --cpms-weight-regular: 400;
+  --cpms-weight-medium: 500;
+  --cpms-weight-semibold: 600;
+  --cpms-weight-bold: 700;
+
+  --cpms-tracking-tight: -0.02em;
+  --cpms-tracking-wide: 0.055em;
+
+  /* Spacing — 4px base */
+  --cpms-space-1: 4px;
+  --cpms-space-2: 8px;
+  --cpms-space-3: 12px;
+  --cpms-space-4: 16px;
+  --cpms-space-5: 20px;
+  --cpms-space-6: 24px;
+  --cpms-space-7: 32px;
+  --cpms-space-8: 40px;
+  --cpms-space-9: 48px;
+  --cpms-space-10: 64px;
+  --cpms-space-11: 80px;
+  --cpms-space-12: 96px;
+
+  /* Shape */
+  --cpms-radius-xs: 4px;
+  --cpms-radius-sm: 6px;
+  --cpms-radius-md: 8px;
+  --cpms-radius-lg: 12px;
+  --cpms-radius-xl: 16px;
+  --cpms-radius-pill: 999px;
+  --cpms-radius-round: 50%;
+
+  /* Brand primitives — PLACEHOLDER, awaiting handover.
+     A generic blue ramp stands in so the semantic aliases below resolve and
+     the documentation shell renders. It is not CPMS's brand colour: these
+     eleven values are the first thing a colour handover replaces. Nothing
+     outside this block hardcodes a brand value, so replacing the ramp
+     rethemes the product. */
+  --cpms-color-brand-50: #EEF2FF;
+  --cpms-color-brand-100: #E0E7FF;
+  --cpms-color-brand-200: #C7D2FE;
+  --cpms-color-brand-300: #A5B4FC;
+  --cpms-color-brand-400: #818CF8;
+  --cpms-color-brand-500: #6366F1;
+  --cpms-color-brand-600: #4F46E5;
+  --cpms-color-brand-700: #4338CA;
+  --cpms-color-brand-800: #3730A3;
+  --cpms-color-brand-900: #312E81;
+  --cpms-color-brand-950: #1E1B4B;
+
+  /* Neutral primitives */
+  --cpms-color-neutral-0: #FFFFFF;
+  --cpms-color-neutral-25: #FBFCFE;
+  --cpms-color-neutral-50: #F7F9FC;
+  --cpms-color-neutral-100: #F1F4F8;
+  --cpms-color-neutral-200: #E3E9F0;
+  --cpms-color-neutral-300: #CBD5E1;
+  --cpms-color-neutral-400: #94A3B8;
+  --cpms-color-neutral-500: #64748B;
+  --cpms-color-neutral-600: #475569;
+  --cpms-color-neutral-700: #334155;
+  --cpms-color-neutral-800: #1E293B;
+  --cpms-color-neutral-900: #111827;
+  --cpms-color-neutral-950: #0B1220;
+
+  /* Semantic primitives */
+  --cpms-color-green-50: #ECF8F1;
+  --cpms-color-green-600: #157347;
+  --cpms-color-green-700: #0F5F39;
+  --cpms-color-amber-50: #FFF8E1;
+  --cpms-color-amber-700: #8A5B00;
+  --cpms-color-red-50: #FFF0EE;
+  --cpms-color-red-600: #B42318;
+  --cpms-color-red-700: #912018;
+  --cpms-color-blue-50: #EEF6FF;
+  --cpms-color-blue-700: #175CD3;
+
+  /* Semantic surface and content aliases */
+  --cpms-bg: var(--cpms-color-neutral-50);
+  --cpms-surface: var(--cpms-color-neutral-0);
+  --cpms-surface-subtle: var(--cpms-color-neutral-25);
+  --cpms-surface-muted: var(--cpms-color-neutral-100);
+  --cpms-surface-pressed: var(--cpms-color-neutral-200);
+
+  --cpms-border: #D8E0EA;
+  --cpms-border-subtle: #E8EDF3;
+  --cpms-border-strong: #AAB7C7;
+
+  --cpms-text: var(--cpms-color-neutral-900);
+  --cpms-text-secondary: var(--cpms-color-neutral-600);
+  /* Explicitly darker than neutral-500 so tertiary copy remains >= 4.5:1
+     on both white and the muted documentation surface. */
+  --cpms-text-tertiary: #5B6B80;
+  --cpms-text-disabled: var(--cpms-color-neutral-400);
+  --cpms-text-inverse: var(--cpms-color-neutral-0);
+
+  /* Brand and interaction aliases */
+  --cpms-brand-primary: var(--cpms-color-brand-600);
+  --cpms-brand-primary-hover: var(--cpms-color-brand-700);
+  --cpms-brand-primary-pressed: var(--cpms-color-brand-800);
+  --cpms-brand-on: var(--cpms-color-neutral-0);
+  --cpms-brand-text: var(--cpms-color-brand-700);
+  --cpms-brand-subtle: var(--cpms-color-brand-50);
+  --cpms-brand-subtle-hover: var(--cpms-color-brand-100);
+  --cpms-brand-border: var(--cpms-color-brand-200);
+
+  --cpms-hover-surface: rgba(17, 24, 39, 0.045);
+  --cpms-pressed-surface: rgba(17, 24, 39, 0.085);
+  --cpms-selected-surface: var(--cpms-color-brand-50);
+
+  /* Icon states */
+  --cpms-icon-rest: var(--cpms-color-neutral-600);
+  --cpms-icon-hover: var(--cpms-color-neutral-900);
+  --cpms-icon-pressed: var(--cpms-color-neutral-900);
+  --cpms-icon-selected: var(--cpms-color-brand-700);
+  --cpms-icon-disabled: var(--cpms-color-neutral-400);
+
+  /* Feedback */
+  --cpms-success: var(--cpms-color-green-600);
+  --cpms-success-hover: var(--cpms-color-green-700);
+  --cpms-success-subtle: var(--cpms-color-green-50);
+  --cpms-warning: var(--cpms-color-amber-700);
+  --cpms-warning-subtle: var(--cpms-color-amber-50);
+  --cpms-danger: var(--cpms-color-red-600);
+  --cpms-danger-hover: var(--cpms-color-red-700);
+  --cpms-danger-subtle: var(--cpms-color-red-50);
+  --cpms-info: var(--cpms-color-blue-700);
+  --cpms-info-subtle: var(--cpms-color-blue-50);
+
+  /* Controls */
+  --cpms-control-height-sm: 32px;
+  --cpms-control-height-md: 40px;
+  --cpms-control-height-lg: 48px;
+  --cpms-control-bg: var(--cpms-surface);
+  --cpms-control-border: var(--cpms-border-strong);
+  --cpms-control-border-hover: var(--cpms-color-neutral-600);
+  --cpms-control-disabled-bg: var(--cpms-surface-muted);
+  --cpms-control-disabled-fg: var(--cpms-text-disabled);
+
+  /* Focus. White separation keeps the indicator visible when a control
+     already carries the same brand colour as its fill. */
+  --cpms-focus-color: var(--cpms-color-brand-700);
+  --cpms-focus-separator: var(--cpms-color-neutral-0);
+  --cpms-focus-ring:
+    0 0 0 2px var(--cpms-focus-separator),
+    0 0 0 4px var(--cpms-focus-color);
+  --cpms-focus-ring-inset:
+    inset 0 0 0 2px var(--cpms-focus-separator),
+    inset 0 0 0 4px var(--cpms-focus-color);
+
+  /* Elevation */
+  --cpms-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --cpms-shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.10), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
+  --cpms-shadow-lg: 0 14px 28px -12px rgba(15, 23, 42, 0.22), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
+
+  /* Documentation shell */
+  --cpms-doc-header-height: 64px;
+  --cpms-doc-nav-width: 248px;
+  --cpms-doc-content-width: 1120px;
+  --cpms-doc-inspector-width: 288px;
+  --cpms-doc-divider: var(--cpms-border-subtle);
+
+  /* Motion */
+  --cpms-duration-fast: 120ms;
+  --cpms-duration-base: 180ms;
+  --cpms-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Product-neutral aliases consumed by the shared document shell. The shell
+     cannot read the JS registry, so each product publishes its canvas, ink and
+     type under one agreed name and a single rule paints every product root. */
+  --product-bg: var(--cpms-bg);
+  --product-text: var(--cpms-text);
+  --product-font: var(--cpms-font-sans);
+}
+
+@media (forced-colors: active) {
+  [data-system="cpms"][data-color-mode="light"] {
+    --cpms-focus-color: Highlight;
+    --cpms-focus-separator: Canvas;
+    --cpms-border: CanvasText;
+    --cpms-border-strong: CanvasText;
+  }
+}

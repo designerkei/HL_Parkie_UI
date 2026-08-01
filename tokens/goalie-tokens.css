@@ -205,6 +205,13 @@
   --goalie-duration-fast: 120ms;
   --goalie-duration-base: 180ms;
   --goalie-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Product-neutral aliases consumed by the shared document shell. The shell
+     cannot read the JS registry, so each product publishes its canvas, ink and
+     type under one agreed name and a single rule paints every product root. */
+  --product-bg: var(--goalie-bg);
+  --product-text: var(--goalie-text);
+  --product-font: var(--goalie-font-sans);
 }
 
 @media (forced-colors: active) {

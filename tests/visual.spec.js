@@ -134,34 +134,31 @@ test('capture parking-control product compositions', async ({ page }) => {
   });
 });
 
-test('capture Goalie light-system review surfaces', async ({ page }) => {
-  const routes = [
-    ['overview', 'goalie-overview.png'],
-    ['colors', 'goalie-colors.png'],
-    ['iconography', 'goalie-iconography.png'],
-    ['button', 'goalie-button.png'],
-    ['input', 'goalie-input.png'],
-    ['templates', 'goalie-templates.png'],
-  ];
+test('capture skeleton-product review surfaces', async ({ page }) => {
+  test.setTimeout(180_000);
+  const systems = ['goalie', 'cpms'];
+  const pages = ['overview', 'colors', 'iconography', 'button', 'input', 'templates', 'brand'];
 
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  for (const [pageId, file] of routes) {
-    await page.goto(`/#/goalie/${pageId}`);
-    await expect(page.locator('[data-guide-root]')).toHaveAttribute('data-active-system', 'goalie');
-    await expect(page.locator(`[data-guide-sidebar] [data-nav-id="${pageId}"]`)).toHaveAttribute('aria-current', 'page');
-    await page.screenshot({
-      path: path.join('test-results', 'review', file),
-      fullPage: false,
-    });
-  }
+  for (const system of systems) {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    for (const pageId of pages) {
+      await page.goto(`/#/${system}/${pageId}`);
+      await expect(page.locator('[data-guide-root]')).toHaveAttribute('data-active-system', system);
+      await expect(page.locator(`[data-guide-sidebar] [data-nav-id="${pageId}"]`)).toHaveAttribute('aria-current', 'page');
+      await page.screenshot({
+        path: path.join('test-results', 'review', `${system}-${pageId}.png`),
+        fullPage: false,
+      });
+    }
 
-  for (const pageId of ['overview', 'button']) {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`/#/goalie/${pageId}`);
-    await expect(page.locator('h1')).toBeVisible();
-    await page.screenshot({
-      path: path.join('test-results', 'review', `goalie-${pageId}-390.png`),
-      fullPage: false,
-    });
+    for (const pageId of ['overview', 'brand']) {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/#/${system}/${pageId}`);
+      await expect(page.locator('h1')).toBeVisible();
+      await page.screenshot({
+        path: path.join('test-results', 'review', `${system}-${pageId}-390.png`),
+        fullPage: false,
+      });
+    }
   }
 });

@@ -279,64 +279,90 @@ test('dark fixed token contract and hidden theme control remain intact', async (
   await expect(themeControl).toBeHidden();
 });
 
-test('Goalie token scope stays isolated and every reference resolves', async () => {
-  const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
-  const tokenSource = strip(fs.readFileSync(
-    path.join(process.cwd(), 'tokens', 'goalie-tokens.css'), 'utf8'));
+/* Every product that is not Parkie keeps its tokens inside its own scope. The
+   check is parameterised rather than written per product, so registering a
+   fourth one is a row here rather than a copied test. */
+const PRODUCT_TOKEN_SCOPES = [
+  {
+    id: 'goalie',
+    file: path.join('tokens', 'goalie-tokens.css'),
+    scope: '[data-system="goalie"][data-color-mode="light"]',
+    minTokens: 130,
+    consumers: ['components/goalie.css', 'styles.css', 'index.html'],
+  },
+  {
+    id: 'cpms',
+    file: path.join('tokens', 'cpms-tokens.css'),
+    scope: '[data-system="cpms"][data-color-mode="light"]',
+    minTokens: 130,
+    consumers: ['styles.css', 'index.html'],
+  },
+];
 
-  const SCOPE = '[data-system="goalie"][data-color-mode="light"]';
-  const at = tokenSource.indexOf(SCOPE);
-  expect(at, 'Goalie token scope must exist').toBeGreaterThan(-1);
-  const open = tokenSource.indexOf('{', at);
-  let depth = 1;
-  let index = open + 1;
-  while (index < tokenSource.length && depth > 0) {
-    if (tokenSource[index] === '{') depth += 1;
-    else if (tokenSource[index] === '}') depth -= 1;
-    index += 1;
-  }
-  const scopeBody = tokenSource.slice(open + 1, index - 1);
-  const declaredTokens = new Set(
-    [...scopeBody.matchAll(/(--goalie-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
-  expect(declaredTokens.size, 'Goalie token count should not shrink silently')
-    .toBeGreaterThanOrEqual(130);
+for (const product of PRODUCT_TOKEN_SCOPES) {
+  test(`${product.id} token scope stays isolated and every reference resolves`, async () => {
+    const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const tokenSource = strip(fs.readFileSync(path.join(process.cwd(), product.file), 'utf8'));
 
-  /* The stated contract: no :root defaults, so a missing product wrapper fails
-     visibly instead of silently inheriting the other product's theme. */
-  expect(tokenSource).not.toMatch(/:root/);
+    const at = tokenSource.indexOf(product.scope);
+    expect(at, `${product.id} token scope must exist`).toBeGreaterThan(-1);
+    const open = tokenSource.indexOf('{', at);
+    let depth = 1;
+    let index = open + 1;
+    while (index < tokenSource.length && depth > 0) {
+      if (tokenSource[index] === '{') depth += 1;
+      else if (tokenSource[index] === '}') depth -= 1;
+      index += 1;
+    }
+    const scopeBody = tokenSource.slice(open + 1, index - 1);
+    const pattern = new RegExp(`(--${product.id}-[a-z0-9-]+)\\s*:`, 'g');
+    const declaredTokens = new Set([...scopeBody.matchAll(pattern)].map((match) => match[1]));
+    expect(declaredTokens.size, `${product.id} token count should not shrink silently`)
+      .toBeGreaterThanOrEqual(product.minTokens);
 
-  /* Every consumer reference must resolve, or a component renders with an
-     unset custom property — the same class of defect as an unpaired token. */
-  const consumers = ['components/goalie.css', 'styles.css', 'index.html'];
-  const referenced = new Set();
-  for (const relative of consumers) {
-    const body = fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
-    for (const match of body.matchAll(/var\((--goalie-[a-z0-9-]+)/g)) referenced.add(match[1]);
-  }
-  expect(referenced.size, 'Goalie components must consume the token layer').toBeGreaterThan(50);
-  expect(
-    [...referenced].filter((token) => !declaredTokens.has(token)).sort(),
-    'every referenced Goalie token must be declared in the product scope',
-  ).toEqual([]);
+    /* The stated contract: no :root defaults, so a missing product wrapper fails
+       visibly instead of silently inheriting another product's theme. */
+    expect(tokenSource, `${product.id} must not declare :root defaults`).not.toMatch(/:root/);
 
-  /* Windows high contrast, matching the Parkie gate. */
-  const forcedAt = tokenSource.indexOf('@media (forced-colors: active)');
-  expect(forcedAt, 'Goalie must answer Windows high contrast').toBeGreaterThan(-1);
-  const forcedBlock = tokenSource.slice(forcedAt);
-  expect(forcedBlock).toContain('Highlight');
-  const forcedTokens = [...forcedBlock.matchAll(/(--goalie-[a-z0-9-]+)\s*:/g)].map((m) => m[1]);
-  expect(
-    forcedTokens.filter((token) => !declaredTokens.has(token)),
-    'forced-colors may only override tokens that exist in the token scope',
-  ).toEqual([]);
-});
+    /* The shell paints through --product-*, published from inside this scope. */
+    for (const alias of ['--product-bg', '--product-text', '--product-font']) {
+      expect(scopeBody, `${product.id} must publish ${alias} for the shared shell`)
+        .toContain(`${alias}: var(--${product.id}-`);
+    }
+
+    /* Every consumer reference must resolve, or a component renders with an
+       unset custom property. A product awaiting its design legitimately has few
+       consumers, so the floor is on declarations, not references. */
+    const referenced = new Set();
+    for (const relative of product.consumers) {
+      const body = fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
+      const refPattern = new RegExp(`var\\((--${product.id}-[a-z0-9-]+)`, 'g');
+      for (const match of body.matchAll(refPattern)) referenced.add(match[1]);
+    }
+    expect(
+      [...referenced].filter((token) => !declaredTokens.has(token)).sort(),
+      `every referenced ${product.id} token must be declared in the product scope`,
+    ).toEqual([]);
+
+    /* Windows high contrast, matching the Parkie gate. */
+    const forcedAt = tokenSource.indexOf('@media (forced-colors: active)');
+    expect(forcedAt, `${product.id} must answer Windows high contrast`).toBeGreaterThan(-1);
+    const forcedBlock = tokenSource.slice(forcedAt);
+    expect(forcedBlock).toContain('Highlight');
+    const forcedTokens = [...forcedBlock.matchAll(pattern)].map((match) => match[1]);
+    expect(
+      forcedTokens.filter((token) => !declaredTokens.has(token)),
+      `forced-colors may only override tokens that exist in the ${product.id} scope`,
+    ).toEqual([]);
+  });
+}
 
 /* Rendered, not read. An earlier version of this test asserted the CSS text and
    passed while the rule did nothing: the forced-colors block sat above
    `.guide-nav-item__soon` in source order, so at equal specificity the authored
    background won and the pill stayed invisible in high contrast. Only rendering
    under emulation catches that. */
-test('high contrast is answered in the rendered chrome, both products', async ({ page }) => {
+test('high contrast is answered in the rendered chrome, every product', async ({ page }) => {
   const probe = () => page.evaluate(() => {
     const root = document.querySelector('.guide-root');
     const active = document.querySelector('.guide-system-link.is-active');
@@ -351,9 +377,9 @@ test('high contrast is answered in the rendered chrome, both products', async ({
     };
   });
 
-  for (const [system, hash] of [['parkie', '#/parkie/overview'], ['goalie', '#/goalie/overview']]) {
+  for (const system of ['parkie', 'goalie', 'cpms']) {
     await page.emulateMedia({ forcedColors: 'none' });
-    await page.goto(`/${hash}`);
+    await page.goto(`/#/${system}/overview`);
     await page.locator('[data-guide-root] h1').waitFor();
     const normal = await probe();
 

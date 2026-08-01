@@ -38,6 +38,17 @@
       subtitleKo: '라이트 디자인 시스템',
       subtitleEn: 'Light Design System',
     },
+    cpms: {
+      name: 'CPMS UI',
+      theme: 'light',
+      canvas: '#F7F9FC',
+      manifest: 'CPMS_META',
+      nav: 'CPMS_NAV',
+      tokens: 'tokens/cpms-tokens.css',
+      skeleton: true,
+      subtitleKo: '프로젝트 관리 디자인 시스템',
+      subtitleEn: 'Project Management Design System',
+    },
   };
 
   (function bootstrapGuideTheme() {
@@ -68,7 +79,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.9">
+<link rel="stylesheet" href="styles.css?v=1.1">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -3183,6 +3194,39 @@ class Component extends DCLogic {
     ] },
   ];
 
+  CPMS_NAV = [
+    { source: 'CPMS', sub: 'Project management tool', groups: [
+      { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles'] },
+      { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'iconography'] },
+      { ko: '컴포넌트', en: 'Components', items: ['button', 'input', 'status', 'navigation'] },
+      /* Named generically until the screens arrive. CPMS is a PM tool, so the
+         delivered patterns will be boards, backlogs, issue detail and
+         schedules — the slot gets renamed then rather than guessed now. */
+      { ko: '패턴', en: 'Patterns', items: ['templates'] },
+      { ko: '리소스', en: 'Resources', items: ['brand'] },
+    ] },
+  ];
+
+  /* CPMS has no approved design system yet, so every page below `brand` is an
+     empty receiving slot: none carry `impl`, which lights the shared `soon`
+     badge and renders the awaiting-handover skeleton. Descriptions say what the
+     slot will hold, never what the design is. */
+  CPMS_META = {
+    overview: { ko: '개요', en: 'Overview', dko: 'PM 전용 프로젝트 관리 툴 CPMS의 디자인 시스템 개요가 들어올 자리입니다.', den: 'Reserved for the design system overview of CPMS, the project-management tool for PMs.' },
+    systemsummary: { ko: '전체 요약', en: 'System Summary', dko: '파운데이션과 컴포넌트를 한 화면에서 훑는 색인이 들어올 자리입니다.', den: 'Reserved for a single-page index across foundations and components.' },
+    principles: { ko: '디자인 원칙', en: 'Principles', dko: 'CPMS의 의사결정 기준이 될 원칙이 들어올 자리입니다.', den: 'Reserved for the principles that will guide CPMS design decisions.' },
+    colors: { ko: '색상', en: 'Colors', dko: '전달받은 팔레트와 사용 규칙이 들어올 자리입니다.', den: 'Reserved for the delivered palette and its usage rules.' },
+    typography: { ko: '타이포그래피', en: 'Typography', dko: '타입 스케일과 한·영 혼용 읽기 규칙이 들어올 자리입니다.', den: 'Reserved for the type scale and bilingual reading rules.' },
+    spacing: { ko: '간격과 형태', en: 'Spacing & shape', dko: '간격 스케일, 곡률, 깊이 규칙이 들어올 자리입니다.', den: 'Reserved for the spacing scale, radii and depth rules.' },
+    iconography: { ko: '아이콘', en: 'Iconography', dko: '아이콘 크기, 선 굵기, 상태 표현 규칙이 들어올 자리입니다.', den: 'Reserved for icon sizing, stroke weight and state rules.' },
+    button: { ko: '버튼', en: 'Button', dko: '버튼 위계와 상태별 값이 들어올 자리입니다.', den: 'Reserved for button hierarchy and per-state values.' },
+    input: { ko: '입력 필드', en: 'Input', dko: '입력 필드의 라벨, 도움말, 검증 상태가 들어올 자리입니다.', den: 'Reserved for input labels, help text and validation states.' },
+    status: { ko: '상태와 피드백', en: 'Status & feedback', dko: '이슈 상태, 알림, 진행 표현이 들어올 자리입니다.', den: 'Reserved for issue status, alert and progress patterns.' },
+    navigation: { ko: '내비게이션', en: 'Navigation', dko: '탐색 구조와 현재 위치 표시가 들어올 자리입니다.', den: 'Reserved for navigation structure and current-location treatment.' },
+    templates: { ko: '화면 템플릿', en: 'Templates', dko: '보드 · 백로그 · 이슈 상세 · 일정 등 실제 화면 템플릿이 들어올 자리입니다.', den: 'Reserved for the board, backlog, issue detail and schedule templates.' },
+    brand: { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: '색상 · 타이포 · 로고 교체 지점과 전달 절차, 대비 게이트입니다.', den: 'Color, type and logo swap points, the handover order and the contrast gate.' },
+  };
+
   /* Goalie has no approved design system yet — every page below `brand` is an
      empty receiving slot awaiting handover, so none of them carry `impl` and
      each shows a `soon` badge. Descriptions state what the slot will hold, not
@@ -4617,7 +4661,7 @@ class Component extends DCLogic {
          bar recipe needs 1214px and the control shell needs rail 80 + panel
          320 + workspace, neither of which fits the 960px reading column. */
       contentFrameClass: usesSharedSkeleton
-        ? 'guide-content-frame guide-content-frame--goalie'
+        ? 'guide-content-frame guide-content-frame--skeleton'
         : ['media', 'topbar', 'appshell'].includes(active)
           ? 'guide-content-frame pk-content-frame pk-content-frame--wide'
           : active === 'systemsummary'

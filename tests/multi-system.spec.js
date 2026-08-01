@@ -17,10 +17,25 @@ const GOALIE_PAGES = [
   'brand',
 ];
 
-const THEMES = {
-  parkie: 'dark',
-  goalie: 'light',
-};
+/* Pages shared by every product that is still a skeleton. Both Goalie and CPMS
+   declare the same slots; the ids collide across products by design, since the
+   route namespace is `#/system/page`. */
+const SKELETON_PAGES = GOALIE_PAGES;
+const SKELETON_SYSTEMS = ['goalie', 'cpms'];
+
+/* Derive-and-pin. Per-route assertions read the registry from the page, so they
+   adapt when a product is registered. This list is the deliberate pin: adding a
+   product must be an explicit decision here too, which is what catches a product
+   silently appearing or vanishing. */
+const ALL_SYSTEMS = ['parkie', ...SKELETON_SYSTEMS];
+
+/* Read from the page rather than duplicated here, so registering a product does
+   not require editing the tests. `product registry is the single source of
+   truth` below pins the expected contents, which is what stops a product from
+   silently disappearing or changing theme. */
+const readRegistry = (page) => page.evaluate(() => window.__GUIDE_SYSTEMS);
+const themeOf = (page, system) =>
+  page.evaluate((id) => window.__GUIDE_SYSTEMS[id].theme, system);
 
 const canonicalUrl = (system, pageId) => `/#/${system}/${pageId}`;
 
@@ -48,7 +63,7 @@ async function expectRuntimeReady(page) {
 }
 
 async function expectSystemRoute(page, system, pageId) {
-  const theme = THEMES[system];
+  const theme = await themeOf(page, system);
   const root = guideRoot(page);
 
   await expectRuntimeReady(page);
@@ -62,7 +77,8 @@ async function expectSystemRoute(page, system, pageId) {
   await expect(page.locator(`[data-product-root]:not([data-system="${system}"])`)).toHaveCount(0);
 
   await expect(page.locator('[data-system-nav]')).toBeVisible();
-  await expect(page.locator('[data-system-nav] [data-system-id]')).toHaveCount(2);
+  const registeredCount = (await readRegistry(page)) ? Object.keys(await readRegistry(page)).length : 0;
+  await expect(page.locator('[data-system-nav] [data-system-id]')).toHaveCount(registeredCount);
   await expect(systemControl(page, system)).toHaveCount(1);
   await expect(systemControl(page, system)).toHaveAttribute('aria-current', 'page');
 
@@ -83,7 +99,10 @@ async function openSystem(page, system) {
 }
 
 async function expectTokenIsolation(page, system) {
-  const foreignSystem = system === 'parkie' ? 'goalie' : 'parkie';
+  /* Any other registered product works as the foreign namespace; the contract is
+     "this product never paints another's tokens", not a specific pairing. */
+  const registry = await readRegistry(page);
+  const foreignSystem = Object.keys(registry).find((id) => id !== system);
   const productRoot = page.locator(`[data-product-root][data-system="${system}"]`);
   const contract = await productRoot.evaluate((node, names) => {
     const computed = getComputedStyle(node);
@@ -191,17 +210,19 @@ test('Parkie remains a canonical peer under the guide hierarchy', async ({ page 
   await expect(systemControl(page, 'goalie')).toHaveAttribute('href', /#\/goalie\/overview$/);
 });
 
-test('every declared Goalie page supports a direct canonical load and refresh', async ({ page }) => {
-  test.setTimeout(120_000);
+test('every declared skeleton page supports a direct canonical load and refresh', async ({ page }) => {
+  test.setTimeout(240_000);
 
-  for (const pageId of GOALIE_PAGES) {
-    await page.goto('about:blank');
-    await page.goto(canonicalUrl('goalie', pageId));
-    await expectSystemRoute(page, 'goalie', pageId);
-    await expect(page.locator('h1')).not.toHaveText('');
+  for (const system of SKELETON_SYSTEMS) {
+    for (const pageId of SKELETON_PAGES) {
+      await page.goto('about:blank');
+      await page.goto(canonicalUrl(system, pageId));
+      await expectSystemRoute(page, system, pageId);
+      await expect(page.locator('h1'), `${system}/${pageId} must title itself`).not.toHaveText('');
 
-    await page.reload();
-    await expectSystemRoute(page, 'goalie', pageId);
+      await page.reload();
+      await expectSystemRoute(page, system, pageId);
+    }
   }
 });
 
@@ -306,15 +327,17 @@ test('fixed themes and token namespaces remain isolated through repeated switchi
   await expectSystemRoute(page, 'parkie', 'overview');
   await expectTokenIsolation(page, 'parkie');
 
-  for (let iteration = 0; iteration < 10; iteration += 1) {
-    const system = iteration % 2 === 0 ? 'goalie' : 'parkie';
+  const registered = Object.keys(await readRegistry(page));
+  for (let iteration = 0; iteration < registered.length * 4; iteration += 1) {
+    const system = registered[iteration % registered.length];
     await openSystem(page, system);
     await expectSystemRoute(page, system, 'overview');
     await expectTokenIsolation(page, system);
   }
 });
 
-test('a cold Goalie deep link never exposes a dark first-paint frame', async ({ page }) => {
+test('a cold deep link never exposes another product\'s first-paint frame', async ({ page }) => {
+  test.setTimeout(180_000);
   await page.addInitScript(() => {
     window.__guideThemeFrames = [];
 
@@ -349,24 +372,38 @@ test('a cold Goalie deep link never exposes a dark first-paint frame', async ({ 
     requestAnimationFrame(onFrame);
   });
 
-  await page.goto(canonicalUrl('goalie', 'overview'), { waitUntil: 'domcontentloaded' });
-  await expectSystemRoute(page, 'goalie', 'overview');
-  await page.evaluate(() => new Promise((resolve) => {
-    requestAnimationFrame(() => requestAnimationFrame(resolve));
-  }));
+  /* Every product, not just Goalie: a light product must never flash the dark
+     canvas, and the dark one must never flash a light canvas. The bootstrap and
+     the router read the same registry, and this proves it at paint time. */
+  for (const system of ALL_SYSTEMS) {
+    await page.goto('about:blank');
+    await page.evaluate(() => { window.__guideThemeFrames = []; });
+    await page.goto(canonicalUrl(system, 'overview'), { waitUntil: 'domcontentloaded' });
+    await expectSystemRoute(page, system, 'overview');
+    await page.evaluate(() => new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    }));
 
-  const frames = await page.evaluate(() => window.__guideThemeFrames || []);
-  const paintedFrames = frames.filter((frame) => frame.bodyExists);
-  expect(paintedFrames.length, 'the first-paint trace must capture body frames').toBeGreaterThan(0);
-  expect(
-    paintedFrames.filter((frame) => frame.htmlTheme === 'dark' || frame.rootTheme === 'dark'),
-    'Goalie must never publish a dark theme during cold startup'
-  ).toEqual([]);
-  expect(
-    paintedFrames.filter((frame) => ['rgb(15, 15, 17)', 'rgb(19, 19, 21)'].includes(frame.bodyBackground)),
-    'Goalie must never paint a Parkie dark canvas during cold startup'
-  ).toEqual([]);
-  expect(paintedFrames[0].htmlTheme, 'the first body frame must already be light').toBe('light');
+    const expectedTheme = await themeOf(page, system);
+    const wrongTheme = expectedTheme === 'dark' ? 'light' : 'dark';
+    const frames = await page.evaluate(() => window.__guideThemeFrames || []);
+    const paintedFrames = frames.filter((frame) => frame.bodyExists);
+
+    expect(paintedFrames.length, `${system} first-paint trace must capture body frames`).toBeGreaterThan(0);
+    expect(
+      paintedFrames.filter((frame) => frame.htmlTheme === wrongTheme || frame.rootTheme === wrongTheme),
+      `${system} must never publish a ${wrongTheme} theme during cold startup`,
+    ).toEqual([]);
+    expect(paintedFrames[0].htmlTheme, `${system} first body frame must already be ${expectedTheme}`)
+      .toBe(expectedTheme);
+
+    if (expectedTheme === 'light') {
+      expect(
+        paintedFrames.filter((frame) => ['rgb(15, 15, 17)', 'rgb(19, 19, 21)'].includes(frame.bodyBackground)),
+        `${system} must never paint a dark canvas during cold startup`,
+      ).toEqual([]);
+    }
+  }
 });
 
 test('the guide remains bounded and operable at 390px and 320px', async ({ page }) => {
@@ -375,12 +412,12 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
     { width: 390, height: 844, system: 'parkie', pageId: 'overview' },
     { width: 390, height: 844, system: 'goalie', pageId: 'templates' },
     { width: 320, height: 760, system: 'parkie', pageId: 'colors' },
-    ...GOALIE_PAGES.map((pageId) => ({
+    ...SKELETON_SYSTEMS.flatMap((system) => SKELETON_PAGES.map((pageId) => ({
       width: 320,
       height: 760,
-      system: 'goalie',
+      system,
       pageId,
-    })),
+    }))),
   ];
 
   for (const current of cases) {
@@ -422,13 +459,13 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
   }
 });
 
-test('representative Parkie and every Goalie route have complete accessible structure', async ({ page }) => {
-  test.setTimeout(300_000);
+test('representative Parkie and every skeleton route have complete accessible structure', async ({ page }) => {
+  test.setTimeout(600_000);
   const routes = [
     ['parkie', 'overview'],
     ['parkie', 'colors'],
     ['parkie', 'button'],
-    ...GOALIE_PAGES.map((pageId) => ['goalie', pageId]),
+    ...SKELETON_SYSTEMS.flatMap((system) => SKELETON_PAGES.map((pageId) => [system, pageId])),
   ];
 
   for (const [system, pageId] of routes) {
@@ -461,7 +498,7 @@ test('the global chrome is one band and holds its height across widths', async (
   const WIDE = 64;
   const NARROW_MAX = 100;
 
-  for (const system of ['parkie', 'goalie']) {
+  for (const system of ALL_SYSTEMS) {
     for (const width of [1440, 1100, 901, 700, 640, 480, 390, 360, 320]) {
       await page.setViewportSize({ width, height: 820 });
       await page.goto(canonicalUrl(system, 'overview'));
@@ -492,7 +529,8 @@ test('the global chrome is one band and holds its height across widths', async (
 
       /* One band: the tabs are inside the top bar, not a second stacked nav. */
       expect(chrome.navInsideTopbar, `${label} product tabs must live in the top bar`).toBe(true);
-      expect(chrome.tabCount, `${label} both products must be reachable`).toBe(2);
+      expect(chrome.tabCount, `${label} every registered product must be reachable`)
+        .toBe(ALL_SYSTEMS.length);
 
       if (width >= 901) {
         expect(chrome.height, `${label} wide chrome height`).toBe(WIDE);
@@ -534,6 +572,9 @@ test('the page eyebrow locates the page in the IA rather than repeating the prod
     ['parkie', 'robotcard', '로봇 운영'],
     ['goalie', 'overview', '시작하기'],
     ['goalie', 'brand', '리소스'],
+    ['cpms', 'overview', '시작하기'],
+    ['cpms', 'templates', '패턴'],
+    ['cpms', 'brand', '리소스'],
   ];
 
   for (const [system, pageId, group] of cases) {
@@ -541,12 +582,49 @@ test('the page eyebrow locates the page in the IA rather than repeating the prod
     await expectSystemRoute(page, system, pageId);
     const eyebrow = page.locator('.guide-page-header__eyebrow');
     await expect(eyebrow, `${system}/${pageId} eyebrow must name its nav group`).toContainText(group);
+    const registry = await readRegistry(page);
     await expect(eyebrow, `${system}/${pageId} eyebrow must not repeat the product`)
-      .not.toContainText(system === 'goalie' ? 'Goalie UI' : 'Parkie UI');
+      .not.toContainText(registry[system].name);
   }
 
   /* Secondary sources keep their prefix: "which library am I reading" is a real
      distinction for the MS reference set. */
   await page.goto(canonicalUrl('parkie', 'ms-button'));
   await expect(page.locator('.guide-page-header__eyebrow')).toContainText('MS 참조');
+});
+
+/* The registry is the one place a product is declared. These assertions pin what
+   it must contain, so the registry-derived checks elsewhere cannot quietly pass
+   against a registry that lost a product or changed a fixed theme. */
+test('the product registry is the single source of truth for tabs, themes and routes', async ({ page }) => {
+  await page.goto(canonicalUrl('parkie', 'overview'));
+  await expectRuntimeReady(page);
+
+  const registry = await readRegistry(page);
+  expect(registry, 'the first-paint bootstrap must publish the registry').toBeTruthy();
+  expect(Object.keys(registry), 'registered products').toEqual(ALL_SYSTEMS);
+
+  /* Fixed themes are an architectural commitment, not a preference. */
+  expect(registry.parkie.theme).toBe('dark');
+  expect(registry.goalie.theme).toBe('light');
+  expect(registry.cpms.theme).toBe('light');
+
+  for (const [id, entry] of Object.entries(registry)) {
+    expect(entry.name, `${id} must have a display name`).toBeTruthy();
+    expect(entry.canvas, `${id} must declare a first-paint canvas`).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    expect(entry.tokens, `${id} must point at its token file`).toMatch(/^tokens\/.+\.css$/);
+    expect(typeof entry.skeleton, `${id} must state whether it ships authored pages`).toBe('boolean');
+  }
+
+  /* Tab order follows registry order, and each tab routes to its own product. */
+  const tabs = await page.locator('[data-system-nav] [data-system-id]').evaluateAll((nodes) => nodes.map((node) => ({
+    id: node.dataset.systemId,
+    name: node.textContent.trim(),
+    href: node.getAttribute('href'),
+  })));
+  expect(tabs.map((tab) => tab.id), 'tab order follows registry order').toEqual(ALL_SYSTEMS);
+  for (const tab of tabs) {
+    expect(tab.name, `${tab.id} tab label`).toBe(registry[tab.id].name);
+    expect(tab.href, `${tab.id} tab target`).toBe(`#/${tab.id}/overview`);
+  }
 });

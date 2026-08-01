@@ -399,6 +399,13 @@
   --parkie-ring-inset:
     inset 0 0 0 2px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
+
+  /* Product-neutral aliases consumed by the shared document shell. The shell
+     cannot read the JS registry, so each product publishes its canvas, ink and
+     type under one agreed name and a single rule paints every product root. */
+  --product-bg: var(--parkie-bg);
+  --product-text: var(--parkie-text);
+  --product-font: var(--parkie-font-sans);
 }
 
 /* =====================================================================
@@ -485,6 +492,13 @@
   --parkie-ring-inset:
     inset 0 0 0 2px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
+
+  /* Product-neutral aliases consumed by the shared document shell. The shell
+     cannot read the JS registry, so each product publishes its canvas, ink and
+     type under one agreed name and a single rule paints every product root. */
+  --product-bg: var(--parkie-bg);
+  --product-text: var(--parkie-text);
+  --product-font: var(--parkie-font-sans);
 }
 
 /* =====================================================================

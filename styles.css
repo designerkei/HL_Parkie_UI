@@ -1,6 +1,6 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css?v=0.6";
+@import "./tokens/parkie-tokens.css?v=0.7";
 @import "./components/controls.css?v=0.4";
 @import "./components/robot-status.css?v=0.3";
 @import "./components/operations.css?v=0.4";
@@ -8,8 +8,9 @@
 @import "./components/media-emergency.css?v=0.1";
 @import "./components/system-summary.css?v=0.4";
 @import "./components/documentation.css?v=0.2";
-@import "./tokens/goalie-tokens.css?v=0.2";
+@import "./tokens/goalie-tokens.css?v=0.3";
 @import "./components/goalie.css?v=0.2";
+@import "./tokens/cpms-tokens.css?v=0.2";
 @import "./components/product-skeleton.css?v=0.1";
 
 html,
@@ -388,17 +389,19 @@ img {
   padding: var(--guide-space-9) var(--guide-space-9) var(--guide-space-9);
 }
 
-[data-product-root][data-system="parkie"][data-color-mode="dark"] {
-  background: var(--parkie-bg);
-  color: var(--parkie-text);
-  font-family: var(--parkie-font-sans);
+/* One rule for every product. Each token file publishes --product-bg/-text/-font
+   from inside its own scope, so the shell paints the active product without
+   naming it — the CSS counterpart of the JS registry. A product added without a
+   token file paints nothing, which is the intended visible failure. */
+[data-product-root] {
+  background: var(--product-bg);
+  color: var(--product-text);
+  font-family: var(--product-font);
 }
 
-[data-product-root][data-system="goalie"][data-color-mode="light"] {
+/* Skeleton products read at a narrower measure than Parkie's specimen pages. */
+.guide-content-frame--skeleton {
   max-width: 1240px;
-  background: var(--goalie-bg);
-  color: var(--goalie-text);
-  font-family: var(--goalie-font-sans);
 }
 
 .guide-page-header {
