@@ -3261,20 +3261,21 @@ class Component extends DCLogic {
       statusRow('비상정지', 'Emergency stop', 'Parkie Custom', 'emergency', emphasisCells(parkieData('EmergencyStop'))),
       statusRow('완료', 'Complete', 'MS Adopted', 'success', emphasisCells(msData('CheckmarkCircleSize24ThemeRegular'))),
     ];
-    /* Battery and connection are read, not pressed. Their axis is level, so
-       each cell carries its own glyph and tone. */
+    /* Battery and connection are read, not pressed. Their axis is level, and
+       each cell consumes the product's own status token — so a normal level
+       stays neutral, per the colour policy in DESIGN_SYSTEM_AUDIT.md. */
     const robotStatusIcons = [
       statusRow('배터리', 'Battery', 'Parkie Original', 'neutral', [
-        { name: '정상 26% 이상', emphasis: 'is-outline', data: parkieData('BatteryFull'), tone: 'success' },
-        { name: '부족 25–11%', emphasis: 'is-outline', data: parkieData('BatteryMedium'), tone: 'warning' },
-        { name: '위험 10% 이하', emphasis: 'is-solid', data: parkieData('BatteryCritical'), tone: 'emergency' },
-        { name: '충전 중', emphasis: 'is-outline', data: parkieData('BatteryChargingHigh'), tone: 'info' },
+        { name: '정상 26% 이상', emphasis: 'is-outline', data: parkieData('BatteryFull'), tone: 'battery-full' },
+        { name: '부족 25–11%', emphasis: 'is-outline', data: parkieData('BatteryMedium'), tone: 'battery-low' },
+        { name: '위험 10% 이하', emphasis: 'is-solid', data: parkieData('BatteryCritical'), tone: 'battery-critical' },
+        { name: '충전 중', emphasis: 'is-outline', data: parkieData('BatteryChargingHigh'), tone: 'charging' },
       ]),
       statusRow('통신', 'Connection', 'Parkie Original', 'neutral', [
-        { name: '양호', emphasis: 'is-outline', data: parkieData('ConnectionGood'), tone: 'success' },
-        { name: '약함', emphasis: 'is-outline', data: parkieData('ConnectionWeak'), tone: 'warning' },
-        { name: '끊김', emphasis: 'is-solid', data: parkieData('ConnectionLost'), tone: 'emergency' },
-        { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'info' },
+        { name: '양호', emphasis: 'is-outline', data: parkieData('ConnectionGood'), tone: 'link-good' },
+        { name: '약함', emphasis: 'is-outline', data: parkieData('ConnectionWeak'), tone: 'link-weak' },
+        { name: '끊김', emphasis: 'is-solid', data: parkieData('ConnectionLost'), tone: 'link-lost' },
+        { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'link-reconnect' },
       ]),
     ];
     const parkieIconGroups = [

@@ -242,6 +242,19 @@
 .pk-icon-row.tone-emergency, .pk-icon-state.tone-emergency { --sem: var(--parkie-emergency); --sem-subtle: var(--parkie-emergency-subtle);         --sem-on: var(--parkie-operation-on-solid); }
 .pk-icon-row.tone-neutral,   .pk-icon-state.tone-neutral   { --sem: var(--parkie-text-secondary); --sem-subtle: var(--parkie-surface-elevation-12); --sem-on: var(--parkie-operation-on-info); }
 
+/* Domain tones consume the product's own status tokens so this page reflects
+   the shipped colour policy rather than restating it: a normal level is
+   neutral (quiet when nothing is wrong), real charging is green, low is
+   yellow, fault is red. Changing the token changes the page. */
+.pk-icon-state.tone-battery-full     { --sem: var(--parkie-icon-battery-full);     --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-battery-low      { --sem: var(--parkie-status-warning);        --sem-subtle: var(--parkie-operation-warning-subtle);  --sem-on: var(--parkie-operation-on-warning); }
+.pk-icon-state.tone-battery-critical { --sem: var(--parkie-icon-battery-critical); --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-charging         { --sem: var(--parkie-icon-charging);         --sem-subtle: var(--parkie-operation-success-subtle);  --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-link-good        { --sem: var(--parkie-connection-good);       --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-weak        { --sem: var(--parkie-connection-weak);       --sem-subtle: var(--parkie-operation-warning-subtle);  --sem-on: var(--parkie-operation-on-warning); }
+.pk-icon-state.tone-link-lost        { --sem: var(--parkie-status-error);          --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-link-reconnect   { --sem: var(--parkie-status-info);           --sem-subtle: var(--parkie-operation-info-subtle);     --sem-on: var(--parkie-operation-on-info); }
+
 .pk-icon-state.is-outline { color: var(--sem); }
 
 .pk-icon-state.is-subtle {
