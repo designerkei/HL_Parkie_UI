@@ -81,7 +81,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1.4">
+<link rel="stylesheet" href="styles.css?v=1.6">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -2941,6 +2941,21 @@
           </dc-import>
         </sc-if>
 
+        <!-- Goalie authored pages are built behind the product readiness flag.
+             They remain unmounted while registry.skeleton is true, so partial
+             work cannot leak into the production guide. -->
+        <sc-if value="{{ isAuthoredGoalieSystem }}" hint-placeholder-val="{{ false }}">
+          <dc-import
+            name="GoaliePages"
+            active-page="{{ activePage }}"
+            lang="{{ lang }}"
+            on-navigate="{{ onProductNavigate }}"
+            get-route-href="{{ getProductRouteHref }}"
+            hint-size="100%,720px"
+            style="width:100%;">
+          </dc-import>
+        </sc-if>
+
         <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
           <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
             <div class="pk-doc-contract__head">
@@ -3662,7 +3677,9 @@ class Component extends DCLogic {
        flags stay gated on the product id. Everything else reads the registry. */
     const isParkieSystem = activeSystem === 'parkie';
     const isCpmsSystem = activeSystem === 'cpms';
+    const isGoalieSystem = activeSystem === 'goalie';
     const usesSharedSkeleton = Boolean(systemEntry.skeleton);
+    const isAuthoredGoalieSystem = isGoalieSystem && !usesSharedSkeleton;
     /* "Parkie UI" -> "Parkie". Used where the label already sits next to the
        word "design system" and the UI suffix would read twice. */
     const systemShortName = systemEntry.name.replace(/\s*UI$/, '');
@@ -4757,6 +4774,8 @@ class Component extends DCLogic {
       colorMode: theme,
       isParkieSystem,
       isCpmsSystem,
+      isGoalieSystem,
+      isAuthoredGoalieSystem,
       usesSharedSkeleton,
       systemItems,
       guideTitle: 'UX/UI Design Guide System',
@@ -4798,6 +4817,8 @@ class Component extends DCLogic {
          320 + workspace, neither of which fits the 960px reading column. */
       contentFrameClass: isCpmsSystem
         ? 'guide-content-frame cpms-content-frame'
+        : isAuthoredGoalieSystem
+        ? 'guide-content-frame goalie-content-frame'
         : usesSharedSkeleton
         ? 'guide-content-frame guide-content-frame--skeleton'
         : ['media', 'topbar', 'appshell'].includes(active)

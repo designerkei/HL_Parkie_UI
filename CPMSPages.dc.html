@@ -175,19 +175,50 @@
 
     <!-- TYPOGRAPHY =================================================== -->
     <sc-if value="{{ isTypography }}" hint-placeholder-val="false">
-      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-type-heading">
+      <!-- The typeface itself came first in every reference guide we looked at:
+           name it, show it, say why. The page previously jumped straight to a
+           size table, so a reader could finish it without learning which font
+           the product uses. -->
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-face-heading">
         <header class="cpms-section__head">
-          <div><span>01 · PRODUCT SCALE</span><h2 id="cpms-type-heading">{{ typeTitle }}</h2></div>
+          <div><span>01 · TYPEFACE</span><h2 id="cpms-face-heading">{{ faceTitle }}</h2></div>
+          <p>{{ faceBody }}</p>
+        </header>
+        <div class="cpms-face">
+          <div class="cpms-face__display" aria-hidden="true">{{ faceName }}</div>
+          <div class="cpms-face__card">
+            <div class="cpms-face__weights">
+              <sc-for list="{{ faceWeights }}" as="w" hint-placeholder-count="4">
+                <span style="{{ w.style }}">{{ w.label }}</span>
+              </sc-for>
+            </div>
+            <div class="cpms-face__specimen" aria-label="{{ faceSpecimenLabel }}">Aa1</div>
+            <div class="cpms-face__glyphs" data-glyph-specimen>
+              <span>{{ faceLatin }}</span>
+              <span>{{ faceHangul }}</span>
+              <span>{{ faceDigits }}</span>
+            </div>
+          </div>
+          <dl class="cpms-face__stacks">
+            <sc-for list="{{ faceStacks }}" as="stack" hint-placeholder-count="2">
+              <div><dt>{{ stack.role }}</dt><dd><code data-font-token>{{ stack.token }}</code><span data-font-stack>{{ stack.value }}</span></dd></div>
+            </sc-for>
+          </dl>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-type-heading">
+        <header class="cpms-section__head">
+          <div><span>02 · PRODUCT SCALE</span><h2 id="cpms-type-heading">{{ typeTitle }}</h2></div>
           <p>{{ typeBody }}</p>
         </header>
         <div class="cpms-type-list">
           <sc-for list="{{ typeRows }}" as="type" hint-placeholder-count="7">
-            <article><code>{{ type.token }}</code><div class="cpms-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span>{{ type.meta }}</span><p>{{ type.use }}</p></article>
+            <article><code>{{ type.token }}</code><div class="cpms-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span data-type-meta>{{ type.meta }}</span><p>{{ type.use }}</p></article>
           </sc-for>
         </div>
       </section>
       <section class="cpms-section" aria-labelledby="cpms-reading-heading">
-        <header class="cpms-section__head"><div><span>02 · READING</span><h2 id="cpms-reading-heading">{{ readingTitle }}</h2></div><p>{{ readingBody }}</p></header>
+        <header class="cpms-section__head"><div><span>03 · READING</span><h2 id="cpms-reading-heading">{{ readingTitle }}</h2></div><p>{{ readingBody }}</p></header>
         <div class="cpms-rule-grid">
           <sc-for list="{{ readingRules }}" as="rule" hint-placeholder-count="4"><article><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.example }}</code></article></sc-for>
         </div>
@@ -356,9 +387,21 @@ class Component extends DCLogic {
     const semantic = (nameKo, nameEn, token, ruleKo, ruleEn) => ({
       name: L(nameKo, nameEn), token, rule: L(ruleKo, ruleEn), style: { background: `var(${token})` },
     });
-    const typeRow = (token, size, weight, sampleKo, sampleEn, useKo, useEn) => ({
-      token, sample: L(sampleKo, sampleEn), meta: `${size}px / ${weight}`,
-      use: L(useKo, useEn), style: { fontSize: `${size}px`, fontWeight: weight, lineHeight: 1.35 },
+    /* Every reference guide publishes size, weight, line height and letter
+       spacing together, because a size alone does not tell you how the text
+       will sit. The line height is bound to a real leading token: this used to
+       render every sample at 1.35, a value the token set does not contain. */
+    const typeRow = (token, size, weight, leading, tracking, sampleKo, sampleEn, useKo, useEn) => ({
+      token,
+      sample: L(sampleKo, sampleEn),
+      meta: `${size}px · ${weight} · ${leading} · ${tracking === 0 ? '0' : tracking + 'em'}`,
+      use: L(useKo, useEn),
+      style: {
+        fontSize: `${size}px`,
+        fontWeight: weight,
+        lineHeight: leading,
+        letterSpacing: tracking === 0 ? 'normal' : `${tracking}em`,
+      },
     });
     const rule = (titleKo, titleEn, bodyKo, bodyEn, example) => ({
       title: L(titleKo, titleEn), body: L(bodyKo, bodyEn), example,
@@ -436,13 +479,30 @@ class Component extends DCLogic {
     ];
 
     const typeRows = [
-      typeRow('--cpms-font-2xl', 28, 600, '프로젝트 현황', 'Project status', '페이지 제목. 화면당 1개.', 'Page title, once per screen.'),
-      typeRow('--cpms-font-xl', 22, 600, '작업 일정', 'Work schedule', '주요 섹션 제목.', 'Primary section heading.'),
-      typeRow('--cpms-font-lg', 18, 600, '주간 진행률', 'Weekly progress', '카드·패널 제목.', 'Card and panel heading.'),
-      typeRow('--cpms-font-md', 16, 500, '현장 운영 요약', 'Site operation summary', '강조 본문·대화상자 설명.', 'Emphasized body and dialog description.'),
-      typeRow('--cpms-font-base', 14, 400, '예정 일정과 실적을 확인하세요.', 'Review planned and actual dates.', '기본 본문·표·입력.', 'Default body, table and input.'),
-      typeRow('--cpms-font-sm', 13, 500, '저장됨 · 2분 전', 'Saved · 2 min ago', '보조 정보·상태.', 'Supporting metadata and state.'),
-      typeRow('--cpms-font-xs', 12, 500, 'RBT-2026-014 · 72%', 'RBT-2026-014 · 72%', '코드·칩·밀도 높은 메타.', 'Code, chip and dense metadata.'),
+      typeRow('--cpms-font-2xl', 28, 600, 1.25, -0.02, '프로젝트 현황', 'Project status', '페이지 제목. 화면당 1개.', 'Page title, once per screen.'),
+      typeRow('--cpms-font-xl', 22, 600, 1.25, -0.02, '작업 일정', 'Work schedule', '주요 섹션 제목.', 'Primary section heading.'),
+      typeRow('--cpms-font-lg', 18, 600, 1.4, 0, '주간 진행률', 'Weekly progress', '카드·패널 제목.', 'Card and panel heading.'),
+      typeRow('--cpms-font-md', 16, 500, 1.4, 0, '현장 운영 요약', 'Site operation summary', '강조 본문·대화상자 설명.', 'Emphasized body and dialog description.'),
+      typeRow('--cpms-font-base', 14, 400, 1.55, 0, '예정 일정과 실적을 확인하세요.', 'Review planned and actual dates.', '기본 본문·표·입력.', 'Default body, table and input.'),
+      typeRow('--cpms-font-sm', 13, 500, 1.55, 0, '저장됨 · 2분 전', 'Saved · 2 min ago', '보조 정보·상태.', 'Supporting metadata and state.'),
+      typeRow('--cpms-font-xs', 12, 500, 1.4, 0, 'RBT-2026-014 · 72%', 'RBT-2026-014 · 72%', '코드·칩·밀도 높은 메타.', 'Code, chip and dense metadata.'),
+    ];
+
+    /* The stack strings are transcribed from tokens/cpms-tokens.css. A test
+       asserts they still match, because this component has no mount hook to
+       read them off the live variables the way the Parkie colour cards do. */
+    const faceWeights = [
+      { label: 'Regular 400', weight: 400 },
+      { label: 'Medium 500', weight: 500 },
+      { label: 'SemiBold 600', weight: 600 },
+      { label: 'Bold 700', weight: 700 },
+    ].map((w) => ({ label: w.label, style: { fontWeight: w.weight } }));
+
+    const faceStacks = [
+      { role: L('본문·UI', 'Body and UI'), token: '--cpms-font-sans',
+        value: '"Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif' },
+      { role: L('코드·수치', 'Code and figures'), token: '--cpms-font-mono',
+        value: '"Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace' },
     ];
 
     const readingRules = [
@@ -607,6 +667,18 @@ class Component extends DCLogic {
       semanticColorsTitle: L('색상이 아닌 의미를 선택한다', 'Choose meaning, not color'), semanticColorsBody: L('컴포넌트는 source 팔레트가 아닌 의미 토큰만 사용합니다.', 'Components consume semantic tokens, never source palette values.'), semanticColors,
       avoidLabel: L('현재 문제', 'CURRENT RISK'), useLabel: L('권장', 'RECOMMENDED'), skyActionTitle: L('Sky + 흰색 액션', 'Sky + white action'), skySampleLabel: L('Sky Blue 배경 위 흰 텍스트는 대비가 부족한 현재 위험 조합', 'Current-risk combination: white label on Sky Blue does not clear contrast'), skyActionBody: L('Sky Blue는 시각 액센트이지만 흰 텍스트 액션의 기본이 아닙니다.', 'Sky Blue is a visual accent, not the default for white-label actions.'), navyActionTitle: L('Navy + 흰색 액션', 'Navy + white action'), navyActionBody: L('확정·저장·생성은 Navy 표면과 흰 텍스트를 사용합니다.', 'Confirm, save and create use Navy surfaces with white labels.'),
 
+      faceTitle: L('Pretendard', 'Pretendard'),
+      faceName: 'Pretendard',
+      faceBody: L(
+        'CPMS는 한글과 영문, 숫자가 한 줄에 섞이는 화면입니다. Pretendard는 두 문자 체계의 글자 높이와 굵기가 함께 움직여 한 문장 안에서 무게가 튀지 않고, 400부터 700까지 네 단계가 모두 있어 밀도 높은 표에서도 위계를 만들 수 있습니다. 같은 이유로 Parkie와 Goalie도 같은 서체를 씁니다.',
+        'CPMS screens mix Hangul, Latin and figures in a single line. Pretendard keeps the two writing systems on matching heights and weights, so a sentence does not shift in colour mid-way, and it ships four weights from 400 to 700 — enough hierarchy for dense tables. Parkie and Goalie use the same face for the same reason.',
+      ),
+      faceWeights,
+      faceStacks,
+      faceSpecimenLabel: L('Pretendard 표본', 'Pretendard specimen'),
+      faceLatin: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz',
+      faceHangul: '가나다라마바사아자차카타파하 프로젝트 일정 진행률',
+      faceDigits: '0123456789 · ₩ % + − / :',
       typeTitle: L('고밀도 제품 타입 스케일', 'Type scale for a dense product'), typeBody: L('기존 기초 자료의 대형 마케팅 타입과 실제 업무 화면의 다양한 px 값을 12–28px 제품 스케일로 정규화합니다.', 'Normalize large marketing type and scattered application px values into a 12–28px product scale.'), typeRows,
       readingTitle: L('한·영·숫자 읽기 규칙', 'Korean, English and numeric reading rules'), readingBody: L('타이포그래피는 크기만이 아니라 정보를 비교하는 방식입니다.', 'Typography defines how information is compared, not only its size.'), readingRules,
 

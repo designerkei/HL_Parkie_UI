@@ -1,7 +1,6 @@
 /* =====================================================================
-   Goalie UI — Design Tokens (SWAP LAYER), fixed light theme
-   브랜드를 교체하려면 주로 이 파일만 수정하면 전체 시스템이 리테마됩니다.
-   To rebrand, edit this file — every component reads var(--goalie-*).
+   Goalie UI — evidence-backed tokens, fixed light theme
+   Figma source: RMS_Final / Color 230:2058 / Type 2051:3017.
 
    Contract
    - Tokens exist only inside the explicit Goalie product scope.
@@ -9,14 +8,13 @@
      inheriting another product's theme.
    - Components consume semantic/component aliases, not palette values.
 
-   Swap points — the three places a handover lands
-   1. Brand ramp   --goalie-color-brand-50 … 950   (PLACEHOLDER, see below)
-   2. Typography   --goalie-font-sans / --goalie-font-mono
-   3. Logo & mark  .gl-product-mark / .gl-brand-word in components/goalie.css
+   Three layers are deliberate:
+   1. --goalie-ref-*       exact Figma evidence, including source conflicts.
+   2. --goalie-*           semantic meaning used across the product.
+   3. --goalie-<part>-*    component decisions and accessible foregrounds.
 
-   Delivered values must clear the contrast gate documented on the
-   `brand` page before they ship: 4.5:1 body text, 3:1 non-text, and dark
-   ink rather than white on any light brand fill.
+   Bright cyan with white copy fails text contrast. Production components use
+   dark ink on cyan while the reference values remain available for auditing.
    ===================================================================== */
 
 [data-system="goalie"][data-color-mode="light"] {
@@ -26,18 +24,34 @@
   --goalie-font-sans: "Pretendard", "Noto Sans KR", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --goalie-font-mono: "Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
 
-  --goalie-font-xs: 12px;
-  --goalie-font-sm: 13px;
-  --goalie-font-base: 14px;
-  --goalie-font-md: 16px;
-  --goalie-font-lg: 18px;
-  --goalie-font-xl: 22px;
-  --goalie-font-2xl: 28px;
-  --goalie-font-3xl: 36px;
+  --goalie-font-caption: 13px;
+  --goalie-font-body-s: 15px;
+  --goalie-font-body-m: 16px;
+  --goalie-font-body-l: 18px;
+  --goalie-font-head-xs: 16px;
+  --goalie-font-head-s: 18px;
+  --goalie-font-head-m: 24px;
+  --goalie-font-head-l: 36px;
+  --goalie-font-button-s: 17px;
+  --goalie-font-button-m: 18px;
+  --goalie-font-button-l: 20px;
+  --goalie-font-label: 18px;
 
-  --goalie-leading-tight: 1.2;
+  /* Compatibility aliases for the shared guide shell. */
+  --goalie-font-xs: var(--goalie-font-caption);
+  --goalie-font-sm: var(--goalie-font-caption);
+  --goalie-font-base: var(--goalie-font-body-s);
+  --goalie-font-md: var(--goalie-font-body-m);
+  --goalie-font-lg: var(--goalie-font-body-l);
+  --goalie-font-xl: var(--goalie-font-head-m);
+  --goalie-font-2xl: 28px;
+  --goalie-font-3xl: var(--goalie-font-head-l);
+
+  --goalie-leading-120: 1.2;
+  --goalie-leading-140: 1.4;
+  --goalie-leading-tight: var(--goalie-leading-120);
   --goalie-leading-snug: 1.35;
-  --goalie-leading-normal: 1.5;
+  --goalie-leading-normal: var(--goalie-leading-140);
   --goalie-leading-relaxed: 1.65;
 
   --goalie-weight-regular: 400;
@@ -47,6 +61,21 @@
 
   --goalie-tracking-tight: -0.02em;
   --goalie-tracking-wide: 0.055em;
+
+  --goalie-type-head-l: var(--goalie-weight-bold) var(--goalie-font-head-l) / var(--goalie-leading-140) var(--goalie-font-sans);
+  --goalie-type-head-m: var(--goalie-weight-medium) var(--goalie-font-head-m) / var(--goalie-leading-140) var(--goalie-font-sans);
+  /* Figma text says 140%, rendered specimen is 120%; production follows the
+     rendered node and records the discrepancy in GOALIE_EVIDENCE.md. */
+  --goalie-type-head-s: var(--goalie-weight-semibold) var(--goalie-font-head-s) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-head-xs: var(--goalie-weight-medium) var(--goalie-font-head-xs) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-body-l: var(--goalie-weight-regular) var(--goalie-font-body-l) / var(--goalie-leading-140) var(--goalie-font-sans);
+  --goalie-type-body-m: var(--goalie-weight-regular) var(--goalie-font-body-m) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-body-s: var(--goalie-weight-regular) var(--goalie-font-body-s) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-button-l: var(--goalie-weight-semibold) var(--goalie-font-button-l) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-button-m: var(--goalie-weight-semibold) var(--goalie-font-button-m) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-button-s: var(--goalie-weight-medium) var(--goalie-font-button-s) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-label: var(--goalie-weight-regular) var(--goalie-font-label) / var(--goalie-leading-120) var(--goalie-font-sans);
+  --goalie-type-caption: var(--goalie-weight-regular) var(--goalie-font-caption) / var(--goalie-leading-120) var(--goalie-font-sans);
 
   /* Spacing — 4px base */
   --goalie-space-1: 4px;
@@ -71,102 +100,140 @@
   --goalie-radius-pill: 999px;
   --goalie-radius-round: 50%;
 
-  /* Brand primitives — PLACEHOLDER, awaiting handover.
-     A generic blue ramp stands in so the semantic aliases below resolve and
-     the documentation shell renders. It is not Goalie's brand colour: these
-     eleven values are the first thing a colour handover replaces. Nothing
-     outside this block hardcodes a brand value, so replacing the ramp
-     rethemes the product. */
-  --goalie-color-brand-50: #EFF5FF;
-  --goalie-color-brand-100: #DCE9FF;
-  --goalie-color-brand-200: #BED3FF;
-  --goalie-color-brand-300: #91B4FF;
-  --goalie-color-brand-400: #5E8EF2;
-  --goalie-color-brand-500: #3568E8;
-  --goalie-color-brand-600: #2457D6;
-  --goalie-color-brand-700: #1D46B8;
-  --goalie-color-brand-800: #1D3C91;
-  --goalie-color-brand-900: #1B3473;
-  --goalie-color-brand-950: #142048;
+  /* Exact Figma references. These are evidence, not direct component APIs. */
+  --goalie-ref-cyan-300: #31D3FF;
+  --goalie-ref-cyan-400: #00C5FB;
+  --goalie-ref-cyan-500: #00B4ED;
+  --goalie-ref-cyan-600: #0098C8;
+  --goalie-ref-cyan-disabled: #B3EEFE;
+  /* Button component actuals (351:2306). The component sheet and the
+     general palette disagree, so these stay explicit instead of silently
+     changing the product-wide brand semantic. */
+  --goalie-ref-button-cyan-enabled: #00C5FB;
+  --goalie-ref-button-cyan-hover: #3CD5FF;
+  --goalie-ref-button-cyan-pressed: #0CA8DA;
+  --goalie-ref-button-cyan-hover-surface: #E0F9FF;
+  --goalie-ref-button-cyan-pressed-surface: #CCEAF4;
+  --goalie-ref-red-400: #FF6358;
+  --goalie-ref-red-500: #FF3E31;
+  --goalie-ref-red-600: #E03327;
+  --goalie-ref-button-red-hover-surface: #FFECEB;
+  --goalie-ref-button-red-pressed-surface: #F9D6D4;
+  --goalie-ref-green-500: #4FDC5D;
+  --goalie-ref-yellow-500: #FEDB25;
+
+  /* Compatibility brand ramp. Only observed values are populated; aliases do
+     not invent a decorative 50–950 scale that the source does not contain. */
+  --goalie-color-brand-50: #EEF7FA;
+  --goalie-color-brand-100: var(--goalie-ref-cyan-disabled);
+  --goalie-color-brand-200: var(--goalie-ref-cyan-300);
+  --goalie-color-brand-300: var(--goalie-ref-cyan-300);
+  --goalie-color-brand-400: var(--goalie-ref-cyan-400);
+  --goalie-color-brand-500: var(--goalie-ref-cyan-500);
+  --goalie-color-brand-600: var(--goalie-ref-cyan-600);
+  --goalie-color-brand-700: #007DA6;
+  --goalie-color-brand-800: #006080;
+  --goalie-color-brand-900: #00445B;
+  --goalie-color-brand-950: #002E3E;
 
   /* Neutral primitives */
   --goalie-color-neutral-0: #FFFFFF;
-  --goalie-color-neutral-25: #FBFCFE;
-  --goalie-color-neutral-50: #F7F9FC;
-  --goalie-color-neutral-100: #F1F4F8;
-  --goalie-color-neutral-200: #E3E9F0;
-  --goalie-color-neutral-300: #CBD5E1;
-  --goalie-color-neutral-400: #94A3B8;
-  --goalie-color-neutral-500: #64748B;
-  --goalie-color-neutral-600: #475569;
-  --goalie-color-neutral-700: #334155;
-  --goalie-color-neutral-800: #1E293B;
-  --goalie-color-neutral-900: #111827;
-  --goalie-color-neutral-950: #0B1220;
+  --goalie-color-neutral-25: #FFFFFF;
+  --goalie-color-neutral-50: #F2F5F9;
+  --goalie-color-neutral-100: #EFEFF0;
+  --goalie-color-neutral-150: #E9EBEC;
+  --goalie-color-neutral-200: #E5E8EC;
+  --goalie-color-neutral-250: #D8DBDF;
+  --goalie-color-neutral-300: #CBCED2;
+  --goalie-color-neutral-400: #B7BDC3;
+  --goalie-color-neutral-500: #9BA4AD;
+  --goalie-color-neutral-600: #84909B;
+  --goalie-color-neutral-650: #707D89;
+  --goalie-color-neutral-700: #626D77;
+  --goalie-color-neutral-750: #535C66;
+  --goalie-color-neutral-800: #3C444E;
+  --goalie-color-neutral-850: #282E35;
+  --goalie-color-neutral-900: #1C2126;
+  --goalie-color-neutral-950: #000000;
 
-  /* Semantic primitives */
-  --goalie-color-green-50: #ECF8F1;
-  --goalie-color-green-600: #157347;
-  --goalie-color-green-700: #0F5F39;
-  --goalie-color-amber-50: #FFF8E1;
-  --goalie-color-amber-700: #8A5B00;
-  --goalie-color-red-50: #FFF0EE;
-  --goalie-color-red-600: #B42318;
-  --goalie-color-red-700: #912018;
-  --goalie-color-blue-50: #EEF6FF;
-  --goalie-color-blue-700: #175CD3;
+  /* Status references and their subtle surfaces. */
+  --goalie-color-green-50: #EFFBF0;
+  --goalie-color-green-600: var(--goalie-ref-green-500);
+  --goalie-color-green-700: #198C27;
+  --goalie-color-amber-50: #FFFBE8;
+  --goalie-color-amber-700: #7A6200;
+  --goalie-color-red-50: #FFF0EF;
+  --goalie-color-red-600: var(--goalie-ref-red-500);
+  --goalie-color-red-700: var(--goalie-ref-red-600);
+  --goalie-color-blue-50: #EEF7FA;
+  --goalie-color-blue-700: var(--goalie-ref-cyan-600);
 
   /* Semantic surface and content aliases */
   --goalie-bg: var(--goalie-color-neutral-50);
   --goalie-surface: var(--goalie-color-neutral-0);
-  --goalie-surface-subtle: var(--goalie-color-neutral-25);
+  /* Figma fill is #EEF7FA while its visible text label says #E7F3F6. The
+     actual fill wins until the source is corrected. */
+  --goalie-surface-subtle: #EEF7FA;
   --goalie-surface-muted: var(--goalie-color-neutral-100);
   --goalie-surface-pressed: var(--goalie-color-neutral-200);
 
-  --goalie-border: #D8E0EA;
-  --goalie-border-subtle: #E8EDF3;
-  --goalie-border-strong: #AAB7C7;
+  --goalie-border: var(--goalie-color-neutral-250);
+  --goalie-border-subtle: var(--goalie-color-neutral-100);
+  --goalie-border-strong: var(--goalie-color-neutral-500);
 
   --goalie-text: var(--goalie-color-neutral-900);
-  --goalie-text-secondary: var(--goalie-color-neutral-600);
-  /* Explicitly darker than neutral-500 so tertiary copy remains >= 4.5:1
-     on both white and the muted documentation surface. */
-  --goalie-text-tertiary: #5B6B80;
+  --goalie-text-secondary: var(--goalie-color-neutral-700);
+  --goalie-text-tertiary: var(--goalie-color-neutral-650);
   --goalie-text-disabled: var(--goalie-color-neutral-400);
   --goalie-text-inverse: var(--goalie-color-neutral-0);
 
   /* Brand and interaction aliases */
-  --goalie-brand-primary: var(--goalie-color-brand-600);
-  --goalie-brand-primary-hover: var(--goalie-color-brand-700);
-  --goalie-brand-primary-pressed: var(--goalie-color-brand-800);
-  --goalie-brand-on: var(--goalie-color-neutral-0);
-  --goalie-brand-text: var(--goalie-color-brand-700);
+  --goalie-brand-primary: var(--goalie-ref-cyan-500);
+  --goalie-brand-primary-hover: var(--goalie-ref-cyan-300);
+  --goalie-brand-primary-pressed: var(--goalie-ref-cyan-600);
+  /* Accessible production ink: white on the three bright cyan references is
+     only 1.77–2.40:1. */
+  --goalie-brand-on: var(--goalie-color-neutral-900);
+  --goalie-brand-text: var(--goalie-ref-cyan-600);
   --goalie-brand-subtle: var(--goalie-color-brand-50);
   --goalie-brand-subtle-hover: var(--goalie-color-brand-100);
-  --goalie-brand-border: var(--goalie-color-brand-200);
+  --goalie-brand-border: var(--goalie-ref-cyan-500);
 
   --goalie-hover-surface: rgba(17, 24, 39, 0.045);
   --goalie-pressed-surface: rgba(17, 24, 39, 0.085);
-  --goalie-selected-surface: var(--goalie-color-brand-50);
+  --goalie-selected-surface: var(--goalie-surface-subtle);
 
   /* Icon states */
-  --goalie-icon-rest: var(--goalie-color-neutral-600);
-  --goalie-icon-hover: var(--goalie-color-neutral-900);
-  --goalie-icon-pressed: var(--goalie-color-neutral-900);
-  --goalie-icon-selected: var(--goalie-color-brand-700);
+  --goalie-icon-rest: var(--goalie-color-neutral-700);
+  --goalie-icon-hover: var(--goalie-ref-cyan-300);
+  --goalie-icon-pressed: var(--goalie-ref-cyan-500);
+  --goalie-icon-selected: var(--goalie-ref-cyan-500);
   --goalie-icon-disabled: var(--goalie-color-neutral-400);
 
   /* Feedback */
   --goalie-success: var(--goalie-color-green-600);
   --goalie-success-hover: var(--goalie-color-green-700);
+  --goalie-success-on: var(--goalie-color-neutral-900);
   --goalie-success-subtle: var(--goalie-color-green-50);
-  --goalie-warning: var(--goalie-color-amber-700);
+  --goalie-warning: var(--goalie-ref-yellow-500);
+  --goalie-warning-on: var(--goalie-color-neutral-900);
   --goalie-warning-subtle: var(--goalie-color-amber-50);
   --goalie-danger: var(--goalie-color-red-600);
   --goalie-danger-hover: var(--goalie-color-red-700);
+  --goalie-danger-on: var(--goalie-color-neutral-900);
   --goalie-danger-subtle: var(--goalie-color-red-50);
-  --goalie-info: var(--goalie-color-blue-700);
+  --goalie-info: var(--goalie-ref-cyan-500);
+  --goalie-info-on: var(--goalie-color-neutral-900);
   --goalie-info-subtle: var(--goalie-color-blue-50);
+
+  /* Domain semantics: independent state axes, never one giant status enum. */
+  --goalie-operation-active: var(--goalie-ref-cyan-500);
+  --goalie-operation-paused: var(--goalie-color-neutral-700);
+  --goalie-safety-emergency: var(--goalie-ref-red-500);
+  --goalie-audio-speaking: var(--goalie-ref-cyan-500);
+  --goalie-battery-warning: var(--goalie-ref-yellow-500);
+  --goalie-battery-critical: var(--goalie-ref-red-500);
+  --goalie-battery-charging: var(--goalie-ref-green-500);
 
   /* Controls */
   --goalie-control-height-sm: 32px;
@@ -178,9 +245,37 @@
   --goalie-control-disabled-bg: var(--goalie-surface-muted);
   --goalie-control-disabled-fg: var(--goalie-text-disabled);
 
+  /* Component decisions. */
+  --goalie-button-primary-bg: var(--goalie-ref-button-cyan-enabled);
+  --goalie-button-primary-fg: var(--goalie-brand-on);
+  --goalie-button-primary-bg-hover: var(--goalie-ref-button-cyan-hover);
+  --goalie-button-primary-bg-pressed: var(--goalie-ref-button-cyan-pressed);
+  --goalie-button-primary-bg-disabled: var(--goalie-ref-cyan-disabled);
+  --goalie-button-primary-fg-disabled: var(--goalie-color-neutral-700);
+  --goalie-button-primary-subtle-hover: var(--goalie-ref-button-cyan-hover-surface);
+  --goalie-button-primary-subtle-pressed: var(--goalie-ref-button-cyan-pressed-surface);
+  --goalie-button-danger-bg: var(--goalie-danger);
+  --goalie-button-danger-fg: var(--goalie-danger-on);
+  --goalie-button-danger-bg-hover: var(--goalie-ref-red-400);
+  --goalie-button-danger-bg-pressed: var(--goalie-ref-red-600);
+  --goalie-button-danger-subtle-hover: var(--goalie-ref-button-red-hover-surface);
+  --goalie-button-danger-subtle-pressed: var(--goalie-ref-button-red-pressed-surface);
+  --goalie-switch-width: 60px;
+  --goalie-switch-height: 24px;
+  --goalie-switch-knob-size: 20px;
+  --goalie-switch-manual-bg: var(--goalie-ref-cyan-500);
+  --goalie-switch-manual-disabled-bg: #BFECFA;
+  --goalie-switch-auto-bg: var(--goalie-color-neutral-250);
+  --goalie-switch-auto-fg: var(--goalie-color-neutral-800);
+  --goalie-switch-auto-disabled-fg: var(--goalie-color-neutral-700);
+  --goalie-map-marker-normal: var(--goalie-operation-active);
+  --goalie-map-marker-emergency: var(--goalie-safety-emergency);
+  --goalie-frame-speaking: var(--goalie-audio-speaking);
+  --goalie-frame-emergency: var(--goalie-safety-emergency);
+
   /* Focus. White separation keeps the blue indicator visible when a control
      already carries the same brand blue as its fill. */
-  --goalie-focus-color: var(--goalie-color-brand-700);
+  --goalie-focus-color: var(--goalie-ref-cyan-600);
   --goalie-focus-separator: var(--goalie-color-neutral-0);
   --goalie-focus-ring:
     0 0 0 2px var(--goalie-focus-separator),
@@ -190,9 +285,14 @@
     inset 0 0 0 4px var(--goalie-focus-color);
 
   /* Elevation */
-  --goalie-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
-  --goalie-shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.10), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
-  --goalie-shadow-lg: 0 14px 28px -12px rgba(15, 23, 42, 0.22), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
+  --goalie-shadow-default: 0 0 2px rgba(0, 0, 0, 0.25);
+  --goalie-shadow-active: 1px 1px 4px rgba(0, 0, 0, 0.25);
+  --goalie-shadow-floating: 2px 2px 8px rgba(0, 0, 0, 0.25);
+  --goalie-shadow-sm: var(--goalie-shadow-default);
+  --goalie-shadow-md: var(--goalie-shadow-active);
+  --goalie-shadow-lg: var(--goalie-shadow-floating);
+  --goalie-glow-speaking: 0 0 16px color-mix(in srgb, var(--goalie-frame-speaking) 55%, transparent);
+  --goalie-glow-emergency: 0 0 16px color-mix(in srgb, var(--goalie-frame-emergency) 55%, transparent);
 
   /* Documentation shell */
   --goalie-doc-header-height: 64px;

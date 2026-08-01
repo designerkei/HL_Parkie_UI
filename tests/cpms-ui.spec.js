@@ -139,7 +139,14 @@ test('all CPMS authored body copy switches cleanly to English', async ({ page })
   for (const pageId of CPMS_PAGES) {
     await page.goto(route(pageId));
     await expect(page.locator('[data-cpms-pages]')).toHaveAttribute('lang', 'en');
-    const body = await page.locator('[data-cpms-pages]').innerText();
+    /* The glyph specimen is excluded on purpose: it demonstrates the typeface's
+       Hangul coverage, so translating it away would delete the thing it exists
+       to show. Everything else is copy and must switch. */
+    const body = await page.locator('[data-cpms-pages]').evaluate((node) => {
+      const clone = node.cloneNode(true);
+      for (const specimen of clone.querySelectorAll('[data-glyph-specimen]')) specimen.remove();
+      return clone.innerText;
+    });
     expect(koreanCount(body), `${pageId} contains untranslated Korean copy`).toBe(0);
   }
 });
@@ -167,5 +174,54 @@ test('CPMS routes reflow without document overflow at review widths', async ({ p
       expect(overflow.document, `${pageId}@${width} document overflow`).toBeLessThanOrEqual(1);
       expect(overflow.product, `${pageId}@${width} product overflow`).toBeLessThanOrEqual(1);
     }
+  }
+});
+
+/* The typography page used to describe sizes without ever naming the typeface,
+   so a reader could finish it without learning the product is set in Pretendard.
+   The value lives in tokens/cpms-tokens.css; this component has no mount hook to
+   read it off the live variable, so the page transcribes it and this test keeps
+   the transcription honest. */
+test('the typography page names the typeface and matches the token file', async ({ page }) => {
+  const tokens = fs.readFileSync(path.join(process.cwd(), 'tokens', 'cpms-tokens.css'), 'utf8');
+  const declared = (name) => {
+    const match = tokens.match(new RegExp(`--cpms-font-${name}:\\s*([^;]+);`));
+    expect(match, `--cpms-font-${name} must be declared`).not.toBeNull();
+    return match[1].trim();
+  };
+
+  await page.goto('/#/cpms/typography');
+  await expect(page.locator('.cpms-face__display')).toHaveText('Pretendard');
+
+  /* Rendered in the face it documents, not merely named. */
+  const specimenFont = await page.locator('.cpms-face__specimen')
+    .evaluate((node) => getComputedStyle(node).fontFamily.split(',')[0].replace(/"/g, '').trim());
+  expect(specimenFont, 'the specimen must render in Pretendard').toBe('Pretendard');
+
+  const shown = await page.locator('[data-font-stack]').allTextContents();
+  const shownTokens = await page.locator('[data-font-token]').allTextContents();
+  expect(shownTokens.map((t) => t.trim())).toEqual(['--cpms-font-sans', '--cpms-font-mono']);
+  expect(shown[0].trim(), 'the sans stack must match the token file').toBe(declared('sans'));
+  expect(shown[1].trim(), 'the mono stack must match the token file').toBe(declared('mono'));
+
+  /* Four weights, because the scale leans on them for hierarchy. */
+  const weights = await page.locator('.cpms-face__weights > span')
+    .evaluateAll((nodes) => nodes.map((n) => getComputedStyle(n).fontWeight));
+  expect(weights).toEqual(['400', '500', '600', '700']);
+
+  /* Size alone does not say how the text sits. Every row carries size, weight,
+     line height and letter spacing — and the line height must be a real leading
+     token, not the 1.35 the rows used to hard-code. */
+  const leadings = new Set(
+    (tokens.match(/--cpms-leading-[a-z]+:\s*([\d.]+);/g) || [])
+      .map((line) => line.split(':')[1].replace(';', '').trim()),
+  );
+  const metas = await page.locator('[data-type-meta]').allTextContents();
+  expect(metas.length, 'every scale step needs metrics').toBe(7);
+  for (const meta of metas) {
+    const parts = meta.split('·').map((part) => part.trim());
+    expect(parts.length, `"${meta}" must list size, weight, leading and tracking`).toBe(4);
+    expect(parts[0]).toMatch(/^\d+px$/);
+    expect(leadings.has(parts[2]), `line height ${parts[2]} must be a declared leading token`).toBe(true);
   }
 });

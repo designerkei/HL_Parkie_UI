@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Goalie UI · Design System</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+  <style>html,body{height:100%;margin:0}x-dc{display:none!important}</style>
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+  <div class="gl-doc" ref="{{ rootRef }}" lang="{{ lang }}" data-goalie-pages data-goalie-page="{{ activePage }}">
+    <div class="gl-doc__truthbar" aria-label="{{ truthbarLabel }}">
+      <span class="gl-badge gl-badge--evidence">{{ evidenceLabel }}</span>
+      <span class="gl-badge gl-badge--accessible">{{ accessibilityLabel }}</span>
+      <span class="gl-doc__pin">RMS_Final · {{ sourcePin }}</span>
+    </div>
+
+    <!-- OVERVIEW ==================================================== -->
+    <sc-if value="{{ isOverview }}" hint-placeholder-val="true">
+      <section class="gl-hero" aria-labelledby="gl-overview-title">
+        <div class="gl-hero__copy">
+          <span class="gl-kicker">GOALIE UX/UI DESIGN SYSTEM · FOUNDATION BUILD</span>
+          <h2 id="gl-overview-title">{{ overviewTitle }}</h2>
+          <p>{{ overviewBody }}</p>
+          <dl class="gl-facts">
+            <sc-for list="{{ overviewFacts }}" as="fact" hint-placeholder-count="3">
+              <div><dt>{{ fact.value }}</dt><dd>{{ fact.label }}</dd></div>
+            </sc-for>
+          </dl>
+        </div>
+        <div class="gl-layer-map" role="img" aria-label="{{ layerMapLabel }}">
+          <sc-for list="{{ layerMap }}" as="layer" hint-placeholder-count="4">
+            <div class="gl-layer-map__item"><span>{{ layer.index }}</span><strong>{{ layer.title }}</strong><small>{{ layer.body }}</small></div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-overview-contract-title">
+        <header class="gl-section__head"><div><span>01 · CONTRACT</span><h2 id="gl-overview-contract-title">{{ contractTitle }}</h2></div><p>{{ contractBody }}</p></header>
+        <div class="gl-rule-grid">
+          <sc-for list="{{ overviewRules }}" as="rule" hint-placeholder-count="4">
+            <article><span>{{ rule.index }}</span><h3>{{ rule.title }}</h3><p>{{ rule.body }}</p></article>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-overview-route-title">
+        <header class="gl-section__head"><div><span>02 · BUILD ORDER</span><h2 id="gl-overview-route-title">{{ buildTitle }}</h2></div><p>{{ buildBody }}</p></header>
+        <ol class="gl-build-flow">
+          <sc-for list="{{ buildFlow }}" as="step" hint-placeholder-count="6"><li><span>{{ step.index }}</span><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li></sc-for>
+        </ol>
+      </section>
+    </sc-if>
+
+    <!-- SYSTEM SUMMARY ============================================== -->
+    <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-coverage-title">
+        <header class="gl-section__head"><div><span>01 · FIGMA COVERAGE</span><h2 id="gl-coverage-title">{{ coverageTitle }}</h2></div><p>{{ coverageBody }}</p></header>
+        <div class="gl-table-wrap">
+          <table class="gl-table">
+            <caption>{{ coverageCaption }}</caption>
+            <thead><tr><th scope="col">{{ layerHeader }}</th><th scope="col">{{ evidenceHeader }}</th><th scope="col">{{ targetHeader }}</th><th scope="col">{{ statusHeader }}</th></tr></thead>
+            <tbody><sc-for list="{{ coverageRows }}" as="row" hint-placeholder-count="7"><tr><th scope="row">{{ row.layer }}</th><td><code>{{ row.evidence }}</code></td><td>{{ row.target }}</td><td><span class="{{ row.badgeClass }}">{{ row.status }}</span></td></tr></sc-for></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-state-model-title">
+        <header class="gl-section__head"><div><span>02 · STATE MODEL</span><h2 id="gl-state-model-title">{{ stateModelTitle }}</h2></div><p>{{ stateModelBody }}</p></header>
+        <div class="gl-axis-list"><sc-for list="{{ stateAxes }}" as="axis" hint-placeholder-count="8"><article><code>{{ axis.name }}</code><strong>{{ axis.values }}</strong><p>{{ axis.rule }}</p></article></sc-for></div>
+        <aside class="gl-callout"><strong>{{ priorityTitle }}</strong><code>safety &gt; connection &gt; operation &gt; audio &gt; battery &gt; selection</code></aside>
+      </section>
+    </sc-if>
+
+    <!-- PRINCIPLES ================================================== -->
+    <sc-if value="{{ isPrinciples }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-principles-title">
+        <header class="gl-section__head"><div><span>01 · DECISION RULES</span><h2 id="gl-principles-title">{{ principlesTitle }}</h2></div><p>{{ principlesBody }}</p></header>
+        <div class="gl-principle-list"><sc-for list="{{ principles }}" as="principle" hint-placeholder-count="5"><article><span>{{ principle.index }}</span><div><h3>{{ principle.title }}</h3><p>{{ principle.body }}</p><strong>{{ principle.test }}</strong></div></article></sc-for></div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-source-priority-title">
+        <header class="gl-section__head"><div><span>02 · SOURCE PRIORITY</span><h2 id="gl-source-priority-title">{{ sourcePriorityTitle }}</h2></div><p>{{ sourcePriorityBody }}</p></header>
+        <ol class="gl-source-list"><sc-for list="{{ sourcePriority }}" as="source" hint-placeholder-count="5"><li><span>{{ source.index }}</span><strong>{{ source.title }}</strong><p>{{ source.body }}</p></li></sc-for></ol>
+      </section>
+    </sc-if>
+
+    <!-- COLORS ====================================================== -->
+    <sc-if value="{{ isColors }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-ref-colors-title">
+        <header class="gl-section__head"><div><span>01 · FIGMA REFERENCE</span><h2 id="gl-ref-colors-title">{{ refColorsTitle }}</h2></div><p>{{ refColorsBody }}</p></header>
+        <div class="gl-swatch-groups"><sc-for list="{{ swatchGroups }}" as="group" hint-placeholder-count="4"><section><h3>{{ group.title }}</h3><div class="gl-swatch-grid"><sc-for list="{{ group.items }}" as="swatch" hint-placeholder-count="6"><article class="gl-swatch"><div class="gl-swatch__color" style="{{ swatch.style }}"></div><div><strong>{{ swatch.name }}</strong><code>{{ swatch.value }}</code><small>{{ swatch.role }}</small></div></article></sc-for></div></section></sc-for></div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-semantic-title">
+        <header class="gl-section__head"><div><span>02 · SEMANTIC CONTRACT</span><h2 id="gl-semantic-title">{{ semanticTitle }}</h2></div><p>{{ semanticBody }}</p></header>
+        <div class="gl-semantic-grid"><sc-for list="{{ semanticColors }}" as="color" hint-placeholder-count="8"><article><i style="{{ color.style }}" aria-hidden="true"></i><div><strong>{{ color.name }}</strong><code>{{ color.token }}</code><p>{{ color.rule }}</p></div></article></sc-for></div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-contrast-title">
+        <header class="gl-section__head"><div><span>03 · CONTRAST GATE</span><h2 id="gl-contrast-title">{{ contrastTitle }}</h2></div><p>{{ contrastBody }}</p></header>
+        <div class="gl-contrast-grid"><sc-for list="{{ contrastPairs }}" as="pair" hint-placeholder-count="5"><article><div style="{{ pair.style }}">Aa</div><strong>{{ pair.value }}</strong><span class="{{ pair.resultClass }}">{{ pair.result }}</span><p>{{ pair.rule }}</p></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- TYPOGRAPHY ================================================== -->
+    <sc-if value="{{ isTypography }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-type-title">
+        <header class="gl-section__head"><div><span>01 · PRETENDARD SCALE</span><h2 id="gl-type-title">{{ typeTitle }}</h2></div><p>{{ typeBody }}</p></header>
+        <div class="gl-type-list"><sc-for list="{{ typeRows }}" as="type" hint-placeholder-count="11"><article><code>{{ type.token }}</code><div class="gl-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span>{{ type.meta }}</span><p>{{ type.use }}</p></article></sc-for></div>
+      </section>
+      <aside class="gl-callout gl-callout--warning"><strong>{{ typeConflictTitle }}</strong><p>{{ typeConflictBody }}</p><code>Head S · Body L · Button M</code></aside>
+    </sc-if>
+
+    <!-- SPACING / SHAPE / ELEVATION ================================ -->
+    <sc-if value="{{ isSpacing }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-spacing-title">
+        <header class="gl-section__head"><div><span>01 · 4PX BASE</span><h2 id="gl-spacing-title">{{ spacingTitle }}</h2></div><p>{{ spacingBody }}</p></header>
+        <div class="gl-spacing-list"><sc-for list="{{ spacingRows }}" as="space" hint-placeholder-count="12"><div><code>{{ space.token }}</code><span style="{{ space.style }}"></span><strong>{{ space.value }}</strong><small>{{ space.use }}</small></div></sc-for></div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-shape-title">
+        <header class="gl-section__head"><div><span>02 · SHAPE</span><h2 id="gl-shape-title">{{ shapeTitle }}</h2></div><p>{{ shapeBody }}</p></header>
+        <div class="gl-shape-grid"><sc-for list="{{ shapeRows }}" as="shape" hint-placeholder-count="6"><article><div style="{{ shape.style }}"></div><code>{{ shape.token }}</code><strong>{{ shape.value }}</strong><p>{{ shape.use }}</p></article></sc-for></div>
+      </section>
+      <section class="gl-section" aria-labelledby="gl-elevation-title">
+        <header class="gl-section__head"><div><span>03 · ELEVATION</span><h2 id="gl-elevation-title">{{ elevationTitle }}</h2></div><p>{{ elevationBody }}</p></header>
+        <div class="gl-elevation-grid"><sc-for list="{{ elevationRows }}" as="level" hint-placeholder-count="3"><article style="{{ level.style }}"><strong>{{ level.name }}</strong><code>{{ level.token }}</code><p>{{ level.use }}</p></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- BUTTON / SWITCH =========================================== -->
+    <sc-if value="{{ isButton }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-button-title">
+        <header class="gl-section__head"><div><span>01 · ACTION BUTTON</span><h2 id="gl-button-title">{{ buttonTitle }}</h2></div><p>{{ buttonBody }}</p></header>
+        <div class="gl-component-note">
+          <strong>{{ buttonA11yTitle }}</strong>
+          <p>{{ buttonA11yBody }}</p>
+          <code>351:2306 · 351:2435</code>
+        </div>
+        <div class="gl-button-matrices">
+          <sc-for list="{{ buttonMatrices }}" as="matrix" hint-placeholder-count="2">
+            <section class="gl-button-matrix" aria-labelledby="{{ matrix.headingId }}">
+              <header><div><span class="{{ matrix.toneClass }}" aria-hidden="true"></span><h3 id="{{ matrix.headingId }}">{{ matrix.title }}</h3></div><p>{{ matrix.rule }}</p></header>
+              <div class="gl-button-matrix__head" aria-hidden="true"><span>State</span><span>Contained</span><span>Outlined</span><span>Text</span><span>Icon</span></div>
+              <sc-for list="{{ matrix.rows }}" as="row" hint-placeholder-count="4">
+                <div class="gl-button-matrix__row">
+                  <strong>{{ row.label }}</strong>
+                  <sc-for list="{{ row.controls }}" as="control" hint-placeholder-count="4">
+                    <button class="{{ control.className }}" type="button" data-demo-state="{{ control.state }}" aria-disabled="{{ control.ariaDisabled }}" tabindex="{{ control.tabIndex }}">
+                      <sc-if value="{{ control.hasIcon }}" hint-placeholder-val="false"><img class="gl-button__icon" src="{{ control.iconSrc }}" alt=""></sc-if>
+                      <span>{{ control.label }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </section>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-switch-title">
+        <header class="gl-section__head"><div><span>02 · DRIVE MODE SWITCH</span><h2 id="gl-switch-title">{{ switchTitle }}</h2></div><p>{{ switchBody }}</p></header>
+        <div class="gl-switch-demo-grid">
+          <article>
+            <span>{{ interactiveLabel }}</span>
+            <button class="gl-switch" type="button" role="switch" aria-checked="{{ manualChecked }}" aria-label="{{ switchAriaLabel }}" onClick="{{ toggleDriveMode }}">
+              <span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span>
+              <span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span>
+              <span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-manual.svg" alt=""></span>
+            </button>
+            <strong>{{ currentDriveMode }}</strong>
+          </article>
+          <article>
+            <span>{{ disabledLabel }}</span>
+            <div class="gl-switch-pair">
+              <button class="gl-switch" type="button" role="switch" aria-checked="true" aria-label="{{ manualDisabledAria }}" disabled>
+                <span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span>
+                <span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-manual-disabled.svg" alt=""></span>
+              </button>
+              <button class="gl-switch" type="button" role="switch" aria-checked="false" aria-label="{{ automaticDisabledAria }}" disabled>
+                <span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span>
+                <span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-auto-disabled.svg" alt=""></span>
+              </button>
+            </div>
+            <strong>{{ disabledRule }}</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-button-contract-title">
+        <header class="gl-section__head"><div><span>03 · IMPLEMENTATION CONTRACT</span><h2 id="gl-button-contract-title">{{ componentContractTitle }}</h2></div><p>{{ componentContractBody }}</p></header>
+        <div class="gl-contract-grid"><sc-for list="{{ buttonContracts }}" as="contract" hint-placeholder-count="4"><article><code>{{ contract.axis }}</code><strong>{{ contract.values }}</strong><p>{{ contract.rule }}</p></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- STATUS / FEEDBACK ========================================= -->
+    <sc-if value="{{ isStatus }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-alert-title">
+        <header class="gl-section__head"><div><span>01 · ALERT &amp; HISTORY</span><h2 id="gl-alert-title">{{ alertTitle }}</h2></div><p>{{ alertBody }}</p></header>
+        <div class="gl-feedback-layout">
+          <div class="gl-alert-stack">
+            <div class="gl-alert-banner" role="status">
+              <span class="gl-alert-icon" aria-hidden="true"><img src="./assets/goalie/alert-info-base.svg" alt=""><img src="./assets/goalie/alert-info-stem.svg" alt=""><img src="./assets/goalie/alert-info-dot.svg" alt=""></span>
+              <p class="gl-alert-banner__message">{{ infoAlertMessage }}</p><time datetime="2024-08-08T16:20:09">24-08-08&nbsp; 16:20:09</time>
+              <button class="gl-alert-expand" type="button" aria-expanded="{{ alertExpanded }}" aria-controls="gl-alert-history-info" aria-label="{{ alertExpandLabel }}" onClick="{{ toggleAlertHistory }}"><img src="./assets/goalie/alert-chevron.svg" alt=""></button>
+              <button class="gl-alert-close" type="button" aria-label="{{ alertDismissLabel }}"><img src="./assets/goalie/alert-close-a.svg" alt=""><img src="./assets/goalie/alert-close-b.svg" alt=""></button>
+            </div>
+            <sc-if value="{{ alertExpandedBool }}" hint-placeholder-val="true">
+              <div class="gl-alert-history" id="gl-alert-history-info">
+                <div class="gl-alert-history__header"><strong>{{ historyTitle }}</strong><button class="gl-alert-close" type="button" aria-label="{{ historyCloseLabel }}" onClick="{{ toggleAlertHistory }}"><img src="./assets/goalie/alert-close-light-a.svg" alt=""><img src="./assets/goalie/alert-close-light-b.svg" alt=""></button></div>
+                <img class="gl-alert-history__divider" src="./assets/goalie/alert-divider.svg" alt="">
+                <div class="gl-alert-history__list"><sc-for list="{{ alertHistory }}" as="item" hint-placeholder-count="3"><div class="gl-alert-history__row"><strong>{{ item.message }}</strong><time datetime="{{ item.datetime }}">{{ item.time }}</time></div></sc-for></div>
+              </div>
+            </sc-if>
+          </div>
+          <div class="gl-alert-stack">
+            <div class="gl-alert-banner gl-alert-banner--danger" role="alert">
+              <span class="gl-alert-icon" aria-hidden="true"><img src="./assets/goalie/alert-info-base.svg" alt=""><img src="./assets/goalie/alert-danger-stem.svg" alt=""><img src="./assets/goalie/alert-danger-dot.svg" alt=""></span>
+              <p class="gl-alert-banner__message">{{ dangerAlertMessage }}</p><time datetime="2024-08-08T16:20:09">24-08-08&nbsp; 16:20:09</time>
+              <button class="gl-alert-expand" type="button" aria-expanded="false" aria-label="{{ alertExpandLabel }}"><img src="./assets/goalie/alert-chevron.svg" alt=""></button>
+              <button class="gl-alert-close" type="button" aria-label="{{ alertDismissLabel }}"><img src="./assets/goalie/alert-close-a.svg" alt=""><img src="./assets/goalie/alert-close-b.svg" alt=""></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-notification-title">
+        <header class="gl-section__head"><div><span>02 · NOTIFICATION TRIGGER</span><h2 id="gl-notification-title">{{ notificationTitle }}</h2></div><p>{{ notificationBody }}</p></header>
+        <div class="gl-notification-states">
+          <sc-for list="{{ notificationStates }}" as="notification" hint-placeholder-count="3"><article><span>{{ notification.label }}</span><button class="gl-notification-trigger" type="button" data-demo-state="{{ notification.state }}" aria-label="{{ notification.ariaLabel }}"><img src="./assets/goalie/notification-bell.svg" alt=""><strong>{{ notificationText }}</strong></button></article></sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-modal-title">
+        <header class="gl-section__head"><div><span>03 · MODAL</span><h2 id="gl-modal-title">{{ modalTitle }}</h2></div><p>{{ modalBody }}</p></header>
+        <div class="gl-modal-gallery">
+          <sc-for list="{{ modalExamples }}" as="modal" hint-placeholder-count="3">
+            <div class="gl-modal-scrim"><article class="gl-modal" aria-labelledby="{{ modal.titleId }}"><h3 class="gl-modal__title" id="{{ modal.titleId }}">{{ modal.title }}</h3><p class="gl-modal__body">{{ modal.body }}</p><div class="gl-modal__actions"><sc-for list="{{ modal.actions }}" as="action" hint-placeholder-count="2"><button class="{{ action.className }}" type="button">{{ action.label }}</button></sc-for></div></article></div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-scroll-title">
+        <header class="gl-section__head"><div><span>04 · SCROLLBAR</span><h2 id="gl-scroll-title">{{ scrollbarTitle }}</h2></div><p>{{ scrollbarBody }}</p></header>
+        <div class="gl-scrollbar-gallery"><sc-for list="{{ scrollbarStates }}" as="scroll" hint-placeholder-count="3"><article><span>{{ scroll.label }}</span><div class="{{ scroll.className }}" aria-hidden="true"><span></span></div><code>{{ scroll.value }}</code></article></sc-for></div>
+      </section>
+    </sc-if>
+  </div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["ko","en"],"default":"ko","tsType":"\"ko\"|\"en\"","section":"General"},"activePage":{"editor":"string","default":"overview","tsType":"string","section":"General"}}'>
+class Component extends DCLogic {
+  rootRef = React.createRef();
+
+  state = {
+    driveMode: 'manual',
+    alertExpanded: true,
+  };
+
+  toggleDriveMode = () => {
+    this.setState(({ driveMode }) => ({
+      driveMode: driveMode === 'manual' ? 'automatic' : 'manual',
+    }));
+  };
+
+  toggleAlertHistory = () => {
+    this.setState(({ alertExpanded }) => ({ alertExpanded: !alertExpanded }));
+  };
+
+  renderVals() {
+    const lang = this.props.lang === 'en' ? 'en' : 'ko';
+    const ko = lang === 'ko';
+    const L = (k, e) => ko ? k : e;
+    const activePage = this.props.activePage || 'overview';
+    const badge = (kind) => `gl-badge gl-badge--${kind}`;
+    const swatch = (name, value, token, roleKo, roleEn) => ({ name, value, role: L(roleKo, roleEn), style: { background: `var(${token})` } });
+    const semantic = (nameKo, nameEn, token, ruleKo, ruleEn) => ({ name: L(nameKo, nameEn), token, rule: L(ruleKo, ruleEn), style: { background: `var(${token})` } });
+    const typeRow = (token, font, meta, useKo, useEn) => ({ token, sample: L('로봇 솔루션', 'Robot Solution'), style: { font }, meta, use: L(useKo, useEn) });
+
+    const overviewFacts = [
+      { value: '32', label: L('고정 Figma 노드', 'pinned Figma nodes') },
+      { value: '8', label: L('독립 상태 축', 'independent state axes') },
+      { value: '3', label: L('토큰 계층', 'token layers') },
+    ];
+    const layerMap = [
+      { index: '01', title: 'Foundation', body: L('색 · 타입 · 간격 · 깊이', 'Color · type · spacing · depth') },
+      { index: '02', title: 'Primitive', body: L('액션 · 입력 · 피드백', 'Actions · inputs · feedback') },
+      { index: '03', title: 'Domain & Pattern', body: L('로봇 · 순찰 · 영상 · 안전', 'Robot · patrol · video · safety') },
+      { index: '04', title: 'Template', body: L('운영 화면의 검증된 조합', 'Verified operating compositions') },
+    ];
+    const overviewRules = [
+      ['01', L('근거를 추적한다', 'Trace every decision'), L('토큰과 컴포넌트를 Figma node와 연결하고 차이를 기록합니다.', 'Link tokens and components to Figma nodes and record differences.')],
+      ['02', L('상태를 합치지 않는다', 'Keep state axes independent'), L('연결·주행·안전·발화·배터리를 하나의 배지로 압축하지 않습니다.', 'Do not compress connection, motion, safety, audio and battery into one badge.')],
+      ['03', L('안전을 우선한다', 'Put safety first'), L('비상 상태는 일반 선택과 hover보다 높은 행동 우선순위를 가집니다.', 'Emergency state has higher behavioral priority than selection and hover.')],
+      ['04', L('화면보다 계약을 만든다', 'Build contracts, not screenshots'), L('Template는 토큰과 재사용 컴포넌트만 조합합니다.', 'Templates compose tokens and reusable components only.')],
+    ].map(([index, title, body]) => ({ index, title, body }));
+    const buildFlow = [
+      ['01', 'Evidence', L('노드·충돌·결정 고정', 'Pin nodes, conflicts and decisions')],
+      ['02', 'State & API', L('독립 상태축과 컴포넌트 계약', 'Independent state axes and component contracts')],
+      ['03', 'Foundation', L('토큰·타입·아이콘', 'Tokens, type and icons')],
+      ['04', 'Components', L('Primitive·Feedback·Domain', 'Primitive, feedback and domain')],
+      ['05', 'Patterns', L('순찰·영상·발화·비상', 'Patrol, video, speaking and emergency')],
+      ['06', 'Release', L('접근성·회귀·production 검증', 'Accessibility, regression and production verification')],
+    ].map(([index, title, body]) => ({ index, title, body }));
+
+    const coverageRows = [
+      ['Foundation', '230:2058 · 2051:3017', L('Color · Type · Spacing · Elevation', 'Color · Type · Spacing · Elevation'), L('구축 중', 'In progress'), 'evidence'],
+      ['Primitive', '329:4327 · 351:2435 · 351:2306', L('Button · Switch · Select · Time', 'Button · Switch · Select · Time'), L('대기', 'Queued'), 'queued'],
+      ['Feedback', '230:2007 · 735:7167', L('Alert · Notification · Modal', 'Alert · Notification · Modal'), L('대기', 'Queued'), 'queued'],
+      ['Structure', '230:2891 · 465:3008 · 557:3515', L('Header · Nav · Toolbar · Handle', 'Header · Nav · Toolbar · Handle'), L('대기', 'Queued'), 'queued'],
+      ['Robot operations', '351:2119 · 3411:24015', L('Panel · Map · Operation state', 'Panel · Map · Operation state'), L('대기', 'Queued'), 'queued'],
+      ['Patrol & Video', '1884:13681 · 3874:33505', L('업무 패턴', 'Work patterns'), L('대기', 'Queued'), 'queued'],
+      ['Templates', '4021:36373 · 2933:9118 · 3536:24567', L('Home · Paused · Speaking · Emergency', 'Home · Paused · Speaking · Emergency'), L('대기', 'Queued'), 'queued'],
+    ].map(([layer, evidence, target, status, kind]) => ({ layer, evidence, target, status, badgeClass: badge(kind) }));
+    const stateAxes = [
+      ['connection', 'offline · connecting · online', L('명령 가능 여부와 신선도', 'Command availability and freshness')],
+      ['driveMode', 'manual · automatic', L('조작 주체', 'Control authority')],
+      ['operation', 'idle · queued · patrolling · paused · returning', L('현재 업무 단계', 'Current work stage')],
+      ['safety', 'normal · emergency', L('모든 표현보다 우선', 'Overrides all presentation')],
+      ['audio', 'disconnected · connected · speaking · muted', L('장치 연결과 실제 송출을 구분', 'Separate device connection from transmission')],
+      ['battery', 'normal · warning · critical · charging', L('충전과 잔량을 독립적으로 표현', 'Express charge and level independently')],
+      ['selection', 'none · robot · course · waypoint', L('운영 상태가 아닌 현재 문맥', 'Current context, not operation state')],
+      ['cameraLayout', 'single · quad · primaryQuad · six', L('화면 분할 선택', 'Camera composition choice')],
+    ].map(([name, values, rule]) => ({ name, values, rule }));
+
+    const principles = [
+      ['01', L('위험 상태는 가장 먼저 읽힌다', 'Critical state reads first'), L('비상·연결 상실·명령 실패가 장식과 선택 상태에 묻히지 않습니다.', 'Emergency, lost connection and command failure never hide behind decoration or selection.'), L('색을 제거해도 위험을 알 수 있는가?', 'Is the risk clear without color?')],
+      ['02', L('실제 로봇 응답을 보여준다', 'Show robot acknowledgement'), L('버튼 클릭과 로봇의 명령 수신·완료를 같은 상태로 취급하지 않습니다.', 'Do not treat a button click and robot acknowledgement as the same state.'), L('운영자가 실제 결과를 확인할 수 있는가?', 'Can the operator verify the real result?')],
+      ['03', L('문맥을 보존한다', 'Preserve context'), L('로봇·코스·카메라·시간 선택을 화면 전환과 피드백에서도 유지합니다.', 'Keep robot, course, camera and time selections through navigation and feedback.'), L('항상 “어느 로봇의 무엇”인지 보이는가?', 'Is “which robot and what” always visible?')],
+      ['04', L('복구 경로를 제공한다', 'Provide recovery'), L('오류는 원인, 영향, 재시도 또는 안전한 복귀를 함께 제공합니다.', 'Errors include cause, impact and a retry or safe return path.'), L('새로고침 외의 해결책이 있는가?', 'Is there a recovery beyond refresh?')],
+      ['05', L('조밀함과 가독성을 교환하지 않는다', 'Do not trade readability for density'), L('고정 관제 화면에서도 타겟, 라벨, 숫자 정렬과 확대 사용성을 지킵니다.', 'Preserve targets, labels, numeric alignment and zoom use in dense control screens.'), L('키보드와 200% 확대에서도 업무가 가능한가?', 'Does the task work with keyboard and 200% zoom?')],
+    ].map(([index, title, body, test]) => ({ index, title, body, test }));
+    const sourcePriority = [
+      ['01', 'Code Connect', L('정확히 연결된 코드 컴포넌트가 있으면 재사용합니다.', 'Reuse an exactly mapped code component.')],
+      ['02', L('Figma 주석', 'Figma annotations'), L('설계자의 행동·제약 설명을 우선합니다.', 'Prioritize designer behavior and constraint notes.')],
+      ['03', L('실제 node 속성', 'Actual node properties'), L('fill·font·spacing의 actual 값을 사용합니다.', 'Use actual fill, font and spacing values.')],
+      ['04', L('보이는 설명', 'Visible descriptions'), L('actual 값과 충돌하면 결함으로 기록합니다.', 'Record as a defect when it conflicts with actual values.')],
+      ['05', L('스크린샷 추론', 'Screenshot inference'), L('다른 근거가 없을 때만 사용합니다.', 'Use only when stronger evidence is absent.')],
+    ].map(([index, title, body]) => ({ index, title, body }));
+
+    const swatchGroups = [
+      { title: 'Primary', items: [
+        swatch('Cyan 300', '#31D3FF', '--goalie-ref-cyan-300', 'Hover', 'Hover'),
+        swatch('Cyan 400', '#00C5FB', '--goalie-ref-cyan-400', 'Component reference', 'Component reference'),
+        swatch('Cyan 500', '#00B4ED', '--goalie-ref-cyan-500', 'Enabled · information', 'Enabled · information'),
+        swatch('Cyan 600', '#0098C8', '--goalie-ref-cyan-600', 'Pressed · focus', 'Pressed · focus'),
+      ]},
+      { title: 'System', items: [
+        swatch('Information', '#00B4ED', '--goalie-info', '정보', 'Information'),
+        swatch('Danger', '#FF3E31', '--goalie-danger', '비상·실패', 'Emergency and failure'),
+        swatch('Success', '#4FDC5D', '--goalie-success', '완료·충전', 'Success and charging'),
+        swatch('Warning', '#FEDB25', '--goalie-warning', '배터리 경고', 'Battery warning'),
+      ]},
+      { title: 'Surface', items: [
+        swatch('Surface', '#FFFFFF', '--goalie-surface', '카드·패널', 'Card and panel'),
+        swatch('Canvas', '#F2F5F9', '--goalie-bg', '앱 배경', 'Application canvas'),
+        swatch('Selected', '#EEF7FA', '--goalie-selected-surface', '선택 표면', 'Selection surface'),
+        swatch('Border', '#D8DBDF', '--goalie-border', '구분선', 'Divider'),
+      ]},
+    ];
+    const semanticColors = [
+      semantic(L('주요 액션', 'Primary action'), L('주요 액션', 'Primary action'), '--goalie-brand-primary', L('현재 범위의 한 가지 확정 액션.', 'One confirming action in the current scope.')),
+      semantic(L('선택', 'Selection'), L('선택', 'Selection'), '--goalie-selected-surface', L('위치와 문맥. 운영 상태를 대체하지 않음.', 'Location and context; never replaces operation state.')),
+      semantic(L('순찰 중', 'Patrolling'), L('순찰 중', 'Patrolling'), '--goalie-operation-active', L('operation 축의 active 값.', 'Active value of the operation axis.')),
+      semantic(L('비상', 'Emergency'), L('비상', 'Emergency'), '--goalie-safety-emergency', L('모든 일반 interaction보다 우선.', 'Overrides ordinary interaction.')),
+      semantic(L('발화', 'Speaking'), L('발화', 'Speaking'), '--goalie-audio-speaking', L('audio 축이며 safety와 독립.', 'Audio axis, independent of safety.')),
+      semantic(L('배터리 경고', 'Battery warning'), L('배터리 경고', 'Battery warning'), '--goalie-battery-warning', L('아이콘과 수치를 함께 사용.', 'Pair with icon and numeric value.')),
+    ];
+    const contrastPairs = [
+      ['#31D3FF / white', '1.77:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#31D3FF', color: '#fff' }],
+      ['#00C5FB / white', '2.02:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#00C5FB', color: '#fff' }],
+      ['#00B4ED / white', '2.40:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#00B4ED', color: '#fff' }],
+      ['#00B4ED / #1C2126', '6.76:1', 'pass', L('production 기본 조합', 'Production default pair'), { background: '#00B4ED', color: '#1C2126' }],
+      ['#FF3E31 / #1C2126', '4.62:1', 'pass', L('승인 대기 danger 조합', 'Pending-approval danger pair'), { background: '#FF3E31', color: '#1C2126' }],
+    ].map(([name, value, result, rule, style]) => ({ name, value, result: result === 'pass' ? L('통과', 'Pass') : L('실패', 'Fail'), resultClass: `gl-contrast-result gl-contrast-result--${result}`, rule, style }));
+
+    const typeRows = [
+      typeRow('--goalie-type-head-l', 'var(--goalie-type-head-l)', '36 · 700 · 140% · -2%', '페이지 핵심 제목', 'Primary page title'),
+      typeRow('--goalie-type-head-m', 'var(--goalie-type-head-m)', '24 · 500 · 140% · -2%', '주요 섹션 제목', 'Primary section title'),
+      typeRow('--goalie-type-head-s', 'var(--goalie-type-head-s)', '18 · 600 · 120% · -2%', '패널·카드 제목', 'Panel and card title'),
+      typeRow('--goalie-type-head-xs', 'var(--goalie-type-head-xs)', '16 · 500 · 120% · -2%', '작은 섹션 제목', 'Small section title'),
+      typeRow('--goalie-type-body-l', 'var(--goalie-type-body-l)', '18 · 400 · 140% · -2%', '강조 본문·안내', 'Emphasized body and guidance'),
+      typeRow('--goalie-type-body-m', 'var(--goalie-type-body-m)', '16 · 400 · 120% · -2%', '기본 본문·필드', 'Default body and fields'),
+      typeRow('--goalie-type-body-s', 'var(--goalie-type-body-s)', '15 · 400 · 120% · -2%', '보조 본문·메타', 'Supporting body and metadata'),
+      typeRow('--goalie-type-button-l', 'var(--goalie-type-button-l)', '20 · 600 · 120% · -2%', '대형 액션', 'Large action'),
+      typeRow('--goalie-type-button-m', 'var(--goalie-type-button-m)', '18 · 600 · 120% · -2%', '기본 액션', 'Default action'),
+      typeRow('--goalie-type-button-s', 'var(--goalie-type-button-s)', '17 · 500 · 120% · -2%', '소형 액션', 'Small action'),
+      typeRow('--goalie-type-caption', 'var(--goalie-type-caption)', '13 · 400 · 120% · -2%', '시간·상태 메타', 'Time and state metadata'),
+    ];
+    const spacingRows = [4,8,12,16,20,24,32,40,48,64,80,96].map((value, index) => ({ token: `--goalie-space-${index + 1}`, value: `${value}px`, use: index < 3 ? L('내부·인라인', 'Internal and inline') : index < 7 ? L('컴포넌트·패널', 'Component and panel') : L('레이아웃·섹션', 'Layout and section'), style: { width: `${Math.max(8, value * 1.8)}px` } }));
+    const shapeRows = [
+      ['--goalie-radius-xs', '4px', L('작은 indicator', 'Small indicator')],
+      ['--goalie-radius-sm', '6px', L('작은 입력·태그', 'Small input and tag')],
+      ['--goalie-radius-md', '8px', L('기본 제어', 'Default control')],
+      ['--goalie-radius-lg', '12px', L('카드·패널', 'Card and panel')],
+      ['--goalie-radius-pill', '999px', L('토글·상태 pill', 'Toggle and status pill')],
+    ].map(([token, value, use]) => ({ token, value, use, style: { borderRadius: value } }));
+    const elevationRows = [
+      { name: 'Default', token: '--goalie-shadow-default', use: L('기본 frame', 'Default frame'), style: { boxShadow: 'var(--goalie-shadow-default)' } },
+      { name: 'Active', token: '--goalie-shadow-active', use: L('선택·활성 panel', 'Selected or active panel'), style: { boxShadow: 'var(--goalie-shadow-active)' } },
+      { name: 'Floating', token: '--goalie-shadow-floating', use: L('toolbar·popover', 'Toolbar and popover'), style: { boxShadow: 'var(--goalie-shadow-floating)' } },
+    ];
+
+    const buttonControl = (tone, state, variant) => {
+      const hasIcon = variant === 'icon';
+      const normalizedVariant = hasIcon ? 'contained' : variant;
+      return {
+        className: `gl-button gl-button--small gl-button--fixed gl-button--${tone} gl-button--${normalizedVariant}`,
+        state,
+        hasIcon,
+        iconSrc: `./assets/goalie/icon-plus-${tone === 'danger' ? 'danger' : 'primary'}-sm.svg`,
+        label: L('버튼', 'Button'),
+        ariaDisabled: state === 'disabled' ? 'true' : 'false',
+        tabIndex: state === 'disabled' ? '-1' : '0',
+      };
+    };
+    const buttonMatrix = (tone, title, rule) => ({
+      title,
+      rule,
+      headingId: `gl-${tone}-button-heading`,
+      toneClass: `gl-tone-dot gl-tone-dot--${tone}`,
+      rows: ['enabled', 'disabled', 'hover', 'pressed'].map((state) => ({
+        state,
+        label: ({ enabled: L('기본', 'Enabled'), disabled: L('비활성', 'Disabled'), hover: 'Hover', pressed: 'Pressed' })[state],
+        controls: ['contained', 'outlined', 'text', 'icon'].map((variant) => buttonControl(tone, state, variant)),
+      })),
+    });
+    const buttonMatrices = [
+      buttonMatrix('primary', L('Primary action', 'Primary action'), L('진행·저장·시작처럼 현재 문맥의 확정 행동에 사용합니다.', 'Use for confirming progress, save and start actions in the current context.')),
+      buttonMatrix('danger', L('Danger action', 'Danger action'), L('비상·삭제·해제처럼 영향이 큰 행동에만 사용합니다.', 'Reserve for emergency, delete and release actions with material impact.')),
+    ];
+    const buttonContracts = [
+      { axis: 'tone', values: 'primary | danger', rule: L('색 이름이 아니라 행동 위험도를 입력합니다.', 'Pass action risk, not a color name.') },
+      { axis: 'variant', values: 'contained | outlined | text | icon', rule: L('한 영역의 강조 순서를 표현합니다.', 'Express hierarchy within one action area.') },
+      { axis: 'size', values: 'small 120×40 | medium 160×48', rule: L('Figma 기준 크기이며 긴 문구는 min-width로 확장합니다.', 'Figma reference sizes; long copy expands from min-width.') },
+      { axis: 'state', values: 'enabled | disabled | hover | pressed | focus', rule: L('focus는 선택·hover와 독립이며 키보드에서 항상 보입니다.', 'Focus is independent from selection and hover and always visible for keyboard use.') },
+    ];
+    const manualChecked = this.state.driveMode === 'manual';
+    const alertHistory = [
+      { message: L('C코스 순찰이 완료되었습니다.', 'C course patrol completed.'), datetime: '2024-08-08T16:20:09', time: '24-08-08  16:20:09' },
+      { message: L('C코스로 순찰을 시작합니다.', 'Starting patrol on C course.'), datetime: '2024-08-07T14:56:08', time: '24-08-07  14:56:08' },
+      { message: L('대체경로를 찾을 수 없습니다.', 'No alternate route found.'), datetime: '2024-08-07T19:42:32', time: '24-08-07  19:42:32' },
+    ];
+    const notificationStates = [
+      { state: 'default', label: L('기본', 'Default'), ariaLabel: L('알림 열기, 기본 상태', 'Open notifications, default state') },
+      { state: 'hover', label: 'Hover', ariaLabel: L('알림 열기, hover 예시', 'Open notifications, hover specimen') },
+      { state: 'pressed', label: 'Pressed', ariaLabel: L('알림 열기, pressed 예시', 'Open notifications, pressed specimen') },
+    ];
+    const modalAction = (label, kind = 'default') => ({ label, className: `gl-modal__action${kind === 'default' ? '' : ` gl-modal__action--${kind}`}` });
+    const modalExamples = [
+      { titleId: 'gl-modal-emergency-title', title: L('알림', 'Notice'), body: L('비상모드 시에는 골리에 사이렌이 울리며 적색등이 점멸됩니다.\n비상모드로 변경하시겠습니까?', 'Emergency mode sounds the Goalie siren and flashes its red lamp.\nChange to emergency mode?'), actions: [modalAction(L('취소', 'Cancel')), modalAction(L('비상모드 변경', 'Change mode'), 'danger')] },
+      { titleId: 'gl-modal-empty-title', title: L('알림', 'Notice'), body: L('선택한 기간에 영상이 없습니다.\n다른 날짜를 선택해주세요.', 'No video exists for the selected period.\nChoose another date.'), actions: [modalAction(L('확인', 'Confirm'), 'primary')] },
+      { titleId: 'gl-modal-discard-title', title: L('알림', 'Notice'), body: L('취소 선택 시 모든 내용이 저장되지 않습니다.\n취소하시겠습니까?', 'Your changes will not be saved if you cancel.\nContinue?'), actions: [modalAction(L('돌아가기', 'Go back')), modalAction(L('취소', 'Discard'), 'primary')] },
+    ];
+    const scrollbarStates = [
+      { label: L('위', 'Top'), className: 'gl-scrollbar-specimen', value: 'thumb 6×36' },
+      { label: L('중간', 'Middle'), className: 'gl-scrollbar-specimen gl-scrollbar-specimen--middle', value: '#9BA4AD' },
+      { label: L('아래', 'Bottom'), className: 'gl-scrollbar-specimen gl-scrollbar-specimen--bottom', value: 'radius 4' },
+    ];
+
+    return {
+      rootRef: this.rootRef, lang, activePage,
+      isOverview: activePage === 'overview', isSystemSummary: activePage === 'systemsummary', isPrinciples: activePage === 'principles', isColors: activePage === 'colors', isTypography: activePage === 'typography', isSpacing: activePage === 'spacing', isButton: activePage === 'button', isStatus: activePage === 'status',
+      truthbarLabel: L('Goalie 문서 근거와 접근성 상태', 'Goalie documentation evidence and accessibility status'), evidenceLabel: L('Figma 근거 고정', 'Figma evidence pinned'), accessibilityLabel: L('접근성 보정 명시', 'Accessibility differences explicit'), sourcePin: activePage === 'colors' ? '230:2058' : activePage === 'typography' ? '2051:3017' : activePage === 'button' ? '351:2306 · 351:2435' : activePage === 'status' ? '230:2007 · 735:7167' : '32 nodes',
+      overviewTitle: L('로봇 운영의 상태와 안전을 한 언어로 연결한다', 'One language for robot operation, state and safety'), overviewBody: L('Goalie는 밝은 관제 UI의 시각 규칙과 순찰·영상·발화·비상 흐름의 행동 계약을 함께 관리합니다. Figma를 복제하는 데서 끝나지 않고 각 화면이 같은 토큰과 독립 상태축을 재사용하게 합니다.', 'Goalie manages both the visual language of the light control UI and behavioral contracts for patrol, video, speaking and emergency flows. Screens reuse the same tokens and independent state axes rather than stopping at Figma reproduction.'), overviewFacts, layerMapLabel: L('Foundation에서 Template까지 네 계층', 'Four layers from foundation to template'), layerMap,
+      contractTitle: L('완성 화면보다 먼저 지킬 계약', 'Contracts before finished screens'), contractBody: L('안전한 조합과 변경 가능성을 시각적 유사도와 함께 검증합니다.', 'Validate safe composition and changeability alongside visual fidelity.'), overviewRules,
+      buildTitle: L('구축 순서', 'Build sequence'), buildBody: L('상위 단계가 승인되지 않으면 다음 단계의 하드코딩으로 넘어가지 않습니다.', 'Do not hardcode the next layer before its dependency is approved.'), buildFlow,
+      coverageTitle: L('전달 범위와 구현 계층', 'Delivered coverage and implementation layers'), coverageBody: L('Figma section bundle을 그대로 하나의 컴포넌트로 만들지 않고 시스템 계층으로 해체합니다.', 'Decompose Figma section bundles into system layers instead of treating each bundle as one component.'), coverageCaption: L('Goalie Figma 근거의 시스템 계층별 적용 현황', 'Goalie Figma evidence by system layer'), layerHeader: L('계층', 'Layer'), evidenceHeader: L('근거 node', 'Evidence node'), targetHeader: L('구축 대상', 'Target'), statusHeader: L('상태', 'Status'), coverageRows,
+      stateModelTitle: L('로봇 상태를 독립 축으로 관리한다', 'Model robot state as independent axes'), stateModelBody: L('비상·발화·복귀를 하나의 enum으로 만들면 조합과 우선순위가 무너집니다.', 'A single enum for emergency, speaking and returning destroys composition and priority.'), stateAxes, priorityTitle: L('표시·행동 우선순위', 'Presentation and behavior priority'),
+      principlesTitle: L('Goalie 의사결정 원칙', 'Goalie decision principles'), principlesBody: L('운영자가 실제 로봇 상태를 빠르고 안전하게 판단하도록 만드는 기준입니다.', 'Criteria that help operators judge the real robot state quickly and safely.'), principles,
+      sourcePriorityTitle: L('근거 우선순위', 'Evidence precedence'), sourcePriorityBody: L('보이는 설명과 실제 속성이 충돌할 때 추측하지 않도록 순서를 고정합니다.', 'Pin the order to avoid guessing when visible descriptions conflict with actual properties.'), sourcePriority,
+      refColorsTitle: L('Figma 원본 팔레트', 'Figma reference palette'), refColorsBody: L('원본값은 감사 가능한 reference로 남기고 컴포넌트는 semantic token을 소비합니다.', 'Keep original values as auditable references while components consume semantic tokens.'), swatchGroups,
+      semanticTitle: L('색이 아니라 의미를 사용한다', 'Use meaning, not color'), semanticBody: L('선택, 운영, 안전, 발화와 배터리를 서로 대체하지 않는 의미 토큰으로 분리합니다.', 'Separate selection, operation, safety, audio and battery into non-interchangeable semantic tokens.'), semanticColors,
+      contrastTitle: L('밝은 브랜드 색의 출시 기준', 'Release gate for bright brand color'), contrastBody: L('Figma의 흰 라벨을 그대로 복제하지 않고 실제 대비와 승인된 foreground를 함께 문서화합니다.', 'Document actual contrast and approved foreground instead of copying white Figma labels unchanged.'), contrastPairs,
+      typeTitle: L('한·영 공통 타입 스케일', 'Bilingual product type scale'), typeBody: L('Figma actual 속성을 기준으로 Pretendard, -2% tracking과 120/140% line-height를 역할별로 고정합니다.', 'Pin Pretendard, -2% tracking and role-based 120/140% line height from actual Figma properties.'), typeRows,
+      typeConflictTitle: L('원본 설명과 actual 값의 차이', 'Differences between description and actual values'), typeConflictBody: L('Head S, Body L, Button M은 같은 node 안에서도 설명과 렌더링 값이 다릅니다. 현재 토큰은 actual node를 따르며 변경 시 이력을 남깁니다.', 'Head S, Body L and Button M conflict inside the same node. Current tokens follow the actual node and retain a change record.'),
+      spacingTitle: L('4px 기반 간격', '4px-based spacing'), spacingBody: L('임의 px 대신 컴포넌트 내부부터 화면 섹션까지 유한한 간격 토큰을 사용합니다.', 'Use a finite scale from component internals to page sections instead of arbitrary pixels.'), spacingRows,
+      shapeTitle: L('역할에 따른 곡률', 'Role-based shape'), shapeBody: L('곡률은 장식이 아니라 control, card, pill의 구조를 구분합니다.', 'Radius distinguishes control, card and pill structure rather than decorating it.'), shapeRows,
+      elevationTitle: L('세 단계 깊이', 'Three elevation levels'), elevationBody: L('Figma의 Default, Active, Floating을 기본 깊이로 고정하고 비상·발화 glow는 별도 safety/audio effect로 관리합니다.', 'Use Figma Default, Active and Floating as base elevation; manage emergency and speaking glows as separate safety/audio effects.'), elevationRows,
+      buttonTitle: L('위계와 위험도가 분리된 액션', 'Actions separated by hierarchy and risk'), buttonBody: L('Primary와 Danger는 같은 variant API를 공유하지만 semantic tone과 disabled 정책은 교차 사용하지 않습니다.', 'Primary and Danger share the same variant API while keeping semantic tone and disabled policy separate.'),
+      buttonA11yTitle: L('Figma와 production foreground의 명시적 차이', 'Explicit Figma versus production foreground difference'), buttonA11yBody: L('원본은 밝은 Cyan·Red 위에 흰 글자를 사용하지만 작은 텍스트 대비가 부족합니다. 제품 컴포넌트는 exact fill과 exact icon geometry를 유지하고 라벨·아이콘을 접근 가능한 dark ink로 보정합니다.', 'The source uses white text on bright Cyan and Red, which is insufficient for small text. Product components retain exact fills and icon geometry while correcting labels and icons to accessible dark ink.'),
+      buttonMatrices,
+      switchTitle: L('주행 모드는 상태가 아니라 조작 권한이다', 'Drive mode is control authority, not operation state'), switchBody: L('수동/자동은 순찰 중/정지와 결합 가능한 독립 축입니다. role=switch와 aria-checked로 현재 값을 전달합니다.', 'Manual/automatic is an independent axis that composes with patrolling or paused. role=switch and aria-checked expose the current value.'),
+      interactiveLabel: L('동작 예시', 'Interactive'), disabledLabel: L('비활성 예시', 'Disabled'), manualLabel: L('수동', 'Manual'), automaticLabel: L('자동', 'Auto'), manualChecked: manualChecked ? 'true' : 'false', toggleDriveMode: this.toggleDriveMode,
+      switchAriaLabel: L(`주행 모드: ${manualChecked ? '수동' : '자동'}`, `Drive mode: ${manualChecked ? 'manual' : 'automatic'}`), currentDriveMode: manualChecked ? L('현재 수동 모드', 'Currently manual') : L('현재 자동 모드', 'Currently automatic'),
+      manualDisabledAria: L('수동 모드, 비활성', 'Manual mode, disabled'), automaticDisabledAria: L('자동 모드, 비활성', 'Automatic mode, disabled'), disabledRule: L('권한 또는 연결 상태가 명확할 때만 비활성', 'Disable only with explicit permission or connection reason'),
+      componentContractTitle: L('코드 API는 Figma variant보다 의미가 먼저다', 'Code API puts meaning before Figma variants'), componentContractBody: L('시각 상태를 props로 강제하지 않고 browser interaction과 semantic state에서 파생합니다. 문서의 hover/pressed 고정은 시각 회귀용입니다.', 'Do not force visual states through product props; derive them from browser interaction and semantic state. Pinned hover/pressed examples are documentation-only visual fixtures.'), buttonContracts,
+      alertTitle: L('현재 사건과 누적 이력을 한 컴포넌트로 연결한다', 'Connect the current event and its history'), alertBody: L('severity와 expanded는 독립 축입니다. 오류 banner가 항상 펼쳐진 패널을 의미하지 않으며, 펼침은 aria-expanded와 연결된 영역으로 노출합니다.', 'Severity and expanded state are independent. An error banner does not imply an expanded panel; disclosure is exposed through aria-expanded and its controlled region.'),
+      infoAlertMessage: L('A코스로 순찰을 시작합니다.', 'Starting patrol on A course.'), dangerAlertMessage: L('대체경로를 찾을 수 없습니다.', 'No alternate route found.'), alertExpanded: this.state.alertExpanded ? 'true' : 'false', alertExpandedBool: this.state.alertExpanded, toggleAlertHistory: this.toggleAlertHistory, alertExpandLabel: this.state.alertExpanded ? L('알림 이력 접기', 'Collapse alert history') : L('알림 이력 펼치기', 'Expand alert history'), alertDismissLabel: L('현재 알림 닫기', 'Dismiss current alert'), historyTitle: L('알림 내역', 'Alert history'), historyCloseLabel: L('알림 내역 닫기', 'Close alert history'), alertHistory,
+      notificationTitle: L('알림 진입점은 상태를 보존한다', 'The notification entry preserves state'), notificationBody: L('Default, hover, pressed는 시각 상태이며 읽지 않음 수량은 별도 badge나 accessible name으로 전달합니다.', 'Default, hover and pressed are visual states; unread count belongs in a separate badge or accessible name.'), notificationStates, notificationText: L('알림', 'Alerts'),
+      modalTitle: L('메시지 종류보다 필요한 결정을 기준으로 나눈다', 'Classify modals by required decision'), modalBody: L('확인, 위험 변경, 변경 폐기는 같은 크기와 구조를 공유하지만 action 의미와 초기 포커스가 다릅니다.', 'Confirmation, dangerous change and discard share geometry while action meaning and initial focus differ.'), modalExamples,
+      scrollbarTitle: L('스크롤 위치는 조용하게, 가능성은 명확하게', 'Keep position quiet and scrollability clear'), scrollbarBody: L('6px thumb와 4px radius를 유지하되 실제 scroll region은 native keyboard·wheel·touch behavior를 보존합니다.', 'Keep the 6px thumb and 4px radius while preserving native keyboard, wheel and touch behavior in real scroll regions.'), scrollbarStates,
+    };
+  }
+}
+</script>
+</body>
+</html>

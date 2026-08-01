@@ -1,0 +1,387 @@
+/* Goalie UI product components
+   Figma evidence: Button 351:2306 / 351:2435, Switch 329:4329 / 343:1010.
+   Components consume semantic/component tokens; Figma-only reference values
+   remain in goalie-tokens.css for auditability. */
+
+[data-system="goalie"] .gl-button {
+  --gl-button-bg: var(--goalie-button-primary-bg);
+  --gl-button-fg: var(--goalie-button-primary-fg);
+  --gl-button-border: var(--goalie-button-primary-bg);
+  --gl-button-hover: var(--goalie-button-primary-bg-hover);
+  --gl-button-pressed: var(--goalie-button-primary-bg-pressed);
+  --gl-button-subtle-hover: var(--goalie-button-primary-subtle-hover);
+  --gl-button-subtle-pressed: var(--goalie-button-primary-subtle-pressed);
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--gl-button-fg);
+  cursor: pointer;
+  display: inline-flex;
+  font: var(--goalie-type-button-s);
+  gap: 8px;
+  justify-content: center;
+  letter-spacing: var(--goalie-tracking-tight);
+  min-block-size: 40px;
+  min-inline-size: 120px;
+  padding: 0 48px;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--goalie-duration-fast) var(--goalie-ease-standard),
+    border-color var(--goalie-duration-fast) var(--goalie-ease-standard),
+    color var(--goalie-duration-fast) var(--goalie-ease-standard),
+    opacity var(--goalie-duration-fast) var(--goalie-ease-standard);
+  white-space: nowrap;
+}
+
+[data-system="goalie"] .gl-button--medium {
+  font: var(--goalie-type-button-l);
+  min-block-size: 48px;
+  min-inline-size: 160px;
+}
+
+[data-system="goalie"] .gl-button--fixed.gl-button--small { inline-size: 120px; }
+[data-system="goalie"] .gl-button--fixed.gl-button--medium { inline-size: 160px; }
+
+[data-system="goalie"] .gl-button--danger {
+  --gl-button-bg: var(--goalie-button-danger-bg);
+  --gl-button-fg: var(--goalie-button-danger-fg);
+  --gl-button-border: var(--goalie-button-danger-bg);
+  --gl-button-hover: var(--goalie-button-danger-bg-hover);
+  --gl-button-pressed: var(--goalie-button-danger-bg-pressed);
+  --gl-button-subtle-hover: var(--goalie-button-danger-subtle-hover);
+  --gl-button-subtle-pressed: var(--goalie-button-danger-subtle-pressed);
+}
+
+[data-system="goalie"] .gl-button--contained {
+  background: var(--gl-button-bg);
+  border-color: var(--gl-button-bg);
+}
+
+[data-system="goalie"] .gl-button--outlined {
+  border-color: var(--gl-button-border);
+  color: var(--gl-button-border);
+}
+
+[data-system="goalie"] .gl-button--text {
+  color: var(--gl-button-border);
+}
+
+[data-system="goalie"] .gl-button:hover:not(:disabled),
+[data-system="goalie"] .gl-button[data-demo-state="hover"] {
+  background: var(--gl-button-hover);
+  border-color: var(--gl-button-hover);
+}
+
+[data-system="goalie"] .gl-button--outlined:hover:not(:disabled),
+[data-system="goalie"] .gl-button--outlined[data-demo-state="hover"],
+[data-system="goalie"] .gl-button--text:hover:not(:disabled),
+[data-system="goalie"] .gl-button--text[data-demo-state="hover"] {
+  background: var(--gl-button-subtle-hover);
+  border-color: var(--gl-button-border);
+  color: var(--gl-button-border);
+}
+
+[data-system="goalie"] .gl-button:active:not(:disabled),
+[data-system="goalie"] .gl-button[data-demo-state="pressed"] {
+  background: var(--gl-button-pressed);
+  border-color: var(--gl-button-pressed);
+}
+
+[data-system="goalie"] .gl-button--outlined:active:not(:disabled),
+[data-system="goalie"] .gl-button--outlined[data-demo-state="pressed"],
+[data-system="goalie"] .gl-button--text:active:not(:disabled),
+[data-system="goalie"] .gl-button--text[data-demo-state="pressed"] {
+  background: var(--gl-button-subtle-pressed);
+  border-color: var(--gl-button-pressed);
+  color: var(--gl-button-pressed);
+}
+
+[data-system="goalie"] .gl-button:focus-visible,
+[data-system="goalie"] .gl-switch:focus-visible {
+  box-shadow: var(--goalie-focus-ring);
+  outline: 0;
+}
+
+[data-system="goalie"] .gl-button:disabled,
+[data-system="goalie"] .gl-button[data-demo-state="disabled"] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+[data-system="goalie"] .gl-button--primary.gl-button--contained:disabled,
+[data-system="goalie"] .gl-button--primary.gl-button--contained[data-demo-state="disabled"] {
+  background: var(--goalie-button-primary-bg-disabled);
+  border-color: var(--goalie-button-primary-bg-disabled);
+  color: var(--goalie-button-primary-fg-disabled);
+}
+
+[data-system="goalie"] .gl-button--primary.gl-button--outlined:disabled,
+[data-system="goalie"] .gl-button--primary.gl-button--outlined[data-demo-state="disabled"],
+[data-system="goalie"] .gl-button--primary.gl-button--text:disabled,
+[data-system="goalie"] .gl-button--primary.gl-button--text[data-demo-state="disabled"],
+[data-system="goalie"] .gl-button--danger:disabled,
+[data-system="goalie"] .gl-button--danger[data-demo-state="disabled"] {
+  opacity: 0.3;
+}
+
+[data-system="goalie"] .gl-button__icon {
+  block-size: 16px;
+  flex: 0 0 16px;
+  inline-size: 16px;
+  object-fit: contain;
+}
+
+[data-system="goalie"] .gl-button--small .gl-button__icon {
+  block-size: 12px;
+  flex-basis: 12px;
+  inline-size: 12px;
+}
+
+/* The exported plus is white because that is how it appears in Figma.
+   Product foreground is accessible dark ink, so color the exact exported
+   glyph to the same semantic foreground instead of replacing its geometry. */
+[data-system="goalie"] .gl-button--primary .gl-button__icon,
+[data-system="goalie"] .gl-button--danger .gl-button__icon {
+  filter: brightness(0) saturate(100%) invert(10%) sepia(8%) saturate(921%) hue-rotate(169deg) brightness(94%) contrast(94%);
+}
+
+[data-system="goalie"] .gl-switch {
+  align-items: center;
+  appearance: none;
+  background: var(--goalie-switch-auto-bg);
+  border: 0;
+  border-radius: var(--goalie-radius-pill);
+  color: var(--goalie-switch-auto-fg);
+  cursor: pointer;
+  display: inline-flex;
+  font: var(--goalie-weight-medium) 15px / 1.4 var(--goalie-font-sans);
+  block-size: var(--goalie-switch-height);
+  inline-size: var(--goalie-switch-width);
+  letter-spacing: var(--goalie-tracking-tight);
+  padding: 0;
+  position: relative;
+  transition: background-color var(--goalie-duration-base) var(--goalie-ease-standard);
+}
+
+[data-system="goalie"] .gl-switch[aria-checked="true"] {
+  background: var(--goalie-switch-manual-bg);
+  color: var(--goalie-text-inverse);
+}
+
+[data-system="goalie"] .gl-switch__label {
+  inset-block-start: 50%;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+[data-system="goalie"] .gl-switch__label--manual { inset-inline-start: 8px; }
+[data-system="goalie"] .gl-switch__label--auto { inset-inline-start: 26px; }
+[data-system="goalie"] .gl-switch[aria-checked="true"] .gl-switch__label--auto,
+[data-system="goalie"] .gl-switch[aria-checked="false"] .gl-switch__label--manual { display: none; }
+
+[data-system="goalie"] .gl-switch__knob {
+  block-size: var(--goalie-switch-knob-size);
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  position: absolute;
+  transition: inset-inline-start var(--goalie-duration-base) var(--goalie-ease-standard);
+  inline-size: var(--goalie-switch-knob-size);
+}
+
+[data-system="goalie"] .gl-switch[aria-checked="true"] .gl-switch__knob { inset-inline-start: 38px; }
+
+[data-system="goalie"] .gl-switch__knob img {
+  block-size: 28px;
+  inline-size: 28px;
+  inset: -3px auto auto -3px;
+  max-inline-size: none;
+  position: absolute;
+}
+
+[data-system="goalie"] .gl-switch:disabled {
+  cursor: not-allowed;
+}
+
+[data-system="goalie"] .gl-switch:disabled[aria-checked="true"] {
+  background: var(--goalie-switch-manual-disabled-bg);
+}
+
+[data-system="goalie"] .gl-switch:disabled[aria-checked="false"] {
+  color: var(--goalie-switch-auto-disabled-fg);
+}
+
+/* Feedback ------------------------------------------------------- */
+[data-system="goalie"] .gl-notification-trigger {
+  align-items: center;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.8);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+  color: var(--goalie-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  font: var(--goalie-weight-semibold) 15px / 1.4 var(--goalie-font-sans);
+  gap: 4px;
+  height: 80px;
+  justify-content: center;
+  letter-spacing: var(--goalie-tracking-tight);
+  padding: 8px 0;
+  width: 80px;
+}
+
+[data-system="goalie"] .gl-notification-trigger:hover,
+[data-system="goalie"] .gl-notification-trigger[data-demo-state="hover"] { background: var(--goalie-surface); }
+[data-system="goalie"] .gl-notification-trigger:active,
+[data-system="goalie"] .gl-notification-trigger[aria-expanded="true"],
+[data-system="goalie"] .gl-notification-trigger[data-demo-state="pressed"] { background: var(--goalie-color-neutral-250); }
+[data-system="goalie"] .gl-notification-trigger:focus-visible { box-shadow: var(--goalie-focus-ring); outline:0; }
+[data-system="goalie"] .gl-notification-trigger img { height:28px; width:26px; }
+
+[data-system="goalie"] .gl-alert-stack {
+  display: grid;
+  gap: 2px;
+  max-width: 640px;
+  width: 100%;
+}
+
+[data-system="goalie"] .gl-alert-banner {
+  --gl-alert-bg: var(--goalie-info);
+  align-items: center;
+  background: var(--gl-alert-bg);
+  border-radius: 10px;
+  box-shadow: var(--goalie-shadow-floating);
+  color: var(--goalie-info-on);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 24px minmax(0,1fr) auto 18px 14px;
+  min-height: 64px;
+  padding: 12px 32px;
+}
+
+[data-system="goalie"] .gl-alert-banner--danger {
+  --gl-alert-bg: var(--goalie-danger);
+  color: var(--goalie-danger-on);
+}
+
+[data-system="goalie"] .gl-alert-banner__message {
+  font: var(--goalie-weight-semibold) 21px / 1.4 var(--goalie-font-sans);
+  letter-spacing: var(--goalie-tracking-tight);
+  margin: 0;
+}
+
+[data-system="goalie"] .gl-alert-banner time {
+  font: var(--goalie-weight-regular) 15px / 1.2 var(--goalie-font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--goalie-tracking-tight);
+  text-align: end;
+  white-space: nowrap;
+}
+
+[data-system="goalie"] .gl-alert-icon,
+[data-system="goalie"] .gl-alert-close,
+[data-system="goalie"] .gl-alert-expand {
+  height:24px;
+  position:relative;
+  width:24px;
+}
+
+[data-system="goalie"] .gl-alert-icon img,
+[data-system="goalie"] .gl-alert-close img,
+[data-system="goalie"] .gl-alert-expand img { inset:0; height:100%; position:absolute; width:100%; }
+[data-system="goalie"] .gl-alert-banner :is(.gl-alert-icon,.gl-alert-close,.gl-alert-expand) img { filter:brightness(0) saturate(100%) invert(10%) sepia(8%) saturate(921%) hue-rotate(169deg) brightness(94%) contrast(94%); }
+[data-system="goalie"] .gl-alert-expand { appearance:none; background:transparent; border:0; cursor:pointer; height:18px; padding:0; width:18px; }
+[data-system="goalie"] .gl-alert-expand img { transition:transform var(--goalie-duration-base) var(--goalie-ease-standard); }
+[data-system="goalie"] .gl-alert-expand[aria-expanded="true"] img { transform:rotate(180deg); }
+[data-system="goalie"] .gl-alert-close { appearance:none; background:transparent; border:0; cursor:pointer; height:14px; padding:0; width:14px; }
+[data-system="goalie"] :is(.gl-alert-expand,.gl-alert-close):focus-visible { box-shadow:var(--goalie-focus-ring); outline:0; }
+
+[data-system="goalie"] .gl-alert-history {
+  background: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  box-shadow: var(--goalie-shadow-floating);
+  color: var(--goalie-color-neutral-100);
+  max-height: 198px;
+  overflow: hidden;
+  padding: 12px 6px 16px;
+}
+
+[data-system="goalie"] .gl-alert-history__header {
+  align-items:center;
+  display:flex;
+  justify-content:space-between;
+  min-height:28px;
+  padding:0 18px 8px;
+}
+
+[data-system="goalie"] .gl-alert-history__header strong { font:var(--goalie-weight-semibold) 15px/1.2 var(--goalie-font-sans); }
+[data-system="goalie"] .gl-alert-history__header .gl-alert-close img { filter:none; }
+[data-system="goalie"] .gl-alert-history__divider { display:block; height:1px; width:100%; }
+[data-system="goalie"] .gl-alert-history__list { max-height:120px; overflow:auto; padding:0 8px 0 16px; scrollbar-color:var(--goalie-color-neutral-250) transparent; scrollbar-width:thin; }
+[data-system="goalie"] .gl-alert-history__list::-webkit-scrollbar { width:6px; }
+[data-system="goalie"] .gl-alert-history__list::-webkit-scrollbar-thumb { background:var(--goalie-color-neutral-250); border-radius:4px; }
+[data-system="goalie"] .gl-alert-history__row { align-items:center; display:grid; gap:16px; grid-template-columns:minmax(0,1fr) auto; min-height:40px; }
+[data-system="goalie"] .gl-alert-history__row strong { font:var(--goalie-type-head-s); }
+[data-system="goalie"] .gl-alert-history__row time { color:var(--goalie-color-neutral-250); font:var(--goalie-weight-regular) 15px/1.2 var(--goalie-font-sans); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+[data-system="goalie"] .gl-modal-scrim {
+  align-items:center;
+  background:rgba(0,0,0,0.14);
+  display:flex;
+  justify-content:center;
+  min-height:400px;
+  padding:32px;
+}
+
+[data-system="goalie"] .gl-modal {
+  background:var(--goalie-surface);
+  border-radius:10px;
+  display:grid;
+  grid-template-rows:74px minmax(158px,1fr) 88px;
+  min-height:320px;
+  max-width:600px;
+  overflow:hidden;
+  position:relative;
+  width:100%;
+}
+
+[data-system="goalie"] .gl-modal__title { align-self:center; color:var(--goalie-text-secondary); font:var(--goalie-type-head-s); margin:0; text-align:center; }
+[data-system="goalie"] .gl-modal__body { align-items:center; color:var(--goalie-text-secondary); display:flex; font:var(--goalie-weight-regular) 20px/1.4 var(--goalie-font-sans); justify-content:center; letter-spacing:var(--goalie-tracking-tight); margin:0; padding:16px 34px; text-align:center; white-space:pre-line; }
+[data-system="goalie"] .gl-modal__actions { align-items:center; border-top:1px solid var(--goalie-border); display:grid; grid-auto-columns:1fr; grid-auto-flow:column; min-height:88px; padding:16px 50px; }
+[data-system="goalie"] .gl-modal__action { align-items:center; appearance:none; background:transparent; border:0; color:var(--goalie-text-secondary); cursor:pointer; display:flex; font:var(--goalie-weight-medium) 22px/1.2 var(--goalie-font-sans); height:56px; justify-content:center; letter-spacing:var(--goalie-tracking-tight); min-width:0; padding:12px 24px; position:relative; }
+[data-system="goalie"] .gl-modal__action+.gl-modal__action { border-left:1px solid var(--goalie-border); }
+[data-system="goalie"] .gl-modal__action--primary { color:var(--goalie-brand-text); }
+[data-system="goalie"] .gl-modal__action--danger { color:var(--goalie-danger); }
+[data-system="goalie"] .gl-modal__action:focus-visible { box-shadow:var(--goalie-focus-ring-inset); outline:0; }
+
+[data-system="goalie"] .gl-scrollbar-specimen { background:var(--goalie-surface-muted); border-radius:4px; height:120px; overflow:hidden; position:relative; width:6px; }
+[data-system="goalie"] .gl-scrollbar-specimen span { background:var(--goalie-color-neutral-250); border-radius:4px; height:36px; inset:0 0 auto; position:absolute; width:6px; }
+[data-system="goalie"] .gl-scrollbar-specimen--middle span { background:var(--goalie-color-neutral-500); top:42px; }
+[data-system="goalie"] .gl-scrollbar-specimen--bottom span { background:var(--goalie-color-neutral-500); top:84px; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-system="goalie"] .gl-button,
+  [data-system="goalie"] .gl-switch,
+  [data-system="goalie"] .gl-switch__knob,
+  [data-system="goalie"] .gl-alert-expand img { transition: none; }
+}
+
+@media (max-width:700px) {
+  [data-system="goalie"] .gl-alert-banner { gap:12px; grid-template-columns:24px minmax(0,1fr) 18px 14px; padding:12px 16px; }
+  [data-system="goalie"] .gl-alert-banner time { grid-column:2/3; grid-row:2; text-align:start; }
+  [data-system="goalie"] .gl-alert-history__row { align-items:start; grid-template-columns:1fr; gap:2px; padding:8px 0; }
+  [data-system="goalie"] .gl-modal-scrim { padding:16px; }
+  [data-system="goalie"] .gl-modal { grid-template-rows:64px minmax(158px,1fr) auto; }
+  [data-system="goalie"] .gl-modal__actions { grid-auto-flow:row; padding:8px 16px; }
+  [data-system="goalie"] .gl-modal__action+.gl-modal__action { border-left:0; border-top:1px solid var(--goalie-border); }
+}
+
+@media (forced-colors: active) {
+  [data-system="goalie"] .gl-button,
+  [data-system="goalie"] .gl-switch { forced-color-adjust: auto; }
+  [data-system="goalie"] .gl-button__icon { filter: none; }
+}

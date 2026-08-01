@@ -843,3 +843,112 @@
   .cpms-route-card:focus-visible,
   .cpms-doc :is(a, button, input, select):focus-visible { outline-color: Highlight; }
 }
+
+/* ---------------------------------------------------------------------
+   Typeface block
+
+   Named and shown before the size table. A reader who stops after the first
+   screen should still know what the product is set in.
+   --------------------------------------------------------------------- */
+.cpms-face {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  grid-template-areas: "display card" "stacks card";
+  align-items: start;
+  gap: var(--cpms-space-6);
+}
+
+.cpms-face__display {
+  grid-area: display;
+  /* Large text still owes 3:1. The reference sets this word in a pale grey;
+     --cpms-border-strong does not clear the threshold, and a word this size is
+     read, not decoration, however ornamental it looks. */
+  color: var(--cpms-text-tertiary);
+  font-size: clamp(56px, 9vw, 112px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--cpms-tracking-tight);
+}
+
+.cpms-face__card {
+  grid-area: card;
+  padding: var(--cpms-space-5);
+  background: var(--cpms-surface);
+  border: 1px solid var(--cpms-border);
+  border-radius: var(--cpms-radius-lg);
+}
+
+.cpms-face__weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cpms-space-3);
+  color: var(--cpms-text-secondary);
+  font-size: var(--cpms-font-xs);
+}
+
+.cpms-face__specimen {
+  margin: var(--cpms-space-4) 0 var(--cpms-space-3);
+  color: var(--cpms-text-strong);
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: var(--cpms-tracking-tight);
+}
+
+.cpms-face__glyphs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--cpms-text-tertiary);
+  font-size: var(--cpms-font-xs);
+  line-height: var(--cpms-leading-snug);
+  overflow-wrap: anywhere;
+}
+
+.cpms-face__stacks {
+  grid-area: stacks;
+  margin: 0;
+  border-top: 1px solid var(--cpms-border);
+}
+
+.cpms-face__stacks > div {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: var(--cpms-space-4);
+  padding: var(--cpms-space-3) 0;
+  border-bottom: 1px solid var(--cpms-border);
+}
+
+.cpms-face__stacks dt {
+  color: var(--cpms-text-strong);
+  font-size: var(--cpms-font-sm);
+  font-weight: 600;
+}
+
+.cpms-face__stacks dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.cpms-face__stacks code {
+  display: block;
+  color: var(--cpms-brand-accent-strong);
+  font-size: var(--cpms-font-xs);
+}
+
+.cpms-face__stacks span {
+  display: block;
+  margin-top: 2px;
+  color: var(--cpms-text-tertiary);
+  font-family: var(--cpms-font-mono);
+  font-size: var(--cpms-font-xs);
+  line-height: var(--cpms-leading-snug);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .cpms-face {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "display" "card" "stacks";
+  }
+}
