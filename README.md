@@ -7,7 +7,7 @@ RMS 디자인 시스템의 정보 구조와 컴포넌트를 본체로 사용하�
 | 제품 | 대상 | 테마 | 상태 |
 |---|---|---|---|
 | **Parkie UI** | 주차 로봇 관제 | 다크 고정 | 구현 완료 |
-| **Goalie UI** | 순찰 로봇 관제 | 라이트 고정 | **뼈대만** — 디자인 전달 대기 |
+| **Goalie UI** | 순찰 로봇 관제 | 라이트 고정 | **근거 기반 디자인 시스템 구축 완료** |
 | **CPMS UI** | PM 전용 프로젝트 관리 | 라이트 고정 | **1차 운영형 디자인 시스템** |
 
 상단바의 제품 탭으로 전환하고, 경로는 `#/<제품>/<페이지>` 형태입니다.
@@ -55,18 +55,19 @@ RMS 디자인 시스템의 정보 구조와 컴포넌트를 본체로 사용하�
 포커스 표시와 경계가 시스템 색을 따르게 합니다. 이 오버라이드는 토큰 스코프
 **밖**에 있어야 합니다 — 패리티 게이트가 스코프별 선언 수를 세기 때문입니다.
 
-## Goalie 인수 절차
+## Goalie 근거 기반 디자인 시스템
 
-디자인은 자료를 전달받는 대로 순차 반영합니다. 추측으로 채우지 않으며,
-Goalie의 13개 페이지 중 `브랜드 자산`만 실내용(인수 계약)이고 나머지는 `soon`입니다.
+Goalie는 RMS_Final의 32개 고정 Figma 노드와 제공된 화면 자산을 기준으로
+15개 authored route를 공개합니다. 추측 규칙은 넣지 않고 reference·semantic·component
+계층과 operation·audio·safety·selection 상태축을 분리했습니다.
 
-1. **자료 전달** — 표기가 모호하거나 서로 어긋나면 확인 후 진행
-2. **토큰 주입** — 해당 제품의 `tokens/<제품>-tokens.css` 스왑 레이어. 브랜드 램프는 현재 자리표시자
-3. **스펙 작성과 대비 검증** — 본문 4.5:1, 비텍스트 3:1. 밝은 채움 위에는 어두운 잉크
-4. **순서** — 색상 → 타이포·간격 → 컴포넌트 → 화면 패턴
+- 파운데이션: 전체 요약, 원칙, 색상, 타이포그래피, 간격과 형태, 로봇 신호
+- 컴포넌트: 버튼·스위치, 선택·시간, 상태·피드백, 내비게이션
+- 패턴과 템플릿: 순찰 코스, 영상관리, 운영 화면
+- 리소스: 브랜드 자산·교체 순서·출시 게이트
 
-파운데이션이 먼저 들어와야 컴포넌트 문서를 하드코딩 없이 쓸 수 있습니다.
-전체 계약은 각 제품의 `브랜드 자산` 페이지에 있습니다.
+비상모드 확정 방식과 실제 송출 상한처럼 제품·안전 승인이 필요한 항목은
+컴포넌트가 임의로 결정하지 않고 승인 경계로 문서화합니다.
 
 ## CPMS 근거 기반 디자인 시스템
 
@@ -88,11 +89,13 @@ authored route를 제공합니다.
 - `index.html` — 라우팅, 제품 매니페스트, 크롬, Parkie 전체 문서
 - `ProductSkeleton.dc.html` — 디자인 대기 제품이 공유하는 뼈대와 인수 계약
 - `CPMSPages.dc.html` — CPMS 13개 근거 기반 문서와 합성 specimen
+- `GoaliePages.dc.html` — Goalie 15개 Figma 근거 기반 문서와 운영 specimen
 - `support.js` — Design Component 브라우저 런타임
 - `styles.css` — 전역 진입점, `--guide-*` 크롬 토큰, 반응형, 크롬 고대비
 - `tokens/*-tokens.css` — 제품별 토큰(스왑 레이어)
 - `components/product-skeleton.css` — 공유 뼈대 스타일(`--guide-*` 기반)
 - `components/cpms-documentation.css` — CPMS 문서·specimen 전용 스코프
+- `components/goalie.css`, `components/goalie-documentation.css` — Goalie component·pattern·문서 스코프
 - `brand/logo.svg` — HL Robotics 심볼
 - `icons/` — Parkie 원본·로봇 전용 아이콘과 출처 정책
 - `components/iconography.css` — 아이콘 상태 매트릭스와 도메인 상태 카탈로그

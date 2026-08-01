@@ -1,8 +1,9 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
-/* The page slots every skeleton product declares. */
-const SKELETON_PAGES = [
+/* Public authored Goalie routes. Keep this explicit so new documentation
+   cannot silently ship without deep-link, responsive and language coverage. */
+const GOALIE_PAGES = [
   'overview',
   'systemsummary',
   'principles',
@@ -14,14 +15,12 @@ const SKELETON_PAGES = [
   'input',
   'status',
   'navigation',
+  'patrol',
+  'video',
   'templates',
   'brand',
 ];
 
-/* Goalie remains the receiving skeleton. CPMS is an authored product with an
-   independent information architecture and must never be folded back into the
-   skeleton page list. */
-const SKELETON_SYSTEMS = ['goalie'];
 const CPMS_PAGES = [
   'overview', 'systemsummary', 'principles', 'colors', 'typography', 'layout',
   'shell', 'controls', 'data-display', 'states', 'permissions', 'accessibility',
@@ -32,7 +31,7 @@ const CPMS_PAGES = [
    adapt when a product is registered. This list is the deliberate pin: adding a
    product must be an explicit decision here too, which is what catches a product
    silently appearing or vanishing. */
-const ALL_SYSTEMS = ['parkie', ...SKELETON_SYSTEMS, 'cpms'];
+const ALL_SYSTEMS = ['parkie', 'goalie', 'cpms'];
 
 /* Read from the page rather than duplicated here, so registering a product does
    not require editing the tests. `product registry is the single source of
@@ -215,19 +214,17 @@ test('Parkie remains a canonical peer under the guide hierarchy', async ({ page 
   await expect(systemControl(page, 'goalie')).toHaveAttribute('href', /#\/goalie\/overview$/);
 });
 
-test('every declared skeleton page supports a direct canonical load and refresh', async ({ page }) => {
+test('every authored Goalie page supports a direct canonical load and refresh', async ({ page }) => {
   test.setTimeout(240_000);
 
-  for (const system of SKELETON_SYSTEMS) {
-    for (const pageId of SKELETON_PAGES) {
-      await page.goto('about:blank');
-      await page.goto(canonicalUrl(system, pageId));
-      await expectSystemRoute(page, system, pageId);
-      await expect(page.locator('h1'), `${system}/${pageId} must title itself`).not.toHaveText('');
+  for (const pageId of GOALIE_PAGES) {
+    await page.goto('about:blank');
+    await page.goto(canonicalUrl('goalie', pageId));
+    await expectSystemRoute(page, 'goalie', pageId);
+    await expect(page.locator('h1'), `goalie/${pageId} must title itself`).not.toHaveText('');
 
-      await page.reload();
-      await expectSystemRoute(page, system, pageId);
-    }
+    await page.reload();
+    await expectSystemRoute(page, 'goalie', pageId);
   }
 });
 
@@ -427,12 +424,12 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
     { width: 390, height: 844, system: 'parkie', pageId: 'overview' },
     { width: 390, height: 844, system: 'goalie', pageId: 'templates' },
     { width: 320, height: 760, system: 'parkie', pageId: 'colors' },
-    ...SKELETON_SYSTEMS.flatMap((system) => SKELETON_PAGES.map((pageId) => ({
+    ...GOALIE_PAGES.map((pageId) => ({
       width: 320,
       height: 760,
-      system,
+      system: 'goalie',
       pageId,
-    }))),
+    })),
     ...CPMS_PAGES.map((pageId) => ({ width: 320, height: 760, system: 'cpms', pageId })),
   ];
 
@@ -481,7 +478,7 @@ test('representative Parkie and every non-Parkie route have complete accessible 
     ['parkie', 'overview'],
     ['parkie', 'colors'],
     ['parkie', 'button'],
-    ...SKELETON_SYSTEMS.flatMap((system) => SKELETON_PAGES.map((pageId) => [system, pageId])),
+    ...GOALIE_PAGES.map((pageId) => ['goalie', pageId]),
     ...CPMS_PAGES.map((pageId) => ['cpms', pageId]),
   ];
 
@@ -696,33 +693,30 @@ test('the product tabs are the first keyboard stops and show a visible focus rin
   }
 });
 
-/* A skeleton page is short enough that an untranslated string is easy to miss by
-   eye. The guide is deliberately bilingual — the sidebar carries both languages
-   and the eyebrow's second half is always the other language — so the assertion
-   is scoped to the authored body copy. */
-test('skeleton copy is fully translated in English', async ({ page }) => {
+/* The guide is deliberately bilingual — the sidebar carries both languages and
+   the eyebrow's second half is always the other language — so the assertion is
+   scoped to authored Goalie body copy. */
+test('authored Goalie copy is fully translated in English', async ({ page }) => {
   const koreanCount = (value) => (value.match(/[가-힣]/g) || []).length;
 
-  for (const system of SKELETON_SYSTEMS) {
-    for (const pageId of ['overview', 'brand']) {
-      await page.goto(canonicalUrl(system, pageId));
-      await expectSystemRoute(page, system, pageId);
-      await page.getByRole('button', { name: 'EN', exact: true }).click();
-      await expect(page.locator('[data-guide-root] h1')).not.toHaveText(/[가-힣]/);
+  for (const pageId of ['overview', 'brand']) {
+    await page.goto(canonicalUrl('goalie', pageId));
+    await expectSystemRoute(page, 'goalie', pageId);
+    await page.getByRole('button', { name: 'EN', exact: true }).click();
+    await expect(page.locator('[data-guide-root] h1')).not.toHaveText(/[가-힣]/);
 
-      const body = await page.evaluate(() => {
-        const main = document.querySelector('main');
-        const eyebrow = document.querySelector('.guide-page-header__eyebrow');
-        const eyebrowText = eyebrow ? eyebrow.innerText : '';
-        return { main: main ? main.innerText : '', eyebrow: eyebrowText };
-      });
+    const body = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      const eyebrow = document.querySelector('.guide-page-header__eyebrow');
+      const eyebrowText = eyebrow ? eyebrow.innerText : '';
+      return { main: main ? main.innerText : '', eyebrow: eyebrowText };
+    });
 
-      const authored = body.main.replace(body.eyebrow, '');
-      expect(koreanCount(authored), `${system}/${pageId} body must be fully English in EN mode`).toBe(0);
+    const authored = body.main.replace(body.eyebrow, '');
+    expect(koreanCount(authored), `goalie/${pageId} body must be fully English in EN mode`).toBe(0);
 
-      await page.getByRole('button', { name: 'KO', exact: true }).click();
-      await expect(page.locator('[data-guide-root] h1')).toHaveText(/[가-힣]/);
-    }
+    await page.getByRole('button', { name: 'KO', exact: true }).click();
+    await expect(page.locator('[data-guide-root] h1')).toHaveText(/[가-힣]/);
   }
 });
 

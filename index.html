@@ -34,7 +34,8 @@
       manifest: 'GOALIE_META',
       nav: 'GOALIE_NAV',
       tokens: 'tokens/goalie-tokens.css',
-      skeleton: true,
+      /* Authored, evidence-backed Goalie routes are production-ready. */
+      skeleton: false,
       subtitleKo: '라이트 디자인 시스템',
       subtitleEn: 'Light Design System',
     },
@@ -3365,9 +3366,8 @@ class Component extends DCLogic {
     governance: { ko: '운영과 변경 관리', en: 'Governance & change', impl: true, dko: '상태, 소유자, 소스 고정, 검토일과 변경 절차를 관리합니다.', den: 'Management of status, ownership, source pins, review dates and change workflow.' },
   };
 
-  /* Goalie is authored behind the registry release gate. `impl` describes the
-     completed documentation routes; registry.skeleton remains the single
-     production exposure switch until the final cross-system audit passes. */
+  /* Goalie is authored and publicly routed. `impl` describes the completed,
+     evidence-backed documentation routes; registry.skeleton stays false. */
   GOALIE_META = {
     overview: { ko: '개요', en: 'Overview', impl: true, dko: 'Goalie의 근거, 계층, 상태축과 구축 원칙입니다.', den: 'Evidence, layers, state axes and build principles for Goalie.' },
     systemsummary: { ko: '전체 요약', en: 'System Summary', impl: true, dko: 'Figma 근거와 구현 범위를 한 화면에서 확인합니다.', den: 'Figma evidence and implementation coverage in one view.' },

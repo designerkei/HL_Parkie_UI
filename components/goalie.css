@@ -307,10 +307,12 @@
 [data-system="goalie"] .gl-alert-close img,
 [data-system="goalie"] .gl-alert-expand img { inset:0; height:100%; position:absolute; width:100%; }
 [data-system="goalie"] .gl-alert-banner :is(.gl-alert-icon,.gl-alert-close,.gl-alert-expand) img { filter:brightness(0) saturate(100%) invert(10%) sepia(8%) saturate(921%) hue-rotate(169deg) brightness(94%) contrast(94%); }
-[data-system="goalie"] .gl-alert-expand { appearance:none; background:transparent; border:0; cursor:pointer; height:18px; padding:0; width:18px; }
+[data-system="goalie"] .gl-alert-expand { appearance:none; background:transparent; border:0; cursor:pointer; height:24px; padding:0; width:24px; }
+[data-system="goalie"] .gl-alert-expand img { height:18px; inset:3px; width:18px; }
 [data-system="goalie"] .gl-alert-expand img { transition:transform var(--goalie-duration-base) var(--goalie-ease-standard); }
 [data-system="goalie"] .gl-alert-expand[aria-expanded="true"] img { transform:rotate(180deg); }
-[data-system="goalie"] .gl-alert-close { appearance:none; background:transparent; border:0; cursor:pointer; height:14px; padding:0; width:14px; }
+[data-system="goalie"] .gl-alert-close { appearance:none; background:transparent; border:0; cursor:pointer; height:24px; padding:0; width:24px; }
+[data-system="goalie"] .gl-alert-close img { height:14px; inset:5px; width:14px; }
 [data-system="goalie"] :is(.gl-alert-expand,.gl-alert-close):focus-visible { box-shadow:var(--goalie-focus-ring); outline:0; }
 
 [data-system="goalie"] .gl-alert-history {
@@ -554,7 +556,7 @@
 [data-system="goalie"] .gl-mission-card:is([aria-pressed="true"],.gl-mission-card--selected) { background:rgba(0,180,237,.1); border-color:var(--goalie-brand-primary); }
 [data-system="goalie"] .gl-mission-card:is([aria-pressed="true"],.gl-mission-card--selected)>strong { background:var(--goalie-brand-primary); color:var(--goalie-brand-on); }
 [data-system="goalie"] .gl-mission-card--removable { padding-inline-end:64px; }
-[data-system="goalie"] .gl-mission-card--removable::after { align-items:center; background:rgba(0,180,237,.15); border-radius:6px; color:var(--goalie-brand-text); content:'×'; display:flex; font:var(--goalie-weight-medium) 24px/1 var(--goalie-font-sans); height:44px; inset-inline-end:12px; justify-content:center; position:absolute; width:44px; }
+[data-system="goalie"] .gl-mission-card__delete-icon { height:48px; inset:50% 12px auto auto; object-fit:contain; position:absolute; transform:translateY(-50%); width:48px; }
 [data-system="goalie"] .gl-mission-card:focus-visible { box-shadow:var(--goalie-focus-ring); outline:0; }
 
 /* Patrol management pattern — Figma 2226:13757 / 3874:44703. */
@@ -579,7 +581,10 @@
 [data-system="goalie"] .gl-patrol-editor>footer { display:grid; gap:16px; grid-template-columns:120px minmax(0,1fr); margin-top:auto; padding:16px 20px; }
 [data-system="goalie"] .gl-patrol-editor>footer .gl-button { max-width:none; min-width:0; width:100%; }
 [data-system="goalie"] .gl-patrol-map { background:var(--goalie-surface); border-radius:10px; box-shadow:var(--goalie-shadow-floating); margin:0; min-height:560px; overflow:hidden; position:relative; }
-[data-system="goalie"] .gl-patrol-map>img { height:100%; object-fit:cover; width:100%; }
+[data-system="goalie"] .gl-patrol-map>.gl-patrol-map__base { height:100%; object-fit:cover; object-position:55% 58%; width:100%; }
+[data-system="goalie"] .gl-patrol-map>:is(.gl-patrol-map__route,.gl-patrol-map__alternate) { height:auto; position:absolute; }
+[data-system="goalie"] .gl-patrol-map__route { inset:30% 2% auto auto; width:72%; }
+[data-system="goalie"] .gl-patrol-map__alternate { inset:53% 3% auto auto; width:24%; }
 [data-system="goalie"] .gl-patrol-map>figcaption { background:var(--goalie-surface); border-radius:10px; box-shadow:var(--goalie-shadow-floating); color:var(--goalie-text-secondary); display:grid; font:var(--goalie-type-body-s); gap:8px; inset:16px 16px auto auto; padding:12px 16px; position:absolute; }
 [data-system="goalie"] .gl-patrol-map>figcaption span { align-items:center; display:flex; gap:12px; justify-content:space-between; }
 [data-system="goalie"] .gl-patrol-map>figcaption img { height:4px; width:24px; }
@@ -597,7 +602,9 @@
 [data-system="goalie"] .gl-video-query>label>button:focus-visible { box-shadow:var(--goalie-focus-ring); outline:0; }
 [data-system="goalie"] .gl-video-search { max-width:none; width:100%; }
 [data-system="goalie"] .gl-video-tree { border-block:1px solid var(--goalie-border); display:grid; max-height:330px; overflow:auto; padding:8px 0; }
-[data-system="goalie"] .gl-video-tree button { appearance:none; background:transparent; border:0; color:var(--goalie-text-secondary); cursor:pointer; font:var(--goalie-type-body-s); min-height:32px; overflow:hidden; padding:6px 8px; text-align:start; text-overflow:ellipsis; white-space:nowrap; width:100%; }
+[data-system="goalie"] .gl-video-tree button { align-items:center; appearance:none; background:transparent; border:0; color:var(--goalie-text-secondary); cursor:pointer; display:flex; font:var(--goalie-type-body-s); gap:12px; min-height:32px; overflow:hidden; padding:6px 8px; text-align:start; text-overflow:ellipsis; white-space:nowrap; width:100%; }
+[data-system="goalie"] .gl-video-tree__chevron { flex:0 0 auto; height:6px; object-fit:contain; width:12px; }
+[data-system="goalie"] .gl-video-tree__folder { flex:0 0 auto; height:16px; object-fit:contain; width:20px; }
 [data-system="goalie"] .gl-video-tree [aria-level="2"] { padding-inline-start:32px; }
 [data-system="goalie"] .gl-video-tree [aria-level="3"] { padding-inline-start:64px; }
 [data-system="goalie"] .gl-video-tree button:is(:hover,[aria-selected="true"]) { background:rgba(0,180,237,.1); color:var(--goalie-text); }
@@ -610,11 +617,18 @@
 [data-system="goalie"] .gl-video-timeline time { color:var(--goalie-text-secondary); font:var(--goalie-type-caption); }
 [data-system="goalie"] .gl-video-timeline img { height:24px; width:100%; }
 [data-system="goalie"] .gl-video-transport { align-items:center; display:flex; gap:28px; justify-content:center; }
-[data-system="goalie"] .gl-video-transport button { appearance:none; background:transparent; border:0; color:var(--goalie-text-secondary); cursor:pointer; font-size:20px; height:44px; min-width:44px; }
+[data-system="goalie"] .gl-video-transport button { align-items:center; appearance:none; background:transparent; border:0; color:var(--goalie-text-secondary); cursor:pointer; display:flex; height:48px; justify-content:center; min-width:48px; padding:0; }
 [data-system="goalie"] .gl-video-transport .gl-video-play { background:var(--goalie-brand-primary); border-radius:8px; color:var(--goalie-brand-on); }
+[data-system="goalie"] .gl-video-play>img { height:28px; object-fit:contain; width:22px; }
+[data-system="goalie"] .gl-video-skip { display:flex; height:24px; width:30px; }
+[data-system="goalie"] .gl-video-skip>img { height:24px; object-fit:contain; width:17px; }
+[data-system="goalie"] .gl-video-skip>img+img { margin-inline-start:-4px; }
+[data-system="goalie"] .gl-video-skip--previous { transform:rotate(180deg); }
 [data-system="goalie"] .gl-video-transport button:focus-visible { box-shadow:var(--goalie-focus-ring); outline:0; }
 [data-system="goalie"] .gl-video-control-meta { align-items:center; display:flex; gap:12px; }
-[data-system="goalie"] .gl-video-control-meta span { background:var(--goalie-surface); border:1px solid var(--goalie-border-strong); border-radius:4px; color:var(--goalie-text-secondary); font:var(--goalie-type-caption); padding:6px 8px; white-space:nowrap; }
+[data-system="goalie"] .gl-video-control-meta span { align-items:center; background:var(--goalie-surface); border:1px solid var(--goalie-border-strong); border-radius:4px; color:var(--goalie-text-secondary); display:flex; font:var(--goalie-type-caption); gap:6px; min-height:32px; padding:5px 8px; white-space:nowrap; }
+[data-system="goalie"] .gl-video-control-meta img { height:20px; object-fit:contain; width:20px; }
+[data-system="goalie"] .gl-video-control-meta span:last-child img { height:6px; margin-inline-start:auto; transform:rotate(180deg); width:12px; }
 
 /* Operational templates — Figma 4021:36373 / 2933:9118 / 3536:24567. */
 [data-system="goalie"] .gl-template-mode-picker { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }

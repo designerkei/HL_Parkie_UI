@@ -5,21 +5,17 @@ const AxeBuilder = require('@axe-core/playwright').default;
 
 const AUTHORED_PAGES = [
   'overview', 'systemsummary', 'principles', 'colors', 'typography', 'spacing',
-  'iconography', 'button', 'input', 'status', 'navigation', 'patrol', 'video', 'templates',
+  'iconography', 'button', 'input', 'status', 'navigation', 'patrol', 'video', 'templates', 'brand',
 ];
 
 async function openAuthoredGoalie(page, pageId) {
-  await page.goto('/#/parkie/overview');
-  await page.evaluate((target) => {
-    window.__GUIDE_SYSTEMS.goalie.skeleton = false;
-    window.location.hash = `#/goalie/${target}`;
-  }, pageId);
+  await page.goto(`/#/goalie/${pageId}`);
   await expect(page).toHaveURL(new RegExp(`#\/goalie\/${pageId}$`));
   await expect(page.locator('[data-goalie-pages]')).toHaveAttribute('data-goalie-page', pageId);
   await expect(page.locator('[data-goalie-pages]')).toHaveAttribute('lang', 'ko');
 }
 
-test('authored Goalie foundation and component pages render behind the release gate', async ({ page }) => {
+test('authored Goalie foundation and component pages render on public routes', async ({ page }) => {
   test.setTimeout(120_000);
   for (const pageId of AUTHORED_PAGES) {
     await openAuthoredGoalie(page, pageId);
@@ -31,6 +27,7 @@ test('authored Goalie foundation and component pages render behind the release g
   const registry = await page.evaluate(() => window.__GUIDE_SYSTEMS.goalie);
   expect(registry.tokens).toBe('tokens/goalie-tokens.css');
   expect(registry.theme).toBe('light');
+  expect(registry.skeleton).toBe(false);
 });
 
 test('Goalie Button and Switch expose complete state axes and operable semantics', async ({ page }) => {
@@ -141,12 +138,20 @@ test('Goalie patrol pattern preserves list selection, edit session and map conte
   await page.locator('.gl-course-list-card > button[data-course-id="1단지 B코스"]').click();
   await expect(page.locator('.gl-course-list-card > button[data-course-id="1단지 B코스"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.gl-patrol-editor .gl-mission-card')).toHaveCount(4);
-  await expect(page.locator('.gl-patrol-map > img')).toBeVisible();
+  await expect(page.locator('.gl-patrol-map > img')).toHaveCount(3);
+  await expect(page.locator('.gl-patrol-map__base')).toBeVisible();
+  await expect(page.locator('.gl-patrol-map__route')).toBeVisible();
+  await expect(page.locator('.gl-patrol-map__alternate')).toBeVisible();
 });
 
 test('Goalie video pattern keeps query tree selection and player filename synchronized', async ({ page }) => {
   await openAuthoredGoalie(page, 'video');
   await expect(page.locator('.gl-video-tree [role="treeitem"]')).toHaveCount(11);
+  await expect(page.locator('.gl-video-tree [role="treeitem"][tabindex="0"]')).toHaveCount(1);
+  const initial = page.locator('.gl-video-tree [data-file="2024-05-23_00:23:24"]');
+  await initial.focus();
+  await initial.press('ArrowDown');
+  await expect(page.locator('.gl-video-tree [data-file="2024-05-23_00:28:24"]')).toBeFocused();
   const target = page.locator('.gl-video-tree [data-file="2024-05-23_00:33:24"]');
   await target.click();
   await expect(target).toHaveAttribute('aria-selected', 'true');
@@ -167,11 +172,109 @@ test('Goalie operational templates change operation, audio and safety without ch
   await expect(page.locator('.gl-ops-map__marker')).toHaveAttribute('src', './assets/goalie/map-marker-emergency-glow.svg');
 });
 
+test('Goalie composite controls implement roving focus and arrow-key selection', async ({ page }) => {
+  await openAuthoredGoalie(page, 'input');
+  const inputPeriods = page.locator('.gl-segmented [role="radio"]');
+  await expect(inputPeriods).toHaveCount(2);
+  await expect(page.locator('.gl-segmented [role="radio"][tabindex="0"]')).toHaveCount(1);
+  const pm = page.locator('.gl-segmented [data-meridiem="pm"]');
+  await pm.focus();
+  await pm.press('ArrowLeft');
+  const am = page.locator('.gl-segmented [data-meridiem="am"]');
+  await expect(am).toHaveAttribute('aria-checked', 'true');
+  await expect(am).toBeFocused();
+
+  await openAuthoredGoalie(page, 'navigation');
+  const single = page.locator('.gl-camera-layout-picker [data-layout="single"]');
+  await single.focus();
+  await single.press('ArrowRight');
+  const quad = page.locator('.gl-camera-layout-picker [data-layout="quad"]');
+  await expect(quad).toHaveAttribute('aria-checked', 'true');
+  await expect(quad).toBeFocused();
+  await expect(page.locator('.gl-camera-layout-picker [role="radio"][tabindex="0"]')).toHaveCount(1);
+
+  await openAuthoredGoalie(page, 'templates');
+  const home = page.locator('.gl-template-mode-picker [data-template-mode="home"]');
+  await home.focus();
+  await home.press('End');
+  const emergency = page.locator('.gl-template-mode-picker [data-template-mode="emergency"]');
+  await expect(emergency).toHaveAttribute('aria-checked', 'true');
+  await expect(emergency).toBeFocused();
+  const templateSwitch = page.locator('.gl-ops-side-panel .gl-switch');
+  await expect(templateSwitch).toHaveAttribute('aria-checked', 'true');
+  await templateSwitch.press('Space');
+  await expect(templateSwitch).toHaveAttribute('aria-checked', 'false');
+});
+
+test('authored Goalie routes have no runtime, resource, image or ID-reference failures', async ({ page }) => {
+  test.setTimeout(120_000);
+  const consoleErrors = [];
+  const pageErrors = [];
+  const failedResponses = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  page.on('response', (response) => {
+    if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
+  });
+
+  for (const pageId of AUTHORED_PAGES) {
+    await openAuthoredGoalie(page, pageId);
+    await page.waitForLoadState('networkidle');
+    const audit = await page.locator('[data-goalie-pages]').evaluate((root) => {
+      const all = Array.from(root.querySelectorAll('*'));
+      const ids = all.map((element) => element.id).filter(Boolean);
+      const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+      const brokenImages = all
+        .filter((element) => element instanceof HTMLImageElement && (!element.complete || element.naturalWidth === 0))
+        .map((image) => image.getAttribute('src'));
+      const missingReferences = [];
+      for (const element of all) {
+        for (const attribute of ['aria-labelledby', 'aria-describedby', 'aria-controls']) {
+          const value = element.getAttribute(attribute);
+          if (!value) continue;
+          for (const id of value.trim().split(/\s+/)) {
+            if (!document.getElementById(id)) missingReferences.push(`${attribute}:${id}`);
+          }
+        }
+      }
+      return { duplicateIds, brokenImages, missingReferences };
+    });
+    expect(audit, `${pageId} DOM integrity`).toEqual({ duplicateIds: [], brokenImages: [], missingReferences: [] });
+  }
+
+  expect(consoleErrors, 'console errors').toEqual([]);
+  expect(pageErrors, 'uncaught page errors').toEqual([]);
+  expect(failedResponses, 'HTTP failures').toEqual([]);
+});
+
+test('Goalie interactive targets meet the WCAG 2.2 minimum target size', async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const width of [1280, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const pageId of AUTHORED_PAGES) {
+      await openAuthoredGoalie(page, pageId);
+      const undersized = await page.locator('[data-goalie-pages]').evaluate((root) => Array.from(root.querySelectorAll('button, [href], input, select, textarea'))
+        .filter((element) => {
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return !element.disabled && element.getAttribute('aria-disabled') !== 'true' && style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0 && (rect.width < 24 || rect.height < 24);
+        })
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return `${element.tagName.toLowerCase()}.${element.className || '(no-class)'} ${Math.round(rect.width)}x${Math.round(rect.height)}`;
+        }));
+      expect(undersized, `${pageId} undersized targets at ${width}px`).toEqual([]);
+    }
+  }
+});
+
 test('authored Goalie pages pass axe and remain bounded at review widths', async ({ page }) => {
   test.setTimeout(120_000);
   for (const width of [1280, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const pageId of ['colors', 'iconography', 'button', 'input', 'status', 'navigation', 'patrol', 'video', 'templates']) {
+    for (const pageId of ['colors', 'iconography', 'button', 'input', 'status', 'navigation', 'patrol', 'video', 'templates', 'brand']) {
       await openAuthoredGoalie(page, pageId);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, `${pageId} overflows at ${width}px`).toBeLessThanOrEqual(1);
@@ -193,8 +296,12 @@ test('Goalie release assets are local and component tokens resolve', async () =>
     'emergency-icon.png',
     'select-chevron-down.svg', 'select-chevron-up.svg', 'time-clock.svg',
     'time-chevron-down.svg', 'time-chevron-up.svg', 'spinner-up.svg', 'spinner-down.svg',
-    'patrol-map-routes.png', 'patrol-route-line.svg', 'patrol-alternate-line.svg',
-    'video-park.jpg', 'video-calendar.svg', 'video-timeline.svg', 'map-campus.jpg',
+    'mission-delete.png', 'patrol-map-routes.png', 'patrol-route-line.svg', 'patrol-alternate-line.svg',
+    'patrol-route-overlay.svg', 'patrol-alternate-overlay.svg', 'patrol-waypoint.svg',
+    'video-park.jpg', 'video-calendar.svg', 'video-timeline.svg', 'video-clock.svg',
+    'video-folder.svg', 'video-folder-active.svg', 'video-tree-chevron-up.svg',
+    'video-tree-chevron-down.svg', 'video-tree-chevron-active.svg', 'video-play.svg',
+    'video-skip.svg', 'video-playback-chevron.svg', 'map-campus.png',
     'camera-front.jpg', 'camera-left.jpg', 'camera-rear.jpg', 'camera-right.jpg',
   ];
   for (const name of assetNames) {
