@@ -677,3 +677,58 @@ test('button state contrast and focus ring visibility are enforced', async ({ pa
   expect(rings.pair, 'the two ring tones must separate from each other').toBeGreaterThanOrEqual(3);
   expect(rings.worst, 'one ring tone must clear 3:1 on every adjacent surface').toBeGreaterThanOrEqual(3);
 });
+
+/* components/goalie.css shipped 38KB to every visitor while nothing referenced
+   it — 99 classes, zero used, discovered only by an ad-hoc sweep. This makes
+   that sweep permanent. The threshold is "entirely unused", not "fully used":
+   a stylesheet legitimately carries a few rules for states the docs do not
+   currently render, and failing on those would be noise. */
+test('no imported stylesheet is entirely unused', async () => {
+  const entry = fs.readFileSync(path.join(process.cwd(), 'styles.css'), 'utf8');
+  const imports = [...entry.matchAll(/@import\s+"\.\/([^?"]+)/g)].map((match) => match[1]);
+  expect(imports.length, 'the entry point must import the component layer').toBeGreaterThan(4);
+
+  const consumerFiles = [
+    'index.html',
+    'ProductSkeleton.dc.html',
+    'styles.css',
+    ...imports.filter((file) => file.startsWith('components/')),
+  ];
+
+  const findings = [];
+  for (const relative of imports) {
+    const full = path.join(process.cwd(), relative);
+    expect(fs.existsSync(full), `${relative} is imported but missing`).toBe(true);
+    const source = fs.readFileSync(full, 'utf8');
+
+    if (relative.startsWith('tokens/')) {
+      /* A token file earns its place by being consumed somewhere — including by
+         its own semantic aliases, which is how a product staged for handover
+         legitimately looks. */
+      const declared = new Set([...source.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((m) => m[1]));
+      const consumed = new Set([...source.matchAll(/var\((--[a-z0-9-]+)/g)].map((m) => m[1]));
+      for (const file of consumerFiles) {
+        const body = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+        for (const m of body.matchAll(/var\((--[a-z0-9-]+)/g)) consumed.add(m[1]);
+      }
+      const used = [...declared].filter((token) => consumed.has(token));
+      if (declared.size && used.length === 0) findings.push(`${relative}: ${declared.size} tokens declared, none consumed`);
+      continue;
+    }
+
+    const declared = new Set([...source.matchAll(/\.([a-zA-Z][\w-]{2,})/g)].map((m) => m[1]));
+    if (!declared.size) continue;
+    const referenced = new Set();
+    for (const file of consumerFiles) {
+      if (file === relative) continue;
+      const body = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+      for (const m of body.matchAll(/[\w-]+/g)) referenced.add(m[0]);
+    }
+    const used = [...declared].filter((name) => referenced.has(name));
+    if (used.length === 0) {
+      findings.push(`${relative}: ${declared.size} classes defined, none referenced (${Math.round(source.length / 1024)}KB served for nothing)`);
+    }
+  }
+
+  expect(findings, 'an imported stylesheet that nothing references is dead weight').toEqual([]);
+});

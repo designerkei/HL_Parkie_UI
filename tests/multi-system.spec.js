@@ -245,24 +245,30 @@ test('legacy Parkie hashes canonicalize without adding a second history entry', 
   await expectSystemRoute(page, 'parkie', 'overview');
 });
 
+/* Every product, not just the first one added. Back across a product switch has
+   to restore the route, the fixed theme and the sidebar together — a partial
+   restore is the failure mode, and it only shows up per product because each
+   carries a different theme. */
 test('system and page history restore route, theme, navigation and active product', async ({ page }) => {
-  await page.goto(canonicalUrl('parkie', 'colors'));
-  await expectSystemRoute(page, 'parkie', 'colors');
+  for (const target of SKELETON_SYSTEMS) {
+    await page.goto(canonicalUrl('parkie', 'colors'));
+    await expectSystemRoute(page, 'parkie', 'colors');
 
-  await openSystem(page, 'goalie');
-  await expectSystemRoute(page, 'goalie', 'overview');
+    await openSystem(page, target);
+    await expectSystemRoute(page, target, 'overview');
 
-  await sidebar(page).locator('[data-nav-id="button"]').click();
-  await expectSystemRoute(page, 'goalie', 'button');
+    await sidebar(page).locator('[data-nav-id="button"]').click();
+    await expectSystemRoute(page, target, 'button');
 
-  await page.goBack();
-  await expectSystemRoute(page, 'goalie', 'overview');
-  await page.goBack();
-  await expectSystemRoute(page, 'parkie', 'colors');
-  await page.goForward();
-  await expectSystemRoute(page, 'goalie', 'overview');
-  await page.goForward();
-  await expectSystemRoute(page, 'goalie', 'button');
+    await page.goBack();
+    await expectSystemRoute(page, target, 'overview');
+    await page.goBack();
+    await expectSystemRoute(page, 'parkie', 'colors');
+    await page.goForward();
+    await expectSystemRoute(page, target, 'overview');
+    await page.goForward();
+    await expectSystemRoute(page, target, 'button');
+  }
 });
 
 test('language is guide-global and keeps html language and document title synchronized', async ({ page }) => {
@@ -625,5 +631,108 @@ test('the product registry is the single source of truth for tabs, themes and ro
   for (const tab of tabs) {
     expect(tab.name, `${tab.id} tab label`).toBe(registry[tab.id].name);
     expect(tab.href, `${tab.id} tab target`).toBe(`#/${tab.id}/overview`);
+  }
+});
+
+/* Verified by hand during a review round, then locked in here. The tabs are the
+   entry point to the whole guide, so their keyboard order and focus visibility
+   are a contract, not an accident of DOM order. */
+test('the product tabs are the first keyboard stops and show a visible focus ring', async ({ page }) => {
+  for (const system of ALL_SYSTEMS) {
+    /* Reset to a blank document first: a hash change keeps focus where the
+       previous iteration left it, and tabbing would then continue from the
+       middle of the page rather than from the start. */
+    await page.goto('about:blank');
+    await page.goto(canonicalUrl(system, 'overview'));
+    await expectRuntimeReady(page);
+    /* The router moves focus to the page title after a route change; wait for it
+       to settle so this measures the document's tab order, not a race. */
+    await page.waitForTimeout(700);
+
+    const stops = [];
+    for (let i = 0; i < ALL_SYSTEMS.length; i += 1) {
+      await page.keyboard.press('Tab');
+      stops.push(await page.evaluate(() => {
+        const el = document.activeElement;
+        const style = getComputedStyle(el);
+        const root = document.querySelector('.guide-root');
+        const probe = document.createElement('span');
+        probe.style.color = getComputedStyle(root).getPropertyValue('--guide-accent').trim();
+        root.appendChild(probe);
+        const accent = getComputedStyle(probe).color;
+        probe.remove();
+        return {
+          id: el.dataset ? el.dataset.systemId || null : null,
+          outline: style.outlineWidth,
+          outlineColor: style.outlineColor,
+          accent,
+        };
+      }));
+    }
+
+    expect(stops.map((stop) => stop.id), `${system}: tabs must be the first keyboard stops, in registry order`)
+      .toEqual(ALL_SYSTEMS);
+    for (const stop of stops) {
+      expect(parseFloat(stop.outline), `${system}: tab ${stop.id} must show a focus ring`)
+        .toBeGreaterThanOrEqual(2);
+      /* Width alone is not evidence: Chrome supplies a default focus ring, so an
+         accidentally deleted rule would still measure 2px. The authored ring is
+         the product accent, which the user-agent default never is. */
+      expect(stop.outlineColor, `${system}: tab ${stop.id} focus ring must use the product accent`)
+        .toBe(stop.accent);
+    }
+  }
+});
+
+/* A skeleton page is short enough that an untranslated string is easy to miss by
+   eye. The guide is deliberately bilingual — the sidebar carries both languages
+   and the eyebrow's second half is always the other language — so the assertion
+   is scoped to the authored body copy. */
+test('skeleton copy is fully translated in English', async ({ page }) => {
+  const koreanCount = (value) => (value.match(/[가-힣]/g) || []).length;
+
+  for (const system of SKELETON_SYSTEMS) {
+    for (const pageId of ['overview', 'brand']) {
+      await page.goto(canonicalUrl(system, pageId));
+      await expectSystemRoute(page, system, pageId);
+      await page.getByRole('button', { name: 'EN', exact: true }).click();
+      await expect(page.locator('[data-guide-root] h1')).not.toHaveText(/[가-힣]/);
+
+      const body = await page.evaluate(() => {
+        const main = document.querySelector('main');
+        const eyebrow = document.querySelector('.guide-page-header__eyebrow');
+        const eyebrowText = eyebrow ? eyebrow.innerText : '';
+        return { main: main ? main.innerText : '', eyebrow: eyebrowText };
+      });
+
+      const authored = body.main.replace(body.eyebrow, '');
+      expect(koreanCount(authored), `${system}/${pageId} body must be fully English in EN mode`).toBe(0);
+
+      await page.getByRole('button', { name: 'KO', exact: true }).click();
+      await expect(page.locator('[data-guide-root] h1')).toHaveText(/[가-힣]/);
+    }
+  }
+});
+
+/* Page ids collide across products by design, so "this id belongs to that
+   product" is worth asserting rather than assuming. */
+test('search stays inside the active product across all three', async ({ page }) => {
+  const cases = [
+    { system: 'parkie', term: '로봇', present: true },
+    { system: 'goalie', term: '로봇', present: false },
+    { system: 'cpms', term: '로봇', present: false },
+    { system: 'cpms', term: '색상', present: true },
+  ];
+
+  for (const { system, term, present } of cases) {
+    await page.goto(canonicalUrl(system, 'overview'));
+    await expectSystemRoute(page, system, 'overview');
+    await navigationSearch(page).fill(term);
+
+    const hits = sidebar(page).locator('[data-nav-id]');
+    if (present) await expect(hits, `${system} must find '${term}'`).not.toHaveCount(0);
+    else await expect(hits, `${system} must not surface another product's '${term}' pages`).toHaveCount(0);
+
+    await navigationSearch(page).fill('');
   }
 });
