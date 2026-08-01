@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Parkie UI · RMS Design System</title>
-<link rel="icon" href="brand/hl-robotics-symbol.svg" type="image/svg+xml">
-<script src="./support.js"></script>
-<script type="module">
-  import icons from './ms/icon-data.js';
-  import parkieIcons from './icons/parkie-icon-data.js';
-  window.__msIcons = icons;
-  (window.__msIconsCbs || []).forEach(fn => fn(icons));
-  window.__msIconsLoaded = true;
-  window.__parkieIcons = parkieIcons;
-  (window.__parkieIconsCbs || []).forEach(fn => fn(parkieIcons));
-  window.__parkieIconsLoaded = true;
+<script data-guide-theme-bootstrap>
+  /* The active product owns a fixed colour mode. Publish it synchronously,
+     before any stylesheet can paint, so a cold Goalie deep link never flashes
+     the Parkie dark canvas. The application router validates the page later. */
+  (function bootstrapGuideTheme() {
+    var hash = window.location.hash || '';
+    var system = /^#\/goalie(?:\/|$)/i.test(hash) ? 'goalie' : 'parkie';
+    var theme = system === 'goalie' ? 'light' : 'dark';
+    var root = document.documentElement;
+    root.dataset.activeSystem = system;
+    root.dataset.system = system;
+    root.dataset.theme = theme;
+    root.dataset.colorMode = theme;
+    root.style.colorScheme = theme;
+    root.style.backgroundColor = theme === 'light' ? '#F7F9FC' : '#0F0F11';
+  }());
 </script>
-</head>
-<body>
-<x-dc>
-<helmet>
+<title>Parkie UI · UX/UI Design Guide System</title>
+<link rel="icon" href="brand/hl-robotics-symbol.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
@@ -34,38 +36,48 @@
   /* Korean line breaking: the CSS default lets a break fall between Hangul
      syllables, so "로봇관리" splits mid-word in narrow containers. keep-all
      prevents that; break-word is the safety net for unbreakable tokens. */
-  body { background: var(--parkie-bg); font-family: var(--parkie-font-sans); -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
-  a { color: var(--parkie-brand-text); text-decoration: none; }
+  body { font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
+  a { color: inherit; text-decoration: none; }
   a:hover { text-decoration: underline; }
-  ::selection { background: var(--parkie-brand-subtle); }
+  ::selection { background: rgba(53, 104, 232, 0.22); }
   .pk-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
-  .pk-scroll::-webkit-scrollbar-thumb { background: var(--parkie-border-strong); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+  .pk-scroll::-webkit-scrollbar-thumb { background: currentColor; opacity: 0.24; border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
   .pk-scroll::-webkit-scrollbar-track { background: transparent; }
   @keyframes pk-spin { to { transform: rotate(360deg); } }
 </style>
-</helmet>
-
-<div ref="{{rootRef}}" data-theme="{{theme}}" style="height:100vh;display:flex;flex-direction:column;overflow:hidden;background:var(--parkie-bg);color:var(--parkie-text);font-family:var(--parkie-font-sans);font-size:var(--parkie-font-base);">
+<script src="./support.js"></script>
+<script type="module">
+  import icons from './ms/icon-data.js';
+  import parkieIcons from './icons/parkie-icon-data.js';
+  window.__msIcons = icons;
+  (window.__msIconsCbs || []).forEach(fn => fn(icons));
+  window.__msIconsLoaded = true;
+  window.__parkieIcons = parkieIcons;
+  (window.__parkieIconsCbs || []).forEach(fn => fn(parkieIcons));
+  window.__parkieIconsLoaded = true;
+</script>
+</head>
+<body>
+<x-dc>
+<div ref="{{rootRef}}" class="guide-root" data-guide-root data-active-system="{{activeSystem}}" data-theme="{{theme}}">
 
   <!-- ============ TOP BAR ============ -->
-  <header style="height:56px;flex-shrink:0;display:flex;align-items:center;gap:var(--parkie-space-4);padding:0 var(--parkie-space-6);background:var(--parkie-surface);border-bottom:1px solid var(--parkie-border);z-index:10;">
-    <div style="display:flex;align-items:center;gap:var(--parkie-space-3);">
-      <img src="brand/logo.svg?v=2" alt="HL Robotics" width="30" height="30" style="display:block;">
-      <div style="display:flex;flex-direction:column;line-height:1.15;">
-        <span style="font-size:var(--parkie-font-lg);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ brandName }}</span>
-        <span style="font-size:var(--parkie-font-xs);font-weight:var(--parkie-weight-medium);color:var(--parkie-text-tertiary);letter-spacing:var(--parkie-tracking-wide);text-transform:uppercase;">{{ subtitle }}</span>
+  <header class="guide-topbar">
+    <div class="guide-identity">
+      <img class="guide-identity__mark" src="brand/logo.svg?v=2" alt="HL Robotics" width="30" height="30">
+      <div class="guide-identity__copy">
+        <span class="guide-identity__title">{{ guideTitle }}</span>
+        <span class="guide-identity__subtitle">{{ guideSubtitle }}</span>
       </div>
-      <span style="margin-left:var(--parkie-space-2);padding:2px 8px;border-radius:var(--parkie-radius-pill);background:var(--parkie-brand-subtle);color:var(--parkie-brand-text);font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);font-weight:600;">{{ ver }}</span>
+      <span class="guide-version">{{ ver }}</span>
     </div>
 
-    <div style="flex:1;"></div>
-
-    <label style="display:flex;align-items:center;gap:8px;background:var(--parkie-surface-2);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);padding:6px 10px;width:240px;">
-      <span style="width:13px;height:13px;border:2px solid var(--parkie-text-tertiary);border-radius:50%;position:relative;flex-shrink:0;"></span>
-      <input type="search" value="{{ searchQuery }}" onInput="{{ onSearchInput }}" aria-label="{{ searchPh }}" placeholder="{{ searchPh }}" data-navigation-search style="border:none;background:transparent;outline:none;font-family:var(--parkie-font-sans);font-size:var(--parkie-font-sm);color:var(--parkie-text);width:100%;">
+    <label class="guide-search">
+      <span class="guide-search__icon" aria-hidden="true"></span>
+      <input class="guide-search__input" type="search" value="{{ searchQuery }}" onInput="{{ onSearchInput }}" aria-label="{{ searchPh }}" placeholder="{{ searchPh }}" data-navigation-search>
     </label>
 
-    <div style="display:flex;padding:2px;background:var(--parkie-surface-2);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);">
+    <div class="guide-language" role="group" aria-label="Language">
       <button onClick="{{ setKo }}" style="{{ koSegStyle }}">KO</button>
       <button onClick="{{ setEn }}" style="{{ enSegStyle }}">EN</button>
     </div>
@@ -75,29 +87,38 @@
     </button>
   </header>
 
-  <div style="flex:1;display:flex;min-height:0;">
+  <nav class="guide-system-nav" data-system-nav aria-label="Product design systems">
+    <sc-for list="{{ systemItems }}" as="systemItem" hint-placeholder-count="2">
+      <a class="{{ systemItem.className }}" data-system-id="{{ systemItem.id }}" href="{{ systemItem.href }}" onClick="{{ systemItem.onClick }}" aria-current="{{ systemItem.ariaCurrent }}">
+        <span>{{ systemItem.name }}</span>
+        <span class="guide-system-link__mode">{{ systemItem.mode }}</span>
+      </a>
+    </sc-for>
+  </nav>
+
+  <div class="guide-workspace">
     <!-- ============ SIDEBAR ============ -->
-    <nav class="pk-scroll" aria-label="{{ navigationLabel }}" style="width:264px;flex-shrink:0;overflow-y:auto;background:var(--parkie-surface);border-right:1px solid var(--parkie-border);padding:var(--parkie-space-5) var(--parkie-space-4);">
+    <nav class="guide-sidebar pk-scroll" data-guide-sidebar aria-label="{{ navigationLabel }}">
       <sc-for list="{{ navSources }}" as="src" hint-placeholder-count="2">
-        <div style="margin-bottom:var(--parkie-space-7);">
-          <div style="display:flex;align-items:baseline;gap:7px;padding:0 10px;margin-bottom:var(--parkie-space-4);">
-            <span style="font-size:var(--parkie-font-base);font-weight:var(--parkie-weight-bold);color:var(--parkie-text);letter-spacing:var(--parkie-tracking-tight);">{{ src.source }}</span>
-            <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ src.sub }}</span>
+        <div class="guide-nav-source">
+          <div class="guide-nav-source__head">
+            <span class="guide-nav-source__title">{{ src.source }}</span>
+            <span class="guide-nav-source__subtitle">{{ src.sub }}</span>
           </div>
           <sc-for list="{{ src.groups }}" as="group" hint-placeholder-count="4">
-            <div role="group" aria-label="{{ group.ariaLabel }}" style="margin-bottom:var(--parkie-space-5);">
-              <div style="display:flex;align-items:baseline;gap:6px;padding:0 10px;margin-bottom:var(--parkie-space-2);">
-                <span style="font-size:var(--parkie-font-xs);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-wide);text-transform:uppercase;color:var(--parkie-text-tertiary);">{{ group.label }}</span>
-                <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ group.sub }}</span>
+            <div class="guide-nav-group" role="group" aria-label="{{ group.ariaLabel }}">
+              <div class="guide-nav-group__head">
+                <span class="guide-nav-group__title">{{ group.label }}</span>
+                <span class="guide-nav-group__subtitle">{{ group.sub }}</span>
               </div>
-              <div style="display:flex;flex-direction:column;gap:2px;">
+              <div class="guide-nav-group__items">
                 <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="5">
                   <a href="{{ item.href }}" onClick="{{ item.onClick }}" aria-current="{{ item.ariaCurrent }}" data-nav-id="{{ item.id }}" style="{{ item.style }}">
-                    <span style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-base);font-weight:{{ item.weight }};">
+                    <span class="guide-nav-item__label" style="font-weight:{{ item.weight }};">
                       {{ item.label }}
-                      <sc-if value="{{ item.soon }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);padding:1px 5px;border-radius:var(--parkie-radius-pill);background:var(--parkie-surface-3);color:var(--parkie-text-tertiary);font-weight:500;">soon</span></sc-if>
+                      <sc-if value="{{ item.soon }}" hint-placeholder-val="{{ false }}"><span class="guide-nav-item__soon">soon</span></sc-if>
                     </span>
-                    <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ item.sub }}</span>
+                    <span class="guide-nav-item__sub">{{ item.sub }}</span>
                   </a>
                 </sc-for>
               </div>
@@ -106,19 +127,19 @@
         </div>
       </sc-for>
       <sc-if value="{{ showNoNavResults }}" hint-placeholder-val="{{ false }}">
-        <p role="status" style="margin:var(--parkie-space-4) 10px;color:var(--parkie-text-secondary);font-size:var(--parkie-font-sm);line-height:var(--parkie-leading-relaxed);">{{ noSearchResults }}</p>
+        <p class="guide-nav-empty" role="status">{{ noSearchResults }}</p>
       </sc-if>
     </nav>
 
     <!-- ============ MAIN ============ -->
-    <main class="pk-scroll" data-scroll tabindex="0" aria-labelledby="pk-page-title" style="flex:1;overflow-y:auto;">
-      <div class="{{ contentFrameClass }}">
+    <main class="guide-main pk-scroll" data-scroll tabindex="0" aria-labelledby="pk-page-title">
+      <div class="{{ contentFrameClass }}" data-product-root data-system="{{activeSystem}}" data-theme="{{theme}}" data-color-mode="{{colorMode}}">
 
         <!-- page header -->
-        <div class="pk-page-header" style="margin-bottom:var(--parkie-space-8);">
-          <div class="pk-page-header__eyebrow" style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-brand-text);font-weight:600;letter-spacing:var(--parkie-tracking-wide);margin-bottom:8px;">{{ curSub }}</div>
-          <h1 id="pk-page-title" class="pk-page-header__title" style="margin:0;font-size:var(--parkie-font-4xl);font-weight:var(--parkie-weight-bold);letter-spacing:var(--parkie-tracking-tight);color:var(--parkie-text);">{{ curTitle }}</h1>
-          <p class="pk-page-header__description" style="margin:12px 0 0;font-size:var(--parkie-font-lg);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);max-width:640px;">{{ curDesc }}</p>
+        <div class="guide-page-header pk-page-header">
+          <div class="guide-page-header__eyebrow pk-page-header__eyebrow">{{ activeSystemName }} · {{ curSub }}</div>
+          <h1 id="pk-page-title" class="guide-page-header__title pk-page-header__title" tabindex="-1">{{ curTitle }}</h1>
+          <p class="guide-page-header__description pk-page-header__description">{{ curDesc }}</p>
         </div>
 
         <!-- ===== OVERVIEW ===== -->
@@ -185,12 +206,21 @@
             </section>
 
             <div class="pk-summary-grid">
+              <section class="pk-summary-group" aria-labelledby="summary-group-foundations">
+                <div class="pk-summary-group__head">
+                  <span class="pk-summary-group__index">01</span>
+                  <div>
+                    <h2 id="summary-group-foundations">파운데이션 · Foundations</h2>
+                    <p>브랜드·타입·색이 제품 화면의 기본 언어를 정합니다.</p>
+                  </div>
+                </div>
+                <div class="pk-summary-group__body">
               <section class="pk-summary-section pk-summary-section--wide pk-summary-section--identity" data-summary-section="identity" aria-labelledby="summary-identity-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">01</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Foundation</span>
-                    <h2 id="summary-identity-title">Identity · 아이덴티티</h2>
+                    <h3 id="summary-identity-title">Identity · 아이덴티티</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryIdentityLink.onClick }}" aria-label="{{ summaryIdentityLink.ariaLabel }}">
                     {{ summaryIdentityLink.label }}
@@ -223,7 +253,7 @@
                   <span class="pk-summary-section__index">02</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Foundation</span>
-                    <h2 id="summary-typography-title">Typography · 타이포그래피</h2>
+                    <h3 id="summary-typography-title">Typography · 타이포그래피</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryTypographyLink.onClick }}" aria-label="{{ summaryTypographyLink.ariaLabel }}">
                     {{ summaryTypographyLink.label }}
@@ -264,7 +294,7 @@
                   <span class="pk-summary-section__index">03</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Foundation</span>
-                    <h2 id="summary-colors-title">Colors · 색상</h2>
+                    <h3 id="summary-colors-title">Colors · 색상</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryColorsLink.onClick }}" aria-label="{{ summaryColorsLink.ariaLabel }}">
                     {{ summaryColorsLink.label }}
@@ -293,13 +323,25 @@
                   </div>
                 </div>
               </section>
+                </div>
+              </section>
 
+
+              <section class="pk-summary-group" aria-labelledby="summary-group-components">
+                <div class="pk-summary-group__head">
+                  <span class="pk-summary-group__index">02</span>
+                  <div>
+                    <h2 id="summary-group-components">핵심 컴포넌트 · Core components</h2>
+                    <p>아이콘·입력·버튼의 대표 표본과 그것을 만드는 토큰입니다.</p>
+                  </div>
+                </div>
+                <div class="pk-summary-group__body">
               <section class="pk-summary-section pk-summary-section--wide pk-summary-section--iconography" data-summary-section="iconography" aria-labelledby="summary-iconography-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">04</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Foundation</span>
-                    <h2 id="summary-iconography-title">Iconography · 아이콘</h2>
+                    <h3 id="summary-iconography-title">Iconography · 아이콘</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryIconographyLink.onClick }}" aria-label="{{ summaryIconographyLink.ariaLabel }}">
                     {{ summaryIconographyLink.label }}
@@ -341,7 +383,7 @@
                   <span class="pk-summary-section__index">05</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Action &amp; Input</span>
-                    <h2 id="summary-form-title">Form controls · 입력</h2>
+                    <h3 id="summary-form-title">Form controls · 입력</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryInputLink.onClick }}" aria-label="{{ summaryInputLink.ariaLabel }}">
                     {{ summaryInputLink.label }}
@@ -383,7 +425,7 @@
                   <span class="pk-summary-section__index">06</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Action &amp; Input</span>
-                    <h2 id="summary-buttons-title">Buttons · 버튼</h2>
+                    <h3 id="summary-buttons-title">Buttons · 버튼</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryButtonLink.onClick }}" aria-label="{{ summaryButtonLink.ariaLabel }}">
                     {{ summaryButtonLink.label }}
@@ -410,13 +452,25 @@
                   </div>
                 </div>
               </section>
+                </div>
+              </section>
 
+
+              <section class="pk-summary-group" aria-labelledby="summary-group-operations">
+                <div class="pk-summary-group__head">
+                  <span class="pk-summary-group__index">03</span>
+                  <div>
+                    <h2 id="summary-group-operations">운영 언어 · Operational semantics</h2>
+                    <p>정상 운행·연결·배터리는 중립색입니다. 주의·고장·충전만 의미색을 씁니다.</p>
+                  </div>
+                </div>
+                <div class="pk-summary-group__body">
               <section class="pk-summary-section pk-summary-section--wide pk-summary-section--operations" data-summary-section="robot-operations" aria-labelledby="summary-operations-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">07</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Robot Operations</span>
-                    <h2 id="summary-operations-title">Robot operations · 로봇 운영</h2>
+                    <h3 id="summary-operations-title">Robot operations · 로봇 운영</h3>
                   </div>
                   <button class="pk-summary-link" type="button" onClick="{{ summaryRobotLink.onClick }}" aria-label="{{ summaryRobotLink.ariaLabel }}">
                     {{ summaryRobotLink.label }}
@@ -435,13 +489,45 @@
                   </div>
                 </div>
               </section>
+                </div>
+              </section>
 
+              <section class="pk-summary-group" aria-labelledby="summary-group-patterns">
+                <div class="pk-summary-group__head">
+                  <span class="pk-summary-group__index">04</span>
+                  <div>
+                    <h2 id="summary-group-patterns">제품 패턴 · Product patterns</h2>
+                    <p>시스템이 실제로 적용된 관제 화면으로 이어집니다. 컴포넌트 문서가 아니라 제품 장면입니다.</p>
+                  </div>
+                </div>
+                <div class="pk-summary-group__body">
+                  <div class="pk-summary-patterns">
+                    <sc-for list="{{ summaryPatternLinks }}" as="pattern" hint-placeholder-count="3">
+                      <button class="pk-summary-pattern" type="button" aria-label="{{ pattern.ariaLabel }}" onClick="{{ pattern.onClick }}">
+                        <strong>{{ pattern.title }}</strong>
+                        <span>{{ pattern.desc }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </section>
+
+
+              <section class="pk-summary-group" aria-labelledby="summary-group-index">
+                <div class="pk-summary-group__head">
+                  <span class="pk-summary-group__index">05</span>
+                  <div>
+                    <h2 id="summary-group-index">문서 색인 · Documentation index</h2>
+                    <p>33개 목적지를 카테고리별로 나열합니다. 상세 규칙은 각 문서에 있습니다.</p>
+                  </div>
+                </div>
+                <div class="pk-summary-group__body">
               <section class="pk-summary-section pk-summary-section--wide pk-summary-section--index" data-summary-section="component-index" aria-labelledby="summary-index-title">
                 <header class="pk-summary-section__head">
                   <span class="pk-summary-section__index">08</span>
                   <div class="pk-summary-section__title">
                     <span class="pk-summary-section__eyebrow">Index</span>
-                    <h2 id="summary-index-title">Component index · 상세 문서</h2>
+                    <h3 id="summary-index-title">Component index · 상세 문서</h3>
                   </div>
                 </header>
                 <div class="pk-summary-section__body">
@@ -458,6 +544,9 @@
                   </div>
                 </div>
               </section>
+                </div>
+              </section>
+
             </div>
           </div>
         </sc-if>
@@ -651,50 +740,7 @@
               </sc-for>
             </div>
 
-            <section class="pk-icon-group">
-              <div class="pk-icon-group-head">
-                <div>
-                  <h2>아이콘 카탈로그 · Catalog</h2>
-                  <p>아이콘을 찾는 것이 먼저입니다. 각 항목은 기본 상태 하나와 이름·출처만 보여 줍니다. 상호작용 6상태 전체는 아래 개발 스펙에 있습니다.</p>
-                </div>
-                <span class="pk-icon-group-count">{{ totalParkieIcons }} ICONS</span>
-              </div>
-              <sc-for list="{{ iconCatalog }}" as="cat" hint-placeholder-count="5">
-                <div class="pk-catalog-block">
-                  <h3>{{ cat.title }}</h3>
-                  <div class="pk-catalog-grid">
-                    <sc-for list="{{ cat.items }}" as="icon" hint-placeholder-count="6">
-                      <div class="pk-catalog-item">
-                        <span class="pk-catalog-glyph" role="img" aria-label="{{ icon.label }}">{{ icon.svg }}</span>
-                        <span class="pk-catalog-ko">{{ icon.ko }}</span>
-                        <span class="pk-catalog-en">{{ icon.en }}</span>
-                        <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
-                      </div>
-                    </sc-for>
-                  </div>
-                </div>
-              </sc-for>
-            </section>
-
-            <section class="pk-icon-group">
-              <div class="pk-icon-group-head">
-                <div>
-                  <h2>키보드 포커스 · Keyboard focus</h2>
-                  <p>포커스는 Hover·Pressed와 나란한 여섯 번째 상태가 아니라, 이미 어떤 상태에 있든 그 위에 겹치는 키보드 위치 표시입니다. 그래서 Rest와 Selected를 각각 링이 있는 경우와 없는 경우로 함께 보여 줍니다. Disabled는 포커스를 받지 않습니다.</p>
-                </div>
-              </div>
-              <div class="pk-focus-combos">
-                <sc-for list="{{ focusCombos }}" as="combo" hint-placeholder-count="4">
-                  <div class="pk-focus-combo">
-                    <span class="{{ combo.className }}" role="img" aria-label="{{ combo.label }}">{{ combo.svg }}</span>
-                    <span class="pk-focus-combo-name">{{ combo.name }}</span>
-                    <span class="pk-focus-combo-note">{{ combo.note }}</span>
-                  </div>
-                </sc-for>
-              </div>
-            </section>
-
-            <sc-for list="{{ semanticIconGroups }}" as="group" hint-placeholder-count="4">
+            <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
               <section class="pk-icon-group">
                 <div class="pk-icon-group-head">
                   <div>
@@ -725,44 +771,6 @@
                 </div>
               </section>
             </sc-for>
-
-            <details class="pk-icon-qa">
-              <summary>개발 스펙 보기 · Development spec — 상호작용 6상태 전체 매트릭스</summary>
-              <div class="pk-icon-qa-body">
-            <sc-for list="{{ interactionIconGroups }}" as="group" hint-placeholder-count="4">
-              <section class="pk-icon-group">
-                <div class="pk-icon-group-head">
-                  <div>
-                    <h2>{{ group.title }}</h2>
-                    <p>{{ group.description }}</p>
-                  </div>
-                  <span class="pk-icon-group-count">{{ group.count }}</span>
-                </div>
-                <div class="pk-icon-specs">
-                  <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="6">
-                    <div class="{{ icon.rowClassName }}">
-                      <div class="pk-icon-name">
-                        <span class="pk-icon-name-ko">{{ icon.ko }}</span>
-                        <span class="pk-icon-name-en">{{ icon.en }}</span>
-                        <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
-                      </div>
-                      <div class="pk-icon-spec-states">
-                        <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="6">
-                          <div class="pk-icon-spec-row">
-                            <span class="{{ state.className }}" role="img" aria-label="{{ state.label }}">{{ state.svg }}</span>
-                            <span class="pk-icon-spec-leader" aria-hidden="true"></span>
-                            <span class="pk-icon-spec-state">{{ state.stateName }}</span>
-                          </div>
-                        </sc-for>
-                      </div>
-                    </div>
-                  </sc-for>
-                </div>
-              </section>
-            </sc-for>
-              </div>
-            </details>
-
 
             <sc-for list="{{ parkieDomainGroups }}" as="group" hint-placeholder-count="5">
               <section class="pk-icon-group">
@@ -1375,18 +1383,18 @@
         <sc-if value="{{ isBreadcrumb }}" hint-placeholder-val="{{ false }}">
           <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-6);">
             <nav aria-label="로봇 상세 경로" style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-base);">
-              <a href="#dashboard" style="color:var(--parkie-text-secondary);font-weight:500;">관제</a>
+              <a href="#/parkie/dashboard" style="color:var(--parkie-text-secondary);font-weight:500;">관제</a>
               <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
-              <a href="#table" style="color:var(--parkie-text-secondary);font-weight:500;">B2 구역</a>
+              <a href="#/parkie/table" style="color:var(--parkie-text-secondary);font-weight:500;">B2 구역</a>
               <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
               <span aria-current="page" style="color:var(--parkie-text);font-weight:600;">PK-001</span>
             </nav>
           </div>
           <div style="padding:var(--parkie-space-6);background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);">
             <nav aria-label="압축 위치 경로" style="display:flex;align-items:center;gap:8px;font-size:var(--parkie-font-sm);">
-              <a href="#dashboard" aria-label="상위 경로 모두 보기" style="color:var(--parkie-text-tertiary);">…</a>
+              <a href="#/parkie/dashboard" aria-label="상위 경로 모두 보기" style="color:var(--parkie-text-tertiary);">…</a>
               <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
-              <a href="#table" style="color:var(--parkie-text-secondary);font-weight:500;">B3 구역</a>
+              <a href="#/parkie/table" style="color:var(--parkie-text-secondary);font-weight:500;">B3 구역</a>
               <span aria-hidden="true" style="color:var(--parkie-text-tertiary);">/</span>
               <span aria-current="page" style="color:var(--parkie-text);font-weight:600;">대기구역</span>
             </nav>
@@ -1600,7 +1608,7 @@
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><h2 id="robot-summary-card-title" style="margin:0;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-base);font-weight:600;color:var(--parkie-text);">PK-001</h2><span style="display:inline-flex;align-items:center;gap:6px;font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);"><span style="width:8px;height:8px;border-radius:50%;background:var(--parkie-status-active);"></span>운행중</span></div>
                 <div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">위치 B2 · A-14<br>배터리 87% · 오늘 128대 처리</div>
               </div>
-              <div style="padding:12px var(--parkie-space-5);border-top:1px solid var(--parkie-border);background:var(--parkie-surface-2);"><a href="#robotcard" style="font-size:var(--parkie-font-sm);font-weight:600;">상세 보기 →</a></div>
+              <div style="padding:12px var(--parkie-space-5);border-top:1px solid var(--parkie-border);background:var(--parkie-surface-2);"><a href="#/parkie/robotcard" style="font-size:var(--parkie-font-sm);font-weight:600;">상세 보기 →</a></div>
             </article>
             <article aria-labelledby="fleet-stat-card-title" style="background:var(--parkie-surface);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-lg);padding:var(--parkie-space-5);box-shadow:var(--parkie-shadow-sm);">
               <h2 id="fleet-stat-card-title" style="margin:0;font-size:var(--parkie-font-sm);font-weight:500;color:var(--parkie-text-tertiary);">전체 로봇</h2>
@@ -2831,6 +2839,18 @@
           </div>
         </sc-if>
 
+        <sc-if value="{{ isGoalieSystem }}" hint-placeholder-val="{{ false }}">
+          <dc-import
+            name="GoaliePages"
+            active-page="{{ activePage }}"
+            lang="{{ lang }}"
+            on-navigate="{{ onGoalieNavigate }}"
+            get-route-href="{{ getGoalieRouteHref }}"
+            hint-size="100%,320px"
+            style="width:100%;">
+          </dc-import>
+        </sc-if>
+
         <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
           <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
             <div class="pk-doc-contract__head">
@@ -2873,9 +2893,14 @@
 class Component extends DCLogic {
   rootRef = React.createRef();
   state = {
-    theme: 'dark',
-    lang: this.props.defaultLang || 'ko',
-    active: 'overview',
+    route: this.parseRoute(window.location.hash),
+    lang: (() => {
+      try {
+        return window.localStorage.getItem('uxg-language') || this.props.defaultLang || 'ko';
+      } catch (error) {
+        return this.props.defaultLang || 'ko';
+      }
+    })(),
     icons: null,
     parkieIcons: null,
     buttonSpecs: null,
@@ -2904,7 +2929,9 @@ class Component extends DCLogic {
     /* Colour values shown on the button page are read back out of the CSS
        variables at runtime. Hard-coding hex in the markup would create a
        second source of truth that silently drifts from the tokens. */
-    this.scheduleButtonSpecs(0);
+    if (this.normalizeRoute(this.state.route).system === 'parkie') {
+      this.requestButtonSpecs();
+    }
     if (this.props.brandPrimary && this.rootRef.current) {
       this.rootRef.current.style.setProperty('--parkie-brand-primary', this.props.brandPrimary);
     }
@@ -2921,11 +2948,25 @@ class Component extends DCLogic {
     window.addEventListener('popstate', this.handleLocationChange);
     window.addEventListener('hashchange', this.handleLocationChange);
     this.handleLocationChange();
+    this.syncDocument();
+  }
+
+  componentDidUpdate() {
+    this.syncDocument();
+    if (
+      this.normalizeRoute(this.state.route).system === 'parkie'
+      && !this.state.buttonSpecs
+      && !this.buttonSpecsPending
+    ) {
+      this.requestButtonSpecs();
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handleLocationChange);
     window.removeEventListener('hashchange', this.handleLocationChange);
+    if (this.buttonSpecsFrame) window.cancelAnimationFrame(this.buttonSpecsFrame);
+    if (this.routeFocusFrame) window.cancelAnimationFrame(this.routeFocusFrame);
   }
 
   /* Which token drives each button surface. Kept as token names only — the
@@ -2954,23 +2995,33 @@ class Component extends DCLogic {
   /* The stylesheet arrives via <helmet>, so on first mount the custom
      properties may not exist yet and every var() would resolve to the initial
      colour. Wait for a sentinel token to appear before reading. */
+  requestButtonSpecs() {
+    this.buttonSpecsPending = true;
+    this.scheduleButtonSpecs(0);
+  }
+
   scheduleButtonSpecs(attempt) {
-    const ready = getComputedStyle(document.documentElement)
+    const scope = this.rootRef.current
+      && this.rootRef.current.querySelector('[data-product-root][data-system="parkie"]');
+    const ready = Boolean(scope) && getComputedStyle(scope)
       .getPropertyValue('--parkie-action-primary-bg').trim() !== '';
     if (ready) {
-      this.setState({ buttonSpecs: this.resolveButtonSpecs() });
+      this.buttonSpecsPending = false;
+      this.setState({ buttonSpecs: this.resolveButtonSpecs(scope) });
       return;
     }
     if (attempt < 90) {
-      window.requestAnimationFrame(() => this.scheduleButtonSpecs(attempt + 1));
+      this.buttonSpecsFrame = window.requestAnimationFrame(() => this.scheduleButtonSpecs(attempt + 1));
+    } else {
+      this.buttonSpecsPending = false;
     }
   }
 
-  resolveButtonSpecs() {
+  resolveButtonSpecs(scope) {
     const probe = document.createElement('span');
     probe.setAttribute('aria-hidden', 'true');
     probe.style.cssText = 'position:absolute;left:-9999px;top:0;opacity:0;pointer-events:none';
-    document.body.appendChild(probe);
+    scope.appendChild(probe);
     /* Applying the token to a probe and reading it back resolves any var()
        chain, so a token defined as var(--other) still yields a real colour. */
     const read = (token) => {
@@ -3069,6 +3120,32 @@ class Component extends DCLogic {
     ] },
   ];
 
+  GOALIE_NAV = [
+    { source: 'Goalie UI', sub: 'Light product system', groups: [
+      { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles'] },
+      { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'iconography'] },
+      { ko: '컴포넌트', en: 'Components', items: ['button', 'input', 'status', 'navigation'] },
+      { ko: '패턴', en: 'Patterns', items: ['templates'] },
+      { ko: '리소스', en: 'Resources', items: ['brand'] },
+    ] },
+  ];
+
+  GOALIE_META = {
+    overview: { ko: '개요', en: 'Overview', impl: true, dko: '밝고 차분한 업무 흐름을 위한 Goalie UI 라이트 디자인 시스템입니다.', den: 'The Goalie UI light design system for clear, calm product workflows.' },
+    systemsummary: { ko: '전체 요약', en: 'System Summary', impl: true, dko: 'Goalie의 원칙, 토큰, 컴포넌트와 화면 패턴을 한눈에 살펴봅니다.', den: 'Review Goalie principles, tokens, components and screen patterns at a glance.' },
+    principles: { ko: '디자인 원칙', en: 'Principles', impl: true, dko: '신뢰, 명료성, 절제, 접근성을 제품 경험 전반에 적용합니다.', den: 'Apply trust, clarity, restraint and accessibility across the product experience.' },
+    colors: { ko: '색상', en: 'Colors', impl: true, dko: '화이트 캔버스, 중립 계층, 브랜드와 상태 색상의 사용 계약입니다.', den: 'Usage contracts for the white canvas, neutral hierarchy, brand and status colors.' },
+    typography: { ko: '타이포그래피', en: 'Typography', impl: true, dko: '한국어와 영어 모두에서 읽기 흐름을 보존하는 타입 체계입니다.', den: 'A type system that preserves reading rhythm in Korean and English.' },
+    spacing: { ko: '간격과 형태', en: 'Spacing & shape', impl: true, dko: '4px 간격, 절제된 곡률, 얕은 깊이로 정보 위계를 만듭니다.', den: 'A 4px spacing scale, restrained radii and shallow depth for clear hierarchy.' },
+    iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: '상황과 화면 크기에 맞춘 선 굵기, 크기, 상태 표현 규칙입니다.', den: 'Rules for optical weight, size and state across contexts and viewports.' },
+    button: { ko: '버튼', en: 'Button', impl: true, dko: '행동 우선순위, 상호작용 상태와 포커스 가시성을 함께 정의합니다.', den: 'Defines action hierarchy, interaction states and visible keyboard focus.' },
+    input: { ko: '입력 필드', en: 'Input', impl: true, dko: '라벨, 도움말, 검증 메시지와 상태를 분리해 전달합니다.', den: 'Separates labels, help, validation messages and interaction states.' },
+    status: { ko: '상태와 피드백', en: 'Status & feedback', impl: true, dko: '색상에만 의존하지 않는 상태, 알림, 진행 표현입니다.', den: 'Status, alert and progress patterns that never rely on color alone.' },
+    navigation: { ko: '내비게이션', en: 'Navigation', impl: true, dko: '현재 위치와 다음 이동을 명확히 구분하는 탐색 패턴입니다.', den: 'Navigation patterns that distinguish current location from the next action.' },
+    templates: { ko: '화면 템플릿', en: 'Templates', impl: true, dko: '리스트, 상세, 설정 화면을 일관된 밀도와 반응형 구조로 조합합니다.', den: 'Composes list, detail and settings screens with consistent density and responsive structure.' },
+    brand: { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: 'Goalie UI의 제품명, 색상 교체 지점과 자산 적용 원칙입니다.', den: 'Product naming, color swap points and asset application rules for Goalie UI.' },
+  };
+
   META = {
     overview:    { ko: '개요', en: 'Overview', impl: true, dko: 'Parkie RMS 관제 시스템을 위한 디자인 시스템입니다. 토큰 · 컴포넌트 · 가이드라인을 한 곳에서 관리하고, 브랜드를 손쉽게 교체합니다.', den: 'The design system for the Parkie RMS robot control platform — tokens, components and guidelines in one place, with a swappable brand.' },
     systemsummary: { ko: '전체 요약', en: 'System Summary', impl: true, dko: 'RMS의 전체 규정 위에 적용된 Parkie 아이덴티티, 타입, 색상, 아이콘, 입력과 로봇 운영 컴포넌트를 한 화면에서 확인합니다.', den: 'A single-page index of Parkie identity, type, color, icon, input and robot-operation rules applied across the RMS system.' },
@@ -3134,31 +3211,161 @@ class Component extends DCLogic {
     'ms-messaging': { ko: 'Messaging extensions', en: 'Messaging extensions', impl: false, dko: 'Teams 메시징 확장 (참조용).', den: 'Teams messaging extensions (reference).' },
   };
 
+  parseRoute(hash) {
+    const raw = String(hash || '').replace(/^#/, '');
+    const safeDecode = (value) => {
+      try { return decodeURIComponent(value); } catch (error) { return value; }
+    };
+    if (raw.startsWith('/')) {
+      const parts = raw.slice(1).split('/');
+      return {
+        system: safeDecode(parts[0] || '').toLowerCase(),
+        page: safeDecode(parts[1] || 'overview').toLowerCase(),
+        legacy: false,
+      };
+    }
+    return {
+      system: 'parkie',
+      page: safeDecode(raw || 'overview').toLowerCase(),
+      legacy: Boolean(raw),
+    };
+  }
+
+  manifestFor(system) {
+    return system === 'goalie' ? this.GOALIE_META : this.META;
+  }
+
+  normalizeRoute(route) {
+    const system = route && route.system === 'goalie' ? 'goalie' : 'parkie';
+    const manifest = this.manifestFor(system);
+    const requestedPage = route && route.page ? route.page : 'overview';
+    return {
+      system,
+      page: manifest[requestedPage] ? requestedPage : 'overview',
+      legacy: Boolean(route && route.legacy),
+    };
+  }
+
+  serializeRoute(route) {
+    const normalized = this.normalizeRoute(route);
+    return `#/${encodeURIComponent(normalized.system)}/${encodeURIComponent(normalized.page)}`;
+  }
+
+  publishTheme(system) {
+    const theme = system === 'goalie' ? 'light' : 'dark';
+    const html = document.documentElement;
+    html.dataset.activeSystem = system;
+    html.dataset.system = system;
+    html.dataset.theme = theme;
+    html.dataset.colorMode = theme;
+    html.style.colorScheme = theme;
+    html.style.backgroundColor = theme === 'light' ? '#F7F9FC' : '#0F0F11';
+  }
+
+  syncDocument() {
+    const route = this.normalizeRoute(this.state.route);
+    const meta = this.manifestFor(route.system)[route.page];
+    const ko = this.state.lang === 'ko';
+    const systemName = route.system === 'goalie' ? 'Goalie UI' : 'Parkie UI';
+    document.documentElement.lang = this.state.lang;
+    document.title = `${systemName} · ${ko ? meta.ko : meta.en} · UX/UI Design Guide System`;
+    this.publishTheme(route.system);
+  }
+
+  scrollRouteToTop() {
+    const main = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
+    if (main) main.scrollTop = 0;
+  }
+
+  focusPageTitle() {
+    if (this.routeFocusFrame) window.cancelAnimationFrame(this.routeFocusFrame);
+    this.routeFocusFrame = window.requestAnimationFrame(() => {
+      this.routeFocusFrame = window.requestAnimationFrame(() => {
+        const title = this.rootRef.current && this.rootRef.current.querySelector('#pk-page-title');
+        if (title) title.focus({ preventScroll: true });
+      });
+    });
+  }
+
   handleLocationChange = () => {
-    const id = decodeURIComponent(window.location.hash.replace(/^#/, ''));
-    if (id && this.META[id] && id !== this.state.active) {
-      this.setState({ active: id, siteMenuOpen: false });
-      const main = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
-      if (main) main.scrollTop = 0;
+    const parsed = this.parseRoute(window.location.hash);
+    const route = this.normalizeRoute(parsed);
+    const canonicalHash = this.serializeRoute(route);
+    if (parsed.legacy || window.location.hash !== canonicalHash) {
+      window.history.replaceState({ guideRoute: route }, '', canonicalHash);
+    }
+    const current = this.normalizeRoute(this.state.route);
+    if (route.system !== current.system || route.page !== current.page) {
+      this.publishTheme(route.system);
+      this.setState({
+        route,
+        searchQuery: route.system === current.system ? this.state.searchQuery : '',
+        siteMenuOpen: false,
+        mediaEmergencyOpen: false,
+        cameraFullscreen: '',
+        cameraRefreshing: '',
+        copiedValue: '',
+      });
+      this.scrollRouteToTop();
+    } else {
+      this.syncDocument();
     }
   };
 
-  select(id) {
-    if (!this.META[id]) return;
-    const nextHash = `#${encodeURIComponent(id)}`;
-    if (window.location.hash !== nextHash) {
-      window.history.pushState({ parkiePage: id }, '', nextHash);
-    }
-    this.setState({ active: id, siteMenuOpen: false });
-    const m = this.rootRef.current && this.rootRef.current.querySelector('[data-scroll]');
-    if (m) m.scrollTop = 0;
+  isModifiedNavigation(event) {
+    return Boolean(event && (
+      event.button !== 0
+      || event.metaKey
+      || event.ctrlKey
+      || event.shiftKey
+      || event.altKey
+    ));
   }
+
+  navigate(route, event) {
+    if (this.isModifiedNavigation(event)) return;
+    if (event) event.preventDefault();
+    const next = this.normalizeRoute(route);
+    const current = this.normalizeRoute(this.state.route);
+    const nextHash = this.serializeRoute(next);
+    if (window.location.hash !== nextHash) {
+      window.history.pushState({ guideRoute: next }, '', nextHash);
+    }
+    this.publishTheme(next.system);
+    this.setState({
+      route: next,
+      searchQuery: next.system === current.system ? this.state.searchQuery : '',
+      siteMenuOpen: false,
+      mediaEmergencyOpen: false,
+      cameraFullscreen: '',
+      cameraRefreshing: '',
+      copiedValue: '',
+    });
+    this.scrollRouteToTop();
+    if (event) this.focusPageTitle();
+  }
+
+  select(id, event) {
+    const current = this.normalizeRoute(this.state.route);
+    if (!this.manifestFor(current.system)[id]) return;
+    this.navigate({ system: current.system, page: id }, event);
+  }
+
+  setLanguage(lang) {
+    try { window.localStorage.setItem('uxg-language', lang); } catch (error) { /* storage is optional */ }
+    this.setState({ lang });
+  }
+
+  onGoalieNavigate = (page, event) => {
+    this.navigate({ system: 'goalie', page }, event);
+  };
+
+  getGoalieRouteHref = (page) => this.serializeRoute({ system: 'goalie', page });
 
   renderVals() {
     const {
-      theme,
+      route,
       lang,
-      active,
       modalDemo,
       serviceActive,
       role,
@@ -3180,30 +3387,38 @@ class Component extends DCLogic {
     } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => (ko ? k : e);
-    const cur = this.META[active] || this.META.overview;
+    const normalizedRoute = this.normalizeRoute(route);
+    const activeSystem = normalizedRoute.system;
+    const active = normalizedRoute.page;
+    const theme = activeSystem === 'goalie' ? 'light' : 'dark';
+    const isParkieSystem = activeSystem === 'parkie';
+    const isGoalieSystem = activeSystem === 'goalie';
+    const currentMeta = this.manifestFor(activeSystem);
+    const currentNav = isGoalieSystem ? this.GOALIE_NAV : this.NAV;
+    const cur = currentMeta[active] || currentMeta.overview;
     const version = 'v0.1';
 
     const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
     const buildItems = (ids) => ids.filter((id) => {
       if (!normalizedQuery) return true;
-      const meta = this.META[id];
+      const meta = currentMeta[id];
       return [id, meta.ko, meta.en].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
     }).map((id) => {
-      const m = this.META[id];
+      const m = currentMeta[id];
       const isActive = id === active;
-      const base = { display: 'flex', flexDirection: 'column', gap: '1px', width: '100%', textAlign: 'left', padding: '7px 10px', border: 'none', borderRadius: 'var(--parkie-radius-sm)', cursor: 'pointer', fontFamily: 'var(--parkie-font-sans)', textDecoration: 'none' };
+      const base = { display: 'flex', flexDirection: 'column', gap: '1px', width: '100%', textAlign: 'left', padding: '7px 10px', border: 'none', borderRadius: 'var(--guide-radius-sm)', cursor: 'pointer', fontFamily: 'var(--guide-font-sans)', textDecoration: 'none' };
       return {
         id, label: L(m.ko, m.en), sub: ko ? m.en : m.ko, soon: !m.impl,
         weight: isActive ? 600 : 500,
-        href: `#${id}`,
+        href: this.serializeRoute({ system: activeSystem, page: id }),
         ariaCurrent: isActive ? 'page' : 'false',
-        onClick: (event) => { event.preventDefault(); this.select(id); },
+        onClick: (event) => this.select(id, event),
         style: isActive
-          ? { ...base, background: 'var(--parkie-brand-subtle)', color: 'var(--parkie-brand-text)' }
-          : { ...base, background: 'transparent', color: 'var(--parkie-text-secondary)' },
+          ? { ...base, background: 'var(--guide-accent-subtle)', color: 'var(--guide-accent-text)' }
+          : { ...base, background: 'transparent', color: 'var(--guide-text-secondary)' },
       };
     });
-    const navSources = this.NAV.map((s) => ({
+    const navSources = currentNav.map((s) => ({
       source: s.source, sub: s.sub,
       groups: s.groups.map((g) => ({
         label: L(g.ko, g.en),
@@ -3416,7 +3631,7 @@ class Component extends DCLogic {
     const stateDefs = [
       { id: 'enabled', label: 'Default', short: 'Default' },
       { id: 'hover', label: 'Hover', short: 'Hover' },
-      { id: 'focus', label: 'Keyboard focus visible', short: 'Keyboard focus' },
+      { id: 'focus', label: 'Focus visible', short: 'Focus' },
       { id: 'pressed', label: 'Pressed', short: 'Pressed' },
       { id: 'selected', label: 'Selected · On', short: 'Selected / On' },
       { id: 'disabled', label: 'Disabled', short: 'Disabled' },
@@ -3505,9 +3720,8 @@ class Component extends DCLogic {
       statusRow('비상정지', 'Emergency stop', 'Parkie Custom', 'emergency', emphasisCells(parkieData('EmergencyStop'))),
       statusRow('완료', 'Complete', 'MS Adopted', 'success', emphasisCells(msData('CheckmarkCircleSize24ThemeRegular'))),
     ];
-    /* Battery and connection are read, not pressed. Their axis is level, and
-       each cell consumes the product's own status token — so a normal level
-       stays neutral, per the colour policy in DESIGN_SYSTEM_AUDIT.md. */
+    /* Battery and connection are read, not pressed. Battery level stays
+       neutral until critical; fill and text carry low-level information. */
     const robotStatusIcons = [
       statusRow('배터리', 'Battery', 'Parkie Original', 'neutral', [
         { name: '정상 26% 이상', emphasis: 'is-outline', data: parkieData('BatteryFull'), tone: 'battery-full' },
@@ -3522,48 +3736,6 @@ class Component extends DCLogic {
         { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'link-reconnect' },
       ]),
     ];
-    /* Keyboard focus is not a seventh mutually exclusive state — it sits on top
-       of whatever state the control is already in. Showing Rest and Selected
-       both with and without the ring is what makes that legible; a single
-       "Focus" column next to Hover and Pressed teaches the wrong model. */
-    const focusReference = parkieData('Monitoring');
-    const focusCombos = [
-      { className: 'pk-focus-cell is-rest', name: 'Rest',
-        note: L('키보드 포커스 없음. 아이콘은 중립색.', 'No keyboard focus. The icon stays neutral.'),
-        label: L('모니터링 · 기본', 'Monitoring · rest'), svg: iconSvg(focusReference, 'focus-rest') },
-      { className: 'pk-focus-cell is-rest has-focus', name: 'Rest + Focus',
-        note: L('아이콘 색은 그대로 두고 클릭 타깃 외곽에 링만 더합니다.', 'The icon colour is unchanged; only the ring is added around the target.'),
-        label: L('모니터링 · 기본 + 키보드 포커스', 'Monitoring · rest plus keyboard focus'), svg: iconSvg(focusReference, 'focus-rest-ring') },
-      { className: 'pk-focus-cell is-on', name: 'Selected / On',
-        note: L('지속되는 선택 상태. 브랜드 파랑을 씁니다.', 'A persistent selection, carried in brand blue.'),
-        label: L('모니터링 · 선택', 'Monitoring · selected'), svg: iconSvg(focusReference, 'focus-selected') },
-      { className: 'pk-focus-cell is-on has-focus', name: 'Selected + Focus',
-        note: L('선택 배경과 파랑을 유지한 채 링이 바깥에 겹칩니다.', 'Selection keeps its background and blue; the ring layers outside it.'),
-        label: L('모니터링 · 선택 + 키보드 포커스', 'Monitoring · selected plus keyboard focus'), svg: iconSvg(focusReference, 'focus-selected-ring') },
-    ];
-
-    /* A browsable list comes first: one default glyph per icon with its name and
-       source. The full state matrix is a QA artefact and lives behind a
-       disclosure so finding an icon does not mean scrolling past 144 samples. */
-    const iconCatalog = [
-      { title: L('핵심 내비게이션', 'Core navigation'), items: coreIcons },
-      { title: L('로봇·주차 운영', 'Robot & parking operations'), items: robotOperationIcons },
-      { title: L('미디어·일반 제어', 'Media & utility controls'), items: controlIcons },
-      { title: L('로봇 상태', 'Robot status'), items: robotStatusIcons },
-      { title: L('안전·결과', 'Safety & results'), items: safetyIcons },
-    ].map((group) => ({
-      title: group.title,
-      count: `${group.items.length}`,
-      items: group.items.map((icon) => ({
-        ko: icon.ko,
-        en: icon.en,
-        source: icon.source,
-        sourceClassName: icon.sourceClassName,
-        label: `${icon.ko} · ${icon.en}`,
-        svg: icon.states[0].svg,
-      })),
-    }));
-
     const parkieIconGroups = [
       iconGroup(
         '핵심 내비게이션',
@@ -3589,8 +3761,8 @@ class Component extends DCLogic {
       iconGroup(
         '로봇 상태',
         'Robot status',
-        '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 상호작용 상태가 아니라 잔량·연결 단계로 색이 결정되며, 항상 수치나 상태 텍스트를 함께 표시합니다.',
-        'Battery and connection are read, not pressed. Colour follows level and link state rather than interaction, and always ships alongside a number or status label.',
+        '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 배터리는 부족 단계까지 중립색과 잔량 형태·텍스트로 구분하고, 위험과 충전만 의미색을 사용합니다.',
+        'Battery and connection are read, not pressed. Battery stays neutral through the low range; fill and text show level while semantic colour is reserved for critical and charging states.',
         robotStatusIcons
       ),
       iconGroup(
@@ -3601,13 +3773,6 @@ class Component extends DCLogic {
         safetyIcons
       ),
     ];
-    /* Split by axis: the interaction matrix is a QA artefact and goes behind a
-       disclosure, while the semantic rows stay in the open because their colour
-       IS the documentation. */
-    const interactionIconGroups = parkieIconGroups.filter(
-      (group) => group.items.length > 0 && /is-interaction-axis/.test(group.items[0].rowClassName));
-    const semanticIconGroups = parkieIconGroups.filter(
-      (group) => group.items.length > 0 && /is-semantic-axis/.test(group.items[0].rowClassName));
     const totalParkieIcons = parkieIconGroups.reduce((sum, group) => sum + group.items.length, 0);
     const parkieIconSummary = [
       { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
@@ -3796,11 +3961,11 @@ class Component extends DCLogic {
       { label: 'danger · dismissible', intent: 'danger', action: false, dismissible: true },
     ];
 
-    const seg = (on) => ({ padding: '5px 12px', border: 'none', borderRadius: 'var(--parkie-radius-sm)', cursor: 'pointer', fontFamily: 'var(--parkie-font-sans)', fontSize: 'var(--parkie-font-sm)', fontWeight: on ? 600 : 500, background: on ? 'var(--parkie-surface)' : 'transparent', color: on ? 'var(--parkie-text)' : 'var(--parkie-text-tertiary)', boxShadow: on ? 'var(--parkie-shadow-sm)' : 'none' });
+    const seg = (on) => ({ padding: '5px 12px', border: 'none', borderRadius: 'var(--guide-radius-sm)', cursor: 'pointer', fontFamily: 'var(--guide-font-sans)', fontSize: 'var(--guide-font-sm)', fontWeight: on ? 600 : 500, background: on ? 'var(--guide-surface)' : 'transparent', color: on ? 'var(--guide-text)' : 'var(--guide-text-tertiary)', boxShadow: on ? '0 1px 2px rgba(15,23,42,0.14)' : 'none' });
 
     const themeDotStyle = theme === 'dark'
-      ? { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--parkie-text-secondary)', boxShadow: 'inset -3px -3px 0 0 var(--parkie-surface-2)' }
-      : { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--parkie-warning)' };
+      ? { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--guide-text-secondary)', boxShadow: 'inset -3px -3px 0 0 var(--guide-surface-2)' }
+      : { width: '13px', height: '13px', borderRadius: '50%', background: 'var(--guide-accent)' };
 
     const toneRamp = (key, title, note, values) => ({
       title, note,
@@ -3962,6 +4127,22 @@ class Component extends DCLogic {
         onClick: () => this.select(id),
       };
     };
+    /* Product patterns: the summary should hand off to the screens where the
+       system is actually applied, not only to component pages. */
+    const summaryPatternLinks = [
+      { id: 'dashboard', title: L('관제 대시보드', 'Control dashboard'),
+        desc: L('통계 카드·로봇 표·알림을 한 화면에 조합한 관제 템플릿.', 'Stat cards, the robot table and alerts combined into one control view.') },
+      { id: 'appshell', title: L('관제 앱 셸', 'Control app shell'),
+        desc: L('상단 바 46 · 레일 80 · 컨텍스트 패널 320 과 워크스페이스.', 'Top bar 46, rail 80, context panel 320 and the workspace.') },
+      { id: 'media', title: L('미디어·비상 제어', 'Media & emergency'),
+        desc: L('CCTV 4채널 복구 흐름과 비상 정지 확인 절차.', 'Four CCTV channels with recovery, and the emergency-stop confirmation.') },
+    ].map((pattern) => ({
+      title: pattern.title,
+      desc: pattern.desc,
+      ariaLabel: L(pattern.title + ' 상세 보기', 'View ' + pattern.title + ' details'),
+      onClick: () => this.select(pattern.id),
+    }));
+
     const summaryIndexItems = this.NAV[0].groups.flatMap((group) => (
       group.items
         .filter((id) => this.META[id] && this.META[id].impl)
@@ -4204,7 +4385,7 @@ class Component extends DCLogic {
         'Limit brand swaps to tokens and brand assets; do not alter RMS information architecture or safety meaning.'
       ),
     };
-    const documentationGuide = documentationGuides[active] || [];
+    const documentationGuide = isParkieSystem ? (documentationGuides[active] || []) : [];
     const showDocumentationGuide = documentationGuide.length > 0;
 
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
@@ -4254,31 +4435,55 @@ class Component extends DCLogic {
       ? L(this.state.copiedValue + ' 복사됨', this.state.copiedValue + ' copied')
       : '';
 
+    const systemItems = [
+      {
+        id: 'parkie',
+        name: 'Parkie UI',
+        mode: L('다크 고정', 'Dark fixed'),
+        href: this.serializeRoute({ system: 'parkie', page: 'overview' }),
+      },
+      {
+        id: 'goalie',
+        name: 'Goalie UI',
+        mode: L('라이트 고정', 'Light fixed'),
+        href: this.serializeRoute({ system: 'goalie', page: 'overview' }),
+      },
+    ].map((item) => Object.assign({}, item, {
+      ariaCurrent: item.id === activeSystem ? 'page' : 'false',
+      className: `guide-system-link${item.id === activeSystem ? ' is-active' : ''}`,
+      onClick: (event) => this.navigate({ system: item.id, page: 'overview' }, event),
+    }));
+
     return {
       rootRef: this.rootRef,
-      theme, lang, tabsDemo,
-      brandName: 'Parkie UI',
-      subtitle: L('RMS 디자인 시스템', 'RMS Design System'),
+      theme, lang, tabsDemo, activeSystem,
+      colorMode: theme,
+      isParkieSystem,
+      isGoalieSystem,
+      systemItems,
+      guideTitle: 'UX/UI Design Guide System',
+      guideSubtitle: L('제품 디자인 시스템', 'Product design systems'),
+      activeSystemName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
+      brandName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
+      subtitle: isGoalieSystem ? L('라이트 디자인 시스템', 'Light Design System') : L('RMS 디자인 시스템', 'RMS Design System'),
       ver: version,
       searchPh: L('컴포넌트 검색', 'Search components'),
       searchQuery,
       onSearchInput: (event) => this.setState({ searchQuery: event.target.value }),
       showNoNavResults: navSources.length === 0,
       noSearchResults: L(`'${searchQuery}'에 맞는 문서가 없습니다.`, `No documentation matches '${searchQuery}'.`),
-      navigationLabel: L('디자인 시스템 문서 탐색', 'Design system documentation'),
+      navigationLabel: L(`${isGoalieSystem ? 'Goalie' : 'Parkie'} 디자인 시스템 문서 탐색`, `${isGoalieSystem ? 'Goalie' : 'Parkie'} design system documentation`),
       siteSelectAriaLabel: L('사이트 선택', 'Select site'),
       themeLabel: theme === 'dark' ? L('다크', 'Dark') : L('라이트', 'Light'),
       themeDotStyle,
       koSegStyle: seg(ko),
       enSegStyle: seg(!ko),
-      toggleTheme: () => this.setState({ theme: 'dark' }),
-      setKo: () => this.setState({ lang: 'ko' }),
-      setEn: () => this.setState({ lang: 'en' }),
+      toggleTheme: () => this.publishTheme(activeSystem),
+      setKo: () => this.setLanguage('ko'),
+      setEn: () => this.setLanguage('en'),
       navSources,
       tabDemoItems,
       activeTabLabel,
-      focusCombos,
-      iconCatalog,
       buttonTokenGroups,
       copiedNotice,
       hasButtonTokens: buttonTokenGroups.length > 0,
@@ -4289,70 +4494,73 @@ class Component extends DCLogic {
       /* Pages whose specimens are designed at full application width. The top
          bar recipe needs 1214px and the control shell needs rail 80 + panel
          320 + workspace, neither of which fits the 960px reading column. */
-      contentFrameClass: ['media', 'topbar', 'appshell'].includes(active)
-        ? 'pk-content-frame pk-content-frame--wide'
-        : active === 'systemsummary'
-          ? 'pk-content-frame pk-content-frame--summary'
-          : 'pk-content-frame',
+      contentFrameClass: isGoalieSystem
+        ? 'guide-content-frame guide-content-frame--goalie'
+        : ['media', 'topbar', 'appshell'].includes(active)
+          ? 'guide-content-frame pk-content-frame pk-content-frame--wide'
+          : active === 'systemsummary'
+            ? 'guide-content-frame pk-content-frame pk-content-frame--summary'
+            : 'guide-content-frame pk-content-frame',
       msButtons, msButtonStates, msButtonMore, msCheckboxStatus, msCheckboxStates, msToggles,
       curTitle: L(cur.ko, cur.en),
       curSub: ko ? cur.en : cur.ko,
       curDesc: L(cur.dko, cur.den),
-      isOverview: active === 'overview',
-      isSystemSummary: active === 'systemsummary',
-      isPrinciples: active === 'principles',
-      isChangelog: active === 'changelog',
-      isColors: active === 'colors',
-      isTypography: active === 'typography',
-      isSpacing: active === 'spacing',
-      isRadius: active === 'radius',
-      isElevation: active === 'elevation',
-      isIconography: active === 'iconography',
-      isButton: active === 'button',
-      isSegmented: active === 'segmented',
-      isSelection: active === 'selection',
-      isBadge: active === 'badge',
-      isInput: active === 'input',
-      isTable: active === 'table',
-      isAlert: active === 'alert',
-      isTopbar: active === 'topbar',
-      isAlertFeed: active === 'alertfeed',
-      isAlertCenter: active === 'alertcenter',
-      isAppShell: active === 'appshell',
-      isCard: active === 'card',
-      isTabs: active === 'tabs',
-      isModal: active === 'modal',
-      isStatusLabel: active === 'statuslabel',
-      isRobotStatus: active === 'robotstatus',
-      isRobotCard: active === 'robotcard',
-      isMedia: active === 'media',
-      isBreadcrumb: active === 'breadcrumb',
-      isDashboard: active === 'dashboard',
-      isSelect: active === 'select',
-      isAvatar: active === 'avatar',
-      isBrand: active === 'brand',
-      isMsButton: active === 'ms-button',
-      isMsCheckbox: active === 'ms-checkbox',
-      isMsToggle: active === 'ms-toggle',
-      isMsInput: active === 'ms-input',
-      isMsBadge: active === 'ms-badge',
-      isMsTooltip: active === 'ms-tooltip',
-      isMsColors: active === 'ms-colors',
-      isMsType: active === 'ms-type',
-      isMsIcons: active === 'ms-icons',
-      isMsRadio: active === 'ms-radio',
-      isMsDropdown: active === 'ms-dropdown',
-      isMsAlert: active === 'ms-alert',
-      isMsToast: active === 'ms-toast',
-      isMsListitem: active === 'ms-listitem',
-      isMsSearchbox: active === 'ms-searchbox',
-      isMsProgress: active === 'ms-progress',
-      isMsComp: ['ms-button', 'ms-checkbox', 'ms-toggle', 'ms-input', 'ms-badge', 'ms-tooltip', 'ms-colors', 'ms-type', 'ms-icons', 'ms-radio', 'ms-dropdown', 'ms-alert', 'ms-toast', 'ms-listitem', 'ms-searchbox', 'ms-progress'].includes(active),
+      activePage: active,
+      onGoalieNavigate: this.onGoalieNavigate,
+      getGoalieRouteHref: this.getGoalieRouteHref,
+      isOverview: isParkieSystem && active === 'overview',
+      isSystemSummary: isParkieSystem && active === 'systemsummary',
+      isPrinciples: isParkieSystem && active === 'principles',
+      isChangelog: isParkieSystem && active === 'changelog',
+      isColors: isParkieSystem && active === 'colors',
+      isTypography: isParkieSystem && active === 'typography',
+      isSpacing: isParkieSystem && active === 'spacing',
+      isRadius: isParkieSystem && active === 'radius',
+      isElevation: isParkieSystem && active === 'elevation',
+      isIconography: isParkieSystem && active === 'iconography',
+      isButton: isParkieSystem && active === 'button',
+      isSegmented: isParkieSystem && active === 'segmented',
+      isSelection: isParkieSystem && active === 'selection',
+      isBadge: isParkieSystem && active === 'badge',
+      isInput: isParkieSystem && active === 'input',
+      isTable: isParkieSystem && active === 'table',
+      isAlert: isParkieSystem && active === 'alert',
+      isTopbar: isParkieSystem && active === 'topbar',
+      isAlertFeed: isParkieSystem && active === 'alertfeed',
+      isAlertCenter: isParkieSystem && active === 'alertcenter',
+      isAppShell: isParkieSystem && active === 'appshell',
+      isCard: isParkieSystem && active === 'card',
+      isTabs: isParkieSystem && active === 'tabs',
+      isModal: isParkieSystem && active === 'modal',
+      isStatusLabel: isParkieSystem && active === 'statuslabel',
+      isRobotStatus: isParkieSystem && active === 'robotstatus',
+      isRobotCard: isParkieSystem && active === 'robotcard',
+      isMedia: isParkieSystem && active === 'media',
+      isBreadcrumb: isParkieSystem && active === 'breadcrumb',
+      isDashboard: isParkieSystem && active === 'dashboard',
+      isSelect: isParkieSystem && active === 'select',
+      isAvatar: isParkieSystem && active === 'avatar',
+      isBrand: isParkieSystem && active === 'brand',
+      isMsButton: isParkieSystem && active === 'ms-button',
+      isMsCheckbox: isParkieSystem && active === 'ms-checkbox',
+      isMsToggle: isParkieSystem && active === 'ms-toggle',
+      isMsInput: isParkieSystem && active === 'ms-input',
+      isMsBadge: isParkieSystem && active === 'ms-badge',
+      isMsTooltip: isParkieSystem && active === 'ms-tooltip',
+      isMsColors: isParkieSystem && active === 'ms-colors',
+      isMsType: isParkieSystem && active === 'ms-type',
+      isMsIcons: isParkieSystem && active === 'ms-icons',
+      isMsRadio: isParkieSystem && active === 'ms-radio',
+      isMsDropdown: isParkieSystem && active === 'ms-dropdown',
+      isMsAlert: isParkieSystem && active === 'ms-alert',
+      isMsToast: isParkieSystem && active === 'ms-toast',
+      isMsListitem: isParkieSystem && active === 'ms-listitem',
+      isMsSearchbox: isParkieSystem && active === 'ms-searchbox',
+      isMsProgress: isParkieSystem && active === 'ms-progress',
+      isMsComp: isParkieSystem && ['ms-button', 'ms-checkbox', 'ms-toggle', 'ms-input', 'ms-badge', 'ms-tooltip', 'ms-colors', 'ms-type', 'ms-icons', 'ms-radio', 'ms-dropdown', 'ms-alert', 'ms-toast', 'ms-listitem', 'ms-searchbox', 'ms-progress'].includes(active),
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
       parkieIconSummary,
       parkieIconGroups,
-      interactionIconGroups,
-      semanticIconGroups,
       parkieDomainGroups,
       summaryIdentityFacts,
       summaryTypeScale,
@@ -4362,6 +4570,7 @@ class Component extends DCLogic {
       summaryIconRows,
       summaryDomainItems,
       summaryIndexItems,
+      summaryPatternLinks,
       summaryIdentityLink: summaryLink('brand'),
       summaryTypographyLink: summaryLink('typography'),
       summaryColorsLink: summaryLink('colors'),
@@ -4387,7 +4596,7 @@ class Component extends DCLogic {
       onMediaEmergencyKeyDown,
       toggleMediaMic: () => this.setState({ mediaMicActive: !mediaMicActive }),
       msRefNote: L('참조용입니다. Parkie 버전으로 가져오려면 알려주세요.', 'Reference only — tell me to build the Parkie version.'),
-      isSoon: !cur.impl,
+      isSoon: isParkieSystem && !cur.impl,
       tokenLayers,
       primitiveTitle: L('원시 팔레트 · Primitive ramps', 'Primitive ramps'),
       primitiveNote: L('밝기 순서를 나타내는 원시값입니다. 제품 UI에는 아래 Semantic 토큰을 사용합니다.', 'Raw tonal values ordered by lightness. Use the semantic aliases below in product UI.'),

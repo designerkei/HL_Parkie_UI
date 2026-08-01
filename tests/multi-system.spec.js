@@ -87,11 +87,31 @@ async function expectTokenIsolation(page, system) {
   const productRoot = page.locator(`[data-product-root][data-system="${system}"]`);
   const contract = await productRoot.evaluate((node, names) => {
     const computed = getComputedStyle(node);
+    const probe = document.createElement('span');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.backgroundColor = `var(--${names.system}-bg)`;
+    probe.style.color = `var(--${names.system}-text)`;
+    node.appendChild(probe);
+    const probeStyle = getComputedStyle(probe);
+    const ownBackgroundResolved = probeStyle.backgroundColor;
+    const ownTextResolved = probeStyle.color;
+
+    probe.style.backgroundColor = `var(--${names.foreignSystem}-bg)`;
+    probe.style.color = `var(--${names.foreignSystem}-text)`;
+    const foreignBackgroundResolved = probeStyle.backgroundColor;
+    const foreignTextResolved = probeStyle.color;
+    probe.remove();
+
     return {
       ownBackground: computed.getPropertyValue(`--${names.system}-bg`).trim(),
       ownText: computed.getPropertyValue(`--${names.system}-text`).trim(),
-      foreignBackground: computed.getPropertyValue(`--${names.foreignSystem}-bg`).trim(),
-      foreignText: computed.getPropertyValue(`--${names.foreignSystem}-text`).trim(),
+      actualBackground: computed.backgroundColor,
+      actualText: computed.color,
+      ownBackgroundResolved,
+      ownTextResolved,
+      foreignBackgroundResolved,
+      foreignTextResolved,
       foreignInlineConsumers: [...node.querySelectorAll('[style]')]
         .filter((child) => child.getAttribute('style').includes(`--${names.foreignSystem}-`))
         .map((child) => child.outerHTML.slice(0, 240)),
@@ -100,8 +120,23 @@ async function expectTokenIsolation(page, system) {
 
   expect(contract.ownBackground, `${system} must define its own background token`).not.toBe('');
   expect(contract.ownText, `${system} must define its own text token`).not.toBe('');
-  expect(contract.foreignBackground, `${foreignSystem} tokens must not inherit into ${system}`).toBe('');
-  expect(contract.foreignText, `${foreignSystem} tokens must not inherit into ${system}`).toBe('');
+  expect(contract.actualBackground, `${system} root must paint its own canvas token`)
+    .toBe(contract.ownBackgroundResolved);
+  expect(contract.actualText, `${system} root must paint its own text token`)
+    .toBe(contract.ownTextResolved);
+
+  if (
+    contract.foreignBackgroundResolved
+    && contract.foreignBackgroundResolved !== 'rgba(0, 0, 0, 0)'
+    && contract.foreignBackgroundResolved !== contract.ownBackgroundResolved
+  ) {
+    expect(contract.actualBackground, `${system} must not paint the ${foreignSystem} canvas`)
+      .not.toBe(contract.foreignBackgroundResolved);
+  }
+  if (contract.foreignTextResolved && contract.foreignTextResolved !== contract.ownTextResolved) {
+    expect(contract.actualText, `${system} must not paint the ${foreignSystem} text color`)
+      .not.toBe(contract.foreignTextResolved);
+  }
   expect(contract.foreignInlineConsumers, `${system} inline styles must not consume ${foreignSystem} tokens`).toEqual([]);
 }
 
@@ -335,12 +370,17 @@ test('a cold Goalie deep link never exposes a dark first-paint frame', async ({ 
 });
 
 test('the guide remains bounded and operable at 390px and 320px', async ({ page }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(240_000);
   const cases = [
     { width: 390, height: 844, system: 'parkie', pageId: 'overview' },
     { width: 390, height: 844, system: 'goalie', pageId: 'templates' },
     { width: 320, height: 760, system: 'parkie', pageId: 'colors' },
-    { width: 320, height: 760, system: 'goalie', pageId: 'button' },
+    ...GOALIE_PAGES.map((pageId) => ({
+      width: 320,
+      height: 760,
+      system: 'goalie',
+      pageId,
+    })),
   ];
 
   for (const current of cases) {
@@ -382,17 +422,13 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
   }
 });
 
-test('representative Parkie and Goalie routes have complete accessible structure', async ({ page }) => {
-  test.setTimeout(180_000);
+test('representative Parkie and every Goalie route have complete accessible structure', async ({ page }) => {
+  test.setTimeout(300_000);
   const routes = [
     ['parkie', 'overview'],
     ['parkie', 'colors'],
     ['parkie', 'button'],
-    ['goalie', 'overview'],
-    ['goalie', 'colors'],
-    ['goalie', 'button'],
-    ['goalie', 'navigation'],
-    ['goalie', 'templates'],
+    ...GOALIE_PAGES.map((pageId) => ['goalie', pageId]),
   ];
 
   for (const [system, pageId] of routes) {

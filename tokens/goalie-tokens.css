@@ -1,0 +1,201 @@
+/* =====================================================================
+   Goalie UI — fixed light theme tokens
+
+   Contract
+   - Tokens exist only inside the explicit Goalie product scope.
+   - No :root defaults: a missing wrapper must fail visibly instead of
+     inheriting another product's theme.
+   - Components consume semantic/component aliases, not palette values.
+   ===================================================================== */
+
+[data-system="goalie"][data-color-mode="light"] {
+  color-scheme: light;
+
+  /* Typography */
+  --goalie-font-sans: "Pretendard", "Noto Sans KR", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --goalie-font-mono: "Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+
+  --goalie-font-xs: 12px;
+  --goalie-font-sm: 13px;
+  --goalie-font-base: 14px;
+  --goalie-font-md: 16px;
+  --goalie-font-lg: 18px;
+  --goalie-font-xl: 22px;
+  --goalie-font-2xl: 28px;
+  --goalie-font-3xl: 36px;
+
+  --goalie-leading-tight: 1.2;
+  --goalie-leading-snug: 1.35;
+  --goalie-leading-normal: 1.5;
+  --goalie-leading-relaxed: 1.65;
+
+  --goalie-weight-regular: 400;
+  --goalie-weight-medium: 500;
+  --goalie-weight-semibold: 600;
+  --goalie-weight-bold: 700;
+
+  --goalie-tracking-tight: -0.02em;
+  --goalie-tracking-wide: 0.055em;
+
+  /* Spacing — 4px base */
+  --goalie-space-1: 4px;
+  --goalie-space-2: 8px;
+  --goalie-space-3: 12px;
+  --goalie-space-4: 16px;
+  --goalie-space-5: 20px;
+  --goalie-space-6: 24px;
+  --goalie-space-7: 32px;
+  --goalie-space-8: 40px;
+  --goalie-space-9: 48px;
+  --goalie-space-10: 64px;
+  --goalie-space-11: 80px;
+  --goalie-space-12: 96px;
+
+  /* Shape */
+  --goalie-radius-xs: 4px;
+  --goalie-radius-sm: 6px;
+  --goalie-radius-md: 8px;
+  --goalie-radius-lg: 12px;
+  --goalie-radius-xl: 16px;
+  --goalie-radius-pill: 999px;
+  --goalie-radius-round: 50%;
+
+  /* Brand primitives */
+  --goalie-color-brand-50: #EFF5FF;
+  --goalie-color-brand-100: #DCE9FF;
+  --goalie-color-brand-200: #BED3FF;
+  --goalie-color-brand-300: #91B4FF;
+  --goalie-color-brand-400: #5E8EF2;
+  --goalie-color-brand-500: #3568E8;
+  --goalie-color-brand-600: #2457D6;
+  --goalie-color-brand-700: #1D46B8;
+  --goalie-color-brand-800: #1D3C91;
+  --goalie-color-brand-900: #1B3473;
+  --goalie-color-brand-950: #142048;
+
+  /* Neutral primitives */
+  --goalie-color-neutral-0: #FFFFFF;
+  --goalie-color-neutral-25: #FBFCFE;
+  --goalie-color-neutral-50: #F7F9FC;
+  --goalie-color-neutral-100: #F1F4F8;
+  --goalie-color-neutral-200: #E3E9F0;
+  --goalie-color-neutral-300: #CBD5E1;
+  --goalie-color-neutral-400: #94A3B8;
+  --goalie-color-neutral-500: #64748B;
+  --goalie-color-neutral-600: #475569;
+  --goalie-color-neutral-700: #334155;
+  --goalie-color-neutral-800: #1E293B;
+  --goalie-color-neutral-900: #111827;
+  --goalie-color-neutral-950: #0B1220;
+
+  /* Semantic primitives */
+  --goalie-color-green-50: #ECF8F1;
+  --goalie-color-green-600: #157347;
+  --goalie-color-green-700: #0F5F39;
+  --goalie-color-amber-50: #FFF8E1;
+  --goalie-color-amber-700: #8A5B00;
+  --goalie-color-red-50: #FFF0EE;
+  --goalie-color-red-600: #B42318;
+  --goalie-color-red-700: #912018;
+  --goalie-color-blue-50: #EEF6FF;
+  --goalie-color-blue-700: #175CD3;
+
+  /* Semantic surface and content aliases */
+  --goalie-bg: var(--goalie-color-neutral-50);
+  --goalie-surface: var(--goalie-color-neutral-0);
+  --goalie-surface-subtle: var(--goalie-color-neutral-25);
+  --goalie-surface-muted: var(--goalie-color-neutral-100);
+  --goalie-surface-pressed: var(--goalie-color-neutral-200);
+
+  --goalie-border: #D8E0EA;
+  --goalie-border-subtle: #E8EDF3;
+  --goalie-border-strong: #AAB7C7;
+
+  --goalie-text: var(--goalie-color-neutral-900);
+  --goalie-text-secondary: var(--goalie-color-neutral-600);
+  /* Explicitly darker than neutral-500 so tertiary copy remains >= 4.5:1
+     on both white and the muted documentation surface. */
+  --goalie-text-tertiary: #5B6B80;
+  --goalie-text-disabled: var(--goalie-color-neutral-400);
+  --goalie-text-inverse: var(--goalie-color-neutral-0);
+
+  /* Brand and interaction aliases */
+  --goalie-brand-primary: var(--goalie-color-brand-600);
+  --goalie-brand-primary-hover: var(--goalie-color-brand-700);
+  --goalie-brand-primary-pressed: var(--goalie-color-brand-800);
+  --goalie-brand-on: var(--goalie-color-neutral-0);
+  --goalie-brand-text: var(--goalie-color-brand-700);
+  --goalie-brand-subtle: var(--goalie-color-brand-50);
+  --goalie-brand-subtle-hover: var(--goalie-color-brand-100);
+  --goalie-brand-border: var(--goalie-color-brand-200);
+
+  --goalie-hover-surface: rgba(17, 24, 39, 0.045);
+  --goalie-pressed-surface: rgba(17, 24, 39, 0.085);
+  --goalie-selected-surface: var(--goalie-color-brand-50);
+
+  /* Icon states */
+  --goalie-icon-rest: var(--goalie-color-neutral-600);
+  --goalie-icon-hover: var(--goalie-color-neutral-900);
+  --goalie-icon-pressed: var(--goalie-color-neutral-900);
+  --goalie-icon-selected: var(--goalie-color-brand-700);
+  --goalie-icon-disabled: var(--goalie-color-neutral-400);
+
+  /* Feedback */
+  --goalie-success: var(--goalie-color-green-600);
+  --goalie-success-hover: var(--goalie-color-green-700);
+  --goalie-success-subtle: var(--goalie-color-green-50);
+  --goalie-warning: var(--goalie-color-amber-700);
+  --goalie-warning-subtle: var(--goalie-color-amber-50);
+  --goalie-danger: var(--goalie-color-red-600);
+  --goalie-danger-hover: var(--goalie-color-red-700);
+  --goalie-danger-subtle: var(--goalie-color-red-50);
+  --goalie-info: var(--goalie-color-blue-700);
+  --goalie-info-subtle: var(--goalie-color-blue-50);
+
+  /* Controls */
+  --goalie-control-height-sm: 32px;
+  --goalie-control-height-md: 40px;
+  --goalie-control-height-lg: 48px;
+  --goalie-control-bg: var(--goalie-surface);
+  --goalie-control-border: var(--goalie-border-strong);
+  --goalie-control-border-hover: var(--goalie-color-neutral-600);
+  --goalie-control-disabled-bg: var(--goalie-surface-muted);
+  --goalie-control-disabled-fg: var(--goalie-text-disabled);
+
+  /* Focus. White separation keeps the blue indicator visible when a control
+     already carries the same brand blue as its fill. */
+  --goalie-focus-color: var(--goalie-color-brand-700);
+  --goalie-focus-separator: var(--goalie-color-neutral-0);
+  --goalie-focus-ring:
+    0 0 0 2px var(--goalie-focus-separator),
+    0 0 0 4px var(--goalie-focus-color);
+  --goalie-focus-ring-inset:
+    inset 0 0 0 2px var(--goalie-focus-separator),
+    inset 0 0 0 4px var(--goalie-focus-color);
+
+  /* Elevation */
+  --goalie-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --goalie-shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.10), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
+  --goalie-shadow-lg: 0 14px 28px -12px rgba(15, 23, 42, 0.22), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
+
+  /* Documentation shell */
+  --goalie-doc-header-height: 64px;
+  --goalie-doc-nav-width: 248px;
+  --goalie-doc-content-width: 1120px;
+  --goalie-doc-inspector-width: 288px;
+  --goalie-doc-divider: var(--goalie-border-subtle);
+
+  /* Motion */
+  --goalie-duration-fast: 120ms;
+  --goalie-duration-base: 180ms;
+  --goalie-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (forced-colors: active) {
+  [data-system="goalie"][data-color-mode="light"] {
+    --goalie-focus-color: Highlight;
+    --goalie-focus-separator: Canvas;
+    --goalie-border: CanvasText;
+    --goalie-border-strong: CanvasText;
+  }
+}

@@ -4,7 +4,8 @@
    To rebrand, edit this file — every component reads var(--parkie-*).
    ===================================================================== */
 
-:root {
+:root[data-system="parkie"][data-color-mode="dark"],
+[data-system="parkie"][data-color-mode="dark"] {
   /* ---- Typography families ---- */
   --parkie-font-sans: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
   --parkie-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -299,7 +300,7 @@
   --parkie-motion-fault: var(--parkie-status-danger);
 
   --parkie-battery-normal: var(--parkie-text);
-  --parkie-battery-low: var(--parkie-status-warning);
+  --parkie-battery-low: var(--parkie-icon-battery-full);
   --parkie-battery-critical: var(--parkie-status-danger);
   --parkie-battery-charging: var(--parkie-icon-charging);
 
@@ -403,7 +404,7 @@
 /* =====================================================================
    Dark theme — applied via [data-theme="dark"] on the app root
    ===================================================================== */
-[data-theme="dark"] {
+[data-theme="dark"][data-system="parkie"] {
   --parkie-action-danger-hover-fg: #000000;
   --parkie-brand-primary: var(--parkie-color-brand-500);
   --parkie-brand-primary-hover: var(--parkie-color-brand-300);

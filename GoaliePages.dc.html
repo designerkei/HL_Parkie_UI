@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Goalie UI · Design System</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./tokens/goalie-tokens.css">
+  <link rel="stylesheet" href="./components/goalie.css">
+  <style>
+    html, body { height: 100%; margin: 0; background: #F7F9FC; }
+    x-dc { display: none !important; }
+  </style>
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+  <div class="gl-root gl-root--content" ref="{{ rootRef }}" data-system="goalie" data-color-mode="light" lang="{{ lang }}">
+    <div class="gl-content">
+
+          <!-- OVERVIEW ------------------------------------------------ -->
+          <sc-if value="{{ isOverview }}" hint-placeholder-val="true">
+            <section class="gl-overview-statement" aria-labelledby="gl-overview-statement-title">
+              <h2 id="gl-overview-statement-title">{{ overviewStatement }}</h2>
+              <p>{{ overviewStatementBody }}</p>
+            </section>
+
+            <div class="gl-metric-strip" aria-label="{{ overviewMetricsLabel }}">
+              <sc-for list="{{ overviewMetrics }}" as="metric" hint-placeholder-count="4">
+                <div class="gl-metric"><strong>{{ metric.value }}</strong><span>{{ metric.label }}</span></div>
+              </sc-for>
+            </div>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · SYSTEM</span><h2>{{ overviewSystemTitle }}</h2></div>
+                <p>{{ overviewSystemBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ overviewSystemLines }}" as="line" hint-placeholder-count="3">
+                  <li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li>
+                </sc-for>
+              </ul>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · DELIVERY</span><h2>{{ overviewDeliveryTitle }}</h2></div>
+                <p>{{ overviewDeliveryBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ overviewDeliveryLines }}" as="line" hint-placeholder-count="3">
+                  <li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-if>
+
+          <!-- SYSTEM SUMMARY ----------------------------------------- -->
+          <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="false">
+            <div class="gl-summary-map">
+              <sc-for list="{{ summarySections }}" as="section" hint-placeholder-count="6">
+                <article>
+                  <small>{{ section.index }}</small>
+                  <h2>{{ section.title }}</h2>
+                  <p>{{ section.body }}</p>
+                  <button type="button" onClick="{{ section.onClick }}">{{ section.action }}</button>
+                </article>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- PRINCIPLES --------------------------------------------- -->
+          <sc-if value="{{ isPrinciples }}" hint-placeholder-val="false">
+            <div class="gl-principles">
+              <sc-for list="{{ principles }}" as="principle" hint-placeholder-count="4">
+                <section class="gl-principle">
+                  <h2>{{ principle.title }}</h2>
+                  <p>{{ principle.body }}</p>
+                </section>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- COLORS ------------------------------------------------- -->
+          <sc-if value="{{ isColors }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · BRAND</span><h2>{{ colorBrandTitle }}</h2></div>
+                <p>{{ colorBrandBody }}</p>
+              </header>
+              <div class="gl-color-ramp" aria-label="{{ colorBrandTitle }}">
+                <sc-for list="{{ brandColors }}" as="color" hint-placeholder-count="6">
+                  <div class="gl-color-chip">
+                    <div class="gl-color-chip__swatch" style="{{ color.style }}"></div>
+                    <div class="gl-color-chip__meta"><strong>{{ color.step }}</strong><code>{{ color.value }}</code></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · NEUTRAL</span><h2>{{ colorNeutralTitle }}</h2></div>
+                <p>{{ colorNeutralBody }}</p>
+              </header>
+              <div class="gl-color-ramp" aria-label="{{ colorNeutralTitle }}">
+                <sc-for list="{{ neutralColors }}" as="color" hint-placeholder-count="6">
+                  <div class="gl-color-chip">
+                    <div class="gl-color-chip__swatch" style="{{ color.style }}"></div>
+                    <div class="gl-color-chip__meta"><strong>{{ color.step }}</strong><code>{{ color.value }}</code></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">03 · SEMANTIC</span><h2>{{ colorSemanticTitle }}</h2></div>
+                <p>{{ colorSemanticBody }}</p>
+              </header>
+              <div>
+                <sc-for list="{{ semanticColors }}" as="semantic" hint-placeholder-count="4">
+                  <div class="gl-semantic-line">
+                    <strong>{{ semantic.name }}</strong>
+                    <span class="gl-semantic-line__sample" style="{{ semantic.style }}" aria-hidden="true"></span>
+                    <p>{{ semantic.use }}</p>
+                    <code>{{ semantic.token }}</code>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">04 · CONTRACT</span><h2>{{ colorContractTitle }}</h2></div>
+                <p>{{ colorContractBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ colorContracts }}" as="line" hint-placeholder-count="3">
+                  <li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-if>
+
+          <!-- TYPOGRAPHY --------------------------------------------- -->
+          <sc-if value="{{ isTypography }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · SCALE</span><h2>{{ typeScaleTitle }}</h2></div>
+                <p>{{ typeScaleBody }}</p>
+              </header>
+              <div>
+                <sc-for list="{{ typeScale }}" as="type" hint-placeholder-count="6">
+                  <div class="gl-type-specimen">
+                    <span class="gl-type-specimen__name">{{ type.name }}</span>
+                    <span class="gl-type-specimen__sample" style="{{ type.style }}">{{ type.sample }}</span>
+                    <span class="gl-type-specimen__meta">{{ type.meta }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · WRITING</span><h2>{{ typeWritingTitle }}</h2></div>
+                <p>{{ typeWritingBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ typeWritingRules }}" as="line" hint-placeholder-count="4">
+                  <li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-if>
+
+          <!-- SPACING ------------------------------------------------ -->
+          <sc-if value="{{ isSpacing }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · 4PX GRID</span><h2>{{ spacingScaleTitle }}</h2></div>
+                <p>{{ spacingScaleBody }}</p>
+              </header>
+              <div class="gl-spacing-scale">
+                <sc-for list="{{ spacingScale }}" as="space" hint-placeholder-count="8">
+                  <div class="gl-spacing-row"><code>{{ space.token }}</code><span>{{ space.value }}</span><i class="gl-spacing-bar" style="{{ space.style }}"></i></div>
+                </sc-for>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · RHYTHM</span><h2>{{ spacingRuleTitle }}</h2></div>
+                <p>{{ spacingRuleBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ spacingRules }}" as="line" hint-placeholder-count="3">
+                  <li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-if>
+
+          <!-- ICONOGRAPHY ------------------------------------------- -->
+          <sc-if value="{{ isIconography }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · CATALOG</span><h2>{{ iconCatalogTitle }}</h2></div>
+                <p>{{ iconCatalogBody }}</p>
+              </header>
+              <div class="gl-icon-catalog" aria-label="{{ iconCatalogTitle }}">
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 20v-6h6v6" stroke="currentColor" stroke-width="2"/></svg><span>{{ iconHome }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/></svg><span>{{ iconOverview }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconTarget }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m4 6 5 3 5-5 6 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>{{ iconPerformance }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7 1a3 3 0 1 0 0-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 20a5.5 5.5 0 0 1 11 0m1-5a5 5 0 0 1 6 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconTeam }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5h14v14H5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 15V9m4 6v-3m4 3V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconReport }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18V6a2 2 0 0 1 2-2h8l6 6v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 4v6h6M8 14h8M8 17h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconDocument }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a7 7 0 1 0 7 7c0-1-.2-2-.6-2.8L21 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m15 5 3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconActivity }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6c0 7-3 7-3 8h18c0-1-3-1-3-8a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>{{ iconAlert }}</span></div>
+                <div class="gl-icon-item"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>{{ iconSettings }}</span></div>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · STATE MODEL</span><h2>{{ iconStateTitle }}</h2></div>
+                <p>{{ iconStateBody }}</p>
+              </header>
+              <div class="gl-spec-layout">
+                <div class="gl-spec-stage">
+                  <div class="gl-icon-state-row">
+                    <sc-for list="{{ iconStates }}" as="state" hint-placeholder-count="6">
+                      <div class="gl-icon-state">
+                        <span class="{{ state.className }}"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                        <small>{{ state.label }}</small>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <aside class="gl-token-aside" aria-label="{{ tokenInspectorTitle }}">
+                  <h3>{{ tokenInspectorTitle }}</h3>
+                  <dl>
+                    <sc-for list="{{ iconTokenDetails }}" as="detail" hint-placeholder-count="5">
+                      <div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div>
+                    </sc-for>
+                  </dl>
+                </aside>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">03 · CONSTRUCTION</span><h2>{{ iconRuleTitle }}</h2></div>
+                <p>{{ iconRuleBody }}</p>
+              </header>
+              <ul class="gl-line-list">
+                <sc-for list="{{ iconRules }}" as="line" hint-placeholder-count="4"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for>
+              </ul>
+            </section>
+          </sc-if>
+
+          <!-- BUTTON ------------------------------------------------- -->
+          <sc-if value="{{ isButton }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">01 · VARIANTS</span><h2>{{ buttonVariantTitle }}</h2></div>
+                <p>{{ buttonVariantBody }}</p>
+              </header>
+              <div class="gl-spec-layout">
+                <div class="gl-spec-stage"><div class="gl-button-row">
+                  <button class="gl-button" type="button">{{ primaryLabel }}</button>
+                  <button class="gl-button gl-button--secondary" type="button">{{ secondaryLabel }}</button>
+                  <button class="gl-button gl-button--quiet" type="button">{{ quietLabel }}</button>
+                  <button class="gl-button gl-button--danger" type="button">{{ dangerLabel }}</button>
+                </div></div>
+                <aside class="gl-token-aside" aria-label="{{ tokenInspectorTitle }}"><h3>{{ tokenInspectorTitle }}</h3><dl>
+                  <sc-for list="{{ buttonTokenDetails }}" as="detail" hint-placeholder-count="5"><div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div></sc-for>
+                </dl></aside>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head">
+                <div><span class="gl-section-index">02 · STATES</span><h2>{{ buttonStateTitle }}</h2></div>
+                <p>{{ buttonStateBody }}</p>
+              </header>
+              <div class="gl-spec-stage"><div class="gl-state-control-row">
+                <div class="gl-control-state"><span>Rest</span><button class="gl-button" type="button">{{ actionLabel }}</button></div>
+                <div class="gl-control-state"><span>Hover</span><button class="gl-button is-hover" type="button">{{ actionLabel }}</button></div>
+                <div class="gl-control-state"><span>Pressed</span><button class="gl-button is-pressed" type="button">{{ actionLabel }}</button></div>
+                <div class="gl-control-state"><span>Focus</span><button class="gl-button is-focus" type="button">{{ actionLabel }}</button></div>
+                <div class="gl-control-state"><span>Disabled</span><button class="gl-button" type="button" disabled>{{ actionLabel }}</button></div>
+              </div></div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">03 · SIZE</span><h2>{{ buttonSizeTitle }}</h2></div><p>{{ buttonSizeBody }}</p></header>
+              <div class="gl-button-row"><button class="gl-button gl-button--sm" type="button">32</button><button class="gl-button" type="button">40</button><button class="gl-button gl-button--lg" type="button">48</button></div>
+            </section>
+          </sc-if>
+
+          <!-- INPUT -------------------------------------------------- -->
+          <sc-if value="{{ isInput }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">01 · FIELD</span><h2>{{ inputAnatomyTitle }}</h2></div><p>{{ inputAnatomyBody }}</p></header>
+              <div class="gl-spec-layout">
+                <div class="gl-spec-stage"><div class="gl-input-stack">
+                  <div class="gl-field"><label for="gl-input-rest">{{ inputLabel }}</label><input id="gl-input-rest" placeholder="{{ inputPlaceholder }}"><small>{{ inputHelper }}</small></div>
+                  <div class="gl-field is-focus"><label for="gl-input-focus">{{ inputLabel }}</label><input id="gl-input-focus" value="goalie@example.com"><small>{{ inputFocusHelper }}</small></div>
+                  <div class="gl-field is-error"><label for="gl-input-error">{{ inputLabel }}</label><input id="gl-input-error" value="goalie@" aria-invalid="true" aria-describedby="gl-input-error-help"><small id="gl-input-error-help">{{ inputErrorHelper }}</small></div>
+                  <div class="gl-field"><label for="gl-input-disabled">{{ inputLabel }}</label><input id="gl-input-disabled" value="goalie@example.com" disabled><small>{{ inputDisabledHelper }}</small></div>
+                </div></div>
+                <aside class="gl-token-aside" aria-label="{{ tokenInspectorTitle }}"><h3>{{ tokenInspectorTitle }}</h3><dl>
+                  <sc-for list="{{ inputTokenDetails }}" as="detail" hint-placeholder-count="5"><div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div></sc-for>
+                </dl></aside>
+              </div>
+            </section>
+
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">02 · VALIDATION</span><h2>{{ inputValidationTitle }}</h2></div><p>{{ inputValidationBody }}</p></header>
+              <ul class="gl-line-list"><sc-for list="{{ inputRules }}" as="line" hint-placeholder-count="4"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for></ul>
+            </section>
+          </sc-if>
+
+          <!-- STATUS ------------------------------------------------- -->
+          <sc-if value="{{ isStatus }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">01 · SEMANTICS</span><h2>{{ statusSemanticTitle }}</h2></div><p>{{ statusSemanticBody }}</p></header>
+              <div class="gl-status-list">
+                <sc-for list="{{ statuses }}" as="status" hint-placeholder-count="5">
+                  <div class="gl-status-row"><strong>{{ status.name }}</strong><span class="{{ status.className }}">{{ status.label }}</span><p>{{ status.body }}</p></div>
+                </sc-for>
+              </div>
+            </section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">02 · ACCESSIBILITY</span><h2>{{ statusAccessTitle }}</h2></div><p>{{ statusAccessBody }}</p></header>
+              <ul class="gl-line-list"><sc-for list="{{ statusRules }}" as="line" hint-placeholder-count="3"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for></ul>
+            </section>
+          </sc-if>
+
+          <!-- NAVIGATION -------------------------------------------- -->
+          <sc-if value="{{ isNavigation }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">01 · TABS</span><h2>{{ navTabsTitle }}</h2></div><p>{{ navTabsBody }}</p></header>
+              <div class="gl-spec-layout">
+                <div class="gl-spec-stage"><div class="gl-nav-demo" role="tablist" aria-label="{{ navDemoLabel }}">
+                  <button class="gl-tab" role="tab" type="button" aria-selected="true">{{ navTabOverview }}</button>
+                  <button class="gl-tab" role="tab" type="button" aria-selected="false">{{ navTabActivity }}</button>
+                  <button class="gl-tab" role="tab" type="button" aria-selected="false">{{ navTabSettings }}</button>
+                </div></div>
+                <aside class="gl-token-aside" aria-label="{{ tokenInspectorTitle }}"><h3>{{ tokenInspectorTitle }}</h3><dl>
+                  <sc-for list="{{ navTokenDetails }}" as="detail" hint-placeholder-count="4"><div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div></sc-for>
+                </dl></aside>
+              </div>
+            </section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">02 · BREADCRUMB</span><h2>{{ navBreadcrumbTitle }}</h2></div><p>{{ navBreadcrumbBody }}</p></header>
+              <nav aria-label="{{ breadcrumbLabel }}"><ol class="gl-breadcrumb"><li><button type="button">Goalie</button></li><li><button type="button">{{ breadcrumbWorkspace }}</button></li><li aria-current="page">{{ breadcrumbCurrent }}</li></ol></nav>
+            </section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">03 · DECISION</span><h2>{{ navDecisionTitle }}</h2></div><p>{{ navDecisionBody }}</p></header>
+              <ul class="gl-line-list"><sc-for list="{{ navRules }}" as="line" hint-placeholder-count="3"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for></ul>
+            </section>
+          </sc-if>
+
+          <!-- TEMPLATES --------------------------------------------- -->
+          <sc-if value="{{ isTemplates }}" hint-placeholder-val="false">
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">01 · RESPONSIVE</span><h2>{{ templatesTitle }}</h2></div><p>{{ templatesBody }}</p></header>
+              <div class="gl-template-grid">
+                <figure class="gl-template-figure"><figcaption><strong>{{ templateDashboard }}</strong><code>16:10</code></figcaption><div class="gl-template-frame"><div class="gl-template-topbar"><span></span><span></span><span></span></div><div class="gl-template-body"><div class="gl-template-side"><span></span><span></span><span></span><span></span></div><div class="gl-template-content"><span></span><span></span><span></span><div class="gl-template-blocks"><i></i><i></i><i></i></div></div></div></div></figure>
+                <figure class="gl-template-figure"><figcaption><strong>{{ templateDetail }}</strong><code>16:10</code></figcaption><div class="gl-template-frame gl-template-frame--detail"><div class="gl-template-topbar"><span></span><span></span><span></span></div><div class="gl-template-body"><div class="gl-template-side"><span></span><span></span><span></span><span></span></div><div class="gl-template-content"><span></span><span></span><span></span><div class="gl-template-blocks"><i></i><i></i><i></i></div></div></div></div></figure>
+              </div>
+            </section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">02 · LAYOUT</span><h2>{{ templateRuleTitle }}</h2></div><p>{{ templateRuleBody }}</p></header>
+              <ul class="gl-line-list"><sc-for list="{{ templateRules }}" as="line" hint-placeholder-count="4"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for></ul>
+            </section>
+          </sc-if>
+
+          <!-- BRAND ------------------------------------------------- -->
+          <sc-if value="{{ isBrand }}" hint-placeholder-val="false">
+            <section class="gl-brand-lockup" aria-label="Goalie UI"><span class="gl-product-mark" aria-hidden="true"></span><div class="gl-brand-word">Goalie <span>UI</span></div></section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">01 · IDENTITY</span><h2>{{ brandIdentityTitle }}</h2></div><p>{{ brandIdentityBody }}</p></header>
+              <div><sc-for list="{{ brandRules }}" as="rule" hint-placeholder-count="5"><div class="{{ rule.className }}"><strong>{{ rule.kind }}</strong><p>{{ rule.body }}</p></div></sc-for></div>
+            </section>
+            <section class="gl-section">
+              <header class="gl-section-head"><div><span class="gl-section-index">02 · ASSETS</span><h2>{{ brandAssetsTitle }}</h2></div><p>{{ brandAssetsBody }}</p></header>
+              <ul class="gl-line-list"><sc-for list="{{ brandAssetLines }}" as="line" hint-placeholder-count="3"><li class="gl-line-row"><strong>{{ line.title }}</strong><p>{{ line.body }}</p></li></sc-for></ul>
+            </section>
+          </sc-if>
+    </div>
+  </div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["ko","en"],"default":"ko","tsType":"\"ko\"|\"en\"","section":"General"},"activePage":{"editor":"enum","options":["overview","systemsummary","principles","colors","typography","spacing","iconography","button","input","status","navigation","templates","brand"],"default":"overview","tsType":"string","section":"General"}}'>
+class Component extends DCLogic {
+  rootRef = React.createRef();
+
+  PAGES = ['overview', 'systemsummary', 'principles', 'colors', 'typography', 'spacing', 'iconography', 'button', 'input', 'status', 'navigation', 'templates', 'brand'];
+
+  normalizeLang(value) {
+    return value === 'en' ? 'en' : 'ko';
+  }
+
+  normalizePage(value) {
+    return this.PAGES.includes(value) ? value : 'overview';
+  }
+
+  state = {
+    lang: this.normalizeLang(this.props.lang || this.props.defaultLang),
+    active: this.normalizePage(this.props.activePage || this.props.page || this.props.initialPage),
+  };
+
+  componentDidUpdate(prevProps) {
+    const incomingLang = this.props.lang || this.props.defaultLang;
+    const previousLang = prevProps.lang || prevProps.defaultLang;
+    if (incomingLang && incomingLang !== previousLang) {
+      const lang = this.normalizeLang(incomingLang);
+      if (lang !== this.state.lang) this.setState({ lang });
+    }
+
+    const incomingPage = this.props.activePage || this.props.page || this.props.initialPage;
+    const previousPage = prevProps.activePage || prevProps.page || prevProps.initialPage;
+    if (incomingPage && incomingPage !== previousPage) {
+      const active = this.normalizePage(incomingPage);
+      if (active !== this.state.active) this.setState({ active });
+    }
+  }
+
+  select = (id) => {
+    const active = this.normalizePage(id);
+    if (typeof this.props.onNavigate === 'function') {
+      this.props.onNavigate(active);
+    } else {
+      this.setState({ active });
+    }
+  };
+
+  setLanguage = (value) => {
+    const lang = this.normalizeLang(value);
+    this.setState({ lang });
+    if (typeof this.props.onLanguageChange === 'function') this.props.onLanguageChange(lang);
+  };
+
+  renderVals() {
+    const { lang, active } = this.state;
+    const ko = lang === 'ko';
+    const L = (k, e) => ko ? k : e;
+    const line = (titleKo, titleEn, bodyKo, bodyEn) => ({ title: L(titleKo, titleEn), body: L(bodyKo, bodyEn) });
+    const detail = (labelKo, labelEn, value) => ({ label: L(labelKo, labelEn), value });
+
+    const META = {
+      overview: { index: '01', group: 'start', ko: '개요', en: 'Overview', eyebrow: 'GET STARTED', dko: 'Goalie UI의 라이트 고정 파운데이션과 문서 구조를 한 눈에 파악합니다.', den: 'The fixed-light foundation and documentation structure of Goalie UI at a glance.' },
+      systemsummary: { index: '02', group: 'start', ko: '전체 요약', en: 'System summary', eyebrow: 'GET STARTED', dko: '파운데이션, 컴포넌트, 패턴을 단일 색인에서 연결합니다.', den: 'A single index connecting foundations, components, and patterns.' },
+      principles: { index: '03', group: 'start', ko: '디자인 원칙', en: 'Principles', eyebrow: 'GET STARTED', dko: 'Goalie UI의 의사결정을 일관되게 만드는 네 가지 원칙입니다.', den: 'Four principles that keep Goalie UI decisions consistent.' },
+      colors: { index: '04', group: 'foundation', ko: '색상', en: 'Colors', eyebrow: 'FOUNDATIONS', dko: '흰 표면에서 명확한 계층과 상태를 만드는 의미 기반 색상 체계입니다.', den: 'A semantic color system that creates clear hierarchy and state on white surfaces.' },
+      typography: { index: '05', group: 'foundation', ko: '타이포그래피', en: 'Typography', eyebrow: 'FOUNDATIONS', dko: '한·영 혼용 화면에서 빠른 읽기와 안정적 위계를 제공합니다.', den: 'Fast reading and stable hierarchy for bilingual Korean and English interfaces.' },
+      spacing: { index: '06', group: 'foundation', ko: '간격', en: 'Spacing', eyebrow: 'FOUNDATIONS', dko: '4px 기준의 일관된 밀도와 반응형 리듬을 정의합니다.', den: 'A 4px-based scale for consistent density and responsive rhythm.' },
+      iconography: { index: '07', group: 'foundation', ko: '아이콘', en: 'Iconography', eyebrow: 'FOUNDATIONS', dko: '24px 그리드, 2px 선, 광학 보정과 상태 오버레이를 하나의 계약으로 관리합니다.', den: 'One contract for a 24px grid, 2px strokes, optical correction, and state overlays.' },
+      button: { index: '08', group: 'component', ko: '버튼', en: 'Button', eyebrow: 'COMPONENTS', dko: '작업의 중요도와 위험도를 명확히 전달하는 액션 컴포넌트입니다.', den: 'An action component that clearly communicates priority and risk.' },
+      input: { index: '09', group: 'component', ko: '입력 필드', en: 'Input', eyebrow: 'COMPONENTS', dko: '레이블, 입력, 도움말과 검증 상태를 완전한 단위로 제공합니다.', den: 'A complete unit of label, input, help text, and validation state.' },
+      status: { index: '10', group: 'component', ko: '상태', en: 'Status', eyebrow: 'COMPONENTS', dko: '색, 형태, 텍스트를 함께 사용해 의미 상태를 안정적으로 전달합니다.', den: 'Stable semantic feedback using color, shape, and text together.' },
+      navigation: { index: '11', group: 'component', ko: '내비게이션', en: 'Navigation', eyebrow: 'COMPONENTS', dko: '탭, 경로, 상위 이동을 정보 구조에 맞게 구분합니다.', den: 'Tabs, paths, and top-level movement selected by information structure.' },
+      templates: { index: '12', group: 'pattern', ko: '템플릿', en: 'Templates', eyebrow: 'PATTERNS', dko: '공통 쉘, 대시보드와 상세 화면의 반응형 구조를 정의합니다.', den: 'Responsive structures for the shared shell, dashboard, and detail views.' },
+      brand: { index: '13', group: 'resource', ko: '브랜드', en: 'Brand', eyebrow: 'RESOURCES', dko: 'Goalie UI의 심볼, 이름, 여백과 자산 운영 규칙을 관리합니다.', den: 'Rules for the Goalie UI symbol, name, clear space, and asset operations.' },
+    };
+
+    const GROUPS = [
+      { id: 'start', ko: '시작하기', en: 'Get started' },
+      { id: 'foundation', ko: '파운데이션', en: 'Foundations' },
+      { id: 'component', ko: '컴포넌트', en: 'Components' },
+      { id: 'pattern', ko: '패턴', en: 'Patterns' },
+      { id: 'resource', ko: '리소스', en: 'Resources' },
+    ];
+
+    const navGroups = GROUPS.map((group) => ({
+      label: L(group.ko, group.en),
+      ariaLabel: L(`${group.ko} 문서`, `${group.en} documentation`),
+      items: this.PAGES.filter((id) => META[id].group === group.id).map((id) => ({
+        id,
+        index: META[id].index,
+        label: L(META[id].ko, META[id].en),
+        ariaCurrent: id === active ? 'page' : 'false',
+        onClick: () => this.select(id),
+      })),
+    }));
+
+    const summaryTarget = (index, id, titleKo, titleEn, bodyKo, bodyEn) => ({
+      index,
+      title: L(titleKo, titleEn),
+      body: L(bodyKo, bodyEn),
+      action: L('자세히 보기 →', 'View guidance →'),
+      onClick: () => this.select(id),
+    });
+
+    const brandColorData = [
+      ['50', '#EFF5FF'], ['100', '#DCE9FF'], ['300', '#91B4FF'],
+      ['500', '#3568E8'], ['600', '#2457D6'], ['800', '#1D3C91'],
+    ];
+    const neutralColorData = [
+      ['0', '#FFFFFF'], ['50', '#F7F9FC'], ['200', '#E3E9F0'],
+      ['400', '#94A3B8'], ['600', '#475569'], ['900', '#111827'],
+    ];
+    const makeColors = (key, data) => data.map(([step, value]) => ({ step, value, style: { '--chip-color': `var(--goalie-color-${key}-${step})` } }));
+
+    const typeScale = [
+      ['Display', 36, 700, 1.2, L('한 눈에 읽히는 핵심', 'Clarity at first glance')],
+      ['Heading 1', 28, 700, 1.2, L('화면의 최상위 제목', 'Top-level page heading')],
+      ['Heading 2', 22, 600, 1.35, L('작은 단위로 분명하게', 'Clear at every level')],
+      ['Body large', 16, 400, 1.65, L('핵심 설명과 안내를 위한 본문입니다.', 'Body copy for key guidance and explanations.')],
+      ['Body', 14, 400, 1.5, L('정보를 빠르게 스캔할 수 있는 기본 크기입니다.', 'The default size for fast information scanning.')],
+      ['Caption', 12, 500, 1.5, L('보조 정보 · TOKEN 012', 'Supporting detail · TOKEN 012')],
+    ].map(([name, size, weight, leading, sample]) => ({
+      name, sample, meta: `${size}px / ${weight} / ${leading}`,
+      style: { '--type-size': `${size}px`, '--type-weight': weight, '--type-leading': leading },
+    }));
+
+    const spacingScale = [1, 2, 3, 4, 5, 6, 7, 8].map((step) => ({
+      token: `space-${step}`,
+      value: `${[4, 8, 12, 16, 20, 24, 32, 40][step - 1]}px`,
+      style: { '--space-size': `var(--goalie-space-${step})` },
+    }));
+
+    const current = META[active] || META.overview;
+
+    return {
+      rootRef: this.rootRef,
+      lang,
+      productSubtitle: L('UX/UI 디자인 시스템', 'UX/UI Design System'),
+      lightFixedLabel: L('라이트 고정', 'Light fixed'),
+      languageSwitchLabel: L('언어 선택', 'Language selection'),
+      navigationLabel: L('Goalie UI 문서 탐색', 'Goalie UI documentation'),
+      koSelected: ko,
+      enSelected: !ko,
+      setKo: () => this.setLanguage('ko'),
+      setEn: () => this.setLanguage('en'),
+      navGroups,
+      currentEyebrow: current.eyebrow,
+      currentTitle: L(current.ko, current.en),
+      currentDescription: L(current.dko, current.den),
+
+      isOverview: active === 'overview',
+      isSystemSummary: active === 'systemsummary',
+      isPrinciples: active === 'principles',
+      isColors: active === 'colors',
+      isTypography: active === 'typography',
+      isSpacing: active === 'spacing',
+      isIconography: active === 'iconography',
+      isButton: active === 'button',
+      isInput: active === 'input',
+      isStatus: active === 'status',
+      isNavigation: active === 'navigation',
+      isTemplates: active === 'templates',
+      isBrand: active === 'brand',
+
+      overviewStatement: L('밝은 표면, 분명한 계층, 신뢰할 수 있는 행동.', 'Bright surfaces, clear hierarchy, dependable action.'),
+      overviewStatementBody: L('Goalie UI는 화이트 모드에서 읽기, 판단, 실행이 자연스럽게 연결되도록 설계합니다.', 'Goalie UI connects reading, judgment, and action naturally in a fixed white mode.'),
+      overviewMetricsLabel: L('시스템 요약', 'System metrics'),
+      overviewMetrics: [
+        { value: 'LIGHT', label: L('고정 컬러 모드', 'Fixed color mode') },
+        { value: '4PX', label: L('기본 간격 단위', 'Base spacing unit') },
+        { value: '24PX', label: L('표준 아이콘 그리드', 'Standard icon grid') },
+        { value: 'AA+', label: L('최소 접근성 목표', 'Accessibility target') },
+      ],
+      overviewSystemTitle: L('시스템 계약', 'System contract'),
+      overviewSystemBody: L('브랜드 값과 화면 구조를 분리해 제품 성장에도 일관성을 유지합니다.', 'Brand values and screen structure are separated so consistency survives product growth.'),
+      overviewSystemLines: [
+        line('토큰', 'Tokens', '원시 → 의미 → 컴포넌트 순으로 값을 연결합니다.', 'Values flow from primitive to semantic to component roles.'),
+        line('컴포넌트', 'Components', '동작, 상태, 접근성 계약을 함께 배포합니다.', 'Behavior, state, and accessibility ship as one contract.'),
+        line('패턴', 'Patterns', '화면 단위의 우선순위와 반응형 구조를 공유합니다.', 'Screen-level priority and responsive structure are shared.'),
+      ],
+      overviewDeliveryTitle: L('디자인과 개발의 하나의 기준', 'One source for design and code'),
+      overviewDeliveryBody: L('샘플 옆에 상태와 토큰 정보를 배치해 구현 해석의 차이를 줄입니다.', 'State and token details sit beside specimens to reduce implementation ambiguity.'),
+      overviewDeliveryLines: [
+        line('디자인', 'Design', '의미와 우선순위, 광학 균형을 확정합니다.', 'Defines meaning, priority, and optical balance.'),
+        line('개발', 'Engineering', '스코프된 토큰과 상태 계약으로 구현합니다.', 'Implements scoped tokens and explicit state contracts.'),
+        line('QA', 'QA', '키보드, 대비, 반응형, 확대 회귀를 검증합니다.', 'Validates keyboard, contrast, responsive, and zoom regressions.'),
+      ],
+
+      summarySections: [
+        summaryTarget('01', 'colors', '색상', 'Color', '라이트 표면과 브랜드, 상태 색의 의미 계층.', 'Semantic hierarchy for light surfaces, brand, and feedback colors.'),
+        summaryTarget('02', 'typography', '타이포그래피', 'Typography', '한·영 혼용을 위한 크기, 굵기, 행간 계약.', 'Size, weight, and leading for bilingual interfaces.'),
+        summaryTarget('03', 'iconography', '아이콘', 'Iconography', '24px 그리드와 상호작용 오버레이.', 'A 24px grid with interaction overlays.'),
+        summaryTarget('04', 'button', '액션', 'Actions', '중요도와 위험도를 구분하는 버튼 체계.', 'Buttons that distinguish priority and risk.'),
+        summaryTarget('05', 'input', '입력', 'Input', '레이블과 검증을 포함한 완전한 입력 단위.', 'Complete fields with labels and validation.'),
+        summaryTarget('06', 'templates', '템플릿', 'Templates', '대시보드와 상세 화면의 공통 반응형 구조.', 'Shared responsive structures for dashboard and detail screens.'),
+      ],
+
+      principles: [
+        line('명료함', 'Clarity', '한 화면의 가장 중요한 정보와 행동을 먼저 읽히게 합니다.', 'Make the most important information and action read first.'),
+        line('예측 가능성', 'Predictability', '같은 행동은 같은 위치, 언어, 상태 변화를 사용합니다.', 'The same action uses the same placement, language, and state change.'),
+        line('포용성', 'Inclusion', '키보드, 터치, 확대, 보조 기술을 기본 조건으로 다룹니다.', 'Keyboard, touch, zoom, and assistive technology are baseline conditions.'),
+        line('절제', 'Restraint', '테두리, 색, 그림자는 정보 구조에 필요한 만큼만 사용합니다.', 'Borders, color, and shadow appear only when structure requires them.'),
+      ],
+
+      colorBrandTitle: L('브랜드 스펙트럼', 'Brand spectrum'),
+      colorBrandBody: L('600을 기준 액션으로 사용하고 밝은 단계는 선택·안내 표면에 제한합니다.', 'Use 600 as the action anchor; reserve light steps for selection and guidance surfaces.'),
+      colorNeutralTitle: L('라이트 뉴트럴', 'Light neutrals'),
+      colorNeutralBody: L('흰색 카드를 반복하기보다 캔버스, 분할선, 여백으로 계층을 만듭니다.', 'Build hierarchy with canvas, dividers, and space instead of repeating white cards.'),
+      colorSemanticTitle: L('의미 색', 'Semantic color'),
+      colorSemanticBody: L('색상은 장식이 아니라 상태 의미와 조치 우선순위를 전달합니다.', 'Color conveys state meaning and response priority, never decoration alone.'),
+      colorContractTitle: L('사용 계약', 'Usage contract'),
+      colorContractBody: L('원시 팔레트를 제품 화면에 직접 사용하지 않습니다.', 'Product screens never consume primitive palette values directly.'),
+      brandColors: makeColors('brand', brandColorData),
+      neutralColors: makeColors('neutral', neutralColorData),
+      semanticColors: [
+        { name: L('성공', 'Success'), use: L('완료, 정상, 사용 가능', 'Complete, healthy, available'), token: '--goalie-success', style: { '--semantic': 'var(--goalie-success)', '--semantic-subtle': 'var(--goalie-success-subtle)' } },
+        { name: L('주의', 'Warning'), use: L('확인이 필요한 복구 가능 상태', 'Recoverable state requiring review'), token: '--goalie-warning', style: { '--semantic': 'var(--goalie-warning)', '--semantic-subtle': 'var(--goalie-warning-subtle)' } },
+        { name: L('오류', 'Danger'), use: L('실패, 차단, 파괴적 행동', 'Failure, blocked state, destructive action'), token: '--goalie-danger', style: { '--semantic': 'var(--goalie-danger)', '--semantic-subtle': 'var(--goalie-danger-subtle)' } },
+        { name: L('정보', 'Info'), use: L('중립 안내, 진행, 추가 문맥', 'Neutral guidance, progress, added context'), token: '--goalie-info', style: { '--semantic': 'var(--goalie-info)', '--semantic-subtle': 'var(--goalie-info-subtle)' } },
+      ],
+      colorContracts: [
+        line('원시', 'Primitive', '팔레트 생성과 브랜드 조정에만 사용합니다.', 'Use only for palette generation and brand tuning.'),
+        line('의미', 'Semantic', '표면, 텍스트, 경계, 상태 역할을 표현합니다.', 'Express surface, text, border, and feedback roles.'),
+        line('컴포넌트', 'Component', '버튼·입력과 같이 단일 컴포넌트 계약으로 반정합니다.', 'Bind semantics into a single component contract.'),
+      ],
+
+      typeScaleTitle: L('본문 중심 타입 스케일', 'Body-first type scale'),
+      typeScaleBody: L('단계 수를 줄이고 크기, 굵기, 여백의 조합으로 계층을 설계합니다.', 'Use fewer steps and create hierarchy through size, weight, and space together.'),
+      typeScale,
+      typeWritingTitle: L('쓰기 규칙', 'Writing rules'),
+      typeWritingBody: L('짧고 구체적인 문장은 디자인 계층을 더 빠르게 읽히게 합니다.', 'Short, specific sentences make visual hierarchy easier to scan.'),
+      typeWritingRules: [
+        line('동사로 시작', 'Lead with action', '버튼과 제목은 사용자가 할 일을 먼저 말합니다.', 'Buttons and titles state what the user can do first.'),
+        line('한 문장, 한 메시지', 'One sentence, one message', '원인, 영향, 조치를 필요하면 구조화합니다.', 'Structure cause, impact, and action instead of joining them.'),
+        line('숫자를 구체적으로', 'Use specific numbers', '약간·많음보다 수치와 기준 시점을 함께 제공합니다.', 'Provide the value and reference time instead of vague quantity.'),
+        line('영문과 한글 위계 유지', 'Preserve bilingual hierarchy', '번역이 바뀌어도 제목과 본문의 정보 순서를 유지합니다.', 'Keep information order stable when the language changes.'),
+      ],
+
+      spacingScaleTitle: L('4px 공간 스케일', '4px spacing scale'),
+      spacingScaleBody: L('컴포넌트 내부는 작은 단계, 섹션 간은 큰 단계를 사용합니다.', 'Use smaller steps inside components and larger steps between sections.'),
+      spacingScale,
+      spacingRuleTitle: L('반응형 리듬', 'Responsive rhythm'),
+      spacingRuleBody: L('화면이 작아져도 정보 그룹의 관계는 유지합니다.', 'Preserve relationships between information groups as the viewport narrows.'),
+      spacingRules: [
+        line('컴포넌트 내부', 'Within a component', '8–16px 범위에서 대상의 밀도에 맞춥니다.', 'Use 8–16px according to control density.'),
+        line('그룹 간', 'Between groups', '24–40px로 파악 가능한 단위를 만듭니다.', 'Use 24–40px to form scannable groups.'),
+        line('섹션 간', 'Between sections', '48–96px로 문서 계층을 만들고 선은 최소화합니다.', 'Use 48–96px for document hierarchy and minimize rules.'),
+      ],
+
+      iconCatalogTitle: L('핵심 아이콘', 'Core icons'),
+      iconCatalogBody: L('박스 카드를 반복하지 않고 오픈 카탈로그에서 크기와 선 균형을 비교합니다.', 'Compare optical size and stroke balance in an open catalog without repeated cards.'),
+      iconStateTitle: L('상호작용 상태', 'Interaction states'),
+      iconStateBody: L('Focus는 다른 상태를 덮어쓰지 않고 40px 조작 영역 위에 추가되는 오버레이입니다.', 'Focus is an overlay on the 40px control target; it never replaces the underlying state.'),
+      iconRuleTitle: L('제작 규칙', 'Construction rules'),
+      iconRuleBody: L('기계적인 수치보다 16·20·24px에서의 인지성과 광학 무게를 우선합니다.', 'Prioritize recognition and optical weight at 16, 20, and 24px over mechanical geometry.'),
+      iconHome: L('홈', 'Home'), iconOverview: L('개요', 'Overview'), iconTarget: L('목표', 'Target'), iconPerformance: L('성과', 'Performance'), iconTeam: L('팀', 'Team'),
+      iconReport: L('보고서', 'Report'), iconDocument: L('문서', 'Document'), iconActivity: L('활동', 'Activity'), iconAlert: L('알림', 'Alert'), iconSettings: L('설정', 'Settings'),
+      iconStates: [
+        { label: 'Rest', className: 'gl-icon-glyph' },
+        { label: 'Hover', className: 'gl-icon-glyph is-hover' },
+        { label: 'Pressed', className: 'gl-icon-glyph is-pressed' },
+        { label: 'Focus', className: 'gl-icon-glyph is-focus' },
+        { label: 'Selected', className: 'gl-icon-glyph is-selected' },
+        { label: 'Disabled', className: 'gl-icon-glyph is-disabled' },
+      ],
+      tokenInspectorTitle: L('상태·토큰 정보', 'State & token details'),
+      iconTokenDetails: [
+        detail('글리프', 'Glyph', '--goalie-icon-rest'),
+        detail('호버 표면', 'Hover surface', '--goalie-hover-surface'),
+        detail('선택', 'Selected', '--goalie-icon-selected'),
+        detail('포커스', 'Focus', '--goalie-focus-ring'),
+        detail('조작 영역', 'Target', '40 × 40px'),
+      ],
+      iconRules: [
+        line('그리드', 'Grid', '24×24px 캔버스에 20px 내외의 주요 실루엣을 배치합니다.', 'Place the dominant silhouette around 20px inside a 24×24px canvas.'),
+        line('선', 'Stroke', '2px, round cap/join을 기본으로 하고 예외를 문서화합니다.', 'Use 2px round caps and joins by default; document exceptions.'),
+        line('상태', 'State', '글리프는 의미와 선택, 컨테이너는 Hover·Pressed·Focus를 담당합니다.', 'Glyphs carry meaning/selection; containers carry hover, press, and focus.'),
+        line('크기', 'Optical size', '16px에서는 내부 디테일을 줄이고 24px 자산을 단순 축소하지 않습니다.', 'Simplify internal detail at 16px rather than merely scaling the 24px asset.'),
+      ],
+
+      buttonVariantTitle: L('액션 위계', 'Action hierarchy'),
+      buttonVariantBody: L('한 영역에 Primary는 하나만 두고 나머지 작업은 중요도에 맞게 낮춥니다.', 'Keep one primary action per region and lower every other action by priority.'),
+      buttonStateTitle: L('상태 계약', 'State contract'),
+      buttonStateBody: L('밝기만으로 상태를 구분하지 않고 표면, 경계, Focus ring을 함께 사용합니다.', 'Use surface, border, and focus ring together instead of brightness alone.'),
+      buttonSizeTitle: L('크기와 타겟', 'Size and target'),
+      buttonSizeBody: L('32px은 밀집 데스크톱, 40px은 기본, 48px은 터치·주요 행동에 사용합니다.', 'Use 32px for dense desktop, 40px by default, and 48px for touch or key actions.'),
+      primaryLabel: L('저장', 'Save'), secondaryLabel: L('미리보기', 'Preview'), quietLabel: L('자세히', 'Learn more'), dangerLabel: L('삭제', 'Delete'), actionLabel: L('확인', 'Confirm'),
+      buttonTokenDetails: [
+        detail('높이', 'Height', '--goalie-control-height-md · 40px'),
+        detail('배경', 'Background', '--goalie-brand-primary'),
+        detail('호버', 'Hover', '--goalie-brand-primary-hover'),
+        detail('눌림', 'Pressed', '--goalie-brand-primary-pressed'),
+        detail('포커스', 'Focus', '--goalie-focus-ring'),
+      ],
+
+      inputAnatomyTitle: L('완전한 입력 단위', 'Complete field anatomy'),
+      inputAnatomyBody: L('레이블은 항상 보이게 두고 placeholder를 레이블 대신 사용하지 않습니다.', 'Keep labels visible and never use a placeholder as the label.'),
+      inputValidationTitle: L('검증과 복구', 'Validation and recovery'),
+      inputValidationBody: L('문제의 원인과 수정 방법을 같은 필드 단위에서 설명합니다.', 'Explain both the cause and recovery within the same field unit.'),
+      inputLabel: L('이메일', 'Email'), inputPlaceholder: L('name@example.com', 'name@example.com'), inputHelper: L('업무용 이메일을 입력하세요.', 'Enter your work email.'), inputFocusHelper: L('현재 입력 중인 필드', 'Currently editing'), inputErrorHelper: L('올바른 이메일 형식을 입력하세요.', 'Enter a valid email address.'), inputDisabledHelper: L('관리자가 관리하는 값입니다.', 'This value is managed by an administrator.'),
+      inputTokenDetails: [
+        detail('높이', 'Height', '--goalie-control-height-md · 40px'),
+        detail('표면', 'Surface', '--goalie-control-bg'),
+        detail('경계', 'Border', '--goalie-control-border'),
+        detail('오류', 'Error', '--goalie-danger'),
+        detail('포커스', 'Focus', '--goalie-focus-ring'),
+      ],
+      inputRules: [
+        line('레이블', 'Label', '항상 보이며 입력과 프로그램적으로 연결합니다.', 'Always visible and programmatically associated with the input.'),
+        line('도움말', 'Help', '제한 형식이나 입력 결과를 사전에 알립니다.', 'Explain constraints or outcomes before submission.'),
+        line('오류', 'Error', '색상과 함께 aria-invalid, 오류 문장, 수정 방법을 제공합니다.', 'Pair color with aria-invalid, an error message, and recovery guidance.'),
+        line('비활성', 'Disabled', '이유를 알 수 없는 비활성 대신 권한과 조건을 안내합니다.', 'Explain the permission or condition instead of unexplained disabling.'),
+      ],
+
+      statusSemanticTitle: L('상태 의미', 'Status semantics'),
+      statusSemanticBody: L('상태 색은 상호작용 색과 분리하고 텍스트를 항상 함께 제공합니다.', 'Keep semantic status separate from interaction color and always include text.'),
+      statusAccessTitle: L('색에 의존하지 않기', 'Never rely on color alone'),
+      statusAccessBody: L('도트와 텍스트, 필요한 경우 아이콘을 결합해 상태를 확인합니다.', 'Combine a dot, text, and when needed an icon to confirm the state.'),
+      statuses: [
+        { name: L('정상', 'Success'), label: L('사용 가능', 'Available'), body: L('예상된 결과, 완료, 정상 운영', 'Expected result, completion, normal operation'), className: 'gl-status-label gl-status--success' },
+        { name: L('주의', 'Warning'), label: L('확인 필요', 'Review'), body: L('지금 확인하면 복구할 수 있는 상태', 'Recoverable state that needs review now'), className: 'gl-status-label gl-status--warning' },
+        { name: L('오류', 'Danger'), label: L('조치 필요', 'Action needed'), body: L('작업 실패, 접근 차단, 즉시 조치', 'Failure, blocked access, immediate action'), className: 'gl-status-label gl-status--danger' },
+        { name: L('정보', 'Info'), label: L('진행 중', 'In progress'), body: L('중립적인 안내, 처리, 추가 문맥', 'Neutral guidance, processing, added context'), className: 'gl-status-label gl-status--info' },
+        { name: L('중립', 'Neutral'), label: L('대기', 'Pending'), body: L('미시작, 일반 메타데이터, 비활성과 다른 대기', 'Not started, metadata, pending but not disabled'), className: 'gl-status-label gl-status--neutral' },
+      ],
+      statusRules: [
+        line('라벨', 'Label', '상태 의미를 독립적으로 읽을 수 있는 짧은 문구를 사용합니다.', 'Use a short phrase that communicates the state independently.'),
+        line('실시간 변경', 'Live updates', '일반 변경은 polite, 즉시 조치가 필요한 새 오류만 assertive로 알립니다.', 'Announce normal updates politely and only new urgent errors assertively.'),
+        line('수치 병기', 'Include values', '가능한 경우 상태와 함께 개수, 시각, 진행률을 제공합니다.', 'Add count, time, or progress whenever it improves diagnosis.'),
+      ],
+
+      navTabsTitle: L('현재 문맥 내 전환', 'Switch within the current context'),
+      navTabsBody: L('탭은 같은 자료의 표현을 바꾸며 상위 URL 이동을 대신하지 않습니다.', 'Tabs change the view of the same resource and never replace top-level URL navigation.'),
+      navBreadcrumbTitle: L('정보 구조 경로', 'Information hierarchy path'),
+      navBreadcrumbBody: L('이동 기록이 아니라 현재 대상의 계층 위치를 표시합니다.', 'Represent the current resource hierarchy, not navigation history.'),
+      navDecisionTitle: L('올바른 내비게이션 선택', 'Choose the right navigation'),
+      navDecisionBody: L('변경되는 문맥과 URL, 선택 영속성에 따라 패턴을 선택합니다.', 'Choose by context change, URL behavior, and persistence of selection.'),
+      navDemoLabel: L('상세 뷰', 'Detail views'), navTabOverview: L('개요', 'Overview'), navTabActivity: L('활동', 'Activity'), navTabSettings: L('설정', 'Settings'),
+      navBreadcrumbTitle2: '', breadcrumbLabel: L('현재 위치', 'Current location'), breadcrumbWorkspace: L('워크스페이스', 'Workspace'), breadcrumbCurrent: L('성과 보고서', 'Performance report'),
+      navTokenDetails: [
+        detail('높이', 'Height', '44px'),
+        detail('활성 텍스트', 'Active text', '--goalie-brand-text'),
+        detail('인디케이터', 'Indicator', '--goalie-brand-primary · 2px'),
+        detail('포커스', 'Focus', '--goalie-focus-ring-inset'),
+      ],
+      navRules: [
+        line('상위 이동', 'Top-level move', 'URL과 페이지 랜드마크가 바뀌면 링크 내비게이션을 사용합니다.', 'Use link navigation when the URL and page landmark change.'),
+        line('형제 뷰', 'Sibling views', '같은 대상의 표현을 바꾸면 탭을 사용합니다.', 'Use tabs to switch representations of the same resource.'),
+        line('계층 위치', 'Hierarchy', '상위 대상으로 돌아갈 필요가 있으면 breadcrumb을 사용합니다.', 'Use breadcrumbs when users need to return to parent resources.'),
+      ],
+
+      templatesTitle: L('핵심 화면 유형', 'Core screen types'),
+      templatesBody: L('카드 반복보다 영역과 여백, 단일 분할선으로 페이지 구조를 만듭니다.', 'Build page structure with regions, space, and single dividers instead of repeated cards.'),
+      templateRuleTitle: L('레이아웃 계약', 'Layout contract'),
+      templateRuleBody: L('데스크톱과 모바일에서 정보 순서를 동일하게 유지합니다.', 'Preserve information order across desktop and mobile.'),
+      templateDashboard: L('요약 대시보드', 'Summary dashboard'), templateDetail: L('상세 + 보조 패널', 'Detail + support panel'),
+      templateRules: [
+        line('독서 폭', 'Reading width', '문서 본문은 720px 내외, 샘플과 inspector는 최대 1120px에서 제어합니다.', 'Keep reading copy near 720px and specimen layouts within 1120px.'),
+        line('보조 패널', 'Support panel', '1200px 이하에서는 본문 아래로 이동하고 정보를 숨기지 않습니다.', 'Move below content under 1200px without hiding information.'),
+        line('모바일 순서', 'Mobile order', '제목 → 핵심 데이터 → 행동 → 보조 설명 순을 유지합니다.', 'Preserve title, key data, action, then supporting explanation.'),
+        line('스크롤', 'Scrolling', '전체 페이지와 내부 패널의 중첩 스크롤을 피합니다.', 'Avoid nested scrolling between the page and inner panels.'),
+      ],
+
+      brandIdentityTitle: L('로고타입 운영', 'Identity usage'),
+      brandIdentityBody: L('심볼은 목표와 보호를 추상화하며 작은 크기에서도 단순한 실루엣을 유지합니다.', 'The symbol abstracts target and protection while keeping a simple small-size silhouette.'),
+      brandAssetsTitle: L('자산 계약', 'Asset contract'),
+      brandAssetsBody: L('표시 매체와 크기에 맞는 포맷을 사용하고 임의로 재색상하지 않습니다.', 'Use the format intended for the medium and size; never recolor assets ad hoc.'),
+      brandRules: [
+        { kind: 'DO', body: L('심볼 높이의 50% 이상을 최소 여백으로 보장합니다.', 'Keep clear space of at least 50% of the symbol height.'), className: 'gl-brand-rule' },
+        { kind: 'DO', body: L('흰 배경에서는 기본 브랜드 블루와 다크 워드마크를 사용합니다.', 'Use brand blue with the dark wordmark on white.'), className: 'gl-brand-rule' },
+        { kind: "DON'T", body: L('심볼의 비율, 선 굵기, 내부 원의 위치를 변경하지 않습니다.', 'Do not alter proportions, stroke weight, or the inner circle position.'), className: 'gl-brand-rule is-dont' },
+        { kind: "DON'T", body: L('상태 색상을 브랜드 로고에 적용하지 않습니다.', 'Do not apply semantic status colors to the brand mark.'), className: 'gl-brand-rule is-dont' },
+      ],
+      brandAssetLines: [
+        line('SVG', 'SVG', '제품 UI, 웹, 벡터 원본의 기본 포맷입니다.', 'Default for product UI, web, and vector masters.'),
+        line('PNG', 'PNG', '외부 문서와 백그라운드 투명도가 필요한 래스터 환경에 사용합니다.', 'Use for external documents and raster environments requiring transparency.'),
+        line('파비콘', 'Favicon', '16·32px에서는 심볼만 사용하고 워드마크를 넣지 않습니다.', 'Use only the symbol at 16–32px; omit the wordmark.'),
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

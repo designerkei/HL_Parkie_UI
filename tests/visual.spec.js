@@ -49,6 +49,9 @@ test('capture reference-critical component pages', async ({ page }) => {
   await page.locator('.pk-icon-specs').nth(1).screenshot({
     path: path.join('test-results', 'review', 'iconography-robot-matrix.png'),
   });
+  await page.locator('.pk-icon-row').filter({ hasText: 'Battery' }).screenshot({
+    path: path.join('test-results', 'review', 'iconography-battery-semantic-states.png'),
+  });
   await page.locator('.pk-domain-grid').first().scrollIntoViewIfNeeded();
   await page.locator('.pk-domain-grid').first().screenshot({
     path: path.join('test-results', 'review', 'iconography-battery-states.png'),
@@ -129,4 +132,36 @@ test('capture parking-control product compositions', async ({ page }) => {
   await page.locator('.pk-status-axis-grid').screenshot({
     path: path.join('test-results', 'review', 'robot-status-axes.png'),
   });
+});
+
+test('capture Goalie light-system review surfaces', async ({ page }) => {
+  const routes = [
+    ['overview', 'goalie-overview.png'],
+    ['colors', 'goalie-colors.png'],
+    ['iconography', 'goalie-iconography.png'],
+    ['button', 'goalie-button.png'],
+    ['input', 'goalie-input.png'],
+    ['templates', 'goalie-templates.png'],
+  ];
+
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  for (const [pageId, file] of routes) {
+    await page.goto(`/#/goalie/${pageId}`);
+    await expect(page.locator('[data-guide-root]')).toHaveAttribute('data-active-system', 'goalie');
+    await expect(page.locator(`[data-guide-sidebar] [data-nav-id="${pageId}"]`)).toHaveAttribute('aria-current', 'page');
+    await page.screenshot({
+      path: path.join('test-results', 'review', file),
+      fullPage: false,
+    });
+  }
+
+  for (const pageId of ['overview', 'button']) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/#/goalie/${pageId}`);
+    await expect(page.locator('h1')).toBeVisible();
+    await page.screenshot({
+      path: path.join('test-results', 'review', `goalie-${pageId}-390.png`),
+      fullPage: false,
+    });
+  }
 });

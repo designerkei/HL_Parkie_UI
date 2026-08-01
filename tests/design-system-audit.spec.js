@@ -134,11 +134,11 @@ test('search, deep links, history and language preserve information architecture
   await expect(page.locator('nav.pk-scroll [data-nav-id="avatar"]')).toBeVisible();
   await expect(page.locator('nav.pk-scroll [data-nav-id="colors"]')).toHaveCount(0);
   await page.locator('nav.pk-scroll [data-nav-id="avatar"]').click();
-  await expect(page).toHaveURL(/#avatar$/);
+  await expect(page).toHaveURL(/#\/parkie\/avatar$/);
   await expect(page.locator('h1')).toHaveText('아바타');
 
   await page.goBack();
-  await expect(page).toHaveURL(/#colors$/);
+  await expect(page).toHaveURL(/#\/parkie\/colors$/);
   await expect(page.locator('h1')).toHaveText('색상');
 
   await search.fill('not-a-component');
@@ -257,6 +257,7 @@ test('interaction, operation and severity colors remain independent', async ({ p
   await expect(page.locator('.pk-status--running').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
   await expect(page.locator('.pk-status--paused').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.6)');
   await expect(page.locator('.pk-status--battery-normal').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--battery-low').first()).toHaveCSS('color', 'rgb(244, 244, 244)');
   await expect(page.locator('.pk-status--charging').first()).toHaveCSS('color', 'rgb(0, 192, 0)');
   await expect(page.locator('.pk-status--reconnecting').first()).toHaveCSS('color', 'rgb(124, 199, 232)');
 
@@ -368,7 +369,10 @@ test('all release-critical local assets are served and all Parkie token referenc
   const requiredAssets = [
     '/support.js',
     '/styles.css',
+    '/GoaliePages.dc.html',
     '/tokens/parkie-tokens.css',
+    '/tokens/goalie-tokens.css',
+    '/components/goalie.css',
     '/components/controls.css',
     '/components/documentation.css',
     '/components/iconography.css',
@@ -410,6 +414,22 @@ test('all release-critical local assets are served and all Parkie token referenc
     .filter((token) => !defined.has(token))
     .sort();
   expect(missing).toEqual([]);
+
+  const goalieTokenSource = fs.readFileSync(path.join(process.cwd(), 'tokens', 'goalie-tokens.css'), 'utf8');
+  const goalieDefined = new Set(
+    [...goalieTokenSource.matchAll(/(--goalie-[\w-]+)\s*:/g)].map((match) => match[1]));
+  const goalieSourceFiles = [
+    path.join(process.cwd(), 'GoaliePages.dc.html'),
+    path.join(process.cwd(), 'components', 'goalie.css'),
+  ];
+  const goalieReferenced = new Set(goalieSourceFiles.flatMap((file) => (
+    [...fs.readFileSync(file, 'utf8').matchAll(/var\((--goalie-[\w-]+)/g)].map((match) => match[1])
+  )));
+  const missingGoalieTokens = [...goalieReferenced]
+    .filter((token) => !token.endsWith('-')) // JavaScript template prefixes resolve at runtime.
+    .filter((token) => !goalieDefined.has(token))
+    .sort();
+  expect(missingGoalieTokens).toEqual([]);
 });
 
 test('button state contrast and focus ring visibility are enforced', async ({ page }) => {

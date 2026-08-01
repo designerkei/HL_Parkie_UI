@@ -79,7 +79,7 @@ test('robot card summary is exactly 266 by 64 and retains expandable controls', 
   );
   await expect(expanded.locator('.pk-robot-control-card__battery')).toHaveCSS(
     'color',
-    'rgb(245, 222, 46)'
+    'rgb(244, 244, 244)'
   );
 });
 
@@ -203,36 +203,24 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(page.locator('.pk-icon-state')).toHaveCount((24 * 6) + (6 * 4));
   await expect(page.locator('.pk-domain-icon')).toHaveCount(22);
 
-  // Source badges on the state rows — same contract, now scoped because the
-  // catalog carries its own badge per icon.
-  await expect(page.locator('.pk-icon-name .pk-icon-source.is-original')).toHaveCount(5);
-  await expect(page.locator('.pk-icon-name .pk-icon-source.is-custom')).toHaveCount(6);
-  await expect(page.locator('.pk-icon-name .pk-icon-source.is-ms')).toHaveCount(19);
-  await expect(page.locator('.pk-icon-name .pk-icon-source.is-ms').first()).toHaveText('Adopted');
-
-  // The catalog is the browsable view: one entry per documented icon, each
-  // with its source, and no state matrix to read through.
-  await expect(page.locator('.pk-catalog-item')).toHaveCount(30);
-  await expect(page.locator('.pk-catalog-item .pk-icon-source')).toHaveCount(30);
-
-  // Keyboard focus is documented as a combination, not a seventh column.
-  await expect(page.locator('.pk-focus-cell')).toHaveCount(4);
-  await expect(page.locator('.pk-focus-cell.has-focus')).toHaveCount(2);
-  await expect(page.locator('.pk-focus-combo-name').nth(3)).toHaveText('Selected + Focus');
-
-  // The 144-sample interaction matrix stays available but starts collapsed.
-  const qa = page.locator('.pk-icon-qa');
-  await expect(qa).toHaveCount(1);
-  expect(await qa.evaluate((el) => el.open)).toBe(false);
-  await expect(page.locator('.pk-icon-qa .pk-icon-row.is-interaction-axis')).toHaveCount(24);
-  await qa.locator('summary').click();
-  expect(await qa.evaluate((el) => el.open)).toBe(true);
-  await expect(page.locator('.pk-icon-qa .pk-icon-row').first()).toBeVisible();
+  await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
+  await expect(page.locator('.pk-icon-source.is-custom')).toHaveCount(6);
+  await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(19);
+  await expect(page.locator('.pk-icon-source.is-ms').first()).toHaveText('Adopted');
+  await expect(page.locator('.pk-icon-qa')).toHaveCount(0);
   expect(await page.locator('main').innerText()).not.toMatch(/\bMS\b/);
 
-  // Interaction-state colours belong to the interaction axis, so read the
-  // first row of that axis rather than whatever row happens to render first.
+  const interactionStates = [
+    'Default',
+    'Hover',
+    'Focus',
+    'Pressed',
+    'Selected / On',
+    'Disabled',
+  ];
   const firstRow = page.locator('.pk-icon-row.is-interaction-axis').first();
+  await expect(firstRow).toBeVisible();
+  await expect(firstRow.locator('.pk-icon-spec-state')).toHaveText(interactionStates);
   await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
   await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
   await expect(firstRow.locator('.is-focus')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
@@ -240,8 +228,38 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(firstRow.locator('.is-selected')).toHaveCSS('color', 'rgb(0, 170, 255)');
   await expect(firstRow.locator('.is-disabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.35)');
 
-  await expect(page.locator('.pk-domain-icon.is-battery-critical rect')).toHaveCSS('fill', 'rgb(238, 0, 0)');
-  await expect(page.locator('.pk-domain-icon.is-charging').first().locator('rect')).toHaveCSS('fill', 'rgb(0, 192, 0)');
+  const batteryRow = rows.filter({ hasText: 'Battery' });
+  await expect(batteryRow).toHaveCount(1);
+  await expect(batteryRow).toHaveClass(/is-semantic-axis/);
+  await expect(batteryRow.locator('.pk-icon-spec-state')).toHaveText([
+    '정상 26% 이상',
+    '부족 25–11%',
+    '위험 10% 이하',
+    '충전 중',
+  ]);
+  await expect(batteryRow.locator('.pk-icon-state').nth(0)).toHaveCSS('color', 'rgb(244, 244, 244)');
+  await expect(batteryRow.locator('.pk-icon-state').nth(1)).toHaveCSS('color', 'rgb(244, 244, 244)');
+  await expect(batteryRow.locator('.pk-icon-state').nth(2)).toHaveCSS('background-color', 'rgb(238, 0, 0)');
+  await expect(batteryRow.locator('.pk-icon-state').nth(3)).toHaveCSS('color', 'rgb(0, 192, 0)');
+
+  const connectionRow = rows.filter({ hasText: 'Connection' });
+  await expect(connectionRow).toHaveCount(1);
+  await expect(connectionRow).toHaveClass(/is-semantic-axis/);
+  await expect(connectionRow.locator('.pk-icon-spec-state')).toHaveText([
+    '양호',
+    '약함',
+    '끊김',
+    '재연결 중',
+  ]);
+
+  const batteryStates = page.locator('.pk-domain-grid').first().locator('.pk-domain-icon');
+  await expect(batteryStates).toHaveCount(5);
+  await expect(batteryStates.nth(0).locator('rect')).toHaveCSS('fill', 'rgb(244, 244, 244)');
+  await expect(batteryStates.nth(1).locator('rect')).toHaveCSS('fill', 'rgb(244, 244, 244)');
+  await expect(batteryStates.nth(2).locator('rect')).toHaveCSS('fill', 'rgb(238, 0, 0)');
+  await expect(batteryStates.nth(3).locator('rect')).toHaveCSS('fill', 'rgb(0, 192, 0)');
+  await expect(batteryStates.nth(3).locator('path').last()).toHaveCSS('fill', 'rgb(255, 255, 255)');
+  await expect(page.locator('.pk-domain-icon.is-charging circle')).toHaveCount(0);
 });
 
 test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {

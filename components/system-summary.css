@@ -86,12 +86,103 @@
   line-height: var(--parkie-leading-relaxed);
 }
 
+/* The grid is now a stack of five information groups; the two-column pairing
+   moves down to each group body so the reading order is group → section. */
 .pk-summary-grid {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--parkie-space-9);
+}
+
+.pk-summary-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--parkie-space-5);
+}
+
+.pk-summary-group__head {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: var(--parkie-space-4);
+  padding-bottom: var(--parkie-space-4);
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-summary-group__index {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  letter-spacing: .1em;
+}
+
+.pk-summary-group__head h2 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+  font-weight: var(--parkie-weight-semibold);
+  letter-spacing: var(--parkie-tracking-tight);
+}
+
+.pk-summary-group__head p {
+  max-width: 720px;
+  margin: 6px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-summary-group__body {
   display: grid;
   min-width: 0;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--parkie-space-6);
   align-items: start;
+}
+
+/* Product patterns ---------------------------------------------------- */
+
+.pk-summary-patterns {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-summary-pattern {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: var(--parkie-space-5);
+  color: var(--parkie-text);
+  text-align: left;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+  cursor: pointer;
+}
+
+.pk-summary-pattern:hover {
+  border-color: var(--parkie-brand-border);
+}
+
+.pk-summary-pattern:focus-visible {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-summary-pattern strong {
+  font-size: var(--parkie-font-lg);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-summary-pattern span {
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-relaxed);
 }
 
 .pk-summary-section {
@@ -846,7 +937,7 @@
 }
 
 @media (min-width: 1200px) {
-  .pk-summary-grid {
+  .pk-summary-group__body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

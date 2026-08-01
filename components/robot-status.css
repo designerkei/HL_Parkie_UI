@@ -121,11 +121,16 @@
 }
 
 .pk-status--warning,
-.pk-status--weak,
-.pk-status--battery-low {
+.pk-status--weak {
   --status-color: var(--parkie-status-warning);
   --status-subtle: rgba(245, 222, 46, 0.14);
   --status-on: var(--parkie-operation-on-warning);
+}
+
+.pk-status--battery-low {
+  --status-color: var(--parkie-battery-low);
+  --status-subtle: var(--parkie-surface-elevation-12);
+  --status-on: var(--parkie-text);
 }
 
 .pk-status--danger,
