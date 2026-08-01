@@ -300,6 +300,14 @@
 
     <!-- BUTTON / SWITCH =========================================== -->
     <sc-if value="{{ isButton }}" hint-placeholder-val="false">
+      <!-- The one place the guide knowingly departs from the delivered Figma.
+           Stating it here is the point: without it a reader compares the two and
+           assumes the implementation is wrong. -->
+      <aside class="gl-callout gl-callout--warning" aria-labelledby="gl-button-deviation">
+        <strong id="gl-button-deviation">{{ deviationTitle }}</strong>
+        <p data-spec-deviation>{{ deviationBody }}</p>
+        <code>{{ deviationEvidence }}</code>
+      </aside>
       <section class="gl-section gl-section--first" aria-labelledby="gl-button-title">
         <header class="gl-section__head"><div><span>01 · ACTION BUTTON</span><h2 id="gl-button-title">{{ buttonTitle }}</h2></div><p>{{ buttonBody }}</p></header>
         <div class="gl-component-note">
@@ -365,6 +373,14 @@
 
     <!-- STATUS / FEEDBACK ========================================= -->
     <sc-if value="{{ isStatus }}" hint-placeholder-val="false">
+      <!-- The one place the guide knowingly departs from the delivered Figma.
+           Stating it here is the point: without it a reader compares the two and
+           assumes the implementation is wrong. -->
+      <aside class="gl-callout gl-callout--warning" aria-labelledby="gl-status-deviation">
+        <strong id="gl-status-deviation">{{ deviationTitle }}</strong>
+        <p data-spec-deviation>{{ deviationBody }}</p>
+        <code>{{ deviationEvidence }}</code>
+      </aside>
       <section class="gl-section gl-section--first" aria-labelledby="gl-alert-title">
         <header class="gl-section__head"><div><span>01 · ALERT &amp; HISTORY</span><h2 id="gl-alert-title">{{ alertTitle }}</h2></div><p>{{ alertBody }}</p></header>
         <div class="gl-feedback-layout">
@@ -952,6 +968,12 @@ class Component extends DCLogic {
 
     return {
       rootRef: this.rootRef, lang, activePage,
+      deviationTitle: L('전달 스펙과 다른 한 곳 · 채움 위 라벨', 'One deliberate departure from the delivered spec'),
+      deviationBody: L(
+        'Figma 스펙은 채움 버튼과 알럿 배너의 라벨을 흰색으로 지정합니다. 그대로 쓰면 전달받은 채움 색 위에서 대비가 1.73~3.51:1이 되어 본문 기준 4.5:1에 모두 미달합니다. 그래서 라벨만 어두운 잉크로 조정했고 채움 색은 스펙 값을 그대로 씁니다. 관제 화면은 야간과 주광 아래에서 모두 읽혀야 하므로 읽히지 않는 라벨은 오조작으로 이어집니다.',
+        'The Figma spec sets the label on filled buttons and alert banners in white. Used as given it lands between 1.73:1 and 3.51:1 over the delivered fills, all short of the 4.5:1 body-text threshold. The label alone moved to dark ink; the fills keep their specified values. A control screen has to read in daylight and at night, and a label that cannot be read becomes a mis-operation.',
+      ),
+      deviationEvidence: '흰 라벨: #00C5FB 2.02:1 · #00B4ED 2.40:1 · #3CD5FF 1.73:1 · #0CA8DA 2.75:1 · #FF3E31 3.51:1 → 어두운 잉크 8.02:1',
       isOverview: activePage === 'overview', isSystemSummary: activePage === 'systemsummary', isPrinciples: activePage === 'principles', isColors: activePage === 'colors', isTypography: activePage === 'typography', isSpacing: activePage === 'spacing', isIconography: activePage === 'iconography', isButton: activePage === 'button', isInput: activePage === 'input', isStatus: activePage === 'status', isNavigation: activePage === 'navigation', isPatrol: activePage === 'patrol', isVideo: activePage === 'video', isTemplates: activePage === 'templates', isBrand: activePage === 'brand',
       truthbarLabel: L('Goalie 문서 근거와 접근성 상태', 'Goalie documentation evidence and accessibility status'), evidenceLabel: L('Figma 근거 고정', 'Figma evidence pinned'), accessibilityLabel: L('접근성 보정 명시', 'Accessibility differences explicit'), sourcePin: activePage === 'colors' ? '230:2058' : activePage === 'typography' ? '2051:3017' : activePage === 'iconography' ? '351:2119 · 351:1032 · 3411:24015 · 3536:25686' : activePage === 'button' ? '351:2306 · 351:2435' : activePage === 'input' ? '1923:3693 · 1917:9234 · 1923:4348 · 2150:5572 · 2150:6371' : activePage === 'status' ? '230:2007 · 735:7167' : activePage === 'navigation' ? '230:4018 · 230:3631 · 465:3008 · 557:3515' : activePage === 'patrol' ? '2226:13757 · 3874:44703' : activePage === 'video' ? '3874:33505' : activePage === 'templates' ? '4021:36373 · 2933:9118 · 3536:24567' : '32 nodes',
       overviewTitle: L('로봇 운영의 상태와 안전을 한 언어로 연결한다', 'One language for robot operation, state and safety'), overviewBody: L('Goalie는 밝은 관제 UI의 시각 규칙과 순찰·영상·발화·비상 흐름의 행동 계약을 함께 관리합니다. Figma를 복제하는 데서 끝나지 않고 각 화면이 같은 토큰과 독립 상태축을 재사용하게 합니다.', 'Goalie manages both the visual language of the light control UI and behavioral contracts for patrol, video, speaking and emergency flows. Screens reuse the same tokens and independent state axes rather than stopping at Figma reproduction.'), overviewFacts, layerMapLabel: L('Foundation에서 Template까지 네 계층', 'Four layers from foundation to template'), layerMap,

@@ -316,3 +316,46 @@ test('Goalie release assets are local and component tokens resolve', async () =>
   const referenced = new Set([...component.matchAll(/var\((--goalie-[\w-]+)/g)].map((match) => match[1]));
   expect([...referenced].filter((token) => !declared.has(token)).sort()).toEqual([]);
 });
+
+/* The guide departs from the delivered Figma in exactly one place: filled
+   buttons and alert banners carry dark ink where the spec sets white. Used as
+   given, white lands between 1.73:1 and 3.51:1 over the delivered fills — short
+   of 4.5:1 on every state, red included. The departure is correct; leaving it
+   unstated is not, because a reader comparing the two concludes the build is
+   wrong. This asserts the statement exists and still names real numbers. */
+test('the deliberate departure from the delivered button spec is stated on the page', async ({ page }) => {
+  for (const pageId of ['button', 'status']) {
+    await page.goto(`/#/goalie/${pageId}`);
+    await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+
+    const note = page.locator('[data-spec-deviation]');
+    await expect(note, `${pageId} must state the departure`).toHaveCount(1);
+    await expect(note).toContainText('흰색');
+    await expect(note).toContainText('4.5:1');
+
+    /* The evidence line must quote measurable ratios, not just assert a problem. */
+    const evidence = await page.locator('[data-spec-deviation] ~ code').textContent();
+    expect(evidence, `${pageId} must quote the measured ratios`).toMatch(/2\.02:1/);
+    expect(evidence).toMatch(/3\.51:1/);
+  }
+
+  /* And the build must actually be doing what the note claims — dark ink, not
+     white — so the statement cannot drift away from the implementation. */
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+  const filled = await page.evaluate(() => {
+    const el = [...document.querySelectorAll('main button, main [class*="gl-button"]')]
+      .find((n) => {
+        const bg = getComputedStyle(n).backgroundColor;
+        const m = bg.match(/\d+/g);
+        return m && Number(m[2]) > 200 && Number(m[0]) < 60;
+      });
+    return el ? getComputedStyle(el).color : null;
+  });
+  expect(filled, 'a filled cyan button must exist to check').not.toBeNull();
+  const channels = (filled.match(/\d+/g) || []).map(Number);
+  expect(
+    channels.every((c) => c < 120),
+    `filled label should be dark ink as the note states, got ${filled}`,
+  ).toBe(true);
+});
