@@ -1,11 +1,22 @@
 /* =====================================================================
-   Goalie UI — fixed light theme tokens
+   Goalie UI — Design Tokens (SWAP LAYER), fixed light theme
+   브랜드를 교체하려면 주로 이 파일만 수정하면 전체 시스템이 리테마됩니다.
+   To rebrand, edit this file — every component reads var(--goalie-*).
 
    Contract
    - Tokens exist only inside the explicit Goalie product scope.
    - No :root defaults: a missing wrapper must fail visibly instead of
      inheriting another product's theme.
    - Components consume semantic/component aliases, not palette values.
+
+   Swap points — the three places a handover lands
+   1. Brand ramp   --goalie-color-brand-50 … 950   (PLACEHOLDER, see below)
+   2. Typography   --goalie-font-sans / --goalie-font-mono
+   3. Logo & mark  .gl-product-mark / .gl-brand-word in components/goalie.css
+
+   Delivered values must clear the contrast gate documented on the
+   `brand` page before they ship: 4.5:1 body text, 3:1 non-text, and dark
+   ink rather than white on any light brand fill.
    ===================================================================== */
 
 [data-system="goalie"][data-color-mode="light"] {
@@ -60,7 +71,12 @@
   --goalie-radius-pill: 999px;
   --goalie-radius-round: 50%;
 
-  /* Brand primitives */
+  /* Brand primitives — PLACEHOLDER, awaiting handover.
+     A generic blue ramp stands in so the semantic aliases below resolve and
+     the documentation shell renders. It is not Goalie's brand colour: these
+     eleven values are the first thing a colour handover replaces. Nothing
+     outside this block hardcodes a brand value, so replacing the ramp
+     rethemes the product. */
   --goalie-color-brand-50: #EFF5FF;
   --goalie-color-brand-100: #DCE9FF;
   --goalie-color-brand-200: #BED3FF;

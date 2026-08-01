@@ -1665,6 +1665,65 @@
   }
 }
 
+/* ---------------------------------------------------------------------
+   Awaiting-handoff placeholder
+
+   Goalie pages are empty receiving slots until the design is handed over.
+   The dashed treatment reads as "not yet authored" rather than "finished
+   and sparse", and every border is a real border rather than a fill so it
+   survives forced-colors without an override.
+   --------------------------------------------------------------------- */
+.gl-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--goalie-space-2);
+  padding: var(--goalie-space-9) var(--goalie-space-7);
+  margin-bottom: var(--goalie-space-8);
+  background: var(--goalie-surface);
+  border: 1px dashed var(--goalie-border-strong);
+  border-radius: var(--goalie-radius-xl);
+}
+
+.gl-pending__mark {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--goalie-space-3);
+  border: 2px dashed var(--goalie-border-strong);
+  border-radius: var(--goalie-radius-md);
+}
+
+.gl-pending__eyebrow {
+  color: var(--goalie-text-tertiary);
+  font-family: var(--goalie-font-mono);
+  font-size: var(--goalie-font-xs);
+  letter-spacing: var(--goalie-tracking-wide);
+}
+
+.gl-pending__title {
+  margin: 0;
+  color: var(--goalie-text);
+  font-size: var(--goalie-font-xl);
+  font-weight: var(--goalie-weight-semibold);
+  letter-spacing: var(--goalie-tracking-tight);
+}
+
+.gl-pending__body,
+.gl-note {
+  max-width: 64ch;
+  color: var(--goalie-text-secondary);
+  font-size: var(--goalie-font-base);
+  line-height: var(--goalie-leading-relaxed);
+}
+
+.gl-pending__body {
+  margin: 0;
+}
+
+.gl-note {
+  margin: var(--goalie-space-4) 0 var(--goalie-space-9);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gl-root *,
   .gl-root *::before,

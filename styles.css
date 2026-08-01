@@ -8,8 +8,8 @@
 @import "./components/media-emergency.css?v=0.1";
 @import "./components/system-summary.css?v=0.4";
 @import "./components/documentation.css?v=0.2";
-@import "./tokens/goalie-tokens.css?v=0.1";
-@import "./components/goalie.css?v=0.1";
+@import "./tokens/goalie-tokens.css?v=0.2";
+@import "./components/goalie.css?v=0.2";
 
 html,
 body {
@@ -101,12 +101,15 @@ img {
 }
 
 .guide-topbar {
+  /* Named so the active tab underline can align to the bar's bottom border
+     without duplicating the padding value. */
+  --guide-topbar-pad-y: 10px;
   min-height: 64px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--guide-space-4);
-  padding: 10px var(--guide-space-6);
+  padding: var(--guide-topbar-pad-y) var(--guide-space-6);
   background: var(--guide-surface);
   border-bottom: 1px solid var(--guide-border);
   z-index: 10;
@@ -140,7 +143,6 @@ img {
 }
 
 .guide-identity__subtitle,
-.guide-system-link__mode,
 .guide-nav-source__subtitle,
 .guide-nav-group__subtitle,
 .guide-nav-item__sub {
@@ -225,41 +227,51 @@ img {
   border-radius: var(--guide-radius-md);
 }
 
+/* Product tabs are inline in the top bar, not a second band. They are the only
+   navigation that crosses products, so they belong beside the identity — one
+   64px row rather than two stacked bands totalling 114px. */
 .guide-system-nav {
-  min-height: 50px;
-  flex: 0 0 auto;
+  align-self: stretch;
+  flex: 0 1 auto;
   display: flex;
   align-items: stretch;
-  gap: 4px;
-  padding: 6px var(--guide-space-6);
-  background: var(--guide-surface);
-  border-bottom: 1px solid var(--guide-border);
+  gap: var(--guide-space-1);
+  margin-left: var(--guide-space-5);
+  min-width: 0;
 }
 
 .guide-system-link {
-  min-width: 176px;
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--guide-space-3);
-  padding: 7px 12px;
-  border: 1px solid transparent;
-  border-radius: var(--guide-radius-md);
+  padding: 0 var(--guide-space-3);
   color: var(--guide-text-secondary);
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .guide-system-link:hover {
-  background: var(--guide-surface-2);
   color: var(--guide-text);
   text-decoration: none;
 }
 
+/* A single underline carries the active state. The previous treatment stacked
+   background + border + colour, which reads as a pressed button rather than a
+   location, and is the redundancy removed elsewhere in this system. */
 .guide-system-link.is-active {
-  background: var(--guide-accent-subtle);
-  border-color: var(--guide-accent-border);
-  color: var(--guide-accent-text);
+  color: var(--guide-text);
+}
+
+.guide-system-link.is-active::after {
+  content: "";
+  position: absolute;
+  right: var(--guide-space-2);
+  bottom: calc(-1 * var(--guide-topbar-pad-y));
+  left: var(--guide-space-2);
+  height: 2px;
+  background: var(--guide-accent);
+  border-radius: 2px 2px 0 0;
 }
 
 .guide-system-link:focus-visible {
@@ -335,11 +347,15 @@ img {
   font-size: var(--guide-font-base);
 }
 
+/* `tertiary` on `surface-3` measures 4.45:1 in the light chrome — just under
+   the 4.5:1 AA threshold for this 12px label. `secondary` clears it in both
+   modes (dark 7.79:1, light 6.20:1). The pair went unexercised until Goalie
+   gained pending pages, since no light-chrome item had ever shown the badge. */
 .guide-nav-item__soon {
   padding: 1px 5px;
   border-radius: var(--guide-radius-pill);
   background: var(--guide-surface-3);
-  color: var(--guide-text-tertiary);
+  color: var(--guide-text-secondary);
   font-family: var(--guide-font-mono);
   font-size: var(--guide-font-xs);
   font-weight: 500;
@@ -1445,11 +1461,9 @@ img {
 
 @media (max-width: 420px) {
   .guide-system-link {
-    justify-content: center;
-    padding-inline: 8px;
+    padding-inline: var(--guide-space-2);
   }
 
-  .guide-system-link__mode,
   .guide-nav-source__subtitle,
   .guide-nav-group__subtitle {
     display: none;

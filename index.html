@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.6">
+<link rel="stylesheet" href="styles.css?v=0.7">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -72,6 +72,17 @@
       <span class="guide-version">{{ ver }}</span>
     </div>
 
+    <!-- Product tabs sit inline in the top bar rather than in their own band.
+         The mode label ("다크 고정" / "라이트 고정") is deliberately absent: it is
+         implementation metadata, already documented in each product's token
+         file header and summary, and carrying it here forced an unequal tab
+         rhythm plus a 176px minimum width. -->
+    <nav class="guide-system-nav" data-system-nav aria-label="Product design systems">
+      <sc-for list="{{ systemItems }}" as="systemItem" hint-placeholder-count="2">
+        <a class="{{ systemItem.className }}" data-system-id="{{ systemItem.id }}" href="{{ systemItem.href }}" onClick="{{ systemItem.onClick }}" aria-current="{{ systemItem.ariaCurrent }}">{{ systemItem.name }}</a>
+      </sc-for>
+    </nav>
+
     <label class="guide-search">
       <span class="guide-search__icon" aria-hidden="true"></span>
       <input class="guide-search__input" type="search" value="{{ searchQuery }}" onInput="{{ onSearchInput }}" aria-label="{{ searchPh }}" placeholder="{{ searchPh }}" data-navigation-search>
@@ -86,15 +97,6 @@
       <span style="{{ themeDotStyle }}"></span>{{ themeLabel }}
     </button>
   </header>
-
-  <nav class="guide-system-nav" data-system-nav aria-label="Product design systems">
-    <sc-for list="{{ systemItems }}" as="systemItem" hint-placeholder-count="2">
-      <a class="{{ systemItem.className }}" data-system-id="{{ systemItem.id }}" href="{{ systemItem.href }}" onClick="{{ systemItem.onClick }}" aria-current="{{ systemItem.ariaCurrent }}">
-        <span>{{ systemItem.name }}</span>
-        <span class="guide-system-link__mode">{{ systemItem.mode }}</span>
-      </a>
-    </sc-for>
-  </nav>
 
   <div class="guide-workspace">
     <!-- ============ SIDEBAR ============ -->
@@ -3130,20 +3132,26 @@ class Component extends DCLogic {
     ] },
   ];
 
+  /* Goalie has no approved design system yet — every page below `brand` is an
+     empty receiving slot awaiting handover, so none of them carry `impl` and
+     each shows a `soon` badge. Descriptions state what the slot will hold, not
+     what the design is; asserting decisions that have not been made is exactly
+     the failure this skeleton exists to avoid. `brand` is implemented because
+     it documents the intake contract — process, not design. */
   GOALIE_META = {
-    overview: { ko: '개요', en: 'Overview', impl: true, dko: '밝고 차분한 업무 흐름을 위한 Goalie UI 라이트 디자인 시스템입니다.', den: 'The Goalie UI light design system for clear, calm product workflows.' },
-    systemsummary: { ko: '전체 요약', en: 'System Summary', impl: true, dko: 'Goalie의 원칙, 토큰, 컴포넌트와 화면 패턴을 한눈에 살펴봅니다.', den: 'Review Goalie principles, tokens, components and screen patterns at a glance.' },
-    principles: { ko: '디자인 원칙', en: 'Principles', impl: true, dko: '신뢰, 명료성, 절제, 접근성을 제품 경험 전반에 적용합니다.', den: 'Apply trust, clarity, restraint and accessibility across the product experience.' },
-    colors: { ko: '색상', en: 'Colors', impl: true, dko: '화이트 캔버스, 중립 계층, 브랜드와 상태 색상의 사용 계약입니다.', den: 'Usage contracts for the white canvas, neutral hierarchy, brand and status colors.' },
-    typography: { ko: '타이포그래피', en: 'Typography', impl: true, dko: '한국어와 영어 모두에서 읽기 흐름을 보존하는 타입 체계입니다.', den: 'A type system that preserves reading rhythm in Korean and English.' },
-    spacing: { ko: '간격과 형태', en: 'Spacing & shape', impl: true, dko: '4px 간격, 절제된 곡률, 얕은 깊이로 정보 위계를 만듭니다.', den: 'A 4px spacing scale, restrained radii and shallow depth for clear hierarchy.' },
-    iconography: { ko: '아이콘', en: 'Iconography', impl: true, dko: '상황과 화면 크기에 맞춘 선 굵기, 크기, 상태 표현 규칙입니다.', den: 'Rules for optical weight, size and state across contexts and viewports.' },
-    button: { ko: '버튼', en: 'Button', impl: true, dko: '행동 우선순위, 상호작용 상태와 포커스 가시성을 함께 정의합니다.', den: 'Defines action hierarchy, interaction states and visible keyboard focus.' },
-    input: { ko: '입력 필드', en: 'Input', impl: true, dko: '라벨, 도움말, 검증 메시지와 상태를 분리해 전달합니다.', den: 'Separates labels, help, validation messages and interaction states.' },
-    status: { ko: '상태와 피드백', en: 'Status & feedback', impl: true, dko: '색상에만 의존하지 않는 상태, 알림, 진행 표현입니다.', den: 'Status, alert and progress patterns that never rely on color alone.' },
-    navigation: { ko: '내비게이션', en: 'Navigation', impl: true, dko: '현재 위치와 다음 이동을 명확히 구분하는 탐색 패턴입니다.', den: 'Navigation patterns that distinguish current location from the next action.' },
-    templates: { ko: '화면 템플릿', en: 'Templates', impl: true, dko: '리스트, 상세, 설정 화면을 일관된 밀도와 반응형 구조로 조합합니다.', den: 'Composes list, detail and settings screens with consistent density and responsive structure.' },
-    brand: { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: 'Goalie UI의 제품명, 색상 교체 지점과 자산 적용 원칙입니다.', den: 'Product naming, color swap points and asset application rules for Goalie UI.' },
+    overview: { ko: '개요', en: 'Overview', dko: 'Goalie 순찰 로봇 관제 소프트웨어의 디자인 시스템 개요가 들어올 자리입니다.', den: 'Reserved for the design system overview of the Goalie patrol-robot control software.' },
+    systemsummary: { ko: '전체 요약', en: 'System Summary', dko: '파운데이션과 컴포넌트를 한 화면에서 훑는 색인이 들어올 자리입니다.', den: 'Reserved for a single-page index across foundations and components.' },
+    principles: { ko: '디자인 원칙', en: 'Principles', dko: 'Goalie의 의사결정 기준이 될 원칙이 들어올 자리입니다.', den: 'Reserved for the principles that will guide Goalie design decisions.' },
+    colors: { ko: '색상', en: 'Colors', dko: '전달받은 팔레트와 사용 규칙이 들어올 자리입니다.', den: 'Reserved for the delivered palette and its usage rules.' },
+    typography: { ko: '타이포그래피', en: 'Typography', dko: '타입 스케일과 한·영 혼용 읽기 규칙이 들어올 자리입니다.', den: 'Reserved for the type scale and bilingual reading rules.' },
+    spacing: { ko: '간격과 형태', en: 'Spacing & shape', dko: '간격 스케일, 곡률, 깊이 규칙이 들어올 자리입니다.', den: 'Reserved for the spacing scale, radii and depth rules.' },
+    iconography: { ko: '아이콘', en: 'Iconography', dko: '아이콘 크기, 선 굵기, 상태 표현 규칙이 들어올 자리입니다.', den: 'Reserved for icon sizing, stroke weight and state rules.' },
+    button: { ko: '버튼', en: 'Button', dko: '버튼 위계와 상태별 값이 들어올 자리입니다.', den: 'Reserved for button hierarchy and per-state values.' },
+    input: { ko: '입력 필드', en: 'Input', dko: '입력 필드의 라벨, 도움말, 검증 상태가 들어올 자리입니다.', den: 'Reserved for input labels, help text and validation states.' },
+    status: { ko: '상태와 피드백', en: 'Status & feedback', dko: '상태, 알림, 진행 표현이 들어올 자리입니다.', den: 'Reserved for status, alert and progress patterns.' },
+    navigation: { ko: '내비게이션', en: 'Navigation', dko: '탐색 구조와 현재 위치 표시가 들어올 자리입니다.', den: 'Reserved for navigation structure and current-location treatment.' },
+    templates: { ko: '화면 템플릿', en: 'Templates', dko: '홈 · 순찰관리 · 영상관리 · 통계 · 설정 화면 템플릿이 들어올 자리입니다.', den: 'Reserved for the home, patrol, video, statistics and settings templates.' },
+    brand: { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: '색상 · 타이포 · 로고 교체 지점과 전달 절차, 대비 게이트입니다.', den: 'Color, type and logo swap points, the handover order and the contrast gate.' },
   };
 
   META = {
@@ -4439,13 +4447,11 @@ class Component extends DCLogic {
       {
         id: 'parkie',
         name: 'Parkie UI',
-        mode: L('다크 고정', 'Dark fixed'),
         href: this.serializeRoute({ system: 'parkie', page: 'overview' }),
       },
       {
         id: 'goalie',
         name: 'Goalie UI',
-        mode: L('라이트 고정', 'Light fixed'),
         href: this.serializeRoute({ system: 'goalie', page: 'overview' }),
       },
     ].map((item) => Object.assign({}, item, {
