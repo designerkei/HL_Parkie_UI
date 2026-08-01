@@ -81,7 +81,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1.3">
+<link rel="stylesheet" href="styles.css?v=1.4">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -620,6 +620,64 @@
             </sc-for>
           </div>
 
+          <!-- Semantic first. The three-layer note above says primitives are
+               referenced by semantic tokens and never bound directly, so leading
+               with the ramps taught the opposite of the page's own guidance.
+               Elevation follows because it explains the surface tokens the
+               Neutral group names; the raw ramps close as an appendix. -->
+          <div style="margin-bottom:var(--parkie-space-4);">
+            <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h2>
+            <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ semanticNote }}</p>
+          </div>
+          <sc-for list="{{ colorSections }}" as="cs" hint-placeholder-count="5">
+            <div style="margin-bottom:var(--parkie-space-8);">
+              <h3 style="margin:0 0 4px;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">{{ cs.title }}</h3>
+              <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ cs.note }}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--parkie-space-3);">
+                <sc-for list="{{ cs.items }}" as="c" hint-placeholder-count="4">
+                  <div class="pk-color-card">
+                    <div style="{{ c.chip }}"></div>
+                    <div class="pk-color-card__body">
+                      <div class="pk-color-card__name">{{ c.name }}</div>
+                      <button type="button" class="{{ c.copiedClass }}" onClick="{{ c.onCopyValue }}" aria-label="{{ c.copyLabel }}" data-color-value>{{ c.value }}</button>
+                      <sc-if value="{{ c.composited }}" hint-placeholder-val="{{ false }}">
+                        <div class="pk-color-card__composited" data-color-composited>{{ c.composited }}</div>
+                      </sc-if>
+                      <div class="pk-color-card__token" data-color-token>{{ c.varName }}</div>
+                      <div class="pk-color-card__use">{{ c.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+
+          <div style="margin-bottom:var(--parkie-space-10);">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
+              <div>
+                <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ elevationColorTitle }}</h2>
+                <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ elevationColorNote }}</p>
+              </div>
+              <span style="flex-shrink:0;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-secondary);">BASE · #131315</span>
+            </div>
+            <div style="padding:var(--parkie-space-4);background:var(--parkie-bg);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-xl);">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ elevationSurfaces }}" as="level" hint-placeholder-count="11">
+                  <div class="pk-elevation-row" style="{{ level.bar }}">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                      <span style="width:40px;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);font-weight:600;color:var(--parkie-text);">{{ level.dp }}</span>
+                      <span style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ level.hex }}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                      <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-secondary);">{{ level.use }}</span>
+                      <span style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ level.overlay }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
           <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
             <div>
               <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ primitiveTitle }}</h2>
@@ -651,54 +709,6 @@
               </div>
             </sc-for>
           </div>
-
-          <div style="margin-bottom:var(--parkie-space-10);">
-            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--parkie-space-5);margin-bottom:var(--parkie-space-4);">
-              <div>
-                <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ elevationColorTitle }}</h2>
-                <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ elevationColorNote }}</p>
-              </div>
-              <span style="flex-shrink:0;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-secondary);">BASE · #131315</span>
-            </div>
-            <div style="padding:var(--parkie-space-4);background:var(--parkie-bg);border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-xl);">
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <sc-for list="{{ elevationSurfaces }}" as="level" hint-placeholder-count="11">
-                  <div class="pk-elevation-row" style="{{ level.bar }}">
-                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                      <span style="width:40px;font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);font-weight:600;color:var(--parkie-text);">{{ level.dp }}</span>
-                      <span style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ level.hex }}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
-                      <span style="font-size:var(--parkie-font-xs);color:var(--parkie-text-secondary);">{{ level.use }}</span>
-                      <span style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);">{{ level.overlay }}</span>
-                    </div>
-                  </div>
-                </sc-for>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-bottom:var(--parkie-space-4);">
-            <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h2>
-            <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ semanticNote }}</p>
-          </div>
-          <sc-for list="{{ colorSections }}" as="cs" hint-placeholder-count="5">
-            <div style="margin-bottom:var(--parkie-space-8);">
-              <h3 style="margin:0 0 4px;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">{{ cs.title }}</h3>
-              <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ cs.note }}</p>
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--parkie-space-3);">
-                <sc-for list="{{ cs.items }}" as="c" hint-placeholder-count="4">
-                  <div style="border:1px solid var(--parkie-border);border-radius:var(--parkie-radius-md);overflow:hidden;background:var(--parkie-surface);">
-                    <div style="{{ c.chip }}"></div>
-                    <div style="padding:10px 12px;">
-                      <div style="font-size:var(--parkie-font-sm);font-weight:600;color:var(--parkie-text);">{{ c.name }}</div>
-                      <div style="font-family:var(--parkie-font-mono);font-size:var(--parkie-font-xs);color:var(--parkie-text-tertiary);margin-top:2px;">{{ c.varName }}</div>
-                    </div>
-                  </div>
-                </sc-for>
-              </div>
-            </div>
-          </sc-for>
 
           <div style="margin-top:var(--parkie-space-10);">
             <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ contrastTitle }}</h2>
@@ -2984,6 +2994,7 @@ class Component extends DCLogic {
     icons: null,
     parkieIcons: null,
     buttonSpecs: null,
+    colorSpecs: null,
     copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
@@ -3010,7 +3021,7 @@ class Component extends DCLogic {
        variables at runtime. Hard-coding hex in the markup would create a
        second source of truth that silently drifts from the tokens. */
     if (this.normalizeRoute(this.state.route).system === 'parkie') {
-      this.requestButtonSpecs();
+      this.requestTokenSpecs();
     }
     if (this.props.brandPrimary && this.rootRef.current) {
       this.rootRef.current.style.setProperty('--parkie-brand-primary', this.props.brandPrimary);
@@ -3036,16 +3047,16 @@ class Component extends DCLogic {
     if (
       this.normalizeRoute(this.state.route).system === 'parkie'
       && !this.state.buttonSpecs
-      && !this.buttonSpecsPending
+      && !this.tokenSpecsPending
     ) {
-      this.requestButtonSpecs();
+      this.requestTokenSpecs();
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handleLocationChange);
     window.removeEventListener('hashchange', this.handleLocationChange);
-    if (this.buttonSpecsFrame) window.cancelAnimationFrame(this.buttonSpecsFrame);
+    if (this.tokenSpecsFrame) window.cancelAnimationFrame(this.tokenSpecsFrame);
     if (this.routeFocusFrame) window.cancelAnimationFrame(this.routeFocusFrame);
   }
 
@@ -3075,35 +3086,94 @@ class Component extends DCLogic {
   /* The stylesheet arrives via <helmet>, so on first mount the custom
      properties may not exist yet and every var() would resolve to the initial
      colour. Wait for a sentinel token to appear before reading. */
-  requestButtonSpecs() {
-    this.buttonSpecsPending = true;
-    this.scheduleButtonSpecs(0);
+  requestTokenSpecs() {
+    this.tokenSpecsPending = true;
+    this.scheduleTokenSpecs(0);
   }
 
-  scheduleButtonSpecs(attempt) {
+  /* Both the button contrast table and the semantic colour cards are resolved
+     in the same pass: one sentinel wait, one probe lifecycle, one animation
+     frame loop. Splitting them would mean two schedulers racing to read the
+     same variables. */
+  scheduleTokenSpecs(attempt) {
     const scope = this.rootRef.current
       && this.rootRef.current.querySelector('[data-product-root][data-system="parkie"]');
     const ready = Boolean(scope) && getComputedStyle(scope)
       .getPropertyValue('--parkie-action-primary-bg').trim() !== '';
     if (ready) {
-      this.buttonSpecsPending = false;
-      this.setState({ buttonSpecs: this.resolveButtonSpecs(scope) });
+      this.tokenSpecsPending = false;
+      this.setState({
+        buttonSpecs: this.resolveButtonSpecs(scope),
+        colorSpecs: this.resolveColorSpecs(scope),
+      });
       return;
     }
     if (attempt < 90) {
-      this.buttonSpecsFrame = window.requestAnimationFrame(() => this.scheduleButtonSpecs(attempt + 1));
+      this.tokenSpecsFrame = window.requestAnimationFrame(() => this.scheduleTokenSpecs(attempt + 1));
     } else {
-      this.buttonSpecsPending = false;
+      this.tokenSpecsPending = false;
     }
   }
 
-  resolveButtonSpecs(scope) {
+  /* The semantic colour cards. Token names and roles only — the value shown on
+     each card is read back from the live CSS variable, so this table can never
+     drift from the tokens the way a hard-coded hex would.
+
+     `use` describes what the token is for, taken from where it is actually
+     consumed rather than invented: --parkie-surface backs 34 backgrounds,
+     --parkie-border 88 border declarations, --parkie-text 74 colour rules. */
+  COLOR_CARD_SECTIONS = [
+    { ko: '브랜드 · Brand', en: 'Brand', noteKo: '기본 액션과 강조에 사용', noteEn: 'Primary actions and emphasis', items: [
+      { name: 'Primary', token: '--parkie-brand-primary', ko: '기본 액션 배경·강조', en: 'Primary action fill and emphasis' },
+      { name: 'Hover', token: '--parkie-brand-primary-hover', ko: '브랜드 램프의 호버 단계', en: 'Hover step of the brand ramp' },
+      { name: 'Active', token: '--parkie-brand-primary-active', ko: '눌림·활성 상태', en: 'Pressed and active state' },
+      { name: 'Subtle', token: '--parkie-brand-subtle', ko: '선택·강조 배경', en: 'Selected and highlighted surfaces' },
+      { name: 'Border', token: '--parkie-brand-border', ko: '브랜드 강조 경계', en: 'Brand-accented borders' },
+      { name: 'Text', token: '--parkie-brand-text', ko: '어두운 표면의 브랜드 텍스트', en: 'Brand text on dark surfaces' },
+    ] },
+    { ko: '중립 · Neutral', en: 'Neutral', noteKo: '배경 · 표면 · 경계', noteEn: 'Backgrounds, surfaces and borders', items: [
+      { name: 'Background', token: '--parkie-bg', ko: '앱 캔버스', en: 'Application canvas' },
+      { name: 'Surface', token: '--parkie-surface', ko: '카드·패널 기본 표면', en: 'Default card and panel surface' },
+      { name: 'Surface 2', token: '--parkie-surface-2', ko: '한 단계 올라온 표면', en: 'One elevation step up' },
+      { name: 'Surface 3', token: '--parkie-surface-3', ko: '가장 높은 표면·입력 비활성', en: 'Highest surface and disabled inputs' },
+      { name: 'Border', token: '--parkie-border', ko: '카드·표·구분선 경계', en: 'Card, table and divider borders' },
+      { name: 'Border strong', token: '--parkie-border-strong', ko: '입력 필드처럼 또렷한 경계', en: 'Stronger borders such as inputs' },
+    ] },
+    { ko: '텍스트 · Text', en: 'Text', noteKo: '본문과 위계', noteEn: 'Body copy and hierarchy', items: [
+      { name: 'Text', token: '--parkie-text', ko: '본문 기본 텍스트', en: 'Default body text' },
+      { name: 'Secondary', token: '--parkie-text-secondary', ko: '설명·보조 문구', en: 'Descriptions and supporting copy' },
+      { name: 'Tertiary', token: '--parkie-text-tertiary', ko: '메타·캡션·라벨', en: 'Metadata, captions and labels' },
+      { name: 'Disabled', token: '--parkie-text-disabled', ko: '비활성 컨트롤의 글자', en: 'Text inside disabled controls' },
+    ] },
+    { ko: '시맨틱 · Semantic', en: 'Semantic', noteKo: '의미 전달 색상', noteEn: 'Meaningful status colors', items: [
+      { name: 'Success', token: '--parkie-success', ko: '성공·정상 확인', en: 'Success and healthy confirmation' },
+      { name: 'Warning', token: '--parkie-warning', ko: '주의가 필요한 상태', en: 'States needing attention' },
+      { name: 'Danger', token: '--parkie-danger', ko: '오류와 파괴적 액션', en: 'Errors and destructive actions' },
+      { name: 'Info', token: '--parkie-info', ko: '중립적 안내', en: 'Neutral information' },
+    ] },
+    { ko: '로봇 상태 · Robot status', en: 'Robot status', noteKo: '관제 화면 전용 상태 색상', noteEn: 'Domain colors for the control view', items: [
+      { name: 'Active 운행중', token: '--parkie-status-active', ko: '운행 중인 로봇', en: 'Robot in service' },
+      { name: 'Charging 충전중', token: '--parkie-status-charging', ko: '충전 중', en: 'Charging' },
+      { name: 'Idle 대기', token: '--parkie-status-idle', ko: '대기 상태', en: 'Idle' },
+      { name: 'Error 오류', token: '--parkie-status-error', ko: '고장·정지', en: 'Fault or stopped' },
+      { name: 'Offline 오프라인', token: '--parkie-status-offline', ko: '연결 끊김', en: 'Disconnected' },
+    ] },
+  ];
+
+  /* A single colour probe shared by everything that needs a token's real value.
+     Applying the token to a throwaway element and reading it back resolves the
+     whole var() chain, so an alias defined as var(--other) still yields a
+     colour. Both the button contrast table and the semantic colour cards read
+     through this — one probe, one set of rules for formatting and compositing,
+     so the two can never disagree about what a token is.
+
+     Callers must invoke release() when done. */
+  colorProbe(scope) {
     const probe = document.createElement('span');
     probe.setAttribute('aria-hidden', 'true');
     probe.style.cssText = 'position:absolute;left:-9999px;top:0;opacity:0;pointer-events:none';
     scope.appendChild(probe);
-    /* Applying the token to a probe and reading it back resolves any var()
-       chain, so a token defined as var(--other) still yields a real colour. */
+
     const read = (token) => {
       probe.style.color = '';
       probe.style.color = 'var(' + token + ')';
@@ -3135,9 +3205,46 @@ class Component extends DCLogic {
     };
     const hex = (c) => '#' + [c.r, c.g, c.b]
       .map((v) => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+    /* Translucent tokens are reported as authored, not flattened to a hex.
+       --parkie-text is 95% white, not #FFFFFF, and printing the latter would be
+       a wrong value rather than a rounded one. */
     const label = (c) => (c.a < 1
       ? 'rgba(' + Math.round(c.r) + ', ' + Math.round(c.g) + ', ' + Math.round(c.b) + ', ' + c.a + ')'
       : hex(c));
+
+    return { read, parse, over, lum, ratio, hex, label, release: () => probe.remove() };
+  }
+
+  /* Resolves every semantic colour card to what the token actually is.
+     Translucent tokens keep their authored rgba() — eight of the twenty-five
+     are translucent, and --parkie-text is 95% white rather than #FFFFFF, so a
+     flattened hex would be a wrong value. For those the composited result over
+     the base surface is reported separately, because that is the colour the eye
+     receives and it is not the same number. */
+  resolveColorSpecs(scope) {
+    const { read, parse, over, hex, label, release } = this.colorProbe(scope);
+    const fallback = { r: 19, g: 19, b: 21, a: 1 };
+    const surface = parse(read('--parkie-surface')) || fallback;
+
+    const specs = {};
+    for (const section of this.COLOR_CARD_SECTIONS) {
+      for (const item of section.items) {
+        const raw = parse(read(item.token));
+        if (!raw) continue;
+        const translucent = raw.a < 1;
+        specs[item.token] = {
+          value: label(raw),
+          translucent,
+          composited: translucent ? hex(over(raw, surface)) : '',
+        };
+      }
+    }
+    release();
+    return specs;
+  }
+
+  resolveButtonSpecs(scope) {
+    const { read, parse, over, ratio, hex, label, release } = this.colorProbe(scope);
 
     const fallback = { r: 19, g: 19, b: 21, a: 1 };
     const surface = parse(read('--parkie-surface')) || fallback;
@@ -3162,7 +3269,7 @@ class Component extends DCLogic {
         };
       }),
     }));
-    probe.remove();
+    release();
     return specs;
   }
 
@@ -4207,22 +4314,34 @@ class Component extends DCLogic {
       },
     }));
 
-    const mk = (name, varName, note) => ({ name, varName, note: note || '', chip: { height: '58px', background: `var(${varName})`, borderBottom: '1px solid var(--parkie-border)' } });
-    const colorSections = [
-      { title: L('브랜드 · Brand', 'Brand'), note: L('기본 액션과 강조에 사용', 'Primary actions and emphasis'), items: [
-        mk('Primary', '--parkie-brand-primary'), mk('Hover', '--parkie-brand-primary-hover'), mk('Active', '--parkie-brand-primary-active'),
-        mk('Subtle', '--parkie-brand-subtle'), mk('Border', '--parkie-brand-border'), mk('Text', '--parkie-brand-text') ] },
-      { title: L('중립 · Neutral', 'Neutral'), note: L('배경 · 표면 · 경계', 'Backgrounds, surfaces and borders'), items: [
-        mk('Background', '--parkie-bg'), mk('Surface', '--parkie-surface'), mk('Surface 2', '--parkie-surface-2'),
-        mk('Surface 3', '--parkie-surface-3'), mk('Border', '--parkie-border'), mk('Border strong', '--parkie-border-strong') ] },
-      { title: L('텍스트 · Text', 'Text'), note: L('본문과 위계', 'Body copy and hierarchy'), items: [
-        mk('Text', '--parkie-text'), mk('Secondary', '--parkie-text-secondary'), mk('Tertiary', '--parkie-text-tertiary'), mk('Disabled', '--parkie-text-disabled') ] },
-      { title: L('시맨틱 · Semantic', 'Semantic'), note: L('의미 전달 색상', 'Meaningful status colors'), items: [
-        mk('Success', '--parkie-success'), mk('Warning', '--parkie-warning'), mk('Danger', '--parkie-danger'), mk('Info', '--parkie-info') ] },
-      { title: L('로봇 상태 · Robot status', 'Robot status'), note: L('관제 화면 전용 상태 색상', 'Domain colors for the control view'), items: [
-        mk('Active 운행중', '--parkie-status-active'), mk('Charging 충전중', '--parkie-status-charging'), mk('Idle 대기', '--parkie-status-idle'),
-        mk('Error 오류', '--parkie-status-error'), mk('Offline 오프라인', '--parkie-status-offline') ] },
-    ];
+    /* Cards are built from COLOR_CARD_SECTIONS plus the values resolved off the
+       live variables. Before the stylesheet lands the value line reads "…" so
+       the layout never jumps once it arrives. */
+    const resolvedColors = this.state.colorSpecs || {};
+    const mk = (item) => {
+      const spec = resolvedColors[item.token] || { value: '', translucent: false, composited: '' };
+      return {
+        name: item.name,
+        varName: item.token,
+        note: L(item.ko, item.en),
+        value: spec.value || '…',
+        hasValue: Boolean(spec.value),
+        composited: spec.composited
+          ? L(`표면 위 ${spec.composited}`, `on surface ${spec.composited}`)
+          : '',
+        copyLabel: L(`${item.token} 값 복사`, `Copy ${item.token} value`),
+        onCopyValue: () => { if (spec.value) this.copyValue(spec.value); },
+        copiedClass: spec.value && this.state.copiedValue === spec.value
+          ? 'pk-color-card__value is-copied'
+          : 'pk-color-card__value',
+        chip: { height: '58px', background: `var(${item.token})`, borderBottom: '1px solid var(--parkie-border)' },
+      };
+    };
+    const colorSections = this.COLOR_CARD_SECTIONS.map((section) => ({
+      title: L(section.ko, section.en),
+      note: L(section.noteKo, section.noteEn),
+      items: section.items.map(mk),
+    }));
 
     const contrastSample = (color, background) => ({
       width: '42px', height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -777,3 +777,101 @@ test('no imported stylesheet is entirely unused', async () => {
 
   expect(findings, 'an imported stylesheet that nothing references is dead weight').toEqual([]);
 });
+
+/* The colour page shows each semantic token's real value. The risk this guards
+   is not a missing line but a wrong one: eight of the twenty-five tokens are
+   translucent, and printing a flattened hex for --parkie-text (95% white) would
+   state a colour the token does not have. */
+const TRANSLUCENT_COLOR_TOKENS = [
+  '--parkie-brand-subtle',
+  '--parkie-brand-border',
+  '--parkie-border',
+  '--parkie-text',
+  '--parkie-text-secondary',
+  '--parkie-text-tertiary',
+  '--parkie-text-disabled',
+  '--parkie-status-active',
+];
+
+test('semantic colour cards report the value the token actually resolves to', async ({ page }) => {
+  await page.goto('/#colors');
+  await expect(page.locator('.pk-color-card').first()).toBeVisible();
+  /* The stylesheet arrives via <helmet>; the value line reads "…" until then. */
+  await expect(page.locator('[data-color-value]').first()).not.toHaveText('…');
+
+  const cards = await page.evaluate(() => {
+    const scope = document.querySelector('[data-product-root]');
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    scope.appendChild(probe);
+    const read = (token) => {
+      probe.style.color = '';
+      probe.style.color = `var(${token})`;
+      return getComputedStyle(probe).color;
+    };
+    const result = [...document.querySelectorAll('.pk-color-card')].map((card) => ({
+      token: card.querySelector('[data-color-token]')?.textContent.trim(),
+      shown: card.querySelector('[data-color-value]')?.textContent.trim(),
+      composited: card.querySelector('[data-color-composited]')?.textContent.trim() || '',
+      use: card.querySelector('.pk-color-card__use')?.textContent.trim() || '',
+      live: read(card.querySelector('[data-color-token]')?.textContent.trim() || '--parkie-text'),
+    }));
+    probe.remove();
+    return result;
+  });
+
+  expect(cards.length, 'every semantic token needs a card').toBe(25);
+
+  const channels = (value) => (value.startsWith('#')
+    ? [parseInt(value.slice(1, 3), 16), parseInt(value.slice(3, 5), 16), parseInt(value.slice(5, 7), 16), 1]
+    : (value.match(/[\d.]+/g) || []).map(Number));
+
+  for (const card of cards) {
+    expect(card.shown, `${card.token} must show a value`).toBeTruthy();
+    expect(card.shown, `${card.token} must not still be waiting`).not.toBe('…');
+    expect(card.use, `${card.token} must say what it is for`).toBeTruthy();
+
+    const shown = channels(card.shown);
+    const live = channels(card.live);
+    if (live.length === 3) live.push(1);
+    expect(shown.length, `${card.token} value must parse`).toBe(4);
+    for (let i = 0; i < 4; i += 1) {
+      expect(Math.abs(shown[i] - live[i]), `${card.token} shown ${card.shown} vs live ${card.live}`)
+        .toBeLessThan(0.02);
+    }
+  }
+
+  /* The specific defect this exists to prevent. */
+  const translucent = cards.filter((card) => TRANSLUCENT_COLOR_TOKENS.includes(card.token));
+  expect(translucent.length, 'all translucent tokens must have cards').toBe(TRANSLUCENT_COLOR_TOKENS.length);
+  for (const card of translucent) {
+    expect(card.shown, `${card.token} is translucent and must not be flattened to a hex`).toMatch(/^rgba\(/);
+    expect(card.composited, `${card.token} must also report what it looks like on the surface`)
+      .toMatch(/#[0-9A-F]{6}/);
+  }
+
+  const opaque = cards.filter((card) => !TRANSLUCENT_COLOR_TOKENS.includes(card.token));
+  for (const card of opaque) {
+    expect(card.shown, `${card.token} is opaque and should read as a hex`).toMatch(/^#[0-9A-F]{6}$/);
+  }
+});
+
+test('the colour page leads with semantic tokens, not the raw ramps', async ({ page }) => {
+  await page.goto('/#colors');
+  await expect(page.locator('.pk-color-card').first()).toBeVisible();
+
+  const order = await page.evaluate(() => {
+    const headings = [...document.querySelectorAll('main h2')];
+    const find = (text) => headings.findIndex((h) => h.textContent.includes(text));
+    return { semantic: find('의미 토큰'), elevation: find('Surface Elevation'), primitive: find('원시 팔레트') };
+  });
+
+  expect(order.semantic, 'semantic section must exist').toBeGreaterThan(-1);
+  expect(order.primitive, 'primitive section must exist').toBeGreaterThan(-1);
+  /* The page's own three-layer note says primitives are never bound directly,
+     so showing them first taught the opposite of the guidance beside them. */
+  expect(order.semantic, 'semantic tokens must precede the primitive ramps')
+    .toBeLessThan(order.primitive);
+  expect(order.elevation, 'elevation explains the surface tokens and follows them')
+    .toBeGreaterThan(order.semantic);
+});

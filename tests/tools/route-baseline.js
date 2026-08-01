@@ -15,7 +15,10 @@ const fs = require('fs');
 
 const path = require('node:path');
 
-const OUT = path.join(process.cwd(), 'test-results', 'baseline');
+/* Not under test-results/: Playwright clears that directory at the start of
+   every run, so a `before` snapshot recorded there vanishes the moment you run
+   the suite — which is exactly when you need it to survive. */
+const OUT = path.join(process.cwd(), '.route-baseline');
 const label = process.argv[2] || 'before';
 const BASE = process.env.BASE || 'http://127.0.0.1:4173/index.html';
 

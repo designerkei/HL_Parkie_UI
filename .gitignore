@@ -7,4 +7,5 @@
 # UI verification
 node_modules/
 test-results/
+.route-baseline/
 playwright-report/

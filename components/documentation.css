@@ -108,3 +108,82 @@
     border-top: 1px solid var(--parkie-border);
   }
 }
+
+/* ---------------------------------------------------------------------
+   Semantic colour cards
+
+   The value line is the point of the card: a token's real colour, read back
+   from the live variable rather than transcribed, so it cannot drift. It is a
+   button because the value is meant to be copied, and copying is the reason
+   someone reads this page.
+   --------------------------------------------------------------------- */
+.pk-color-card {
+  overflow: hidden;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-md);
+}
+
+.pk-color-card__body {
+  padding: 10px 12px 11px;
+}
+
+.pk-color-card__name {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: 600;
+}
+
+.pk-color-card__value {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pk-color-card__value:hover {
+  color: var(--parkie-brand-text);
+}
+
+.pk-color-card__value:focus-visible {
+  outline: 2px solid var(--parkie-focus-ring-outer);
+  outline-offset: 2px;
+  border-radius: var(--parkie-radius-xs);
+}
+
+.pk-color-card__value.is-copied {
+  color: var(--parkie-success);
+}
+
+/* Translucent tokens report what they are and, separately, what they look
+   like. --parkie-text is 95% white; the composited number is the colour the
+   eye actually receives and it is not the same value. */
+.pk-color-card__composited {
+  margin-top: 1px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-card__token {
+  margin-top: 4px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  overflow-wrap: anywhere;
+}
+
+.pk-color-card__use {
+  margin-top: 5px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}
