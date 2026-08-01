@@ -134,12 +134,14 @@ test('capture parking-control product compositions', async ({ page }) => {
   });
 });
 
-test('capture skeleton-product review surfaces', async ({ page }) => {
+test('capture secondary-product review surfaces', async ({ page }) => {
   test.setTimeout(180_000);
-  const systems = ['goalie', 'cpms'];
-  const pages = ['overview', 'colors', 'iconography', 'button', 'input', 'templates', 'brand'];
+  const systems = {
+    goalie: ['overview', 'colors', 'iconography', 'button', 'input', 'templates', 'brand'],
+    cpms: ['overview', 'systemsummary', 'colors', 'shell', 'controls', 'permissions', 'accessibility'],
+  };
 
-  for (const system of systems) {
+  for (const [system, pages] of Object.entries(systems)) {
     await page.setViewportSize({ width: 1920, height: 1080 });
     for (const pageId of pages) {
       await page.goto(`/#/${system}/${pageId}`);
@@ -151,7 +153,8 @@ test('capture skeleton-product review surfaces', async ({ page }) => {
       });
     }
 
-    for (const pageId of ['overview', 'brand']) {
+    const narrowPages = system === 'cpms' ? ['overview', 'data-display'] : ['overview', 'brand'];
+    for (const pageId of narrowPages) {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/#/${system}/${pageId}`);
       await expect(page.locator('h1')).toBeVisible();

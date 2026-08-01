@@ -45,7 +45,9 @@
       manifest: 'CPMS_META',
       nav: 'CPMS_NAV',
       tokens: 'tokens/cpms-tokens.css',
-      skeleton: true,
+      /* CPMS is an authored, evidence-backed guide. It keeps its own fixed
+         component entry because dc-import names are compile-time constants. */
+      skeleton: false,
       subtitleKo: '프로젝트 관리 디자인 시스템',
       subtitleEn: 'Project Management Design System',
     },
@@ -79,7 +81,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1.2">
+<link rel="stylesheet" href="styles.css?v=1.3">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -2913,6 +2915,22 @@
           </dc-import>
         </sc-if>
 
+        <!-- CPMS is no longer a receiving skeleton. DC component names are
+             compile-time constants, so one fixed import owns every CPMS page
+             while the registry continues to own routing, navigation and the
+             first-paint theme. -->
+        <sc-if value="{{ isCpmsSystem }}" hint-placeholder-val="{{ false }}">
+          <dc-import
+            name="CPMSPages"
+            active-page="{{ activePage }}"
+            lang="{{ lang }}"
+            on-navigate="{{ onProductNavigate }}"
+            get-route-href="{{ getProductRouteHref }}"
+            hint-size="100%,720px"
+            style="width:100%;">
+          </dc-import>
+        </sc-if>
+
         <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
           <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
             <div class="pk-doc-contract__head">
@@ -3197,34 +3215,31 @@ class Component extends DCLogic {
   CPMS_NAV = [
     { source: 'CPMS', sub: 'Project management tool', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles'] },
-      { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'iconography'] },
-      { ko: '컴포넌트', en: 'Components', items: ['button', 'input', 'status', 'navigation'] },
-      /* Named generically until the screens arrive. CPMS is a PM tool, so the
-         delivered patterns will be boards, backlogs, issue detail and
-         schedules — the slot gets renamed then rather than guessed now. */
-      { ko: '패턴', en: 'Patterns', items: ['templates'] },
-      { ko: '리소스', en: 'Resources', items: ['brand'] },
+      { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'layout'] },
+      { ko: '시스템', en: 'System', items: ['shell', 'controls', 'data-display', 'states'] },
+      { ko: '운영 계약', en: 'Workflow contracts', items: ['permissions'] },
+      { ko: '품질과 운영', en: 'Quality & governance', items: ['accessibility', 'governance'] },
     ] },
   ];
 
-  /* CPMS has no approved design system yet, so every page below `brand` is an
-     empty receiving slot: none carry `impl`, which lights the shared `soon`
-     badge and renders the awaiting-handover skeleton. Descriptions say what the
-     slot will hold, never what the design is. */
+  /* CPMS is an evidence-backed hybrid system: Astryx Neutral at the application
+     boundary, adopted Astryx components in shell/store, bespoke CPMS work
+     surfaces, and an explicit legacy boundary for OP/FM. Each route is authored
+     in CPMSPages.dc.html; this manifest remains the router/sidebar contract. */
   CPMS_META = {
-    overview: { ko: '개요', en: 'Overview', dko: 'PM 전용 프로젝트 관리 툴 CPMS의 디자인 시스템 개요가 들어올 자리입니다.', den: 'Reserved for the design system overview of CPMS, the project-management tool for PMs.' },
-    systemsummary: { ko: '전체 요약', en: 'System Summary', dko: '파운데이션과 컴포넌트를 한 화면에서 훑는 색인이 들어올 자리입니다.', den: 'Reserved for a single-page index across foundations and components.' },
-    principles: { ko: '디자인 원칙', en: 'Principles', dko: 'CPMS의 의사결정 기준이 될 원칙이 들어올 자리입니다.', den: 'Reserved for the principles that will guide CPMS design decisions.' },
-    colors: { ko: '색상', en: 'Colors', dko: '전달받은 팔레트와 사용 규칙이 들어올 자리입니다.', den: 'Reserved for the delivered palette and its usage rules.' },
-    typography: { ko: '타이포그래피', en: 'Typography', dko: '타입 스케일과 한·영 혼용 읽기 규칙이 들어올 자리입니다.', den: 'Reserved for the type scale and bilingual reading rules.' },
-    spacing: { ko: '간격과 형태', en: 'Spacing & shape', dko: '간격 스케일, 곡률, 깊이 규칙이 들어올 자리입니다.', den: 'Reserved for the spacing scale, radii and depth rules.' },
-    iconography: { ko: '아이콘', en: 'Iconography', dko: '아이콘 크기, 선 굵기, 상태 표현 규칙이 들어올 자리입니다.', den: 'Reserved for icon sizing, stroke weight and state rules.' },
-    button: { ko: '버튼', en: 'Button', dko: '버튼 위계와 상태별 값이 들어올 자리입니다.', den: 'Reserved for button hierarchy and per-state values.' },
-    input: { ko: '입력 필드', en: 'Input', dko: '입력 필드의 라벨, 도움말, 검증 상태가 들어올 자리입니다.', den: 'Reserved for input labels, help text and validation states.' },
-    status: { ko: '상태와 피드백', en: 'Status & feedback', dko: '이슈 상태, 알림, 진행 표현이 들어올 자리입니다.', den: 'Reserved for issue status, alert and progress patterns.' },
-    navigation: { ko: '내비게이션', en: 'Navigation', dko: '탐색 구조와 현재 위치 표시가 들어올 자리입니다.', den: 'Reserved for navigation structure and current-location treatment.' },
-    templates: { ko: '화면 템플릿', en: 'Templates', dko: '보드 · 백로그 · 이슈 상세 · 일정 등 실제 화면 템플릿이 들어올 자리입니다.', den: 'Reserved for the board, backlog, issue detail and schedule templates.' },
-    brand: { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: '색상 · 타이포 · 로고 교체 지점과 전달 절차, 대비 게이트입니다.', den: 'Color, type and logo swap points, the handover order and the contrast gate.' },
+    overview: { ko: '개요', en: 'Overview', impl: true, dko: 'CPMS의 현재 시스템과 권장 방향, 적용 범위를 구분한 운영 개요입니다.', den: 'Operational overview separating the current CPMS system, recommended direction and scope.' },
+    systemsummary: { ko: '근거와 적용 현황', en: 'Evidence & coverage', impl: true, dko: '고정 소스, 시스템 계층, 화면별 성숙도와 출처 우선순위입니다.', den: 'Pinned sources, system layers, area maturity and evidence precedence.' },
+    principles: { ko: '디자인 원칙', en: 'Principles', impl: true, dko: '고밀도 PM 업무와 현장 운영을 안전하게 연결하는 의사결정 원칙입니다.', den: 'Decision principles connecting dense PM work and field operations safely.' },
+    colors: { ko: '색상과 대비', en: 'Color & contrast', impl: true, dko: 'HL 브랜드, 표면, 텍스트, 상태와 액션의 의미 토큰 규칙입니다.', den: 'Semantic token rules for HL brand, surfaces, text, state and action.' },
+    typography: { ko: '타이포그래피', en: 'Typography', impl: true, dko: '한·영 혼용과 고밀도 데이터 화면을 위한 타입 스케일과 읽기 규칙입니다.', den: 'Type scale and reading rules for bilingual, data-dense screens.' },
+    layout: { ko: '레이아웃과 밀도', en: 'Layout & density', impl: true, dko: '4px 기반 간격, 그리드, 표면, 곡률와 반응형 밀도 규칙입니다.', den: '4px spacing, grid, surface, radius and responsive density rules.' },
+    shell: { ko: '쉘과 내비게이션', en: 'Shell & navigation', impl: true, dko: 'Astryx SideNav, 앱 스토어, 프로젝트 문맥과 모바일 탐색 계약입니다.', den: 'Contracts for Astryx SideNav, app store, project context and mobile navigation.' },
+    controls: { ko: '액션과 입력', en: 'Actions & inputs', impl: true, dko: '버튼, 필드, 선택, 검증과 저장 상태의 구현 계약입니다.', den: 'Implementation contract for buttons, fields, selection, validation and saving.' },
+    'data-display': { ko: '데이터 표시', en: 'Data display', impl: true, dko: '카드, 표, 그리드, 진행률과 일정 데이터의 표현 계약입니다.', den: 'Display contracts for cards, tables, grids, progress and schedules.' },
+    states: { ko: '상태와 피드백', en: 'States & feedback', impl: true, dko: '로딩, 빈 상태, 오류, 저장, 오프라인과 상태 축의 표시 규칙입니다.', den: 'Rules for loading, empty, error, saving, offline and independent state axes.' },
+    permissions: { ko: '권한과 편집 세션', en: 'Permissions & edit sessions', impl: true, dko: '역할, 잠금, 충돌, 자동 저장과 복구를 다루는 업무 계약입니다.', den: 'Workflow contract for roles, locks, conflicts, autosave and recovery.' },
+    accessibility: { ko: '접근성과 반응형', en: 'Accessibility & responsive', impl: true, dko: '키보드, 스크린리더, 확대, 고대비와 작은 화면 대체 규칙입니다.', den: 'Keyboard, screen reader, zoom, high contrast and small-screen alternatives.' },
+    governance: { ko: '운영과 변경 관리', en: 'Governance & change', impl: true, dko: '상태, 소유자, 소스 고정, 검토일과 변경 절차를 관리합니다.', den: 'Management of status, ownership, source pins, review dates and change workflow.' },
   };
 
   /* Goalie has no approved design system yet — every page below `brand` is an
@@ -3539,6 +3554,7 @@ class Component extends DCLogic {
     /* Parkie's authored template is enormous and product-specific, so its page
        flags stay gated on the product id. Everything else reads the registry. */
     const isParkieSystem = activeSystem === 'parkie';
+    const isCpmsSystem = activeSystem === 'cpms';
     const usesSharedSkeleton = Boolean(systemEntry.skeleton);
     /* "Parkie UI" -> "Parkie". Used where the label already sits next to the
        word "design system" and the UI suffix would read twice. */
@@ -4621,6 +4637,7 @@ class Component extends DCLogic {
       theme, lang, tabsDemo, activeSystem,
       colorMode: theme,
       isParkieSystem,
+      isCpmsSystem,
       usesSharedSkeleton,
       systemItems,
       guideTitle: 'UX/UI Design Guide System',
@@ -4660,7 +4677,9 @@ class Component extends DCLogic {
       /* Pages whose specimens are designed at full application width. The top
          bar recipe needs 1214px and the control shell needs rail 80 + panel
          320 + workspace, neither of which fits the 960px reading column. */
-      contentFrameClass: usesSharedSkeleton
+      contentFrameClass: isCpmsSystem
+        ? 'guide-content-frame cpms-content-frame'
+        : usesSharedSkeleton
         ? 'guide-content-frame guide-content-frame--skeleton'
         : ['media', 'topbar', 'appshell'].includes(active)
           ? 'guide-content-frame pk-content-frame pk-content-frame--wide'

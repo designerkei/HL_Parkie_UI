@@ -1,34 +1,25 @@
 /* =====================================================================
-   CPMS UI — Design Tokens (SWAP LAYER), fixed light theme
-   브랜드를 교체하려면 주로 이 파일만 수정하면 전체 시스템이 리테마됩니다.
-   To rebrand, edit this file — every component reads var(--cpms-*).
+   CPMS UI — evidence-backed tokens, fixed light theme
 
-   CPMS is the project-management tool for PMs (issues, boards, schedules),
-   a different domain from the robot-control products alongside it.
+   Provenance
+   - Current source snapshot: designerkei/Milestone aws-cpms@32ff10f
+   - Safe interaction reference: designerkei/Milestone main@f321694
+   - Source values: design-system/colors_and_type.css and live app.css
 
-   Contract
-   - Tokens exist only inside the explicit CPMS product scope.
-   - No :root defaults: a missing wrapper must fail visibly instead of
-     inheriting another product's theme.
-   - Components consume semantic/component aliases, not palette values.
-
-   Swap points — the three places a handover lands
-   1. Brand ramp   --cpms-color-brand-50 … 950   (PLACEHOLDER, see below)
-   2. Typography   --cpms-font-sans / --cpms-font-mono
-   3. Logo & mark  rendered by the shared skeleton's brand lockup
-
-   Delivered values must clear the contrast gate documented on the
-   `brand` page before they ship: 4.5:1 body text, 3:1 non-text, and dark
-   ink rather than white on any light brand fill.
+   The running product is hybrid. These tokens therefore distinguish source
+   primitives from the semantic contract recommended for new and migrated UI.
+   HL Sky Blue remains the visual accent. Filled actions use Deep Blue/Navy so
+   their labels clear contrast. Nothing is published at :root; a missing CPMS
+   scope must fail visibly instead of inheriting another product's tokens.
    ===================================================================== */
 
 [data-system="cpms"][data-color-mode="light"] {
   color-scheme: light;
 
-  /* Typography */
-  --cpms-font-sans: "Pretendard", "Noto Sans KR", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Typography — normalized product scale for dense bilingual work. */
+  --cpms-font-sans: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
   --cpms-font-mono: "Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
-
+  --cpms-font-2xs: 11px;
   --cpms-font-xs: 12px;
   --cpms-font-sm: 13px;
   --cpms-font-base: 14px;
@@ -36,22 +27,19 @@
   --cpms-font-lg: 18px;
   --cpms-font-xl: 22px;
   --cpms-font-2xl: 28px;
-  --cpms-font-3xl: 36px;
-
-  --cpms-leading-tight: 1.2;
-  --cpms-leading-snug: 1.35;
-  --cpms-leading-normal: 1.5;
-  --cpms-leading-relaxed: 1.65;
-
+  --cpms-leading-tight: 1.25;
+  --cpms-leading-snug: 1.4;
+  --cpms-leading-normal: 1.55;
+  --cpms-leading-relaxed: 1.7;
   --cpms-weight-regular: 400;
   --cpms-weight-medium: 500;
   --cpms-weight-semibold: 600;
   --cpms-weight-bold: 700;
-
   --cpms-tracking-tight: -0.02em;
   --cpms-tracking-wide: 0.055em;
 
-  /* Spacing — 4px base */
+  /* 4px base. Compactness is produced with density tokens, not ad-hoc values. */
+  --cpms-space-0: 0;
   --cpms-space-1: 4px;
   --cpms-space-2: 8px;
   --cpms-space-3: 12px;
@@ -65,163 +53,249 @@
   --cpms-space-11: 80px;
   --cpms-space-12: 96px;
 
-  /* Shape */
+  /* Shape and depth. */
   --cpms-radius-xs: 4px;
   --cpms-radius-sm: 6px;
   --cpms-radius-md: 8px;
   --cpms-radius-lg: 12px;
   --cpms-radius-xl: 16px;
-  --cpms-radius-pill: 999px;
+  --cpms-radius-2xl: 20px;
+  --cpms-radius-pill: 9999px;
   --cpms-radius-round: 50%;
+  --cpms-shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.06);
+  --cpms-shadow-md: 0 4px 12px rgba(15, 15, 15, 0.10);
+  --cpms-shadow-lg: 0 24px 48px -8px rgba(15, 15, 15, 0.20);
+  --cpms-shadow-overlay: 0 16px 48px -8px rgba(15, 15, 15, 0.18);
 
-  /* Brand primitives — PLACEHOLDER, awaiting handover.
-     A generic blue ramp stands in so the semantic aliases below resolve and
-     the documentation shell renders. It is not CPMS's brand colour: these
-     eleven values are the first thing a colour handover replaces. Nothing
-     outside this block hardcodes a brand value, so replacing the ramp
-     rethemes the product. */
-  --cpms-color-brand-50: #EEF2FF;
-  --cpms-color-brand-100: #E0E7FF;
-  --cpms-color-brand-200: #C7D2FE;
-  --cpms-color-brand-300: #A5B4FC;
-  --cpms-color-brand-400: #818CF8;
-  --cpms-color-brand-500: #6366F1;
-  --cpms-color-brand-600: #4F46E5;
-  --cpms-color-brand-700: #4338CA;
-  --cpms-color-brand-800: #3730A3;
-  --cpms-color-brand-900: #312E81;
-  --cpms-color-brand-950: #1E1B4B;
+  /* Current CPMS/HL source primitives. Do not use these directly in UI rules. */
+  --cpms-source-sky: #00B4ED;
+  --cpms-source-sky-pressed: #009ACE;
+  --cpms-source-sky-deep: #007AA5;
+  --cpms-source-navy: #002B68;
+  --cpms-source-navy-deep: #001A40;
+  --cpms-source-navy-mid: #003A8C;
+  --cpms-source-link: #0075DE;
+  --cpms-source-link-pressed: #005BAB;
+  --cpms-source-gold: #C09A5D;
+  --cpms-source-silver: #B2B2B2;
+  --cpms-source-black: #020A0A;
+  --cpms-source-orange: #DD5B00;
+  --cpms-source-orange-deep: #793400;
+  --cpms-source-pink: #FF64C8;
+  --cpms-source-pink-deep: #A02E6D;
+  --cpms-source-purple: #7B3FF2;
+  --cpms-source-purple-soft: #D6B6F6;
+  --cpms-source-purple-deep: #391C57;
+  --cpms-source-teal: #2A9D99;
+  --cpms-source-green: #1AAE39;
+  --cpms-source-yellow: #F5D75E;
+  --cpms-source-brown: #523410;
+  --cpms-source-tint-peach: #FFE8D4;
+  --cpms-source-tint-rose: #FDE0EC;
+  --cpms-source-tint-mint: #D9F3E1;
+  --cpms-source-tint-lavender: #E6E0F5;
+  --cpms-source-tint-sky: #DCECFA;
+  --cpms-source-tint-yellow: #FEF7D6;
+  --cpms-source-tint-yellow-bold: #F9E79F;
+  --cpms-source-tint-cream: #F8F5E8;
+  --cpms-source-tint-gray: #F0EEEC;
 
-  /* Neutral primitives */
-  --cpms-color-neutral-0: #FFFFFF;
-  --cpms-color-neutral-25: #FBFCFE;
-  --cpms-color-neutral-50: #F7F9FC;
-  --cpms-color-neutral-100: #F1F4F8;
-  --cpms-color-neutral-200: #E3E9F0;
-  --cpms-color-neutral-300: #CBD5E1;
-  --cpms-color-neutral-400: #94A3B8;
-  --cpms-color-neutral-500: #64748B;
-  --cpms-color-neutral-600: #475569;
-  --cpms-color-neutral-700: #334155;
-  --cpms-color-neutral-800: #1E293B;
-  --cpms-color-neutral-900: #111827;
-  --cpms-color-neutral-950: #0B1220;
+  /* Current neutral source primitives. */
+  --cpms-source-canvas: #FFFFFF;
+  --cpms-source-surface: #F6F5F4;
+  --cpms-source-surface-soft: #FAFAF9;
+  --cpms-source-hairline: #E5E3DF;
+  --cpms-source-hairline-soft: #EDE9E4;
+  --cpms-source-hairline-strong: #C8C4BE;
+  --cpms-source-ink-deep: #020A0A;
+  --cpms-source-ink: #1A1A1A;
+  --cpms-source-charcoal: #37352F;
+  --cpms-source-slate: #5D5B54;
+  --cpms-source-steel: #787671;
+  --cpms-source-stone: #A4A097;
+  --cpms-source-muted: #BBB8B1;
+  --cpms-source-on-dark: #FFFFFF;
+  --cpms-source-on-dark-muted: #A4A097;
 
-  /* Semantic primitives */
-  --cpms-color-green-50: #ECF8F1;
-  --cpms-color-green-600: #157347;
-  --cpms-color-green-700: #0F5F39;
-  --cpms-color-amber-50: #FFF8E1;
-  --cpms-color-amber-700: #8A5B00;
-  --cpms-color-red-50: #FFF0EE;
-  --cpms-color-red-600: #B42318;
-  --cpms-color-red-700: #912018;
-  --cpms-color-blue-50: #EEF6FF;
-  --cpms-color-blue-700: #175CD3;
+  /* Semantic surfaces and content. */
+  --cpms-bg: var(--cpms-source-surface-soft);
+  --cpms-surface: var(--cpms-source-canvas);
+  --cpms-surface-subtle: var(--cpms-source-surface-soft);
+  --cpms-surface-muted: var(--cpms-source-surface);
+  --cpms-surface-raised: var(--cpms-source-canvas);
+  --cpms-surface-sunken: #F1F0EE;
+  --cpms-surface-scrim: rgba(2, 10, 10, 0.48);
+  --cpms-border: var(--cpms-source-hairline);
+  --cpms-border-subtle: var(--cpms-source-hairline-soft);
+  --cpms-border-strong: var(--cpms-source-hairline-strong);
+  --cpms-divider: var(--cpms-source-hairline);
+  --cpms-text: var(--cpms-source-ink);
+  --cpms-text-strong: var(--cpms-source-ink-deep);
+  --cpms-text-secondary: var(--cpms-source-slate);
+  --cpms-text-tertiary: #68665F;
+  --cpms-text-disabled: #8A877F;
+  --cpms-text-inverse: var(--cpms-source-on-dark);
+  --cpms-link: var(--cpms-source-link-pressed);
+  --cpms-link-hover: var(--cpms-source-navy-mid);
 
-  /* Semantic surface and content aliases */
-  --cpms-bg: var(--cpms-color-neutral-50);
-  --cpms-surface: var(--cpms-color-neutral-0);
-  --cpms-surface-subtle: var(--cpms-color-neutral-25);
-  --cpms-surface-muted: var(--cpms-color-neutral-100);
-  --cpms-surface-pressed: var(--cpms-color-neutral-200);
+  /* Brand and interaction. Sky is accent; Deep/Navy carries filled actions. */
+  --cpms-brand-accent: var(--cpms-source-sky);
+  --cpms-brand-accent-hover: var(--cpms-source-sky-pressed);
+  --cpms-brand-accent-strong: var(--cpms-source-navy-mid);
+  --cpms-brand-accent-subtle: rgba(0, 180, 237, 0.13);
+  --cpms-brand-accent-border: rgba(0, 122, 165, 0.38);
+  --cpms-brand-on-accent: var(--cpms-source-ink-deep);
+  --cpms-action-primary: var(--cpms-source-navy);
+  --cpms-action-primary-hover: var(--cpms-source-navy-mid);
+  --cpms-action-primary-pressed: var(--cpms-source-navy-deep);
+  --cpms-action-on-primary: var(--cpms-source-on-dark);
+  --cpms-action-secondary: var(--cpms-source-canvas);
+  --cpms-action-secondary-hover: var(--cpms-source-surface);
+  --cpms-action-secondary-pressed: #EEECEA;
+  --cpms-action-on-secondary: var(--cpms-source-charcoal);
+  --cpms-selected-surface: var(--cpms-brand-accent-subtle);
+  --cpms-selected-text: var(--cpms-brand-accent-strong);
+  --cpms-hover-surface: rgba(2, 10, 10, 0.055);
+  --cpms-pressed-surface: rgba(2, 10, 10, 0.10);
 
-  --cpms-border: #D8E0EA;
-  --cpms-border-subtle: #E8EDF3;
-  --cpms-border-strong: #AAB7C7;
+  /* Feedback. Source hues stay recognizable; text roles use deeper values. */
+  --cpms-success: #0B6B2B;
+  --cpms-success-visual: var(--cpms-source-green);
+  --cpms-success-subtle: var(--cpms-source-tint-mint);
+  --cpms-warning: #8A4600;
+  --cpms-warning-visual: var(--cpms-source-orange);
+  --cpms-warning-subtle: var(--cpms-source-tint-peach);
+  --cpms-danger: #B42318;
+  --cpms-danger-hover: #8F1C13;
+  --cpms-danger-subtle: #FFF0EE;
+  --cpms-info: #00649C;
+  --cpms-info-visual: var(--cpms-source-sky-deep);
+  --cpms-info-subtle: var(--cpms-source-tint-sky);
+  --cpms-neutral-status: var(--cpms-source-slate);
+  --cpms-neutral-status-subtle: var(--cpms-source-tint-gray);
 
-  --cpms-text: var(--cpms-color-neutral-900);
-  --cpms-text-secondary: var(--cpms-color-neutral-600);
-  /* Explicitly darker than neutral-500 so tertiary copy remains >= 4.5:1
-     on both white and the muted documentation surface. */
-  --cpms-text-tertiary: #5B6B80;
-  --cpms-text-disabled: var(--cpms-color-neutral-400);
-  --cpms-text-inverse: var(--cpms-color-neutral-0);
+  /* Focus and selection. The separator keeps the ring visible on brand fills. */
+  --cpms-focus-color: var(--cpms-source-sky-deep);
+  --cpms-focus-separator: var(--cpms-source-canvas);
+  --cpms-focus-ring: 0 0 0 2px var(--cpms-focus-separator), 0 0 0 4px var(--cpms-focus-color);
+  --cpms-focus-ring-inset: inset 0 0 0 2px var(--cpms-focus-separator), inset 0 0 0 4px var(--cpms-focus-color);
+  --cpms-selection-bg: var(--cpms-brand-accent-subtle);
+  --cpms-selection-indicator: var(--cpms-brand-accent);
 
-  /* Brand and interaction aliases */
-  --cpms-brand-primary: var(--cpms-color-brand-600);
-  --cpms-brand-primary-hover: var(--cpms-color-brand-700);
-  --cpms-brand-primary-pressed: var(--cpms-color-brand-800);
-  --cpms-brand-on: var(--cpms-color-neutral-0);
-  --cpms-brand-text: var(--cpms-color-brand-700);
-  --cpms-brand-subtle: var(--cpms-color-brand-50);
-  --cpms-brand-subtle-hover: var(--cpms-color-brand-100);
-  --cpms-brand-border: var(--cpms-color-brand-200);
-
-  --cpms-hover-surface: rgba(17, 24, 39, 0.045);
-  --cpms-pressed-surface: rgba(17, 24, 39, 0.085);
-  --cpms-selected-surface: var(--cpms-color-brand-50);
-
-  /* Icon states */
-  --cpms-icon-rest: var(--cpms-color-neutral-600);
-  --cpms-icon-hover: var(--cpms-color-neutral-900);
-  --cpms-icon-pressed: var(--cpms-color-neutral-900);
-  --cpms-icon-selected: var(--cpms-color-brand-700);
-  --cpms-icon-disabled: var(--cpms-color-neutral-400);
-
-  /* Feedback */
-  --cpms-success: var(--cpms-color-green-600);
-  --cpms-success-hover: var(--cpms-color-green-700);
-  --cpms-success-subtle: var(--cpms-color-green-50);
-  --cpms-warning: var(--cpms-color-amber-700);
-  --cpms-warning-subtle: var(--cpms-color-amber-50);
-  --cpms-danger: var(--cpms-color-red-600);
-  --cpms-danger-hover: var(--cpms-color-red-700);
-  --cpms-danger-subtle: var(--cpms-color-red-50);
-  --cpms-info: var(--cpms-color-blue-700);
-  --cpms-info-subtle: var(--cpms-color-blue-50);
-
-  /* Controls */
+  /* Component contracts. */
+  --cpms-control-height-xs: 28px;
   --cpms-control-height-sm: 32px;
   --cpms-control-height-md: 40px;
   --cpms-control-height-lg: 48px;
   --cpms-control-bg: var(--cpms-surface);
   --cpms-control-border: var(--cpms-border-strong);
-  --cpms-control-border-hover: var(--cpms-color-neutral-600);
+  --cpms-control-border-hover: var(--cpms-source-slate);
+  --cpms-control-border-focus: var(--cpms-focus-color);
   --cpms-control-disabled-bg: var(--cpms-surface-muted);
   --cpms-control-disabled-fg: var(--cpms-text-disabled);
+  --cpms-button-font-size: var(--cpms-font-base);
+  --cpms-button-font-weight: var(--cpms-weight-medium);
+  --cpms-button-radius: var(--cpms-radius-sm);
+  --cpms-input-radius: var(--cpms-radius-sm);
+  --cpms-input-padding-inline: var(--cpms-space-3);
+  --cpms-card-bg: var(--cpms-surface);
+  --cpms-card-border: var(--cpms-border);
+  --cpms-card-radius: var(--cpms-radius-lg);
+  --cpms-card-shadow: var(--cpms-shadow-sm);
+  --cpms-table-header-bg: var(--cpms-surface-muted);
+  --cpms-table-row-bg: var(--cpms-surface);
+  --cpms-table-row-hover: var(--cpms-hover-surface);
+  --cpms-table-row-selected: var(--cpms-selected-surface);
+  --cpms-table-row-height-compact: 36px;
+  --cpms-table-row-height-default: 44px;
+  --cpms-table-gridline: var(--cpms-border-subtle);
+  --cpms-nav-width-min: 200px;
+  --cpms-nav-width-default: 240px;
+  --cpms-nav-width-max: 320px;
+  --cpms-nav-rail-width: 56px;
+  --cpms-nav-item-height: 40px;
+  --cpms-nav-selected-bg: var(--cpms-selected-surface);
+  --cpms-nav-selected-fg: var(--cpms-selected-text);
+  --cpms-overlay-width-sm: 360px;
+  --cpms-overlay-width-md: 520px;
+  --cpms-overlay-width-lg: 720px;
 
-  /* Focus. White separation keeps the indicator visible when a control
-     already carries the same brand colour as its fill. */
-  --cpms-focus-color: var(--cpms-color-brand-700);
-  --cpms-focus-separator: var(--cpms-color-neutral-0);
-  --cpms-focus-ring:
-    0 0 0 2px var(--cpms-focus-separator),
-    0 0 0 4px var(--cpms-focus-color);
-  --cpms-focus-ring-inset:
-    inset 0 0 0 2px var(--cpms-focus-separator),
-    inset 0 0 0 4px var(--cpms-focus-color);
+  /* Domain contracts for high-risk CPMS workflows. */
+  --cpms-lock-active: var(--cpms-info);
+  --cpms-lock-warning: var(--cpms-warning);
+  --cpms-lock-conflict: var(--cpms-danger);
+  --cpms-save-saved: var(--cpms-success);
+  --cpms-save-saving: var(--cpms-info);
+  --cpms-save-offline: var(--cpms-warning);
+  --cpms-progress-track: var(--cpms-source-hairline-soft);
+  --cpms-progress-value: var(--cpms-brand-accent);
+  --cpms-gantt-gridline: var(--cpms-border-subtle);
+  --cpms-gantt-today: var(--cpms-brand-accent);
+  --cpms-gantt-critical: var(--cpms-danger);
+  --cpms-gantt-complete: var(--cpms-success-visual);
+  --cpms-map-pin-active: var(--cpms-source-navy);
+  --cpms-map-pin-inactive: var(--cpms-source-steel);
+  --cpms-checklist-complete: var(--cpms-success);
+  --cpms-checklist-blocked: var(--cpms-danger);
+  --cpms-attendance-present: var(--cpms-success);
+  --cpms-attendance-late: var(--cpms-warning);
+  --cpms-attendance-absent: var(--cpms-danger);
 
-  /* Elevation */
-  --cpms-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
-  --cpms-shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.10), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
-  --cpms-shadow-lg: 0 14px 28px -12px rgba(15, 23, 42, 0.22), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
-
-  /* Documentation shell */
-  --cpms-doc-header-height: 64px;
-  --cpms-doc-nav-width: 248px;
-  --cpms-doc-content-width: 1120px;
-  --cpms-doc-inspector-width: 288px;
-  --cpms-doc-divider: var(--cpms-border-subtle);
-
-  /* Motion */
+  /* Motion is restrained because dense work surfaces update frequently. */
   --cpms-duration-fast: 120ms;
   --cpms-duration-base: 180ms;
+  --cpms-duration-slow: 310ms;
   --cpms-ease-standard: cubic-bezier(0.2, 0, 0, 1);
 
-  /* Product-neutral aliases consumed by the shared document shell. The shell
-     cannot read the JS registry, so each product publishes its canvas, ink and
-     type under one agreed name and a single rule paints every product root. */
+  /* Documentation layout. */
+  --cpms-doc-content-width: 1180px;
+  --cpms-doc-reading-width: 760px;
+  --cpms-doc-aside-width: 300px;
+  --cpms-doc-section-gap: var(--cpms-space-8);
+  --cpms-doc-specimen-bg: var(--cpms-surface-sunken);
+  --cpms-doc-divider: var(--cpms-border-subtle);
+
+  /* Shared guide chrome and product-frame contract. */
+  --guide-bg: var(--cpms-bg);
+  --guide-surface: var(--cpms-surface);
+  --guide-surface-2: var(--cpms-surface-muted);
+  --guide-surface-3: var(--cpms-surface-sunken);
+  --guide-border: var(--cpms-border);
+  --guide-border-strong: var(--cpms-border-strong);
+  --guide-text: var(--cpms-text);
+  --guide-text-secondary: var(--cpms-text-secondary);
+  --guide-text-tertiary: var(--cpms-text-tertiary);
+  --guide-accent: var(--cpms-brand-accent-strong);
+  --guide-accent-text: var(--cpms-brand-accent-strong);
+  --guide-accent-subtle: var(--cpms-brand-accent-subtle);
+  --guide-accent-border: var(--cpms-brand-accent-border);
   --product-bg: var(--cpms-bg);
   --product-text: var(--cpms-text);
   --product-font: var(--cpms-font-sans);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  [data-system="cpms"][data-color-mode="light"] {
+    --cpms-duration-fast: 0ms;
+    --cpms-duration-base: 0ms;
+    --cpms-duration-slow: 0ms;
+  }
+}
+
 @media (forced-colors: active) {
   [data-system="cpms"][data-color-mode="light"] {
-    --cpms-focus-color: Highlight;
-    --cpms-focus-separator: Canvas;
+    --cpms-bg: Canvas;
+    --cpms-surface: Canvas;
+    --cpms-surface-muted: Canvas;
+    --cpms-text: CanvasText;
+    --cpms-text-secondary: CanvasText;
     --cpms-border: CanvasText;
     --cpms-border-strong: CanvasText;
+    --cpms-focus-color: Highlight;
+    --cpms-focus-separator: Canvas;
+    --cpms-action-primary: ButtonText;
+    --cpms-action-on-primary: ButtonFace;
+    --cpms-selected-surface: Highlight;
+    --cpms-selected-text: HighlightText;
   }
 }

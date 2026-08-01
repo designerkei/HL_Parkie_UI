@@ -18,15 +18,21 @@ const SKELETON_PAGES = [
   'brand',
 ];
 
-/* Goalie and CPMS declare the same slots; the ids collide across products by
-   design, since the route namespace is `#/system/page`. */
-const SKELETON_SYSTEMS = ['goalie', 'cpms'];
+/* Goalie remains the receiving skeleton. CPMS is an authored product with an
+   independent information architecture and must never be folded back into the
+   skeleton page list. */
+const SKELETON_SYSTEMS = ['goalie'];
+const CPMS_PAGES = [
+  'overview', 'systemsummary', 'principles', 'colors', 'typography', 'layout',
+  'shell', 'controls', 'data-display', 'states', 'permissions', 'accessibility',
+  'governance',
+];
 
 /* Derive-and-pin. Per-route assertions read the registry from the page, so they
    adapt when a product is registered. This list is the deliberate pin: adding a
    product must be an explicit decision here too, which is what catches a product
    silently appearing or vanishing. */
-const ALL_SYSTEMS = ['parkie', ...SKELETON_SYSTEMS];
+const ALL_SYSTEMS = ['parkie', ...SKELETON_SYSTEMS, 'cpms'];
 
 /* Read from the page rather than duplicated here, so registering a product does
    not require editing the tests. `product registry is the single source of
@@ -250,24 +256,28 @@ test('legacy Parkie hashes canonicalize without adding a second history entry', 
    restore is the failure mode, and it only shows up per product because each
    carries a different theme. */
 test('system and page history restore route, theme, navigation and active product', async ({ page }) => {
-  for (const target of SKELETON_SYSTEMS) {
+  const targets = [
+    { system: 'goalie', pageId: 'button' },
+    { system: 'cpms', pageId: 'controls' },
+  ];
+  for (const target of targets) {
     await page.goto(canonicalUrl('parkie', 'colors'));
     await expectSystemRoute(page, 'parkie', 'colors');
 
-    await openSystem(page, target);
-    await expectSystemRoute(page, target, 'overview');
+    await openSystem(page, target.system);
+    await expectSystemRoute(page, target.system, 'overview');
 
-    await sidebar(page).locator('[data-nav-id="button"]').click();
-    await expectSystemRoute(page, target, 'button');
+    await sidebar(page).locator(`[data-nav-id="${target.pageId}"]`).click();
+    await expectSystemRoute(page, target.system, target.pageId);
 
     await page.goBack();
-    await expectSystemRoute(page, target, 'overview');
+    await expectSystemRoute(page, target.system, 'overview');
     await page.goBack();
     await expectSystemRoute(page, 'parkie', 'colors');
     await page.goForward();
-    await expectSystemRoute(page, target, 'overview');
+    await expectSystemRoute(page, target.system, 'overview');
     await page.goForward();
-    await expectSystemRoute(page, target, 'button');
+    await expectSystemRoute(page, target.system, target.pageId);
   }
 });
 
@@ -423,6 +433,7 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
       system,
       pageId,
     }))),
+    ...CPMS_PAGES.map((pageId) => ({ width: 320, height: 760, system: 'cpms', pageId })),
   ];
 
   for (const current of cases) {
@@ -464,13 +475,14 @@ test('the guide remains bounded and operable at 390px and 320px', async ({ page 
   }
 });
 
-test('representative Parkie and every skeleton route have complete accessible structure', async ({ page }) => {
+test('representative Parkie and every non-Parkie route have complete accessible structure', async ({ page }) => {
   test.setTimeout(600_000);
   const routes = [
     ['parkie', 'overview'],
     ['parkie', 'colors'],
     ['parkie', 'button'],
     ...SKELETON_SYSTEMS.flatMap((system) => SKELETON_PAGES.map((pageId) => [system, pageId])),
+    ...CPMS_PAGES.map((pageId) => ['cpms', pageId]),
   ];
 
   for (const [system, pageId] of routes) {
@@ -578,8 +590,8 @@ test('the page eyebrow locates the page in the IA rather than repeating the prod
     ['goalie', 'overview', '시작하기'],
     ['goalie', 'brand', '리소스'],
     ['cpms', 'overview', '시작하기'],
-    ['cpms', 'templates', '패턴'],
-    ['cpms', 'brand', '리소스'],
+    ['cpms', 'layout', '파운데이션'],
+    ['cpms', 'permissions', '운영 계약'],
   ];
 
   for (const [system, pageId, group] of cases) {

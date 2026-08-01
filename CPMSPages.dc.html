@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPMS UI · Design System Pages</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+  <style>html, body { margin: 0; } x-dc { display: none !important; }</style>
+  <script src="./support.js"></script>
+</head>
+<body>
+<!-- =====================================================================
+     CPMS authored design-system pages
+
+     Current product truth and recommended migration rules are deliberately
+     separated. The specimens use synthetic content and CPMS semantic tokens;
+     this file never imports product code, production data or authentication.
+     ===================================================================== -->
+<x-dc>
+  <div class="cpms-doc" ref="{{ rootRef }}" lang="{{ lang }}" data-cpms-pages data-cpms-page="{{ activePage }}">
+    <div class="cpms-doc__truthbar" aria-label="{{ truthbarLabel }}">
+      <span class="cpms-badge cpms-badge--production">{{ productionLabel }}</span>
+      <span class="cpms-badge cpms-badge--target">{{ targetLabel }}</span>
+      <span class="cpms-doc__pin">{{ snapshotLabel }}</span>
+    </div>
+
+    <!-- OVERVIEW ====================================================== -->
+    <sc-if value="{{ isOverview }}" hint-placeholder-val="true">
+      <section class="cpms-hero" aria-labelledby="cpms-overview-heading">
+        <div class="cpms-hero__copy">
+          <span class="cpms-kicker">{{ overviewKicker }}</span>
+          <h2 id="cpms-overview-heading">{{ overviewTitle }}</h2>
+          <p>{{ overviewBody }}</p>
+          <div class="cpms-hero__facts">
+            <sc-for list="{{ overviewFacts }}" as="fact" hint-placeholder-count="3">
+              <div><strong>{{ fact.value }}</strong><span>{{ fact.label }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+        <div class="cpms-hero__map" role="img" aria-label="{{ overviewMapLabel }}">
+          <div class="cpms-layer cpms-layer--astryx"><span>{{ currentTag }}</span><strong>Astryx Neutral</strong><small>{{ layerBoundary }}</small></div>
+          <div class="cpms-layer cpms-layer--custom"><span>{{ currentTag }}</span><strong>CPMS Custom</strong><small>{{ layerWork }}</small></div>
+          <div class="cpms-layer cpms-layer--legacy"><span>{{ legacyTag }}</span><strong>OP / FM</strong><small>{{ layerLegacy }}</small></div>
+        </div>
+      </section>
+
+      <section class="cpms-section" aria-labelledby="cpms-scope-heading">
+        <header class="cpms-section__head">
+          <div><span>01 · SYSTEM MODEL</span><h2 id="cpms-scope-heading">{{ systemModelTitle }}</h2></div>
+          <p>{{ systemModelBody }}</p>
+        </header>
+        <div class="cpms-card-grid cpms-card-grid--3">
+          <sc-for list="{{ systemLayers }}" as="layer" hint-placeholder-count="3">
+            <article class="cpms-info-card">
+              <span class="{{ layer.badgeClass }}">{{ layer.status }}</span>
+              <h3>{{ layer.title }}</h3>
+              <p>{{ layer.body }}</p>
+              <ul><sc-for list="{{ layer.items }}" as="item" hint-placeholder-count="3"><li>{{ item }}</li></sc-for></ul>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="cpms-section" aria-labelledby="cpms-route-heading">
+        <header class="cpms-section__head">
+          <div><span>02 · RELEASE 01</span><h2 id="cpms-route-heading">{{ releaseTitle }}</h2></div>
+          <p>{{ releaseBody }}</p>
+        </header>
+        <div class="cpms-route-grid">
+          <sc-for list="{{ routeCards }}" as="route" hint-placeholder-count="6">
+            <a class="cpms-route-card" href="{{ route.href }}" onClick="{{ route.onClick }}">
+              <span>{{ route.group }}</span><strong>{{ route.title }}</strong><p>{{ route.body }}</p>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- EVIDENCE & COVERAGE ========================================= -->
+    <sc-if value="{{ isSystemSummary }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-evidence-heading">
+        <header class="cpms-section__head">
+          <div><span>01 · SOURCE OF TRUTH</span><h2 id="cpms-evidence-heading">{{ evidenceTitle }}</h2></div>
+          <p>{{ evidenceBody }}</p>
+        </header>
+        <ol class="cpms-source-list">
+          <sc-for list="{{ evidenceSources }}" as="source" hint-placeholder-count="4">
+            <li>
+              <span class="cpms-source-list__rank">{{ source.rank }}</span>
+              <div><div class="cpms-source-list__title"><strong>{{ source.title }}</strong><span class="{{ source.badgeClass }}">{{ source.status }}</span></div><p>{{ source.body }}</p><code>{{ source.ref }}</code></div>
+            </li>
+          </sc-for>
+        </ol>
+      </section>
+
+      <section class="cpms-section" aria-labelledby="cpms-coverage-heading">
+        <header class="cpms-section__head">
+          <div><span>02 · COVERAGE</span><h2 id="cpms-coverage-heading">{{ coverageTitle }}</h2></div>
+          <p>{{ coverageBody }}</p>
+        </header>
+        <div class="cpms-table-wrap">
+          <table class="cpms-table">
+            <caption>{{ coverageCaption }}</caption>
+            <thead><tr><th scope="col">{{ areaHeader }}</th><th scope="col">{{ layerHeader }}</th><th scope="col">{{ evidenceHeader }}</th><th scope="col">{{ actionHeader }}</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ coverageRows }}" as="row" hint-placeholder-count="8">
+                <tr><th scope="row">{{ row.area }}</th><td><span class="{{ row.badgeClass }}">{{ row.layer }}</span></td><td>{{ row.evidence }}</td><td>{{ row.action }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="cpms-callout cpms-callout--warning" aria-labelledby="cpms-exclusion-title">
+        <strong id="cpms-exclusion-title">{{ exclusionTitle }}</strong><p>{{ exclusionBody }}</p>
+      </aside>
+    </sc-if>
+
+    <!-- PRINCIPLES =================================================== -->
+    <sc-if value="{{ isPrinciples }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-principles-heading">
+        <header class="cpms-section__head">
+          <div><span>01 · DECISION RULES</span><h2 id="cpms-principles-heading">{{ principlesTitle }}</h2></div>
+          <p>{{ principlesBody }}</p>
+        </header>
+        <div class="cpms-principle-list">
+          <sc-for list="{{ principles }}" as="principle" hint-placeholder-count="5">
+            <article><span>{{ principle.index }}</span><div><h3>{{ principle.title }}</h3><p>{{ principle.body }}</p><strong>{{ principle.test }}</strong></div></article>
+          </sc-for>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-priority-heading">
+        <header class="cpms-section__head">
+          <div><span>02 · PRIORITY</span><h2 id="cpms-priority-heading">{{ priorityTitle }}</h2></div>
+          <p>{{ priorityBody }}</p>
+        </header>
+        <div class="cpms-priority-flow" role="img" aria-label="{{ priorityFlowLabel }}">
+          <sc-for list="{{ priorityFlow }}" as="item" hint-placeholder-count="4"><div><span>{{ item.index }}</span><strong>{{ item.title }}</strong><small>{{ item.body }}</small></div></sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- COLORS ======================================================= -->
+    <sc-if value="{{ isColors }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-brand-colors-heading">
+        <header class="cpms-section__head">
+          <div><span>01 · CURRENT SOURCE</span><h2 id="cpms-brand-colors-heading">{{ brandColorsTitle }}</h2></div>
+          <p>{{ brandColorsBody }}</p>
+        </header>
+        <div class="cpms-swatch-grid">
+          <sc-for list="{{ brandSwatches }}" as="swatch" hint-placeholder-count="7">
+            <article class="cpms-swatch"><div class="cpms-swatch__color" style="{{ swatch.style }}"></div><div><strong>{{ swatch.name }}</strong><code>{{ swatch.value }}</code><small>{{ swatch.role }}</small></div></article>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="cpms-section" aria-labelledby="cpms-semantic-colors-heading">
+        <header class="cpms-section__head">
+          <div><span>02 · SEMANTIC CONTRACT</span><h2 id="cpms-semantic-colors-heading">{{ semanticColorsTitle }}</h2></div>
+          <p>{{ semanticColorsBody }}</p>
+        </header>
+        <div class="cpms-semantic-grid">
+          <sc-for list="{{ semanticColors }}" as="color" hint-placeholder-count="6">
+            <article><span class="cpms-semantic-dot" style="{{ color.style }}"></span><div><strong>{{ color.name }}</strong><code>{{ color.token }}</code><p>{{ color.rule }}</p></div></article>
+          </sc-for>
+        </div>
+      </section>
+
+      <div class="cpms-compare-grid">
+        <article class="cpms-compare cpms-compare--avoid"><span>{{ avoidLabel }}</span><h3>{{ skyActionTitle }}</h3><div class="cpms-action-sample cpms-action-sample--sky" role="img" aria-label="{{ skySampleLabel }}"><i aria-hidden="true"></i></div><p>{{ skyActionBody }}</p></article>
+        <article class="cpms-compare cpms-compare--use"><span>{{ useLabel }}</span><h3>{{ navyActionTitle }}</h3><div class="cpms-action-sample cpms-action-sample--navy">{{ saveLabel }}</div><p>{{ navyActionBody }}</p></article>
+      </div>
+    </sc-if>
+
+    <!-- TYPOGRAPHY =================================================== -->
+    <sc-if value="{{ isTypography }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-type-heading">
+        <header class="cpms-section__head">
+          <div><span>01 · PRODUCT SCALE</span><h2 id="cpms-type-heading">{{ typeTitle }}</h2></div>
+          <p>{{ typeBody }}</p>
+        </header>
+        <div class="cpms-type-list">
+          <sc-for list="{{ typeRows }}" as="type" hint-placeholder-count="7">
+            <article><code>{{ type.token }}</code><div class="cpms-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span>{{ type.meta }}</span><p>{{ type.use }}</p></article>
+          </sc-for>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-reading-heading">
+        <header class="cpms-section__head"><div><span>02 · READING</span><h2 id="cpms-reading-heading">{{ readingTitle }}</h2></div><p>{{ readingBody }}</p></header>
+        <div class="cpms-rule-grid">
+          <sc-for list="{{ readingRules }}" as="rule" hint-placeholder-count="4"><article><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.example }}</code></article></sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- LAYOUT ======================================================= -->
+    <sc-if value="{{ isLayout }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-spacing-heading">
+        <header class="cpms-section__head"><div><span>01 · 4PX BASE</span><h2 id="cpms-spacing-heading">{{ spacingTitle }}</h2></div><p>{{ spacingBody }}</p></header>
+        <div class="cpms-spacing-list">
+          <sc-for list="{{ spacingRows }}" as="space" hint-placeholder-count="8"><div><code>{{ space.token }}</code><span class="cpms-spacing-list__bar" style="{{ space.style }}"></span><strong>{{ space.value }}</strong><small>{{ space.use }}</small></div></sc-for>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-density-heading">
+        <header class="cpms-section__head"><div><span>02 · DENSITY</span><h2 id="cpms-density-heading">{{ densityTitle }}</h2></div><p>{{ densityBody }}</p></header>
+        <div class="cpms-density-grid">
+          <sc-for list="{{ densityModes }}" as="mode" hint-placeholder-count="3"><article><span>{{ mode.label }}</span><h3>{{ mode.title }}</h3><div class="{{ mode.sampleClass }}"><i></i><i></i><i></i></div><p>{{ mode.body }}</p></article></sc-for>
+        </div>
+      </section>
+      <aside class="cpms-callout" aria-labelledby="cpms-layout-rule-title"><strong id="cpms-layout-rule-title">{{ layoutRuleTitle }}</strong><p>{{ layoutRuleBody }}</p></aside>
+    </sc-if>
+
+    <!-- SHELL ======================================================== -->
+    <sc-if value="{{ isShell }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-shell-heading">
+        <header class="cpms-section__head"><div><span>01 · CURRENT SHELL</span><h2 id="cpms-shell-heading">{{ shellTitle }}</h2></div><p>{{ shellBody }}</p></header>
+        <div class="cpms-shell-specimen" role="img" aria-label="{{ shellSpecimenLabel }}">
+          <aside class="cpms-shell-specimen__nav">
+            <div class="cpms-shell-specimen__brand"><span></span><strong>CPMS</strong></div>
+            <sc-for list="{{ shellNavItems }}" as="item" hint-placeholder-count="6"><div class="{{ item.className }}"><span class="cpms-shell-specimen__icon">{{ item.icon }}</span>{{ item.label }}</div></sc-for>
+            <div class="cpms-shell-specimen__bottom">KO / EN · ⚙</div>
+          </aside>
+          <div class="cpms-shell-specimen__workspace"><div class="cpms-shell-specimen__context"><span>{{ shellWorkspace }}</span><strong>{{ shellProject }}</strong></div><div class="cpms-shell-specimen__canvas"><span>{{ shellCanvas }}</span></div></div>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-nav-contract-heading">
+        <header class="cpms-section__head"><div><span>02 · NAVIGATION CONTRACT</span><h2 id="cpms-nav-contract-heading">{{ navContractTitle }}</h2></div><p>{{ navContractBody }}</p></header>
+        <div class="cpms-rule-grid"><sc-for list="{{ shellRules }}" as="rule" hint-placeholder-count="6"><article><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.evidence }}</code></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- CONTROLS ===================================================== -->
+    <sc-if value="{{ isControls }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-actions-heading">
+        <header class="cpms-section__head"><div><span>01 · ACTION HIERARCHY</span><h2 id="cpms-actions-heading">{{ actionsTitle }}</h2></div><p>{{ actionsBody }}</p></header>
+        <div class="cpms-specimen-panel">
+          <div class="cpms-button-row">
+            <button type="button" class="cpms-button cpms-button--primary">{{ saveLabel }}</button>
+            <button type="button" class="cpms-button cpms-button--secondary">{{ secondaryActionLabel }}</button>
+            <button type="button" class="cpms-button cpms-button--quiet">{{ quietActionLabel }}</button>
+            <button type="button" class="cpms-button cpms-button--danger">{{ dangerActionLabel }}</button>
+            <button type="button" class="cpms-button cpms-button--primary" disabled>{{ disabledLabel }}</button>
+          </div>
+        </div>
+        <div class="cpms-contract-list"><sc-for list="{{ actionRules }}" as="rule" hint-placeholder-count="4"><div><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.token }}</code></div></sc-for></div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-input-heading">
+        <header class="cpms-section__head"><div><span>02 · FIELD CONTRACT</span><h2 id="cpms-input-heading">{{ inputTitle }}</h2></div><p>{{ inputBody }}</p></header>
+        <div class="cpms-field-grid">
+          <div class="cpms-field"><label for="cpms-project-name">{{ projectNameLabel }}</label><input id="cpms-project-name" value="RBT-2026-014" aria-describedby="cpms-project-help"><small id="cpms-project-help">{{ projectNameHelp }}</small></div>
+          <div class="cpms-field cpms-field--error"><label for="cpms-end-date">{{ endDateLabel }}</label><input id="cpms-end-date" value="2026-07-01" aria-invalid="true" aria-describedby="cpms-end-date-error"><small id="cpms-end-date-error">{{ endDateError }}</small></div>
+          <div class="cpms-field"><label for="cpms-owner">{{ ownerLabel }}</label><select id="cpms-owner"><option>{{ ownerOption }}</option></select><small>{{ ownerHelp }}</small></div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- DATA DISPLAY ================================================= -->
+    <sc-if value="{{ isDataDisplay }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-data-heading">
+        <header class="cpms-section__head"><div><span>01 · TABLE OR GRID</span><h2 id="cpms-data-heading">{{ dataTitle }}</h2></div><p>{{ dataBody }}</p></header>
+        <div class="cpms-table-wrap">
+          <table class="cpms-table cpms-table--specimen">
+            <caption>{{ projectTableCaption }}</caption>
+            <thead><tr><th scope="col">{{ projectHeader }}</th><th scope="col">{{ ownerHeader }}</th><th scope="col">{{ statusHeader }}</th><th scope="col">{{ progressHeader }}</th><th scope="col">{{ updatedHeader }}</th></tr></thead>
+            <tbody><sc-for list="{{ projectRows }}" as="row" hint-placeholder-count="4"><tr><th scope="row">{{ row.project }}</th><td>{{ row.owner }}</td><td><span class="{{ row.statusClass }}">{{ row.status }}</span></td><td><div class="cpms-progress"><progress max="100" value="{{ row.progress }}">{{ row.progress }}%</progress><span>{{ row.progress }}%</span></div></td><td>{{ row.updated }}</td></tr></sc-for></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-data-decision-heading">
+        <header class="cpms-section__head"><div><span>02 · DECISION</span><h2 id="cpms-data-decision-heading">{{ dataDecisionTitle }}</h2></div><p>{{ dataDecisionBody }}</p></header>
+        <div class="cpms-decision-grid"><sc-for list="{{ dataDecisions }}" as="decision" hint-placeholder-count="3"><article><span>{{ decision.when }}</span><h3>{{ decision.title }}</h3><p>{{ decision.body }}</p><ul><sc-for list="{{ decision.items }}" as="item" hint-placeholder-count="3"><li>{{ item }}</li></sc-for></ul></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- STATES ======================================================= -->
+    <sc-if value="{{ isStates }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-states-heading">
+        <header class="cpms-section__head"><div><span>01 · INDEPENDENT AXES</span><h2 id="cpms-states-heading">{{ statesTitle }}</h2></div><p>{{ statesBody }}</p></header>
+        <div class="cpms-axis-grid"><sc-for list="{{ stateAxes }}" as="axis" hint-placeholder-count="4"><article><span>{{ axis.label }}</span><strong>{{ axis.value }}</strong><p>{{ axis.body }}</p></article></sc-for></div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-feedback-heading">
+        <header class="cpms-section__head"><div><span>02 · FEEDBACK</span><h2 id="cpms-feedback-heading">{{ feedbackTitle }}</h2></div><p>{{ feedbackBody }}</p></header>
+        <div class="cpms-feedback-list" aria-live="polite"><sc-for list="{{ feedbackItems }}" as="item" hint-placeholder-count="5"><article class="{{ item.className }}"><span aria-hidden="true">{{ item.icon }}</span><div><strong>{{ item.title }}</strong><p>{{ item.body }}</p></div><small>{{ item.action }}</small></article></sc-for></div>
+      </section>
+      <aside class="cpms-callout cpms-callout--warning"><strong>{{ feedbackRuleTitle }}</strong><p>{{ feedbackRuleBody }}</p></aside>
+    </sc-if>
+
+    <!-- PERMISSIONS ================================================== -->
+    <sc-if value="{{ isPermissions }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-permission-heading">
+        <header class="cpms-section__head"><div><span>01 · CAPABILITY</span><h2 id="cpms-permission-heading">{{ permissionTitle }}</h2></div><p>{{ permissionBody }}</p></header>
+        <div class="cpms-table-wrap"><table class="cpms-table"><caption>{{ permissionCaption }}</caption><thead><tr><th scope="col">{{ roleHeader }}</th><th scope="col">{{ viewHeader }}</th><th scope="col">{{ editHeader }}</th><th scope="col">{{ manageHeader }}</th><th scope="col">{{ uiHeader }}</th></tr></thead><tbody><sc-for list="{{ permissionRows }}" as="row" hint-placeholder-count="4"><tr><th scope="row">{{ row.role }}</th><td>{{ row.view }}</td><td>{{ row.edit }}</td><td>{{ row.manage }}</td><td>{{ row.ui }}</td></tr></sc-for></tbody></table></div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-edit-heading">
+        <header class="cpms-section__head"><div><span>02 · EDIT SESSION</span><h2 id="cpms-edit-heading">{{ editSessionTitle }}</h2></div><p>{{ editSessionBody }}</p></header>
+        <ol class="cpms-edit-flow"><sc-for list="{{ editFlow }}" as="step" hint-placeholder-count="5"><li><span>{{ step.index }}</span><div><strong>{{ step.title }}</strong><p>{{ step.body }}</p><code>{{ step.state }}</code></div></li></sc-for></ol>
+      </section>
+    </sc-if>
+
+    <!-- ACCESSIBILITY =============================================== -->
+    <sc-if value="{{ isAccessibility }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-a11y-heading">
+        <header class="cpms-section__head"><div><span>01 · NON-NEGOTIABLE</span><h2 id="cpms-a11y-heading">{{ a11yTitle }}</h2></div><p>{{ a11yBody }}</p></header>
+        <div class="cpms-a11y-grid"><sc-for list="{{ a11yRules }}" as="rule" hint-placeholder-count="6"><article><span>{{ rule.code }}</span><h3>{{ rule.title }}</h3><p>{{ rule.body }}</p><strong>{{ rule.gate }}</strong></article></sc-for></div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-responsive-heading">
+        <header class="cpms-section__head"><div><span>02 · RESPONSIVE CONTRACT</span><h2 id="cpms-responsive-heading">{{ responsiveTitle }}</h2></div><p>{{ responsiveBody }}</p></header>
+        <div class="cpms-responsive-table"><sc-for list="{{ responsiveRows }}" as="row" hint-placeholder-count="4"><article><code>{{ row.range }}</code><strong>{{ row.mode }}</strong><p>{{ row.rule }}</p><span>{{ row.alternative }}</span></article></sc-for></div>
+      </section>
+      <aside class="cpms-callout"><strong>{{ responsiveWarningTitle }}</strong><p>{{ responsiveWarningBody }}</p></aside>
+    </sc-if>
+
+    <!-- GOVERNANCE =================================================== -->
+    <sc-if value="{{ isGovernance }}" hint-placeholder-val="false">
+      <section class="cpms-section cpms-section--first" aria-labelledby="cpms-governance-heading">
+        <header class="cpms-section__head"><div><span>01 · STATUS MODEL</span><h2 id="cpms-governance-heading">{{ governanceTitle }}</h2></div><p>{{ governanceBody }}</p></header>
+        <div class="cpms-status-grid"><sc-for list="{{ statusModel }}" as="status" hint-placeholder-count="7"><article><span class="{{ status.badgeClass }}">{{ status.label }}</span><p>{{ status.body }}</p></article></sc-for></div>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-change-heading">
+        <header class="cpms-section__head"><div><span>02 · CHANGE FLOW</span><h2 id="cpms-change-heading">{{ changeTitle }}</h2></div><p>{{ changeBody }}</p></header>
+        <ol class="cpms-change-flow"><sc-for list="{{ changeFlow }}" as="step" hint-placeholder-count="5"><li><span>{{ step.index }}</span><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li></sc-for></ol>
+      </section>
+      <section class="cpms-section" aria-labelledby="cpms-release-heading">
+        <header class="cpms-section__head"><div><span>03 · RELEASE RECORD</span><h2 id="cpms-release-heading">{{ releaseRecordTitle }}</h2></div><p>{{ releaseRecordBody }}</p></header>
+        <div class="cpms-release-card"><div><span>v0.1</span><strong>{{ releaseRecordStatus }}</strong></div><dl><div><dt>{{ sourcePinTerm }}</dt><dd><code>aws-cpms@32ff10f</code></dd></div><div><dt>{{ demoPinTerm }}</dt><dd><code>main@f321694</code></dd></div><div><dt>{{ scopeTerm }}</dt><dd>{{ scopeValue }}</dd></div><div><dt>{{ nextTerm }}</dt><dd>{{ nextValue }}</dd></div></dl></div>
+      </section>
+    </sc-if>
+  </div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["ko","en"],"default":"ko","tsType":"\"ko\"|\"en\"","section":"General"},"activePage":{"editor":"string","default":"overview","tsType":"string","section":"General"}}'>
+class Component extends DCLogic {
+  rootRef = React.createRef();
+
+  navigate = (id, event) => {
+    if (typeof this.props.onNavigate === 'function') this.props.onNavigate(id, event);
+  };
+
+  renderVals() {
+    const lang = this.props.lang === 'en' ? 'en' : 'ko';
+    const ko = lang === 'ko';
+    const L = (k, e) => ko ? k : e;
+    const activePage = this.props.activePage || 'overview';
+    const routeHref = (id) => typeof this.props.getRouteHref === 'function'
+      ? this.props.getRouteHref(id)
+      : `#/cpms/${id}`;
+    const routeCard = (id, groupKo, groupEn, titleKo, titleEn, bodyKo, bodyEn) => ({
+      group: L(groupKo, groupEn), title: L(titleKo, titleEn), body: L(bodyKo, bodyEn),
+      href: routeHref(id), onClick: (event) => this.navigate(id, event),
+    });
+    const badge = (kind) => `cpms-badge cpms-badge--${kind}`;
+    const swatch = (name, value, token, roleKo, roleEn) => ({
+      name, value, role: L(roleKo, roleEn), style: { background: `var(${token})` },
+    });
+    const semantic = (nameKo, nameEn, token, ruleKo, ruleEn) => ({
+      name: L(nameKo, nameEn), token, rule: L(ruleKo, ruleEn), style: { background: `var(${token})` },
+    });
+    const typeRow = (token, size, weight, sampleKo, sampleEn, useKo, useEn) => ({
+      token, sample: L(sampleKo, sampleEn), meta: `${size}px / ${weight}`,
+      use: L(useKo, useEn), style: { fontSize: `${size}px`, fontWeight: weight, lineHeight: 1.35 },
+    });
+    const rule = (titleKo, titleEn, bodyKo, bodyEn, example) => ({
+      title: L(titleKo, titleEn), body: L(bodyKo, bodyEn), example,
+    });
+
+    const routeCards = [
+      routeCard('systemsummary', '시작하기', 'Get started', '근거와 적용 현황', 'Evidence & coverage', '현재 UI의 계층과 출처를 먼저 확인합니다.', 'Verify the current UI layers and sources first.'),
+      routeCard('colors', '파운데이션', 'Foundations', '색상과 대비', 'Color & contrast', 'Sky 액센트와 접근 가능한 액션을 분리합니다.', 'Separate the Sky accent from accessible actions.'),
+      routeCard('shell', '시스템', 'System', '쉘과 내비게이션', 'Shell & navigation', 'Astryx SideNav와 CPMS 문맥의 경계를 정의합니다.', 'Define the boundary between Astryx SideNav and CPMS context.'),
+      routeCard('controls', '시스템', 'System', '액션과 입력', 'Actions & inputs', '상태가 빠짐없는 구현 계약을 보여줍니다.', 'Show implementation contracts with complete states.'),
+      routeCard('permissions', '운영 계약', 'Workflow contracts', '권한과 편집 세션', 'Permissions & edit sessions', '숨김, 잠금, 충돌과 복구를 하나의 흐름으로 다룹니다.', 'Treat hiding, locks, conflicts and recovery as one flow.'),
+      routeCard('accessibility', '품질과 운영', 'Quality & governance', '접근성과 반응형', 'Accessibility & responsive', '삭제가 아닌 대체 경로를 규칙으로 고정합니다.', 'Codify alternatives instead of hiding capabilities.'),
+    ];
+
+    const systemLayers = [
+      {
+        status: L('적용 중', 'Adopted'), badgeClass: badge('astryx'), title: 'Astryx Neutral 0.1.7',
+        body: L('앱 전체 Theme 경계와 쉘의 일부를 담당합니다.', 'Owns the app-wide Theme boundary and part of the shell.'),
+        items: [L('SideNav · SideNavItem · SideNavSection', 'SideNav · SideNavItem · SideNavSection'), L('앱 스토어 Card · Button · Badge · TextInput', 'App store Card · Button · Badge · TextInput'), L('제품 타이포그래피는 Pretendard로 재지정', 'Product typography is overridden to Pretendard')],
+      },
+      {
+        status: L('운영 중', 'Production'), badgeClass: badge('custom'), title: 'CPMS Custom',
+        body: L('고밀도 업무 화면과 도메인 패턴의 현재 시스템입니다.', 'The current system for dense work surfaces and domain patterns.'),
+        items: [L('Workspace · Portfolio · Dashboard · Workload', 'Workspace · Portfolio · Dashboard · Workload'), L('Gantt · Calendar · PRD · Site layout', 'Gantt · Calendar · PRD · Site layout'), L('사용권한 · 편집 잠금 · 저장 및 복구', 'Permissions · edit locks · save and recovery')],
+      },
+      {
+        status: L('유지 지원', 'Legacy supported'), badgeClass: badge('legacy'), title: 'OP / FM Legacy',
+        body: L('Astryx 도입 전 UI를 명시적 경계 안에서 유지합니다.', 'Keeps the pre-Astryx UI inside an explicit boundary.'),
+        items: ['workspace--legacy-op-ui', 'data-astryx-theme="cpms-legacy"', L('단계적 이전 전까지 동작 보존', 'Preserve behavior until staged migration')],
+      },
+    ];
+
+    const evidenceSources = [
+      { rank: '01', title: L('현재 소스 스냅샷', 'Current source snapshot'), status: L('기준', 'Canonical'), badgeClass: badge('production'), ref: 'aws-cpms@32ff10f', body: L('운영 main과 동일한 tracked tree로 확인된 읽기 전용 아카이브입니다.', 'Read-only archive verified to have the same tracked tree as the operating main source.') },
+      { rank: '02', title: L('합성 데이터 데모', 'Synthetic-data demo'), status: L('시각 참고', 'Visual reference'), badgeClass: badge('demo'), ref: 'main@f321694', body: L('인증·운영 데이터 없이 시각과 인터랙션을 확인하는 참고입니다.', 'Reference for visuals and interactions without authentication or production data.') },
+      { rank: '03', title: L('운영 표시 확인', 'Production markers'), status: L('동등성 확인', 'Parity only'), badgeClass: badge('target'), ref: 'tree 8b65ed36', body: L('로그인·조작 없이 자산과 배포 표시의 동등성만 확인합니다.', 'Used only to verify asset and deployment markers, without signing in or operating the product.') },
+      { rank: '04', title: L('이전 디자인 자료', 'Historical design material'), status: L('역사 자료', 'Historical'), badgeClass: badge('historical'), ref: 'reverted Astryx theme', body: L('되돌려진 테마와 계약은 현재 사양이 아니며 비교 연구에만 사용합니다.', 'Reverted themes and contracts are not current specification and are used only for comparative research.') },
+    ];
+
+    const coverageRows = [
+      [L('앱 쉘·사이드바', 'App shell & sidebar'), 'Astryx adopted', 'Theme + SideNav source', L('선택·접기·모바일 계약 유지', 'Keep selection, collapse and mobile contracts')],
+      [L('앱 스토어', 'App store'), 'Astryx adopted', 'Card / Button / Badge / Input', L('컴포넌트 API 우선', 'Prefer component APIs')],
+      [L('Workspace · Portfolio', 'Workspace · Portfolio'), 'CPMS custom', 'portfolio.jsx + app.css', L('데이터 그리드 계약 정규화', 'Normalize data-grid contracts')],
+      [L('Dashboard · OSB', 'Dashboard · OSB'), 'CPMS custom', 'dashboard + operation schedule', L('시간·현장·상태 축 분리', 'Separate time, site and state axes')],
+      [L('Workload · Gantt', 'Workload · Gantt'), 'CPMS custom', 'workload.jsx + gantt.jsx', L('키보드 대체와 저장 상태 강화', 'Add keyboard alternatives and save state')],
+      [L('Checklist · Attendance', 'Checklist · Attendance'), 'CPMS custom', 'checklist + field app', L('사진·오프라인·오류 흐름 문서화', 'Document photo, offline and error flows')],
+      ['OP / FM', 'Legacy supported', 'explicit legacy scope', L('동작 보존 후 단계적 이전', 'Preserve behavior, then migrate in stages')],
+      [L('설정·권한·감사', 'Settings · permissions · audit'), 'CPMS custom', 'settings + permissions', L('보안 의미를 시각 스타일과 분리', 'Separate security meaning from visual style')],
+    ].map(([area, layer, evidence, action]) => ({ area, layer, evidence, action, badgeClass: layer.includes('Astryx') ? badge('astryx') : layer.includes('Legacy') ? badge('legacy') : badge('custom') }));
+
+    const principles = [
+      ['01', L('문맥을 잊지 않는다', 'Preserve context'), L('현장, 프로젝트, 대상, 기간과 편집 상태를 화면 전환 후에도 유지합니다.', 'Keep site, project, object, time range and edit state through navigation.'), L('사용자가 “어디의 무엇”을 수시로 확인할 수 있는가?', 'Can the user always answer “what, where”?')],
+      ['02', L('상태 축을 합치지 않는다', 'Keep state axes independent'), L('진행, 연결, 배터리, 승인, 편집 잠금을 하나의 색으로 압축하지 않습니다.', 'Do not compress progress, connectivity, battery, approval and edit lock into one color.'), L('색을 제거해도 각 상태를 구분할 수 있는가?', 'Can each state still be identified without color?')],
+      ['03', L('저장과 권한을 먼저 보여준다', 'Expose save and permission state early'), L('작업 후가 아니라 편집 전에 권한·잠금·오프라인 여부를 알립니다.', 'Reveal permissions, locks and offline state before editing, not after work is done.'), L('작업 유실 가능성을 편집 전에 알 수 있는가?', 'Is the risk of losing work visible before editing?')],
+      ['04', L('고밀도와 가독성을 교환하지 않는다', 'Do not trade readability for density'), L('행 높이를 줄여도 타겟, 줄 높이, 숫자 정렬과 상태 텍스트를 보존합니다.', 'When rows compact, preserve targets, line height, numeric alignment and state text.'), L('200% 확대와 키보드에서도 작업이 유지되는가?', 'Does the task survive 200% zoom and keyboard use?')],
+      ['05', L('점진적으로 이전한다', 'Migrate progressively'), L('현재 동작을 삭제하지 않고 공통 토큰, 상태 계약, 컴포넌트 순서로 이전합니다.', 'Migrate tokens, state contracts and components in that order without deleting current behavior.'), L('이전 전·후를 동일한 업무 시나리오로 비교했는가?', 'Was before/after compared with the same work scenario?')],
+    ].map(([index, title, body, test]) => ({ index, title, body, test }));
+
+    const brandSwatches = [
+      swatch('HL Sky Blue', '#00B4ED', '--cpms-source-sky', '브랜드 액센트·선택 표시', 'Brand accent and selection marker'),
+      swatch('Sky Pressed', '#009ACE', '--cpms-source-sky-pressed', '액센트 누름', 'Pressed accent'),
+      swatch('Sky Deep', '#007AA5', '--cpms-source-sky-deep', '흰 표면의 액센트 텍스트', 'Accent text on light surfaces'),
+      swatch('HL Navy', '#002B68', '--cpms-source-navy', '주요 액션·강한 구조', 'Primary action and strong structure'),
+      swatch('HL Black', '#020A0A', '--cpms-source-black', '가장 강한 텍스트', 'Strongest text'),
+      swatch('Metallic Gold', '#C09A5D', '--cpms-source-gold', '브랜드 자산에만 제한', 'Restricted to brand assets'),
+      swatch('Metallic Silver', '#B2B2B2', '--cpms-source-silver', '브랜드 자산에만 제한', 'Restricted to brand assets'),
+    ];
+    const semanticColors = [
+      semantic(L('주요 액션', 'Primary action'), L('주요 액션', 'Primary action'), '--cpms-action-primary', L('확정·저장·생성의 한 번의 주요 액션.', 'One primary confirm, save or create action.')),
+      semantic(L('선택', 'Selection'), L('선택', 'Selection'), '--cpms-brand-accent', L('위치와 선택을 표시하며 의미 상태를 대체하지 않음.', 'Marks location and selection; never replaces semantic state.')),
+      semantic(L('성공', 'Success'), L('성공', 'Success'), '--cpms-success', L('완료·저장 성공. 텍스트와 아이콘을 함께 사용.', 'Completion and save success, paired with text and icon.')),
+      semantic(L('경고', 'Warning'), L('경고', 'Warning'), '--cpms-warning', L('복구 가능한 주의·오프라인·지연.', 'Recoverable caution, offline state or delay.')),
+      semantic(L('오류', 'Danger'), L('오류', 'Danger'), '--cpms-danger', L('실패·충돌·파괴적 액션.', 'Failure, conflict and destructive action.')),
+      semantic(L('정보', 'Information'), L('정보', 'Information'), '--cpms-info', L('비차단 안내·편집 잠금 주체·동기화.', 'Non-blocking guidance, lock owner and synchronization.')),
+    ];
+
+    const typeRows = [
+      typeRow('--cpms-font-2xl', 28, 600, '프로젝트 현황', 'Project status', '페이지 제목. 화면당 1개.', 'Page title, once per screen.'),
+      typeRow('--cpms-font-xl', 22, 600, '작업 일정', 'Work schedule', '주요 섹션 제목.', 'Primary section heading.'),
+      typeRow('--cpms-font-lg', 18, 600, '주간 진행률', 'Weekly progress', '카드·패널 제목.', 'Card and panel heading.'),
+      typeRow('--cpms-font-md', 16, 500, '현장 운영 요약', 'Site operation summary', '강조 본문·대화상자 설명.', 'Emphasized body and dialog description.'),
+      typeRow('--cpms-font-base', 14, 400, '예정 일정과 실적을 확인하세요.', 'Review planned and actual dates.', '기본 본문·표·입력.', 'Default body, table and input.'),
+      typeRow('--cpms-font-sm', 13, 500, '저장됨 · 2분 전', 'Saved · 2 min ago', '보조 정보·상태.', 'Supporting metadata and state.'),
+      typeRow('--cpms-font-xs', 12, 500, 'RBT-2026-014 · 72%', 'RBT-2026-014 · 72%', '코드·칩·밀도 높은 메타.', 'Code, chip and dense metadata.'),
+    ];
+
+    const readingRules = [
+      rule('한국어 단어 보존', 'Preserve Korean words', '한글 어절 중간에서 줄을 나누지 않고 긴 코드만 예외로 줄바꿈합니다.', 'Do not break inside Korean words; allow long codes to wrap as an exception.', 'word-break: keep-all'),
+      rule('숫자 정렬', 'Align numbers', '예산·일정·진행률은 tabular number와 우측 정렬을 사용합니다.', 'Use tabular numbers and end alignment for budget, dates and progress.', 'font-variant-numeric: tabular-nums'),
+      rule('라벨 우선', 'Label before value', '줄임말보다 정식 라벨을 먼저 제공하고 반복 영역에서만 축약합니다.', 'Provide the full label first and abbreviate only in repeated contexts.', 'Planned / Actual'),
+      rule('크기 하한', 'Size floor', '작은 메타도 12px 아래로 내리지 않고 습관적 작업은 14px을 기본으로 합니다.', 'Keep metadata at or above 12px and routine work at 14px.', '12px minimum'),
+    ];
+
+    const spacingRows = [
+      ['--cpms-space-1', '4px', '아이콘 내부·미세 간격', 'Inside icons and micro gaps'],
+      ['--cpms-space-2', '8px', '인라인 요소·칩', 'Inline items and chips'],
+      ['--cpms-space-3', '12px', '컴팩트 제어 패딩', 'Compact control padding'],
+      ['--cpms-space-4', '16px', '기본 카드 패딩', 'Default card padding'],
+      ['--cpms-space-5', '20px', '패널 내부 구획', 'Panel grouping'],
+      ['--cpms-space-6', '24px', '카드 간 간격', 'Gap between cards'],
+      ['--cpms-space-7', '32px', '섹션 내 구획', 'Section grouping'],
+      ['--cpms-space-8', '40px', '주요 섹션 간', 'Major section gap'],
+    ].map(([token, value, useKo, useEn], index) => ({ token, value, use: L(useKo, useEn), style: { width: `${(index + 1) * 34}px` } }));
+
+    const densityModes = [
+      { label: L('기본', 'Default'), title: '44px', sampleClass: 'cpms-density-sample cpms-density-sample--default', body: L('읽기·선택·터치가 중요한 일반 목록.', 'General lists where reading, selection and touch matter.') },
+      { label: L('컴팩트', 'Compact'), title: '36px', sampleClass: 'cpms-density-sample cpms-density-sample--compact', body: L('데스크톱 전용 데이터 표. 키보드·포커스를 반드시 유지.', 'Desktop-only data table; keyboard and focus remain mandatory.') },
+      { label: L('편안함', 'Comfortable'), title: '52px', sampleClass: 'cpms-density-sample cpms-density-sample--comfortable', body: L('현장 터치·사진·체크리스트 작업.', 'Field touch, photo and checklist work.') },
+    ];
+
+    const shellNavItems = [
+      { icon: '▦', label: L('워크스페이스', 'Workspace'), className: 'is-selected' },
+      { icon: '◴', label: L('대시보드', 'Dashboard'), className: '' },
+      { icon: '≡', label: L('워크로드', 'Workload'), className: '' },
+      { icon: '▤', label: L('일정', 'Schedule'), className: '' },
+      { icon: '✓', label: L('현장 운영', 'Field operation'), className: '' },
+      { icon: '+', label: L('앱 스토어', 'App store'), className: '' },
+    ];
+    const shellRules = [
+      rule('하나의 현재 위치', 'One current location', '선택 배경·아이콘·텍스트가 같은 위치를 가리키고 aria-current를 제공합니다.', 'Selected surface, icon and text point to one location and expose aria-current.', 'SideNavItem[data-selected]'),
+      rule('접기와 문맥', 'Collapse and context', '레일에서도 아이콘 tooltip과 현재 위치를 잃지 않습니다.', 'Collapsed rail retains icon tooltips and current location.', '56px rail / 200–320px expanded'),
+      rule('프로젝트 문맥', 'Project context', '현장·포트폴리오·프로젝트 전환은 사이드바 항목과 분리합니다.', 'Site, portfolio and project switching is separate from module navigation.', 'context header'),
+      rule('모바일 우선순위', 'Mobile priority', '하단 내비게이션은 최대 4개 주요 작업과 더보기로 정리합니다.', 'Bottom navigation holds at most four primary tasks plus More.', '4 + More'),
+      rule('앱 스토어 경계', 'App store boundary', '앱 스토어는 OP/FM에서 열려도 Astryx 컴포넌트를 유지합니다.', 'The app store remains Astryx even when opened from OP/FM.', 'ModuleStore'),
+      rule('언어·설정·로그아웃', 'Language, settings, logout', '하단 영역에 안정적으로 배치하고 파괴적 액션은 분리합니다.', 'Keep them stable at the bottom and separate destructive logout treatment.', 'pinned bottom'),
+    ];
+
+    const actionRules = [
+      { title: L('주요', 'Primary'), body: L('현재 범위에서 하나만. 확정·저장·생성.', 'One per current scope: confirm, save or create.'), token: '--cpms-action-primary' },
+      { title: L('보조', 'Secondary'), body: L('취소·보조 흐름. 주요 액션과 동등하게 강조하지 않음.', 'Cancel or supporting flow, without competing with primary.'), token: '--cpms-action-secondary' },
+      { title: L('조용함', 'Quiet'), body: L('테이블 행·툴바의 반복 액션.', 'Repeated row and toolbar action.'), token: '--cpms-hover-surface' },
+      { title: L('파괴적', 'Destructive'), body: L('대상을 명시하고 복구 가능성에 따라 확인 단계를 제공.', 'Name the target and confirm according to recoverability.'), token: '--cpms-danger' },
+    ];
+
+    const projectRows = [
+      { project: 'RBT-2026-014', owner: 'PM A', status: L('진행 중', 'In progress'), statusClass: 'cpms-state cpms-state--info', progress: 72, updated: L('2분 전', '2 min ago') },
+      { project: 'RBT-2026-021', owner: 'PM B', status: L('검토 필요', 'Review needed'), statusClass: 'cpms-state cpms-state--warning', progress: 48, updated: L('18분 전', '18 min ago') },
+      { project: 'RBT-2025-118', owner: 'PM C', status: L('완료', 'Complete'), statusClass: 'cpms-state cpms-state--success', progress: 100, updated: L('어제', 'Yesterday') },
+      { project: 'RBT-2026-033', owner: 'PM D', status: L('지연', 'Delayed'), statusClass: 'cpms-state cpms-state--danger', progress: 31, updated: L('1시간 전', '1 hour ago') },
+    ];
+    const dataDecisions = [
+      { when: L('읽기·정렬', 'Read & sort'), title: L('네이티브 테이블', 'Native table'), body: L('정적 비교와 스크린리더 탐색이 중심일 때.', 'When static comparison and screen-reader navigation dominate.'), items: [L('caption·행/열 헤더', 'Caption and row/column headers'), L('정렬 상태 음성 표시', 'Announced sort state'), L('로컬 가로 스크롤', 'Local horizontal scroll')] },
+      { when: L('편집·고밀도', 'Edit & dense'), title: L('커스텀 그리드', 'Custom grid'), body: L('셀 편집, 고정 열, 가상화가 필수일 때만.', 'Only when cell editing, pinned columns or virtualization is essential.'), items: [L('2차원 키보드 이동', 'Two-dimensional keyboard navigation'), L('편집/보기 모드 분리', 'Separate edit and browse modes'), L('포커스·스크롤 복구', 'Restore focus and scroll')] },
+      { when: L('시간·종속성', 'Time & dependency'), title: L('Gantt / OSB', 'Gantt / OSB'), body: L('시간과 종속성을 시각적으로 편집할 때.', 'When time and dependency are edited visually.'), items: [L('동등한 테이블 보기', 'Equivalent table view'), L('드래그 없는 입력 경로', 'Non-drag input path'), L('충돌·저장 피드백', 'Conflict and save feedback')] },
+    ];
+
+    const stateAxes = [
+      { label: L('작업', 'Workflow'), value: L('예정 → 진행 → 완료', 'Planned → Active → Done'), body: L('프로젝트·작업의 업무 단계.', 'Business stage of a project or task.') },
+      { label: L('연결', 'Connectivity'), value: L('온라인 · 오프라인 · 지연', 'Online · Offline · Stale'), body: L('데이터의 통신과 신선도.', 'Communication and freshness of data.') },
+      { label: L('편집', 'Editing'), value: L('보기 · 편집 · 잠금 · 충돌', 'View · Edit · Locked · Conflict'), body: L('현재 문서의 작성 가능성.', 'Whether the current document can be authored.') },
+      { label: L('시스템', 'System'), value: L('대기 · 저장 · 실패 · 복구', 'Idle · Saving · Failed · Recovered'), body: L('사용자 액션을 처리하는 기술 상태.', 'Technical processing state of a user action.') },
+    ];
+    const feedbackItems = [
+      { className: 'cpms-feedback cpms-feedback--success', icon: '✓', title: L('모든 변경 사항이 저장됨', 'All changes saved'), body: L('현재 버전이 서버와 동기화되었습니다.', 'The current version is synchronized with the server.'), action: L('방금', 'Just now') },
+      { className: 'cpms-feedback cpms-feedback--info', icon: '…', title: L('변경 사항 저장 중', 'Saving changes'), body: L('현재 화면을 나가도 저장은 계속됩니다.', 'Saving continues if you leave this view.'), action: L('처리 중', 'In progress') },
+      { className: 'cpms-feedback cpms-feedback--warning', icon: '!', title: L('오프라인 변경 3건', '3 offline changes'), body: L('연결되면 보내며 충돌 시 비교 화면을 제공합니다.', 'They will send when connected; conflicts open a comparison view.'), action: L('재시도', 'Retry') },
+      { className: 'cpms-feedback cpms-feedback--danger', icon: '×', title: L('저장하지 못했습니다', 'Could not save'), body: L('로컬 복구본을 보존했습니다. 원인을 확인하고 다시 시도하세요.', 'A local recovery copy is preserved. Check the cause and retry.'), action: L('복구본 열기', 'Open recovery') },
+      { className: 'cpms-feedback cpms-feedback--neutral', icon: '—', title: L('표시할 작업이 없습니다', 'No work to show'), body: L('필터를 초기화하거나 새 작업을 만드세요.', 'Reset the filter or create a task.'), action: L('필터 초기화', 'Reset filters') },
+    ];
+
+    const permissionRows = [
+      { role: L('관리자', 'Administrator'), view: '✓', edit: '✓', manage: '✓', ui: L('전체 설정·감사 진입', 'Full settings and audit entry') },
+      { role: 'PM', view: '✓', edit: '✓', manage: L('제한', 'Limited'), ui: L('편집·승인 액션 표시', 'Show edit and approval actions') },
+      { role: L('현장 운영', 'Field operator'), view: '✓', edit: L('배정 범위', 'Assigned'), manage: '—', ui: L('배정 현장 작업만', 'Assigned-site work only') },
+      { role: L('조회자', 'Viewer'), view: '✓', edit: '—', manage: '—', ui: L('편집 제어 숨김 + 이유 설명', 'Hide edit controls and explain why') },
+    ];
+    const editFlow = [
+      ['01', L('진입 전 확인', 'Check before entry'), L('권한, 연결, 최신 버전과 잠금 소유자를 확인합니다.', 'Check permission, connectivity, latest version and lock owner.'), 'preflight'],
+      ['02', L('편집 세션 획득', 'Acquire edit session'), L('성공하면 편집 상태와 만료 조건을 바로 표시합니다.', 'Immediately expose edit state and expiry conditions on success.'), 'editing'],
+      ['03', L('임시 저장', 'Save locally'), L('서버 저장 전에도 로컬 복구본을 갱신합니다.', 'Refresh a local recovery copy before server save completes.'), 'saving'],
+      ['04', L('충돌 비교', 'Compare conflict'), L('타인 변경과 내 변경을 저장 시간·필드별로 비교합니다.', 'Compare others’ and local changes by save time and field.'), 'conflict'],
+      ['05', L('종료·복구', 'Release or recover'), L('완료 시 잠금을 해제하고 실패 시 복구본을 제공합니다.', 'Release the lock on completion and offer the recovery copy on failure.'), 'saved / recovered'],
+    ].map(([index, title, body, state]) => ({ index, title, body, state }));
+
+    const a11yRules = [
+      ['A01', L('실제 제어', 'Native controls'), L('클릭하는 div/span을 버튼으로 대체하고 이름·상태·값을 제공합니다.', 'Replace clickable div/span with controls and expose name, state and value.'), 'axe + keyboard'],
+      ['A02', L('드래그 대체', 'Drag alternative'), L('Gantt·OSB·리사이즈에 정확한 날짜·시간·크기 입력 경로를 제공합니다.', 'Provide exact date, time and size inputs for Gantt, OSB and resize.'), 'keyboard only'],
+      ['A03', L('포커스 복구', 'Restore focus'), L('대화상자·드로어·새로고침 후 시작 지점으로 포커스를 돌려보냅니다.', 'Return focus to the trigger after dialogs, drawers and refresh.'), 'focus order'],
+      ['A04', L('색 이외의 의미', 'Meaning beyond color'), L('상태는 텍스트·아이콘·모양 중 최소 하나를 색과 함께 사용합니다.', 'Pair state color with at least one of text, icon or shape.'), 'forced colors'],
+      ['A05', L('동적 알림', 'Dynamic announcements'), L('저장·잠금·오프라인 변경은 작업을 방해하지 않는 live region으로 알립니다.', 'Announce save, lock and offline changes in a non-interrupting live region.'), 'aria-live'],
+      ['A06', L('확대·리플로', 'Zoom and reflow'), L('200%에서 작업을 유지하고 400%에서 읽기·입력 대체 보기를 제공합니다.', 'Keep tasks at 200%; provide reading and input alternatives at 400%.'), '200% / 400%'],
+    ].map(([code, title, body, gate]) => ({ code, title, body, gate }));
+
+    const responsiveRows = [
+      { range: '≥1440', mode: L('확장 데스크톱', 'Wide desktop'), rule: L('사이드바 + 작업 화면 + 선택적 인스펙터.', 'Sidebar + work surface + optional inspector.'), alternative: L('가로 표·Gantt 전체 문맥', 'Full wide table and Gantt context') },
+      { range: '1024–1439', mode: L('표준 데스크톱', 'Standard desktop'), rule: L('인스펙터를 드로어로 전환하고 데이터 영역을 우선.', 'Move inspector to a drawer and prioritize data space.'), alternative: L('선택 항목 상세 드로어', 'Selected-item detail drawer') },
+      { range: '768–1023', mode: L('작은 데스크톱', 'Small desktop'), rule: L('접힌 레일과 로컬 가로 스크롤을 사용.', 'Use a collapsed rail and local horizontal scrolling.'), alternative: L('Gantt의 일정 목록 보기', 'Schedule-list alternative to Gantt') },
+      { range: '320–767', mode: L('모바일·현장', 'Mobile & field'), rule: L('주요 4개 작업 + 더보기, 한 열 작업 흐름.', 'Four primary tasks + More, with a single-column flow.'), alternative: L('테이블→카드, 드래그→정확 입력', 'Table→cards, drag→exact inputs') },
+    ];
+
+    const statusModel = [
+      { label: L('운영', 'Production'), badgeClass: badge('production'), body: L('현재 소스에서 작동하는 패턴.', 'Pattern operating in the current source.') },
+      { label: L('Astryx 적용', 'Astryx adopted'), badgeClass: badge('astryx'), body: L('현재 Astryx API를 직접 사용.', 'Direct current use of an Astryx API.') },
+      { label: L('CPMS 커스텀', 'CPMS custom'), badgeClass: badge('custom'), body: L('제품 전용 JSX/CSS 구현.', 'Product-specific JSX/CSS implementation.') },
+      { label: L('레거시 지원', 'Legacy supported'), badgeClass: badge('legacy'), body: L('현재 동작을 보존하며 이전 대기.', 'Behavior preserved while migration is pending.') },
+      { label: L('권장안', 'Candidate'), badgeClass: badge('target'), body: L('근거를 바탕으로 한 신규·이전 제안.', 'Evidence-based proposal for new or migrated UI.') },
+      { label: L('역사 자료', 'Historical'), badgeClass: badge('historical'), body: L('되돌려졌거나 폐기된 연구 자료.', 'Reverted or retired research material.') },
+      { label: L('데모 전용', 'Demo only'), badgeClass: badge('demo'), body: L('합성 데이터 데모에서만 확인된 표현.', 'Representation verified only in the synthetic demo.') },
+    ];
+    const changeFlow = [
+      ['01', L('요청 등록', 'Register request'), L('문제, 사용자, 업무 시나리오와 대상 패턴을 기록합니다.', 'Record problem, user, work scenario and target pattern.')],
+      ['02', L('근거 확인', 'Verify evidence'), L('고정 commit·실제 사용·데모 차이를 확인합니다.', 'Check pinned commit, actual use and demo differences.')],
+      ['03', L('계약 작성', 'Author contract'), L('토큰, 상태, 접근성, 반응형과 현재/권장을 분리합니다.', 'Separate current/recommended across token, state, accessibility and responsive rules.')],
+      ['04', L('구현·검증', 'Implement & verify'), L('합성 데이터 specimen과 자동 품질 게이트를 통과합니다.', 'Pass synthetic-data specimens and automated quality gates.')],
+      ['05', L('배포·재검토', 'Release & review'), L('소유자, 기준 commit, 변경 내용과 다음 검토일을 기록합니다.', 'Record owner, source pin, change and next review date.')],
+    ].map(([index, title, body]) => ({ index, title, body }));
+
+    return {
+      rootRef: this.rootRef, lang, activePage,
+      isOverview: activePage === 'overview',
+      isSystemSummary: activePage === 'systemsummary',
+      isPrinciples: activePage === 'principles',
+      isColors: activePage === 'colors',
+      isTypography: activePage === 'typography',
+      isLayout: activePage === 'layout',
+      isShell: activePage === 'shell',
+      isControls: activePage === 'controls',
+      isDataDisplay: activePage === 'data-display',
+      isStates: activePage === 'states',
+      isPermissions: activePage === 'permissions',
+      isAccessibility: activePage === 'accessibility',
+      isGovernance: activePage === 'governance',
+
+      truthbarLabel: L('문서 상태와 기준 소스', 'Document status and source pin'),
+      productionLabel: L('현재 운영 근거', 'Current production evidence'),
+      targetLabel: L('권장 규칙 포함', 'Includes recommended rules'),
+      snapshotLabel: 'aws-cpms@32ff10f · demo@f321694',
+      currentTag: L('현재', 'CURRENT'), legacyTag: 'LEGACY',
+      overviewKicker: 'CPMS UX/UI DESIGN SYSTEM · v0.1',
+      overviewTitle: L('현재를 숨기지 않고, 다음 구현을 안전하게 이끄는 시스템', 'A system that shows today clearly and guides the next implementation safely'),
+      overviewBody: L('CPMS는 하나의 UI 라이브러리가 아닙니다. Astryx Neutral, CPMS 커스텀 업무 화면, OP/FM Legacy를 구분하고 공통 토큰·상태·접근성 계약으로 연결합니다.', 'CPMS is not a single UI library. It distinguishes Astryx Neutral, custom CPMS work surfaces and OP/FM Legacy, then connects them through shared token, state and accessibility contracts.'),
+      overviewFacts: [{ value: '3', label: L('현재 시스템 계층', 'current system layers') }, { value: '13', label: L('1차 문서 라우트', 'release-one routes') }, { value: '2', label: L('고정 참조 commit', 'pinned reference commits') }],
+      overviewMapLabel: L('Astryx, CPMS 커스텀, OP/FM Legacy 세 계층', 'Three layers: Astryx, CPMS custom and OP/FM Legacy'),
+      layerBoundary: L('앱 경계 · SideNav · App Store', 'App boundary · SideNav · App Store'), layerWork: L('업무 화면 · 데이터 · 일정', 'Work surfaces · data · schedule'), layerLegacy: L('현장 운영 · 필드 관리', 'Field operation · field management'),
+      systemModelTitle: L('실제 구현 계층', 'Actual implementation layers'), systemModelBody: L('상태 배지는 현재 코드 근거와 이전 방향을 분리합니다.', 'Status badges separate current code evidence from migration direction.'), systemLayers,
+      releaseTitle: L('업무 순서로 읽는 문서', 'Documentation organized around implementation work'), releaseBody: L('빈 컴포넌트 갤러리 대신 근거→토큰→쉘→상태→품질 순서로 구성했습니다.', 'The path is evidence → tokens → shell → state → quality, not an empty component gallery.'), routeCards,
+
+      evidenceTitle: L('출처 우선순위를 고정한다', 'Pin the evidence precedence'), evidenceBody: L('데모와 역사 자료가 현재 운영 사양을 덮지 않도록 출처와 용도를 함께 기록합니다.', 'Source and purpose travel together so demos and historical material cannot overwrite current specification.'), evidenceSources,
+      coverageTitle: L('화면별 시스템 계층', 'System layer by product area'), coverageBody: L('같은 제품 안에서도 적용 방식이 다르므로 영역별로 이전 액션을 관리합니다.', 'Implementation differs inside one product, so migration actions are managed per area.'), coverageCaption: L('CPMS 영역별 현재 계층과 권장 액션', 'Current layer and recommended action by CPMS area'), areaHeader: L('영역', 'Area'), layerHeader: L('현재 계층', 'Current layer'), evidenceHeader: L('근거', 'Evidence'), actionHeader: L('다음 액션', 'Next action'), coverageRows,
+      exclusionTitle: L('제외된 근거', 'Excluded evidence'), exclusionBody: L('루트 README의 Notion 마케팅 가이드와 되돌려진 전체 Astryx 커스텀 테마는 현재 CPMS 시스템으로 사용하지 않습니다.', 'The root README’s Notion marketing guide and reverted full custom Astryx theme are not current CPMS specification.'),
+
+      principlesTitle: L('디자인 의사결정 원칙', 'Design decision principles'), principlesBody: L('시각 일관성보다 업무 문맥, 데이터 무결성, 작업 복구와 접근 가능성을 먼저 검증합니다.', 'Validate work context, data integrity, recoverability and access before visual consistency.'), principles,
+      priorityTitle: L('의사결정 우선순위', 'Decision priority'), priorityBody: L('동일한 선택지가 충돌하면 위에서 아래 순서로 판단합니다.', 'When choices conflict, decide from top to bottom.'), priorityFlowLabel: L('안전, 데이터, 업무, 시각 일관성 순서', 'Safety, data, task, then visual consistency'), priorityFlow: [{ index: '01', title: L('안전·권한', 'Safety & permission'), body: L('작업 유실·오조작 방지', 'Prevent loss and misuse') }, { index: '02', title: L('데이터 무결성', 'Data integrity'), body: L('신선도·저장·충돌', 'Freshness, save, conflict') }, { index: '03', title: L('업무 효율', 'Task efficiency'), body: L('탐색·밀도·반복 작업', 'Navigation, density, repetition') }, { index: '04', title: L('시각 일관성', 'Visual consistency'), body: L('토큰·형태·모션', 'Token, shape, motion') }],
+
+      brandColorsTitle: L('실제 HL/CPMS 팔레트', 'Actual HL/CPMS palette'), brandColorsBody: L('색상 값은 현재 스냅샷에서 추출했고 사용 역할은 대비가 가능한 의미 토큰으로 정규화했습니다.', 'Values come from the current snapshot; roles are normalized into contrast-capable semantic tokens.'), brandSwatches,
+      semanticColorsTitle: L('색상이 아닌 의미를 선택한다', 'Choose meaning, not color'), semanticColorsBody: L('컴포넌트는 source 팔레트가 아닌 의미 토큰만 사용합니다.', 'Components consume semantic tokens, never source palette values.'), semanticColors,
+      avoidLabel: L('현재 문제', 'CURRENT RISK'), useLabel: L('권장', 'RECOMMENDED'), skyActionTitle: L('Sky + 흰색 액션', 'Sky + white action'), skySampleLabel: L('Sky Blue 배경 위 흰 텍스트는 대비가 부족한 현재 위험 조합', 'Current-risk combination: white label on Sky Blue does not clear contrast'), skyActionBody: L('Sky Blue는 시각 액센트이지만 흰 텍스트 액션의 기본이 아닙니다.', 'Sky Blue is a visual accent, not the default for white-label actions.'), navyActionTitle: L('Navy + 흰색 액션', 'Navy + white action'), navyActionBody: L('확정·저장·생성은 Navy 표면과 흰 텍스트를 사용합니다.', 'Confirm, save and create use Navy surfaces with white labels.'),
+
+      typeTitle: L('고밀도 제품 타입 스케일', 'Type scale for a dense product'), typeBody: L('기존 기초 자료의 대형 마케팅 타입과 실제 업무 화면의 다양한 px 값을 12–28px 제품 스케일로 정규화합니다.', 'Normalize large marketing type and scattered application px values into a 12–28px product scale.'), typeRows,
+      readingTitle: L('한·영·숫자 읽기 규칙', 'Korean, English and numeric reading rules'), readingBody: L('타이포그래피는 크기만이 아니라 정보를 비교하는 방식입니다.', 'Typography defines how information is compared, not only its size.'), readingRules,
+
+      spacingTitle: L('간격을 유한한 규칙으로 만든다', 'Make spacing a finite rule'), spacingBody: L('기존 4px 기반을 유지하되 임의 px 대신 의미와 크기가 연결된 토큰을 사용합니다.', 'Keep the current 4px base and replace arbitrary px with tokens tied to use.'), spacingRows,
+      densityTitle: L('화면이 아닌 작업에 맞춘다', 'Choose density for the task'), densityBody: L('같은 컴포넌트도 데이터 비교, 일반 탐색, 현장 터치의 환경이 다릅니다.', 'The same component serves different environments: data comparison, general navigation and field touch.'), densityModes,
+      layoutRuleTitle: L('반응형은 숨김이 아닙니다', 'Responsive does not mean hidden'), layoutRuleBody: L('넓은 표·Gantt·OSB를 작은 화면에서 삭제하지 않고 동등한 목록·정확 입력·상세 드로어로 전환합니다.', 'Do not remove wide tables, Gantt or OSB on small screens; transform them into equivalent lists, exact inputs and detail drawers.'),
+
+      shellTitle: L('Astryx 쉘과 CPMS 업무 문맥', 'Astryx shell and CPMS work context'), shellBody: L('사이드바는 Astryx 구조를 사용하고 선택 색·브랜드·프로젝트 문맥은 CPMS 계약을 적용합니다.', 'The sidebar uses Astryx structure while selection color, brand and project context follow CPMS contracts.'), shellSpecimenLabel: L('CPMS 사이드바, 프로젝트 문맥, 작업 화면 구조', 'CPMS sidebar, project context and work-surface structure'), shellNavItems, shellWorkspace: L('워크스페이스 / 포트폴리오', 'Workspace / Portfolio'), shellProject: 'RBT-2026-014 · Alpha Site', shellCanvas: L('현재 문맥을 유지하는 업무 화면', 'Work surface preserving current context'), navContractTitle: L('탐색 구현 계약', 'Navigation implementation contract'), navContractBody: L('선택·접기·프로젝트·모바일 상태를 각각 검증합니다.', 'Verify selection, collapse, project and mobile states independently.'), shellRules,
+
+      actionsTitle: L('액션의 힘은 의미와 빈도로 결정한다', 'Action strength follows meaning and frequency'), actionsBody: L('브랜드 색을 자주 쓰는 것이 아니라 현재 범위의 가장 중요한 결과만 강조합니다.', 'Emphasize the most important outcome in the current scope instead of repeating brand color.'), saveLabel: L('변경 사항 저장', 'Save changes'), secondaryActionLabel: L('취소', 'Cancel'), quietActionLabel: L('미리보기', 'Preview'), dangerActionLabel: L('프로젝트 삭제', 'Delete project'), disabledLabel: L('권한 없음', 'No permission'), actionRules,
+      inputTitle: L('라벨→입력→도움→검증', 'Label → input → help → validation'), inputBody: L('placeholder는 라벨을 대체하지 않으며 오류는 원인과 해결 방법을 같이 제공합니다.', 'Placeholder never replaces a label; errors provide both cause and resolution.'), projectNameLabel: L('프로젝트 코드', 'Project code'), projectNameHelp: L('단축키·URL에서 사용되므로 저장 후 변경을 제한합니다.', 'Used in shortcuts and URLs; changes are restricted after save.'), endDateLabel: L('종료 예정일', 'Planned end date'), endDateError: L('시작일 2026-07-14 이후로 선택하세요.', 'Choose a date after the start date, 2026-07-14.'), ownerLabel: L('담당 PM', 'Owning PM'), ownerOption: 'PM A · PM Team A', ownerHelp: L('저장 즉시 새 담당자에게 알림을 보냅니다.', 'The new owner is notified immediately after save.'),
+
+      dataTitle: L('표는 읽기, 그리드는 편집에 사용한다', 'Use tables for reading and grids for editing'), dataBody: L('그리드를 기본으로 선택하지 않고 키보드·가상화·셀 편집이 필수인지 먼저 판단합니다.', 'Do not default to a grid; first prove that cell editing, virtualization or two-dimensional keyboarding is essential.'), projectTableCaption: L('합성 데이터로 구성한 프로젝트 현황 표', 'Synthetic project-status table'), projectHeader: L('프로젝트', 'Project'), ownerHeader: L('담당', 'Owner'), statusHeader: L('상태', 'Status'), progressHeader: L('진행률', 'Progress'), updatedHeader: L('갱신', 'Updated'), projectRows,
+      dataDecisionTitle: L('데이터 패턴 선택 기준', 'Data-pattern decision criteria'), dataDecisionBody: L('모양이 아닌 사용자의 핵심 조작과 대체 경로로 패턴을 선택합니다.', 'Choose the pattern by the user’s core manipulation and its alternative path, not appearance.'), dataDecisions,
+
+      statesTitle: L('상태는 하나의 배지가 아닙니다', 'State is not one badge'), statesBody: L('업무·연결·편집·시스템 상태를 독립적으로 표시해 중요한 문제가 숨지 않게 합니다.', 'Expose workflow, connectivity, editing and system state independently so critical problems cannot hide.'), stateAxes,
+      feedbackTitle: L('작업을 끝내는 피드백', 'Feedback that completes the task'), feedbackBody: L('메시지는 결과, 영향, 다음 액션과 복구 가능성을 알려줍니다.', 'Messages state the result, impact, next action and recoverability.'), feedbackItems, feedbackRuleTitle: L('새로고침을 해결책으로 제시하지 않습니다', 'Do not present refresh as the recovery strategy'), feedbackRuleBody: L('입력 유실이 가능한 오류는 로컬 복구본, 재시도, 비교 화면 중 적절한 경로를 제공합니다.', 'Errors that may lose input provide an appropriate local recovery copy, retry or comparison path.'),
+
+      permissionTitle: L('권한은 스타일이 아닌 기능 계약입니다', 'Permission is a capability contract, not a style'), permissionBody: L('숨김·비활성·거부 중 어느 표현을 쓸지는 보안 의미와 사용자의 다음 선택으로 결정합니다.', 'Choose hidden, disabled or denied based on security meaning and the user’s next option.'), permissionCaption: L('합성 역할로 본 CPMS 기능 계약', 'CPMS capability contract using synthetic roles'), roleHeader: L('역할', 'Role'), viewHeader: L('조회', 'View'), editHeader: L('편집', 'Edit'), manageHeader: L('관리', 'Manage'), uiHeader: L('UI 표현', 'UI treatment'), permissionRows,
+      editSessionTitle: L('편집은 세션으로 관리한다', 'Treat editing as a session'), editSessionBody: L('편집 버튼 하나가 아니라 진입 전 확인에서 잠금 해제·복구까지 하나의 계약입니다.', 'The contract runs from preflight through lock release and recovery, not a single Edit button.'), editFlow,
+
+      a11yTitle: L('동작을 표준 제어와 대체 경로로 보장한다', 'Guarantee behavior with standard controls and alternatives'), a11yBody: L('고밀도 상호작이 많은 CPMS에서 접근성은 별도 모드가 아니라 기본 작동 계약입니다.', 'In interaction-dense CPMS, accessibility is the default behavior contract, not a separate mode.'), a11yRules,
+      responsiveTitle: L('화면 크기별로 동등한 작업을 유지한다', 'Preserve equivalent tasks across sizes'), responsiveBody: L('모바일에서 데스크톱 UI를 줄이지 않고 같은 결과에 도달하는 대체 표현을 제공합니다.', 'Do not shrink desktop UI onto mobile; provide an alternative representation that reaches the same result.'), responsiveRows, responsiveWarningTitle: L('320px 문서 리플로와 제품 운영 최소 폭은 다릅니다', '320px documentation reflow is not the product’s operating minimum'), responsiveWarningBody: L('문서는 320px에서 모든 규칙을 읽을 수 있어야 하지만, Gantt·OSB·그리드는 작은 화면에서 동등한 대체 보기로 전환합니다.', 'Documentation must reflow at 320px, while Gantt, OSB and grids transform into equivalent small-screen views.'),
+
+      governanceTitle: L('각 패턴에 현재와 다음을 표시한다', 'Label current and next on every pattern'), governanceBody: L('“있음”과 “사용 권장”을 혼동하지 않도록 성숙도 배지와 근거를 함께 관리합니다.', 'Maturity badges and evidence keep “exists” separate from “recommended”.'), statusModel,
+      changeTitle: L('근거가 변경을 이끈다', 'Evidence drives change'), changeBody: L('시각 요청만으로 토큰을 바꾸지 않고 업무 문제·소스·검증 결과를 하나의 기록으로 유지합니다.', 'Do not change tokens from visual requests alone; keep the work problem, source and verification in one record.'), changeFlow,
+      releaseRecordTitle: L('1차 문서 릴리스', 'Release-one documentation'), releaseRecordBody: L('현재 현황과 구현 기반을 완성했으며 고위험 도메인 패턴은 다음 릴리스에서 실제 상태를 확장합니다.', 'This release completes current-state and implementation foundations; the next expands high-risk domain patterns.'), releaseRecordStatus: L('기반 완성', 'Foundation complete'), sourcePinTerm: L('현재 소스', 'Current source'), demoPinTerm: L('시각 참고', 'Visual reference'), scopeTerm: L('범위', 'Scope'), scopeValue: L('13개 기반·시스템·품질 페이지', '13 foundation, system and quality pages'), nextTerm: L('다음', 'Next'), nextValue: L('Grid · Gantt · OSB · Checklist · Upload/Viewer', 'Grid · Gantt · OSB · Checklist · Upload/Viewer'),
+
+    };
+  }
+}
+</script>
+</body>
+</html>

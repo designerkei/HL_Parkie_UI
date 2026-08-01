@@ -295,7 +295,7 @@ const PRODUCT_TOKEN_SCOPES = [
     file: path.join('tokens', 'cpms-tokens.css'),
     scope: '[data-system="cpms"][data-color-mode="light"]',
     minTokens: 130,
-    consumers: ['styles.css', 'index.html'],
+    consumers: ['styles.css', 'index.html', 'CPMSPages.dc.html', 'components/cpms-documentation.css'],
   },
 ];
 
@@ -391,10 +391,17 @@ test('high contrast is answered in the rendered chrome, every product', async ({
     expect(forced.underline, `${system}: the active tab underline must repaint`)
       .not.toBe(normal.underline);
     expect(forced.underlineHeight, `${system}: the underline must survive, not vanish`).toBe('2px');
-    expect(forced.soonBg, `${system}: the soon pill must adopt a system surface`)
-      .not.toBe(normal.soonBg);
-    expect(forced.soonBorder, `${system}: the soon pill needs an edge once fills flatten`)
-      .toBe('1px');
+    if (normal.soonBg !== null) {
+      expect(forced.soonBg, `${system}: the soon pill must adopt a system surface`)
+        .not.toBe(normal.soonBg);
+      expect(forced.soonBorder, `${system}: the soon pill needs an edge once fills flatten`)
+        .toBe('1px');
+    } else {
+      /* Authored products have no pending navigation item. Absence is the
+         contract; manufacturing a pill only to exercise forced colours would
+         misrepresent their maturity. */
+      expect(forced.soonBg, `${system}: authored routes must stay free of soon pills`).toBeNull();
+    }
 
     if (system === 'parkie') {
       /* The 2-tone ring loses its separation when the OS flattens colour, so the
@@ -447,13 +454,25 @@ test('interaction, operation and severity colors remain independent', async ({ p
       info: read('--parkie-info'),
       running: read('--parkie-motion-running'),
       charging: read('--parkie-battery-charging'),
+      /* The severity family, which the title claims but the assertions below
+         used to skip: --parkie-success could have been set to the brand blue
+         and this test would still have passed. */
+      success: read('--parkie-success'),
+      warning: read('--parkie-warning'),
+      danger: read('--parkie-danger'),
+      emergency: read('--parkie-emergency'),
     };
     probe.remove();
     return result;
   });
-  expect(semanticColors.info).not.toBe(semanticColors.selected);
-  expect(semanticColors.running).not.toBe(semanticColors.selected);
-  expect(semanticColors.charging).not.toBe(semanticColors.selected);
+  const { selected, ...meanings } = semanticColors;
+  for (const [name, value] of Object.entries(meanings)) {
+    expect(value, `--parkie-${name} must not reuse the interaction colour`).not.toBe(selected);
+  }
+  /* Severity levels must also differ from one another, or colour stops
+     distinguishing how bad a state is. */
+  const severity = [semanticColors.success, semanticColors.warning, semanticColors.danger, semanticColors.emergency];
+  expect(new Set(severity).size, 'each severity level needs its own colour').toBe(severity.length);
 });
 
 test('parking-control templates expose freshness, independent state axes and actionable alerts', async ({ page }) => {
@@ -483,14 +502,29 @@ test('alert-center tabs use roving keyboard focus and preserve panel relationshi
   await page.goto('/#alertcenter');
   const alerts = page.getByRole('tab', { name: '알림' });
   const history = page.getByRole('tab', { name: '주차기록' });
+
+  /* Roving means exactly one tab is in the tab order and it follows the
+     selection. Arrow keys and aria-selected alone do not prove it: with both
+     tabs at tabindex="0" every assertion below still passed, while keyboard
+     users would stop on both tabs instead of entering the group once. */
+  const tabOrder = () => page.evaluate(() => [...document.querySelectorAll('[data-alert-center-tab]')]
+    .map((tab) => `${tab.dataset.alertCenterTab}:${tab.getAttribute('tabindex')}`));
+
+  expect(await tabOrder(), 'only the selected tab may be in the tab order')
+    .toEqual(['alert:0', 'history:-1']);
+
   await alerts.focus();
   await page.keyboard.press('ArrowRight');
   await expect(history).toBeFocused();
   await expect(history).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', 'alert-center-history-tab');
+  expect(await tabOrder(), 'the tab order must follow the selection').toEqual(['alert:-1', 'history:0']);
+
   await page.keyboard.press('Home');
   await expect(alerts).toBeFocused();
   await expect(alerts).toHaveAttribute('aria-selected', 'true');
+  expect(await tabOrder(), 'Home must return the tab order to the first tab')
+    .toEqual(['alert:0', 'history:-1']);
 });
 
 test('fleet and alarm specimens remain bounded with 100 robots and 200 alarms', async ({ page }) => {
@@ -508,14 +542,21 @@ test('fleet and alarm specimens remain bounded with 100 robots and 200 alarms', 
       count: body.children.length,
       duration: performance.now() - start,
       documentOverflow: document.documentElement.scrollWidth - innerWidth,
-      localScroll: document.querySelector('.pk-dashboard-table-wrap').scrollWidth
-        >= document.querySelector('.pk-dashboard-table-wrap').clientWidth,
+      wrapScrollWidth: document.querySelector('.pk-dashboard-table-wrap').scrollWidth,
+      wrapClientWidth: document.querySelector('.pk-dashboard-table-wrap').clientWidth,
+      wrapOverflowX: getComputedStyle(document.querySelector('.pk-dashboard-table-wrap')).overflowX,
     };
   });
   expect(fleet.count).toBe(100);
   expect(fleet.duration).toBeLessThan(1000);
   expect(fleet.documentOverflow).toBeLessThanOrEqual(1);
-  expect(fleet.localScroll).toBe(true);
+  /* The contract is that the wide table overflows its own wrapper rather than
+     the page. The previous form compared scrollWidth >= clientWidth, which is
+     true by definition and so could never fail — it asserted nothing. */
+  expect(fleet.wrapScrollWidth, 'the table must actually be wider than its wrapper')
+    .toBeGreaterThan(fleet.wrapClientWidth);
+  expect(['auto', 'scroll'], 'the wrapper must contain that overflow locally')
+    .toContain(fleet.wrapOverflowX);
 
   await page.goto('/#alertcenter');
   const alarms = await page.evaluate(() => {
@@ -544,8 +585,10 @@ test('all release-critical local assets are served and all Parkie token referenc
     '/support.js',
     '/styles.css',
     '/ProductSkeleton.dc.html',
+    '/CPMSPages.dc.html',
     '/tokens/parkie-tokens.css',
     '/tokens/goalie-tokens.css',
+    '/tokens/cpms-tokens.css',
     '/components/controls.css',
     '/components/documentation.css',
     '/components/iconography.css',
@@ -553,6 +596,7 @@ test('all release-critical local assets are served and all Parkie token referenc
     '/components/operations.css',
     '/components/robot-status.css',
     '/components/system-summary.css',
+    '/components/cpms-documentation.css',
     '/icons/parkie-icon-data.js',
     '/ms/icon-data.js',
     '/ms/Components.bundle.js',
@@ -691,6 +735,7 @@ test('no imported stylesheet is entirely unused', async () => {
   const consumerFiles = [
     'index.html',
     'ProductSkeleton.dc.html',
+    'CPMSPages.dc.html',
     'styles.css',
     ...imports.filter((file) => file.startsWith('components/')),
   ];
