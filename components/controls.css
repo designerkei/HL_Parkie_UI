@@ -454,3 +454,120 @@
     animation-duration: 1.4s;
   }
 }
+
+/* Colour value spec ---------------------------------------------------
+   Token name, resolved value and measured contrast next to the control.
+   Row rules only — no card, background or shadow stacked on top. */
+
+.pk-token-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-3);
+}
+
+.pk-token-block + .pk-token-block {
+  margin-top: var(--parkie-space-6);
+}
+
+.pk-token-block h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-token-scroll {
+  overflow-x: auto;
+}
+
+.pk-token-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+}
+
+.pk-token-table th,
+.pk-token-table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-token-table thead th {
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-medium);
+  white-space: nowrap;
+}
+
+.pk-token-table tbody th {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-medium);
+  white-space: nowrap;
+}
+
+.pk-token-table tbody tr:last-child th,
+.pk-token-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.pk-token-swatch {
+  display: inline-flex;
+  width: 30px;
+  height: 24px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-xs);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-token-value {
+  padding: 2px 6px;
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  background: var(--parkie-surface-elevation-08);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-xs);
+  cursor: copy;
+}
+
+.pk-token-value:hover {
+  background: var(--parkie-surface-elevation-16);
+}
+
+.pk-token-value:focus-visible {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-token-table code {
+  display: block;
+  margin-top: 4px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-token-verdict {
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  white-space: nowrap;
+}
+
+.pk-token-verdict.is-pass { color: var(--parkie-success-text); }
+.pk-token-verdict.is-fail { color: var(--parkie-danger-text); }
+
+.pk-token-copied {
+  min-height: 18px;
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}

@@ -777,6 +777,42 @@
                 <button class="pk-icon-button" type="button" aria-label="사용할 수 없음" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
               </div>
             </section>
+            <sc-if value="{{ hasButtonTokens }}" hint-placeholder-val="{{ true }}">
+              <section class="pk-control-section">
+                <h2>색상값 · Colour values</h2>
+                <p>값은 실행 시점에 CSS 토큰에서 직접 읽습니다. 마크업에 색을 따로 적어두지 않으므로 토큰을 바꾸면 이 표가 함께 바뀝니다. 대비는 실제 배경에 합성한 뒤 계산한 값이며, 값을 누르면 복사됩니다.</p>
+                <sc-for list="{{ buttonTokenGroups }}" as="group" hint-placeholder-count="3">
+                  <div class="pk-token-block">
+                    <h3>{{ group.variant }}</h3>
+                    <div class="pk-token-scroll pk-scroll">
+                      <table class="pk-token-table">
+                        <thead>
+                          <tr><th>상태 · State</th><th>배경 · Background</th><th>전경 · Foreground</th><th>대비 · Contrast</th></tr>
+                        </thead>
+                        <tbody>
+                          <sc-for list="{{ group.rows }}" as="row" hint-placeholder-count="4">
+                            <tr>
+                              <th scope="row">{{ row.state }}</th>
+                              <td>
+                                <span class="pk-token-swatch" style="{{ row.swatchStyle }}" aria-hidden="true">Aa</span>
+                                <button class="pk-token-value" type="button" aria-label="{{ row.bgAria }}" onClick="{{ row.bgOnClick }}">{{ row.bgValue }}</button>
+                                <code>{{ row.bgToken }}</code>
+                              </td>
+                              <td>
+                                <button class="pk-token-value" type="button" aria-label="{{ row.fgAria }}" onClick="{{ row.fgOnClick }}">{{ row.fgValue }}</button>
+                                <code>{{ row.fgToken }}</code>
+                              </td>
+                              <td><span class="{{ row.verdictClass }}">{{ row.contrast }} · {{ row.verdict }}</span></td>
+                            </tr>
+                          </sc-for>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </sc-for>
+                <p class="pk-token-copied" role="status" aria-live="polite">{{ copiedNotice }}</p>
+              </section>
+            </sc-if>
           </div>
         </sc-if>
 
@@ -2761,6 +2797,8 @@ class Component extends DCLogic {
     active: 'overview',
     icons: null,
     parkieIcons: null,
+    buttonSpecs: null,
+    copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
     role: 'engineer',
@@ -2782,6 +2820,10 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    /* Colour values shown on the button page are read back out of the CSS
+       variables at runtime. Hard-coding hex in the markup would create a
+       second source of truth that silently drifts from the tokens. */
+    this.scheduleButtonSpecs(0);
     if (this.props.brandPrimary && this.rootRef.current) {
       this.rootRef.current.style.setProperty('--parkie-brand-primary', this.props.brandPrimary);
     }
@@ -2803,6 +2845,127 @@ class Component extends DCLogic {
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handleLocationChange);
     window.removeEventListener('hashchange', this.handleLocationChange);
+  }
+
+  /* Which token drives each button surface. Kept as token names only — the
+     values are read from CSS at runtime so there is one source of truth. */
+  BUTTON_TOKEN_SPECS = [
+    { variant: 'Primary', rows: [
+      { state: 'Rest', bg: '--parkie-action-primary-bg', fg: '--parkie-action-primary-fg' },
+      { state: 'Hover', bg: '--parkie-action-primary-bg-hover', fg: '--parkie-action-primary-fg' },
+      { state: 'Pressed', bg: '--parkie-action-primary-bg-pressed', fg: '--parkie-action-primary-fg' },
+      { state: 'Disabled', bg: '--parkie-action-disabled-bg', fg: '--parkie-action-disabled-fg' },
+    ] },
+    { variant: 'Secondary', rows: [
+      { state: 'Rest', bg: '--parkie-action-neutral-bg', fg: '--parkie-action-neutral-fg' },
+      { state: 'Hover', bg: '--parkie-surface-elevation-48', fg: '--parkie-action-neutral-fg' },
+      { state: 'Pressed', bg: '--parkie-surface-elevation-08', fg: '--parkie-action-neutral-fg' },
+      { state: 'Disabled', bg: '--parkie-action-disabled-bg', fg: '--parkie-action-disabled-fg' },
+    ] },
+    { variant: 'Danger', rows: [
+      { state: 'Rest', bg: '--parkie-action-danger-bg', fg: '--parkie-action-danger-fg' },
+      { state: 'Hover', bg: '--parkie-action-danger-bg-hover', fg: '--parkie-action-danger-fg' },
+      { state: 'Pressed', bg: '--parkie-action-danger-bg-pressed', fg: '--parkie-action-danger-fg' },
+      { state: 'Disabled', bg: '--parkie-action-disabled-bg', fg: '--parkie-action-disabled-fg' },
+    ] },
+  ];
+
+  /* The stylesheet arrives via <helmet>, so on first mount the custom
+     properties may not exist yet and every var() would resolve to the initial
+     colour. Wait for a sentinel token to appear before reading. */
+  scheduleButtonSpecs(attempt) {
+    const ready = getComputedStyle(document.documentElement)
+      .getPropertyValue('--parkie-action-primary-bg').trim() !== '';
+    if (ready) {
+      this.setState({ buttonSpecs: this.resolveButtonSpecs() });
+      return;
+    }
+    if (attempt < 90) {
+      window.requestAnimationFrame(() => this.scheduleButtonSpecs(attempt + 1));
+    }
+  }
+
+  resolveButtonSpecs() {
+    const probe = document.createElement('span');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;left:-9999px;top:0;opacity:0;pointer-events:none';
+    document.body.appendChild(probe);
+    /* Applying the token to a probe and reading it back resolves any var()
+       chain, so a token defined as var(--other) still yields a real colour. */
+    const read = (token) => {
+      probe.style.color = '';
+      probe.style.color = 'var(' + token + ')';
+      return getComputedStyle(probe).color;
+    };
+    const parse = (value) => {
+      const m = String(value).match(/rgba?\(([^)]+)\)/);
+      if (!m) return null;
+      const p = m[1].split(',').map((v) => parseFloat(v));
+      return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+    };
+    const over = (fg, bg) => ({
+      r: fg.a * fg.r + (1 - fg.a) * bg.r,
+      g: fg.a * fg.g + (1 - fg.a) * bg.g,
+      b: fg.a * fg.b + (1 - fg.a) * bg.b,
+      a: 1,
+    });
+    const lum = (c) => {
+      const ch = (v) => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+    };
+    const ratio = (a, b) => {
+      const la = lum(a);
+      const lb = lum(b);
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    };
+    const hex = (c) => '#' + [c.r, c.g, c.b]
+      .map((v) => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+    const label = (c) => (c.a < 1
+      ? 'rgba(' + Math.round(c.r) + ', ' + Math.round(c.g) + ', ' + Math.round(c.b) + ', ' + c.a + ')'
+      : hex(c));
+
+    const fallback = { r: 19, g: 19, b: 21, a: 1 };
+    const surface = parse(read('--parkie-surface')) || fallback;
+    const specs = this.BUTTON_TOKEN_SPECS.map((group) => ({
+      variant: group.variant,
+      rows: group.rows.map((row) => {
+        const rawBg = parse(read(row.bg)) || fallback;
+        const rawFg = parse(read(row.fg)) || fallback;
+        const bg = over(rawBg, surface);
+        const fg = over(rawFg, bg);
+        const r = ratio(fg, bg);
+        return {
+          state: row.state,
+          bgToken: row.bg,
+          fgToken: row.fg,
+          bgValue: label(rawBg),
+          fgValue: label(rawFg),
+          swatchStyle: { background: hex(bg), color: hex(fg) },
+          contrast: r.toFixed(2) + ':1',
+          verdict: r >= 4.5 ? 'AA' : (r >= 3 ? 'AA Large' : 'FAIL'),
+          verdictClass: r >= 4.5 ? 'pk-token-verdict is-pass' : 'pk-token-verdict is-fail',
+        };
+      }),
+    }));
+    probe.remove();
+    return specs;
+  }
+
+  copyValue(value) {
+    const done = () => {
+      this.setState({ copiedValue: value });
+      window.setTimeout(() => {
+        if (this.state.copiedValue === value) this.setState({ copiedValue: '' });
+      }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(value).then(done, done);
+    } else {
+      done();
+    }
   }
 
   NAV = [
@@ -3944,6 +4107,23 @@ class Component extends DCLogic {
       color: id === modalDemo ? 'var(--parkie-brand-text)' : 'var(--parkie-text-secondary)',
     });
 
+    /* Values come from resolveButtonSpecs() (runtime CSS read); this layer only
+       adds the copy handlers and the copied flag. */
+    const buttonTokenGroups = (this.state.buttonSpecs || []).map((group) => ({
+      variant: group.variant,
+      rows: group.rows.map((row) => Object.assign({}, row, {
+        bgOnClick: () => this.copyValue(row.bgValue),
+        fgOnClick: () => this.copyValue(row.fgValue),
+        bgAria: L(row.bgValue + ' 복사', 'Copy ' + row.bgValue),
+        fgAria: L(row.fgValue + ' 복사', 'Copy ' + row.fgValue),
+        bgCopied: this.state.copiedValue === row.bgValue,
+        fgCopied: this.state.copiedValue === row.fgValue,
+      })),
+    }));
+    const copiedNotice = this.state.copiedValue
+      ? L(this.state.copiedValue + ' 복사됨', this.state.copiedValue + ' copied')
+      : '';
+
     return {
       rootRef: this.rootRef,
       theme, lang, tabsDemo,
@@ -3967,6 +4147,9 @@ class Component extends DCLogic {
       navSources,
       tabDemoItems,
       activeTabLabel,
+      buttonTokenGroups,
+      copiedNotice,
+      hasButtonTokens: buttonTokenGroups.length > 0,
       documentationGuide,
       showDocumentationGuide,
       documentationGuideTitle: L('운영·구현 계약', 'Usage & implementation contract'),

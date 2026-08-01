@@ -1,10 +1,10 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css?v=0.4";
-@import "./components/controls.css?v=0.3";
+@import "./tokens/parkie-tokens.css?v=0.5";
+@import "./components/controls.css?v=0.4";
 @import "./components/robot-status.css?v=0.3";
 @import "./components/operations.css?v=0.3";
-@import "./components/iconography.css?v=0.4";
+@import "./components/iconography.css?v=0.5";
 @import "./components/media-emergency.css?v=0.1";
 @import "./components/system-summary.css?v=0.2";
 @import "./components/documentation.css?v=0.1";
