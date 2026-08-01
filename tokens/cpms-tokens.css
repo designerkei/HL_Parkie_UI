@@ -19,7 +19,6 @@
   /* Typography — normalized product scale for dense bilingual work. */
   --cpms-font-sans: "Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
   --cpms-font-mono: "Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
-  --cpms-font-2xs: 11px;
   --cpms-font-xs: 12px;
   --cpms-font-sm: 13px;
   --cpms-font-base: 14px;

@@ -194,7 +194,9 @@
   /* Accessible production ink: white on the three bright cyan references is
      only 1.77–2.40:1. */
   --goalie-brand-on: var(--goalie-color-neutral-900);
-  --goalie-brand-text: var(--goalie-ref-cyan-600);
+  /* Text accent is intentionally darker than the graphical accent. Cyan 600
+     clears non-text/UI contrast but not 13–16px text on the light canvas. */
+  --goalie-brand-text: var(--goalie-color-brand-800);
   --goalie-brand-subtle: var(--goalie-color-brand-50);
   --goalie-brand-subtle-hover: var(--goalie-color-brand-100);
   --goalie-brand-border: var(--goalie-ref-cyan-500);
@@ -221,6 +223,7 @@
   --goalie-danger: var(--goalie-color-red-600);
   --goalie-danger-hover: var(--goalie-color-red-700);
   --goalie-danger-on: var(--goalie-color-neutral-900);
+  --goalie-danger-text: #B42318;
   --goalie-danger-subtle: var(--goalie-color-red-50);
   --goalie-info: var(--goalie-ref-cyan-500);
   --goalie-info-on: var(--goalie-color-neutral-900);

@@ -423,12 +423,32 @@ test('Parkie documentation never falls below the 12px RMS caption floor', async 
       .filter((name) => name.endsWith('.css'))
       .map((name) => path.join(process.cwd(), 'components', name)),
   ];
+  /* Resolve token references before judging. --cpms-font-2xs was declared at
+     11px and consumed as font-size: var(--cpms-font-2xs), which this gate could
+     not see while it matched literal pixel values only — a sub-floor size hiding
+     behind a token name. */
+  const sizeTokens = new Map();
+  for (const tokenFile of fs.readdirSync(path.join(process.cwd(), 'tokens')).filter((n) => n.endsWith('.css'))) {
+    const source = fs.readFileSync(path.join(process.cwd(), 'tokens', tokenFile), 'utf8');
+    for (const match of source.matchAll(/(--[a-z0-9-]*font-[a-z0-9-]+):\s*(\d+)px;/g)) {
+      sizeTokens.set(match[1], Number(match[2]));
+    }
+  }
+  const belowFloor = [...sizeTokens].filter(([, px]) => px < 12);
+
   const defects = [];
   for (const file of files) {
     const source = fs.readFileSync(file, 'utf8');
     const matches = source.match(/font-size:\s*(?:8|9|10|11)px/g) || [];
     if (matches.length) defects.push({ file: path.relative(process.cwd(), file), matches });
+    for (const [token, px] of belowFloor) {
+      if (source.includes(`font-size: var(${token})`)) {
+        defects.push({ file: path.relative(process.cwd(), file), matches: [`font-size: var(${token}) = ${px}px`] });
+      }
+    }
   }
+  expect(belowFloor.map(([token, px]) => `${token} = ${px}px`),
+    'no type token may declare a size below the 12px floor').toEqual([]);
   expect(defects).toEqual([]);
 });
 

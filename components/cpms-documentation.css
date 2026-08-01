@@ -229,7 +229,7 @@
   align-self: center;
   color: var(--cpms-brand-accent-strong);
   font-family: var(--cpms-font-mono);
-  font-size: var(--cpms-font-2xs);
+  font-size: var(--cpms-font-xs);
   font-weight: var(--cpms-weight-bold);
 }
 
@@ -951,4 +951,27 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "display" "card" "stacks";
   }
+}
+
+/* Role first, token second: the role says where a step belongs, which is what
+   a reader is looking for. */
+.cpms-type-list__id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cpms-type-list__id strong { color: var(--cpms-text-strong); font-size: var(--cpms-font-sm); font-weight: 600; }
+.cpms-type-list__id code { color: var(--cpms-brand-accent-strong); font-size: var(--cpms-font-xs); }
+
+.cpms-face__stacks dt { display: flex; flex-direction: column; gap: 2px; }
+.cpms-face__stacks dt strong { color: var(--cpms-text-strong); font-size: var(--cpms-font-md); font-weight: 600; }
+.cpms-face__stacks dt span { color: var(--cpms-text-tertiary); font-size: var(--cpms-font-xs); }
+
+/* The fallback chain is real information but not the answer to "what font is
+   this", so it is available on demand rather than competing with the name. */
+.cpms-face__fallback { margin-top: 3px; }
+.cpms-face__fallback summary {
+  color: var(--cpms-text-tertiary);
+  font-size: var(--cpms-font-xs);
+  cursor: pointer;
+}
+.cpms-face__fallback summary:focus-visible {
+  outline: 2px solid var(--cpms-focus-color);
+  outline-offset: 2px;
 }

@@ -729,11 +729,16 @@ test('skeleton copy is fully translated in English', async ({ page }) => {
 /* Page ids collide across products by design, so "this id belongs to that
    product" is worth asserting rather than assuming. */
 test('search stays inside the active product across all three', async ({ page }) => {
+  /* Probe with a nav id only one product declares, not a domain word. '로봇'
+     looked Parkie-specific until Goalie — also a robot product — gained authored
+     pages, at which point the term stopped separating them and the assertion was
+     testing a coincidence rather than isolation. */
   const cases = [
-    { system: 'parkie', term: '로봇', present: true },
-    { system: 'goalie', term: '로봇', present: false },
-    { system: 'cpms', term: '로봇', present: false },
-    { system: 'cpms', term: '색상', present: true },
+    { system: 'parkie', term: 'robotcard', present: true },
+    { system: 'goalie', term: 'robotcard', present: false },
+    { system: 'cpms', term: 'robotcard', present: false },
+    { system: 'cpms', term: 'governance', present: true },
+    { system: 'parkie', term: 'governance', present: false },
   ];
 
   for (const { system, term, present } of cases) {

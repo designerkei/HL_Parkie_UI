@@ -199,9 +199,21 @@
               <span>{{ faceDigits }}</span>
             </div>
           </div>
+          <!-- Two faces, named plainly. The CSS stack behind each is a fallback
+               chain, not a second typeface, and printing it inline read as six
+               fonts in use. It stays available but subordinate. -->
           <dl class="cpms-face__stacks">
             <sc-for list="{{ faceStacks }}" as="stack" hint-placeholder-count="2">
-              <div><dt>{{ stack.role }}</dt><dd><code data-font-token>{{ stack.token }}</code><span data-font-stack>{{ stack.value }}</span></dd></div>
+              <div>
+                <dt><strong data-face-name>{{ stack.face }}</strong><span>{{ stack.role }}</span></dt>
+                <dd>
+                  <code data-font-token>{{ stack.token }}</code>
+                  <details class="cpms-face__fallback">
+                    <summary>{{ stack.fallbackLabel }}</summary>
+                    <span data-font-stack>{{ stack.value }}</span>
+                  </details>
+                </dd>
+              </div>
             </sc-for>
           </dl>
         </div>
@@ -213,7 +225,7 @@
         </header>
         <div class="cpms-type-list">
           <sc-for list="{{ typeRows }}" as="type" hint-placeholder-count="7">
-            <article><code>{{ type.token }}</code><div class="cpms-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span data-type-meta>{{ type.meta }}</span><p>{{ type.use }}</p></article>
+            <article><div class="cpms-type-list__id"><strong data-type-role>{{ type.role }}</strong><code>{{ type.token }}</code></div><div class="cpms-type-list__sample" style="{{ type.style }}">{{ type.sample }}</div><span data-type-meta>{{ type.meta }}</span><p>{{ type.use }}</p></article>
           </sc-for>
         </div>
       </section>
@@ -391,7 +403,13 @@ class Component extends DCLogic {
        spacing together, because a size alone does not tell you how the text
        will sit. The line height is bound to a real leading token: this used to
        render every sample at 1.35, a value the token set does not contain. */
-    const typeRow = (token, size, weight, leading, tracking, sampleKo, sampleEn, useKo, useEn) => ({
+    /* Every major system names steps by role rather than by size: Material has
+       Title/Body/Label, Apple has Headline/Body/Caption. A size name says how
+       big, a role name says where to use it. The token names stay as they are —
+       renaming them would ripple through every consumer — so the role rides
+       alongside. */
+    const typeRow = (role, token, size, weight, leading, tracking, sampleKo, sampleEn, useKo, useEn) => ({
+      role,
       token,
       sample: L(sampleKo, sampleEn),
       meta: `${size}px · ${weight} · ${leading} · ${tracking === 0 ? '0' : tracking + 'em'}`,
@@ -479,13 +497,13 @@ class Component extends DCLogic {
     ];
 
     const typeRows = [
-      typeRow('--cpms-font-2xl', 28, 600, 1.25, -0.02, '프로젝트 현황', 'Project status', '페이지 제목. 화면당 1개.', 'Page title, once per screen.'),
-      typeRow('--cpms-font-xl', 22, 600, 1.25, -0.02, '작업 일정', 'Work schedule', '주요 섹션 제목.', 'Primary section heading.'),
-      typeRow('--cpms-font-lg', 18, 600, 1.4, 0, '주간 진행률', 'Weekly progress', '카드·패널 제목.', 'Card and panel heading.'),
-      typeRow('--cpms-font-md', 16, 500, 1.4, 0, '현장 운영 요약', 'Site operation summary', '강조 본문·대화상자 설명.', 'Emphasized body and dialog description.'),
-      typeRow('--cpms-font-base', 14, 400, 1.55, 0, '예정 일정과 실적을 확인하세요.', 'Review planned and actual dates.', '기본 본문·표·입력.', 'Default body, table and input.'),
-      typeRow('--cpms-font-sm', 13, 500, 1.55, 0, '저장됨 · 2분 전', 'Saved · 2 min ago', '보조 정보·상태.', 'Supporting metadata and state.'),
-      typeRow('--cpms-font-xs', 12, 500, 1.4, 0, 'RBT-2026-014 · 72%', 'RBT-2026-014 · 72%', '코드·칩·밀도 높은 메타.', 'Code, chip and dense metadata.'),
+      typeRow('Title L', '--cpms-font-2xl', 28, 600, 1.25, -0.02, '프로젝트 현황', 'Project status', '페이지 제목. 화면당 1개.', 'Page title, once per screen.'),
+      typeRow('Title M', '--cpms-font-xl', 22, 600, 1.25, -0.02, '작업 일정', 'Work schedule', '주요 섹션 제목.', 'Primary section heading.'),
+      typeRow('Title S', '--cpms-font-lg', 18, 600, 1.4, 0, '주간 진행률', 'Weekly progress', '카드·패널 제목.', 'Card and panel heading.'),
+      typeRow('Body L', '--cpms-font-md', 16, 500, 1.4, 0, '현장 운영 요약', 'Site operation summary', '강조 본문·대화상자 설명.', 'Emphasized body and dialog description.'),
+      typeRow('Body M', '--cpms-font-base', 14, 400, 1.55, 0, '예정 일정과 실적을 확인하세요.', 'Review planned and actual dates.', '기본 본문·표·입력.', 'Default body, table and input.'),
+      typeRow('Label', '--cpms-font-sm', 13, 500, 1.55, 0, '저장됨 · 2분 전', 'Saved · 2 min ago', '보조 정보·상태.', 'Supporting metadata and state.'),
+      typeRow('Caption', '--cpms-font-xs', 12, 500, 1.4, 0, 'RBT-2026-014 · 72%', 'RBT-2026-014 · 72%', '코드·칩·밀도 높은 메타.', 'Code, chip and dense metadata.'),
     ];
 
     /* The stack strings are transcribed from tokens/cpms-tokens.css. A test
@@ -499,9 +517,11 @@ class Component extends DCLogic {
     ].map((w) => ({ label: w.label, style: { fontWeight: w.weight } }));
 
     const faceStacks = [
-      { role: L('본문·UI', 'Body and UI'), token: '--cpms-font-sans',
+      { face: 'Pretendard', role: L('본문·UI', 'Body and UI'), token: '--cpms-font-sans',
+        fallbackLabel: L('대체 순서 5종', '5 fallbacks'),
         value: '"Pretendard", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif' },
-      { role: L('코드·수치', 'Code and figures'), token: '--cpms-font-mono',
+      { face: 'Roboto Mono', role: L('코드·수치', 'Code and figures'), token: '--cpms-font-mono',
+        fallbackLabel: L('대체 순서 4종', '4 fallbacks'),
         value: '"Roboto Mono", "SFMono-Regular", Consolas, ui-monospace, monospace' },
     ];
 

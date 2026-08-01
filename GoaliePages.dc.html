@@ -98,7 +98,7 @@
       </section>
       <section class="gl-section" aria-labelledby="gl-contrast-title">
         <header class="gl-section__head"><div><span>03 · CONTRAST GATE</span><h2 id="gl-contrast-title">{{ contrastTitle }}</h2></div><p>{{ contrastBody }}</p></header>
-        <div class="gl-contrast-grid"><sc-for list="{{ contrastPairs }}" as="pair" hint-placeholder-count="5"><article><div style="{{ pair.style }}">Aa</div><strong>{{ pair.value }}</strong><span class="{{ pair.resultClass }}">{{ pair.result }}</span><p>{{ pair.rule }}</p></article></sc-for></div>
+        <div class="gl-contrast-grid"><sc-for list="{{ contrastPairs }}" as="pair" hint-placeholder-count="5"><article><div style="{{ pair.style }}" aria-hidden="true">Aa</div><strong>{{ pair.name }}</strong><code>{{ pair.value }}</code><span class="{{ pair.resultClass }}">{{ pair.result }}</span><p>{{ pair.rule }}</p></article></sc-for></div>
       </section>
     </sc-if>
 
@@ -124,6 +124,149 @@
       <section class="gl-section" aria-labelledby="gl-elevation-title">
         <header class="gl-section__head"><div><span>03 · ELEVATION</span><h2 id="gl-elevation-title">{{ elevationTitle }}</h2></div><p>{{ elevationBody }}</p></header>
         <div class="gl-elevation-grid"><sc-for list="{{ elevationRows }}" as="level" hint-placeholder-count="3"><article style="{{ level.style }}"><strong>{{ level.name }}</strong><code>{{ level.token }}</code><p>{{ level.use }}</p></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- DOMAIN SIGNALS / ICONOGRAPHY ============================== -->
+    <sc-if value="{{ isIconography }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-robot-panel-title">
+        <header class="gl-section__head"><div><span>01 · ROBOT INFORMATION</span><h2 id="gl-robot-panel-title">{{ robotPanelTitle }}</h2></div><p>{{ robotPanelBody }}</p></header>
+        <div class="gl-component-note">
+          <strong>{{ robotPanelA11yTitle }}</strong><p>{{ robotPanelA11yBody }}</p><code>351:2119</code>
+        </div>
+        <div class="gl-domain-stage">
+          <article class="gl-robot-panel" aria-labelledby="gl-robot-name">
+            <header class="gl-robot-panel__header">
+              <strong id="gl-robot-name">GOALIE</strong>
+              <button class="gl-switch" type="button" role="switch" aria-checked="{{ manualChecked }}" aria-label="{{ switchAriaLabel }}" onClick="{{ toggleDriveMode }}"><span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span><span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-manual.svg" alt=""></span></button>
+              <span class="gl-robot-speed">4km/h</span><img class="gl-signal-bars" src="./assets/goalie/signal-bars.png" alt=""><button class="gl-battery-indicator" type="button" aria-label="{{ fullBatteryLabel }}"><span>100%</span><img src="./assets/goalie/battery-100.svg" alt=""></button>
+            </header>
+            <img class="gl-robot-panel__divider" src="./assets/goalie/robot-divider.svg" alt="">
+            <div class="gl-mission-list" tabindex="0" aria-label="{{ missionListLabel }}">
+              <div class="gl-mission-list__head" aria-hidden="true"><span>{{ statusColumn }}</span><span>{{ courseColumn }}</span></div>
+              <sc-for list="{{ robotMissions }}" as="mission" hint-placeholder-count="3"><div class="{{ mission.className }}"><img src="{{ mission.dot }}" alt=""><span>{{ mission.status }}</span><strong>{{ mission.course }}</strong></div></sc-for>
+            </div>
+            <footer class="gl-robot-panel__actions">
+              <button class="gl-button gl-button--small gl-button--outlined" type="button"><img class="gl-button__icon" src="./assets/goalie/icon-return.svg" alt=""><span>{{ returnLabel }}</span></button>
+              <button class="gl-button gl-button--small gl-button--outlined gl-robot-panel__pause" type="button"><img class="gl-button__icon" src="./assets/goalie/icon-pause.svg" alt=""><span>{{ pauseLabel }}</span></button>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-battery-title">
+        <header class="gl-section__head"><div><span>02 · BATTERY</span><h2 id="gl-battery-title">{{ batteryTitle }}</h2></div><p>{{ batteryBody }}</p></header>
+        <div class="gl-battery-gallery">
+          <sc-for list="{{ batteryStates }}" as="battery" hint-placeholder-count="5"><article><span>{{ battery.label }}</span><button class="gl-battery-indicator" type="button" data-battery="{{ battery.state }}" aria-label="{{ battery.ariaLabel }}"><span>{{ battery.value }}</span><img src="{{ battery.src }}" alt=""></button><code>{{ battery.token }}</code></article></sc-for>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-map-marker-title">
+        <header class="gl-section__head"><div><span>03 · MAP MARKER</span><h2 id="gl-map-marker-title">{{ markerTitle }}</h2></div><p>{{ markerBody }}</p></header>
+        <div class="gl-marker-gallery"><sc-for list="{{ markerStates }}" as="marker" hint-placeholder-count="4"><article><img src="{{ marker.src }}" alt=""><strong>{{ marker.label }}</strong><code>{{ marker.state }}</code></article></sc-for></div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-audio-safety-title">
+        <header class="gl-section__head"><div><span>04 · AUDIO &amp; SAFETY</span><h2 id="gl-audio-safety-title">{{ audioSafetyTitle }}</h2></div><p>{{ audioSafetyBody }}</p></header>
+        <div class="gl-audio-safety-layout">
+          <div class="gl-audio-gallery">
+            <button class="gl-audio-control" type="button" aria-pressed="{{ audioActive }}" data-audio="{{ audioState }}" onClick="{{ toggleAudio }}"><img src="{{ audioIcon }}" alt=""><span>{{ microphoneLabel }}</span></button>
+            <p role="status">{{ audioStatusText }}</p>
+            <div class="gl-audio-static-states"><sc-for list="{{ audioStates }}" as="audio" hint-placeholder-count="3"><span class="{{ audio.className }}"><img src="{{ audio.src }}" alt="">{{ audio.label }}</span></sc-for></div>
+          </div>
+          <div class="gl-emergency-gallery">
+            <button class="gl-emergency-control" type="button" aria-describedby="gl-emergency-contract"><img src="./assets/goalie/emergency-icon.png" alt=""><span>{{ emergencyLabel }}</span></button>
+            <p id="gl-emergency-contract">{{ emergencyContract }}</p>
+            <div class="gl-emergency-reference" role="group" aria-label="{{ emergencyReferenceLabel }}"><img src="./assets/goalie/emergency-default.png" alt=""><img src="./assets/goalie/emergency-hover.png" alt=""></div>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- INPUTS / PATROL PRIMITIVES ================================ -->
+    <sc-if value="{{ isInput }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-select-title">
+        <header class="gl-section__head"><div><span>01 · SELECT &amp; SEGMENTED CONTROL</span><h2 id="gl-select-title">{{ inputSelectTitle }}</h2></div><p>{{ inputSelectBody }}</p></header>
+        <div class="gl-input-demo-grid">
+          <article class="gl-field-demo">
+            <label id="gl-course-label">{{ courseSelectLabel }}</label>
+            <button class="gl-select-trigger" type="button" aria-labelledby="gl-course-label gl-course-value" aria-haspopup="listbox" aria-expanded="{{ courseOpen }}" aria-controls="gl-course-list" onClick="{{ toggleCourseList }}"><span id="gl-course-value">{{ selectedCourse }}</span><img src="{{ courseChevron }}" alt=""></button>
+            <sc-if value="{{ courseOpenBool }}" hint-placeholder-val="false"><div class="gl-select-popover" id="gl-course-list" role="listbox" aria-labelledby="gl-course-label"><sc-for list="{{ courseOptions }}" as="option" hint-placeholder-count="4"><button type="button" role="option" aria-selected="{{ option.selected }}" data-value="{{ option.value }}" onClick="{{ selectCourse }}">{{ option.label }}</button></sc-for></div></sc-if>
+          </article>
+          <article class="gl-field-demo">
+            <span id="gl-meridiem-label">{{ meridiemLabel }}</span>
+            <div class="gl-segmented" role="radiogroup" aria-labelledby="gl-meridiem-label"><button type="button" role="radio" aria-checked="{{ amChecked }}" data-meridiem="am" onClick="{{ selectMeridiem }}">{{ amLabel }}</button><button type="button" role="radio" aria-checked="{{ pmChecked }}" data-meridiem="pm" onClick="{{ selectMeridiem }}">{{ pmLabel }}</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-time-title">
+        <header class="gl-section__head"><div><span>02 · TIME &amp; DURATION</span><h2 id="gl-time-title">{{ timeTitle }}</h2></div><p>{{ timeBody }}</p></header>
+        <div class="gl-input-demo-grid">
+          <article class="gl-field-demo">
+            <label id="gl-time-label">{{ startTimeLabel }}</label>
+            <button class="gl-time-trigger" type="button" aria-labelledby="gl-time-label gl-time-value" aria-haspopup="listbox" aria-expanded="{{ timeOpen }}" aria-controls="gl-time-list" onClick="{{ toggleTimeList }}"><img src="./assets/goalie/time-clock.svg" alt=""><span id="gl-time-value">{{ selectedTime }}</span><img src="{{ timeChevron }}" alt=""></button>
+            <sc-if value="{{ timeOpenBool }}" hint-placeholder-val="false"><div class="gl-time-popover" id="gl-time-list" role="listbox" aria-labelledby="gl-time-label"><sc-for list="{{ timeOptions }}" as="option" hint-placeholder-count="4"><button type="button" role="option" aria-selected="{{ option.selected }}" data-value="{{ option.value }}" onClick="{{ selectTime }}">{{ option.label }}</button></sc-for></div></sc-if>
+          </article>
+          <article class="gl-field-demo">
+            <span id="gl-duration-label">{{ durationLabel }}</span>
+            <div class="gl-duration-stepper" role="group" aria-labelledby="gl-duration-label">
+              <div class="gl-number-stepper"><output aria-label="{{ durationMinuteLabel }}">{{ durationMinutes }}</output><span class="gl-number-stepper__actions"><button type="button" data-unit="minute" data-delta="1" aria-label="{{ minuteIncreaseLabel }}" onClick="{{ adjustDuration }}"><img src="./assets/goalie/spinner-up.svg" alt=""></button><button type="button" data-unit="minute" data-delta="-1" aria-label="{{ minuteDecreaseLabel }}" onClick="{{ adjustDuration }}"><img src="./assets/goalie/spinner-down.svg" alt=""></button></span></div><span>{{ minuteUnit }}</span>
+              <div class="gl-number-stepper"><output aria-label="{{ durationSecondLabel }}">{{ durationSeconds }}</output><span class="gl-number-stepper__actions"><button type="button" data-unit="second" data-delta="10" aria-label="{{ secondIncreaseLabel }}" onClick="{{ adjustDuration }}"><img src="./assets/goalie/spinner-up.svg" alt=""></button><button type="button" data-unit="second" data-delta="-10" aria-label="{{ secondDecreaseLabel }}" onClick="{{ adjustDuration }}"><img src="./assets/goalie/spinner-down.svg" alt=""></button></span></div><span>{{ secondUnit }}</span>
+            </div>
+            <p class="gl-field-hint">{{ durationHint }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-mission-card-title">
+        <header class="gl-section__head"><div><span>03 · MISSION CARD</span><h2 id="gl-mission-card-title">{{ missionCardTitle }}</h2></div><p>{{ missionCardBody }}</p></header>
+        <div class="gl-mission-card-gallery"><sc-for list="{{ missionCardStates }}" as="card" hint-placeholder-count="4"><article><span>{{ card.label }}</span><button class="{{ card.className }}" type="button" aria-pressed="{{ card.pressed }}"><strong>{{ card.number }}</strong><span><b>{{ voiceLabel }}</b><small>5{{ countUnit }}</small></span><span><b>{{ streamLabel }}</b><small>20{{ secondUnit }}</small></span></button><code>{{ card.state }}</code></article></sc-for></div>
+      </section>
+    </sc-if>
+
+    <!-- PATROL COURSE PATTERN ===================================== -->
+    <sc-if value="{{ isPatrol }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-patrol-pattern-title">
+        <header class="gl-section__head"><div><span>01 · CREATE / EDIT PATTERN</span><h2 id="gl-patrol-pattern-title">{{ patrolPatternTitle }}</h2></div><p>{{ patrolPatternBody }}</p></header>
+        <div class="gl-component-note"><strong>{{ patrolContractTitle }}</strong><p>{{ patrolContractBody }}</p><code>2226:13757 · 3874:44703</code></div>
+        <div class="gl-patrol-workspace" aria-label="{{ patrolWorkspaceLabel }}">
+          <aside class="gl-patrol-panel">
+            <section class="gl-course-list-card" aria-labelledby="gl-course-list-title"><h3 id="gl-course-list-title">{{ courseListTitle }}</h3><div class="gl-course-list-head" aria-hidden="true"><span>{{ courseColumn }}</span><span>{{ reservationTimeLabel }}</span></div><sc-for list="{{ patrolCourses }}" as="course" hint-placeholder-count="3"><button type="button" aria-pressed="{{ course.selected }}" data-course-id="{{ course.id }}" onClick="{{ selectPatrolCourse }}"><span>{{ course.name }}</span><time>{{ course.time }}</time></button></sc-for></section>
+            <section class="gl-patrol-editor" aria-labelledby="gl-patrol-editor-title"><h3 id="gl-patrol-editor-title">{{ patrolEditorTitle }}</h3><label>{{ courseSelectLabel }}<button class="gl-select-trigger" type="button"><span>{{ selectedPatrolCourse }}</span><img src="./assets/goalie/select-chevron-down.svg" alt=""></button></label><div class="gl-patrol-time-row"><span>{{ startTimeLabel }}</span><div class="gl-segmented" role="radiogroup" aria-label="{{ meridiemLabel }}"><button type="button" role="radio" aria-checked="false">{{ amLabel }}</button><button type="button" role="radio" aria-checked="true">{{ pmLabel }}</button></div><button class="gl-time-trigger" type="button"><img src="./assets/goalie/time-clock.svg" alt=""><span>09 : 00</span><img src="./assets/goalie/time-chevron-down.svg" alt=""></button></div><span class="gl-patrol-mission-label">{{ savedMissionLabel }}</span><div class="gl-patrol-missions" tabindex="0" aria-label="{{ savedMissionLabel }}"><sc-for list="{{ patrolMissions }}" as="mission" hint-placeholder-count="4"><button class="gl-mission-card" type="button"><strong>{{ mission.number }}</strong><span><b>{{ voiceLabel }}</b><small>5{{ countUnit }}</small></span><span><b>{{ streamLabel }}</b><small>{{ mission.seconds }}{{ secondUnit }}</small></span></button></sc-for></div><footer><button class="gl-button gl-button--medium gl-button--outlined" type="button">{{ deleteLabel }}</button><button class="gl-button gl-button--medium gl-button--primary gl-button--contained" type="button">{{ saveLabel }}</button></footer></section>
+          </aside>
+          <figure class="gl-patrol-map"><img src="./assets/goalie/patrol-map-routes.png" alt="{{ patrolMapAlt }}"><figcaption><span>{{ patrolRouteLabel }}<img src="./assets/goalie/patrol-route-line.svg" alt=""></span><span>{{ alternateRouteLabel }}<img src="./assets/goalie/patrol-alternate-line.svg" alt=""></span></figcaption></figure>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- VIDEO MANAGEMENT PATTERN ================================== -->
+    <sc-if value="{{ isVideo }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-video-pattern-title">
+        <header class="gl-section__head"><div><span>01 · QUERY / TREE / PLAYBACK</span><h2 id="gl-video-pattern-title">{{ videoPatternTitle }}</h2></div><p>{{ videoPatternBody }}</p></header>
+        <div class="gl-video-workspace" aria-label="{{ videoWorkspaceLabel }}">
+          <aside class="gl-video-query">
+            <h3>{{ videoQueryTitle }}</h3>
+            <label>{{ startDateLabel }}<button type="button"><span>2024-05-22</span><img src="./assets/goalie/video-calendar.svg" alt=""></button></label>
+            <label>{{ endDateLabel }}<button type="button"><span>2024-05-31</span><img src="./assets/goalie/video-calendar.svg" alt=""></button></label>
+            <button class="gl-button gl-button--medium gl-button--primary gl-button--outlined gl-video-search" type="button">{{ searchLabel }}</button>
+            <div class="gl-video-tree" role="tree" aria-label="{{ videoTreeLabel }}"><button role="treeitem" aria-expanded="true" aria-level="1">▾ <strong>2024-05-23</strong></button><div role="group"><button role="treeitem" aria-expanded="true" aria-level="2">▾ <strong>{{ cameraOneLabel }}</strong></button><sc-for list="{{ videoFiles }}" as="file" hint-placeholder-count="4"><button role="treeitem" aria-level="3" aria-selected="{{ file.selected }}" data-file="{{ file.name }}" onClick="{{ selectVideoFile }}">{{ file.name }}</button></sc-for><button role="treeitem" aria-expanded="false" aria-level="2">› {{ cameraTwoLabel }}</button><button role="treeitem" aria-expanded="false" aria-level="2">› {{ cameraThreeLabel }}</button><button role="treeitem" aria-expanded="false" aria-level="2">› {{ cameraFourLabel }}</button><button role="treeitem" aria-expanded="false" aria-level="2">› {{ thermalCameraLabel }}</button></div><button role="treeitem" aria-expanded="false" aria-level="1">› <strong>2024-05-24</strong></button></div>
+            <button class="gl-button gl-button--medium gl-button--primary gl-button--contained gl-video-export" type="button">{{ exportLabel }}</button>
+          </aside>
+          <article class="gl-video-player" aria-labelledby="gl-video-filename"><h3 id="gl-video-filename">{{ selectedVideoFile }}</h3><img class="gl-video-player__media" src="./assets/goalie/video-park.jpg" alt="{{ videoFrameAlt }}"><div class="gl-video-controls"><div class="gl-video-timeline"><time>00:15:06</time><img src="./assets/goalie/video-timeline.svg" alt=""><time>00:22:08</time></div><div class="gl-video-transport"><button type="button" aria-label="{{ previousLabel }}">◀</button><button class="gl-video-play" type="button" aria-label="{{ playLabel }}">▶</button><button type="button" aria-label="{{ nextLabel }}">▶</button></div><div class="gl-video-control-meta"><span>◷ 12:59:16</span><span>{{ defaultPlaybackLabel }}⌃</span></div></div></article>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- OPERATIONAL TEMPLATES ===================================== -->
+    <sc-if value="{{ isTemplates }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-template-title">
+        <header class="gl-section__head"><div><span>01 · OPERATION STATE COMPOSITION</span><h2 id="gl-template-title">{{ templateTitle }}</h2></div><p>{{ templateBody }}</p></header>
+        <div class="gl-template-mode-picker" role="radiogroup" aria-label="{{ templateModeLabel }}"><sc-for list="{{ templateModes }}" as="mode" hint-placeholder-count="4"><button type="button" role="radio" aria-checked="{{ mode.checked }}" data-template-mode="{{ mode.value }}" onClick="{{ selectTemplateMode }}">{{ mode.label }}</button></sc-for></div>
+        <div class="gl-ops-template" data-mode="{{ templateMode }}" aria-label="{{ currentTemplateLabel }}">
+          <aside class="gl-ops-side-panel"><header><button class="gl-switch" type="button" role="switch" aria-checked="true"><span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span><span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-manual.svg" alt=""></span></button><span>4km/h</span><img src="./assets/goalie/signal-bars.png" alt=""><span>100%</span><img src="./assets/goalie/battery-100.svg" alt=""></header><div class="gl-ops-state-card"><strong>{{ currentRobotLabel }}</strong><em>{{ currentModeLabel }}</em><sc-if value="{{ templateHome }}" hint-placeholder-val="true"><p>{{ unregisteredRobotText }}</p></sc-if><sc-if value="{{ templatePaused }}" hint-placeholder-val="false"><p>{{ pausedText }}</p><button class="gl-button gl-button--medium gl-button--danger gl-button--contained" type="button">{{ releaseEmergencyLabel }}</button></sc-if><sc-if value="{{ templateSpeaking }}" hint-placeholder-val="false"><img class="gl-ops-mic" src="./assets/goalie/microphone-on-cyan.svg" alt=""><p>{{ speakingText }}</p><button class="gl-button gl-button--medium gl-button--primary gl-button--contained" type="button">{{ stopSpeakingLabel }}</button></sc-if><sc-if value="{{ templateEmergency }}" hint-placeholder-val="false"><img class="gl-ops-emergency" src="./assets/goalie/emergency-icon.png" alt=""><p>{{ emergencyTemplateText }}</p><button class="gl-button gl-button--medium gl-button--danger gl-button--contained" type="button">{{ releaseEmergencyLabel }}</button></sc-if></div><figure class="gl-ops-map"><img src="./assets/goalie/map-campus.jpg" alt="{{ campusMapAlt }}"><img class="gl-ops-map__marker" src="{{ templateMarker }}" alt=""></figure></aside>
+          <div class="gl-camera-composition"><figure class="gl-camera-main"><img src="./assets/goalie/camera-front.jpg" alt="{{ frontCameraAlt }}"><figcaption>● {{ frontLabel }}</figcaption></figure><figure><img src="./assets/goalie/camera-left.jpg" alt="{{ leftCameraAlt }}"><figcaption>● {{ leftLabel }}</figcaption></figure><figure><img src="./assets/goalie/camera-rear.jpg" alt="{{ rearCameraAlt }}"><figcaption>● {{ rearLabel }}</figcaption></figure><figure><img src="./assets/goalie/camera-right.jpg" alt="{{ rightCameraAlt }}"><figcaption>● {{ rightLabel }}</figcaption></figure></div>
+        </div>
       </section>
     </sc-if>
 
@@ -172,11 +315,11 @@
           <article>
             <span>{{ disabledLabel }}</span>
             <div class="gl-switch-pair">
-              <button class="gl-switch" type="button" role="switch" aria-checked="true" aria-label="{{ manualDisabledAria }}" disabled>
+              <button class="gl-switch" type="button" role="switch" aria-checked="true" aria-disabled="true" aria-label="{{ manualDisabledAria }}" tabindex="-1">
                 <span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span>
                 <span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-manual-disabled.svg" alt=""></span>
               </button>
-              <button class="gl-switch" type="button" role="switch" aria-checked="false" aria-label="{{ automaticDisabledAria }}" disabled>
+              <button class="gl-switch" type="button" role="switch" aria-checked="false" aria-disabled="true" aria-label="{{ automaticDisabledAria }}" tabindex="-1">
                 <span class="gl-switch__label gl-switch__label--manual">{{ manualLabel }}</span><span class="gl-switch__label gl-switch__label--auto">{{ automaticLabel }}</span>
                 <span class="gl-switch__knob" aria-hidden="true"><img src="./assets/goalie/switch-knob-auto-disabled.svg" alt=""></span>
               </button>
@@ -208,7 +351,7 @@
               <div class="gl-alert-history" id="gl-alert-history-info">
                 <div class="gl-alert-history__header"><strong>{{ historyTitle }}</strong><button class="gl-alert-close" type="button" aria-label="{{ historyCloseLabel }}" onClick="{{ toggleAlertHistory }}"><img src="./assets/goalie/alert-close-light-a.svg" alt=""><img src="./assets/goalie/alert-close-light-b.svg" alt=""></button></div>
                 <img class="gl-alert-history__divider" src="./assets/goalie/alert-divider.svg" alt="">
-                <div class="gl-alert-history__list"><sc-for list="{{ alertHistory }}" as="item" hint-placeholder-count="3"><div class="gl-alert-history__row"><strong>{{ item.message }}</strong><time datetime="{{ item.datetime }}">{{ item.time }}</time></div></sc-for></div>
+                <div class="gl-alert-history__list" tabindex="0" aria-label="{{ historyListLabel }}"><sc-for list="{{ alertHistory }}" as="item" hint-placeholder-count="3"><div class="gl-alert-history__row"><strong>{{ item.message }}</strong><time datetime="{{ item.datetime }}">{{ item.time }}</time></div></sc-for></div>
               </div>
             </sc-if>
           </div>
@@ -244,6 +387,85 @@
         <div class="gl-scrollbar-gallery"><sc-for list="{{ scrollbarStates }}" as="scroll" hint-placeholder-count="3"><article><span>{{ scroll.label }}</span><div class="{{ scroll.className }}" aria-hidden="true"><span></span></div><code>{{ scroll.value }}</code></article></sc-for></div>
       </section>
     </sc-if>
+
+    <!-- STRUCTURE / NAVIGATION ==================================== -->
+    <sc-if value="{{ isNavigation }}" hint-placeholder-val="false">
+      <section class="gl-section gl-section--first" aria-labelledby="gl-shell-title">
+        <header class="gl-section__head"><div><span>01 · APP SHELL</span><h2 id="gl-shell-title">{{ shellTitle }}</h2></div><p>{{ shellBody }}</p></header>
+        <div class="gl-component-note">
+          <strong>{{ shellA11yTitle }}</strong>
+          <p>{{ shellA11yBody }}</p>
+          <code>230:4018 · 230:3631</code>
+        </div>
+        <div class="gl-shell-specimen" aria-label="{{ shellDemoLabel }}">
+          <header class="gl-app-header">
+            <img class="gl-app-header__logo" src="./assets/goalie/header-logo.png" alt="HL Mando">
+            <div class="gl-app-header__meta"><time datetime="2024-08-13">2024-08-13</time><time datetime="2024-08-13T21:48:00">{{ headerTime }}</time></div>
+            <div class="gl-window-controls" aria-label="{{ windowControlLabel }}">
+              <button type="button" aria-label="{{ minimizeLabel }}"><img src="./assets/goalie/header-minimize.svg" alt=""></button>
+              <button type="button" aria-label="{{ maximizeLabel }}"><img src="./assets/goalie/header-maximize.svg" alt=""></button>
+              <button type="button" aria-label="{{ closeLabel }}"><span><img src="./assets/goalie/header-close-a.svg" alt=""><img src="./assets/goalie/header-close-b.svg" alt=""></span></button>
+            </div>
+          </header>
+          <div class="gl-shell-specimen__body">
+            <nav class="gl-side-nav" aria-label="{{ primaryNavLabel }}">
+              <div class="gl-side-nav__main">
+                <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="4">
+                  <button class="gl-side-nav__item" type="button" data-section="{{ nav.value }}" aria-current="{{ nav.current }}" onClick="{{ selectNavSection }}">
+                    <span class="gl-side-nav__indicator" aria-hidden="true"></span><img src="{{ nav.icon }}" alt=""><span>{{ nav.label }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div class="gl-side-nav__footer">
+                <img class="gl-side-nav__divider" src="./assets/goalie/nav-divider.svg" alt="">
+                <button class="gl-side-nav__item" type="button" data-section="settings" aria-current="{{ settingsCurrent }}" onClick="{{ selectNavSection }}"><span class="gl-side-nav__indicator" aria-hidden="true"></span><img src="./assets/goalie/nav-settings.svg" alt=""><span>{{ settingsLabel }}</span></button>
+              </div>
+            </nav>
+            <div class="gl-shell-stage" role="region" aria-label="{{ shellStageLabel }}" tabindex="-1">
+              <span>{{ currentNavLabel }}</span><strong>{{ shellStageTitle }}</strong><p>{{ shellStageBody }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-toolbar-title">
+        <header class="gl-section__head"><div><span>02 · QUICK TOOLBAR</span><h2 id="gl-toolbar-title">{{ toolbarTitle }}</h2></div><p>{{ toolbarBody }}</p></header>
+        <div class="gl-toolbar-doc-layout">
+          <div class="gl-toolbar-stage">
+            <div class="gl-quick-toolbar-wrap" data-collapsed="{{ toolbarCollapsed }}">
+              <sc-if value="{{ toolbarVisible }}" hint-placeholder-val="true">
+                <div class="gl-camera-layout-picker" id="gl-camera-layout-picker" role="radiogroup" aria-label="{{ cameraLayoutLabel }}" data-open="{{ layoutPickerOpen }}">
+                  <sc-for list="{{ cameraLayouts }}" as="layout" hint-placeholder-count="4">
+                    <button class="gl-layout-option" type="button" role="radio" aria-checked="{{ layout.checked }}" data-layout="{{ layout.value }}" aria-label="{{ layout.ariaLabel }}" onClick="{{ selectCameraLayout }}">
+                      <img class="gl-layout-option__default" src="{{ layout.defaultSrc }}" alt=""><img class="gl-layout-option__hover" src="{{ layout.hoverSrc }}" alt=""><img class="gl-layout-option__selected" src="{{ layout.selectedSrc }}" alt="">
+                    </button>
+                  </sc-for>
+                </div>
+                <div class="gl-quick-toolbar" aria-label="{{ quickToolsLabel }}">
+                  <button class="gl-quick-tool" type="button" aria-expanded="{{ layoutPickerOpen }}" aria-controls="gl-camera-layout-picker" data-active="{{ layoutPickerOpen }}" onClick="{{ toggleLayoutPicker }}"><img class="gl-quick-tool__layout-default" src="./assets/goalie/toolbar-layout.png" alt=""><img class="gl-quick-tool__layout-active" src="./assets/goalie/toolbar-layout-active.png" alt=""><span>{{ splitLabel }}</span></button>
+                  <img class="gl-quick-toolbar__divider" src="./assets/goalie/toolbar-divider-a.svg" alt="">
+                  <button class="gl-quick-tool" type="button" aria-pressed="{{ microphoneActive }}" data-active="{{ microphoneActive }}" onClick="{{ toggleMicrophone }}"><img src="./assets/goalie/toolbar-microphone.svg" alt=""><span>{{ microphoneLabel }}</span></button>
+                  <img class="gl-quick-toolbar__divider" src="./assets/goalie/toolbar-divider-b.svg" alt="">
+                  <button class="gl-quick-tool" type="button"><img src="./assets/goalie/toolbar-change.svg" alt=""><span>{{ screenChangeLabel }}</span></button>
+                  <button class="gl-quick-toolbar__collapse" type="button" aria-expanded="true" aria-label="{{ collapseToolbarLabel }}" onClick="{{ toggleToolbar }}"><img src="./assets/goalie/toolbar-collapse.svg" alt=""></button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ toolbarHidden }}" hint-placeholder-val="false">
+                <button class="gl-edge-handle" type="button" aria-expanded="false" aria-label="{{ expandToolbarLabel }}" onClick="{{ toggleToolbar }}"><img class="gl-edge-handle__default" src="./assets/goalie/handle-expand-default.png" alt=""><img class="gl-edge-handle__hover" src="./assets/goalie/handle-expand-hover.png" alt=""><img class="gl-edge-handle__pressed" src="./assets/goalie/handle-expand-pressed.png" alt=""></button>
+              </sc-if>
+            </div>
+          </div>
+          <div class="gl-toolbar-contracts"><sc-for list="{{ toolbarContracts }}" as="contract" hint-placeholder-count="4"><article><code>{{ contract.axis }}</code><strong>{{ contract.values }}</strong><p>{{ contract.rule }}</p></article></sc-for></div>
+        </div>
+      </section>
+
+      <section class="gl-section" aria-labelledby="gl-handle-title">
+        <header class="gl-section__head"><div><span>03 · EDGE HANDLE</span><h2 id="gl-handle-title">{{ handleTitle }}</h2></div><p>{{ handleBody }}</p></header>
+        <div class="gl-handle-state-grid" tabindex="0" aria-label="{{ handleGalleryLabel }}">
+          <sc-for list="{{ handleStates }}" as="handle" hint-placeholder-count="6"><article><span>{{ handle.label }}</span><img src="{{ handle.src }}" alt=""><code>{{ handle.state }}</code></article></sc-for>
+        </div>
+      </section>
+    </sc-if>
   </div>
 </x-dc>
 
@@ -254,6 +476,22 @@ class Component extends DCLogic {
   state = {
     driveMode: 'manual',
     alertExpanded: true,
+    navSection: 'home',
+    layoutPickerOpen: true,
+    cameraLayout: 'single',
+    toolbarCollapsed: false,
+    microphoneActive: false,
+    audioState: 'off',
+    courseOpen: false,
+    selectedCourse: '1단지 B코스',
+    meridiem: 'pm',
+    timeOpen: false,
+    selectedTime: '01 : 00',
+    durationMinutes: 0,
+    durationSeconds: 20,
+    selectedPatrolCourse: '1단지 A코스',
+    selectedVideoFile: '2024-05-23_00:23:24',
+    templateMode: 'home',
   };
 
   toggleDriveMode = () => {
@@ -264,6 +502,77 @@ class Component extends DCLogic {
 
   toggleAlertHistory = () => {
     this.setState(({ alertExpanded }) => ({ alertExpanded: !alertExpanded }));
+  };
+
+  selectNavSection = (event) => {
+    const navSection = event.currentTarget.dataset.section;
+    if (navSection) this.setState({ navSection });
+  };
+
+  toggleLayoutPicker = () => {
+    this.setState(({ layoutPickerOpen }) => ({ layoutPickerOpen: !layoutPickerOpen }));
+  };
+
+  selectCameraLayout = (event) => {
+    const cameraLayout = event.currentTarget.dataset.layout;
+    if (cameraLayout) this.setState({ cameraLayout });
+  };
+
+  toggleToolbar = () => {
+    this.setState(({ toolbarCollapsed }) => ({ toolbarCollapsed: !toolbarCollapsed }));
+  };
+
+  toggleMicrophone = () => {
+    this.setState(({ microphoneActive }) => ({ microphoneActive: !microphoneActive }));
+  };
+
+  toggleAudio = () => {
+    this.setState(({ audioState }) => ({ audioState: audioState === 'on' ? 'off' : 'on' }));
+  };
+
+  toggleCourseList = () => {
+    this.setState(({ courseOpen }) => ({ courseOpen: !courseOpen }));
+  };
+
+  selectCourse = (event) => {
+    const selectedCourse = event.currentTarget.dataset.value;
+    if (selectedCourse) this.setState({ selectedCourse, courseOpen: false });
+  };
+
+  selectMeridiem = (event) => {
+    const meridiem = event.currentTarget.dataset.meridiem;
+    if (meridiem) this.setState({ meridiem });
+  };
+
+  toggleTimeList = () => {
+    this.setState(({ timeOpen }) => ({ timeOpen: !timeOpen }));
+  };
+
+  selectTime = (event) => {
+    const selectedTime = event.currentTarget.dataset.value;
+    if (selectedTime) this.setState({ selectedTime, timeOpen: false });
+  };
+
+  adjustDuration = (event) => {
+    const unit = event.currentTarget.dataset.unit;
+    const delta = Number(event.currentTarget.dataset.delta || 0);
+    if (unit === 'minute') this.setState(({ durationMinutes }) => ({ durationMinutes: Math.min(4, Math.max(0, durationMinutes + delta)) }));
+    if (unit === 'second') this.setState(({ durationSeconds }) => ({ durationSeconds: Math.min(50, Math.max(0, durationSeconds + delta)) }));
+  };
+
+  selectPatrolCourse = (event) => {
+    const selectedPatrolCourse = event.currentTarget.dataset.courseId;
+    if (selectedPatrolCourse) this.setState({ selectedPatrolCourse });
+  };
+
+  selectVideoFile = (event) => {
+    const selectedVideoFile = event.currentTarget.dataset.file;
+    if (selectedVideoFile) this.setState({ selectedVideoFile });
+  };
+
+  selectTemplateMode = (event) => {
+    const templateMode = event.currentTarget.dataset.templateMode;
+    if (templateMode) this.setState({ templateMode });
   };
 
   renderVals() {
@@ -366,9 +675,9 @@ class Component extends DCLogic {
       semantic(L('배터리 경고', 'Battery warning'), L('배터리 경고', 'Battery warning'), '--goalie-battery-warning', L('아이콘과 수치를 함께 사용.', 'Pair with icon and numeric value.')),
     ];
     const contrastPairs = [
-      ['#31D3FF / white', '1.77:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#31D3FF', color: '#fff' }],
-      ['#00C5FB / white', '2.02:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#00C5FB', color: '#fff' }],
-      ['#00B4ED / white', '2.40:1', 'fail', L('흰 글자 사용 금지', 'Do not use white text'), { background: '#00B4ED', color: '#fff' }],
+      ['#31D3FF / white', '1.77:1', 'fail', L('위 표본처럼 dark ink로 교체', 'Replace with dark ink as shown'), { background: '#31D3FF', color: '#1C2126' }],
+      ['#00C5FB / white', '2.02:1', 'fail', L('위 표본처럼 dark ink로 교체', 'Replace with dark ink as shown'), { background: '#00C5FB', color: '#1C2126' }],
+      ['#00B4ED / white', '2.40:1', 'fail', L('위 표본처럼 dark ink로 교체', 'Replace with dark ink as shown'), { background: '#00B4ED', color: '#1C2126' }],
       ['#00B4ED / #1C2126', '6.76:1', 'pass', L('production 기본 조합', 'Production default pair'), { background: '#00B4ED', color: '#1C2126' }],
       ['#FF3E31 / #1C2126', '4.62:1', 'pass', L('승인 대기 danger 조합', 'Pending-approval danger pair'), { background: '#FF3E31', color: '#1C2126' }],
     ].map(([name, value, result, rule, style]) => ({ name, value, result: result === 'pass' ? L('통과', 'Pass') : L('실패', 'Fail'), resultClass: `gl-contrast-result gl-contrast-result--${result}`, rule, style }));
@@ -457,10 +766,119 @@ class Component extends DCLogic {
       { label: L('아래', 'Bottom'), className: 'gl-scrollbar-specimen gl-scrollbar-specimen--bottom', value: 'radius 4' },
     ];
 
+    const robotMissions = [
+      { className: 'gl-mission-row gl-mission-row--active', dot: './assets/goalie/status-active-dot.svg', status: L('순찰 중', 'Patrolling'), course: L('1단지 A코스', 'Complex 1 · Course A') },
+      { className: 'gl-mission-row', dot: './assets/goalie/status-idle-dot-a.svg', status: L('대기 중', 'Queued'), course: L('2단지 C코스', 'Complex 2 · Course C') },
+      { className: 'gl-mission-row', dot: './assets/goalie/status-idle-dot-b.svg', status: L('대기 중', 'Queued'), course: L('3단지 B코스', 'Complex 3 · Course B') },
+    ];
+    const batteryStates = [
+      { state: 'normal', label: L('정상', 'Normal'), value: '100%', src: './assets/goalie/battery-100.svg', token: 'battery.normal', ariaLabel: L('배터리 100퍼센트', 'Battery 100 percent') },
+      { state: 'warning', label: L('경고', 'Warning'), value: '50%', src: './assets/goalie/battery-50.svg', token: 'battery.warning', ariaLabel: L('배터리 50퍼센트, 경고', 'Battery 50 percent, warning') },
+      { state: 'critical', label: L('위험', 'Critical'), value: '20%', src: './assets/goalie/battery-20.svg', token: 'battery.critical', ariaLabel: L('배터리 20퍼센트, 위험', 'Battery 20 percent, critical') },
+      { state: 'charging', label: L('충전 중', 'Charging'), value: '75%', src: './assets/goalie/battery-charging.svg', token: 'battery.charging', ariaLabel: L('배터리 75퍼센트, 충전 중', 'Battery 75 percent, charging') },
+      { state: 'charged', label: L('충전 완료', 'Charged'), value: '75%', src: './assets/goalie/battery-charged.svg', token: 'battery.normal + charged', ariaLabel: L('배터리 75퍼센트, 충전 완료', 'Battery 75 percent, charged') },
+    ];
+    const markerStates = [
+      { state: 'operation.active + selection.robot', label: L('선택된 운행 로봇', 'Selected operating robot'), src: './assets/goalie/map-marker-active-glow.svg' },
+      { state: 'safety.emergency + selection.robot', label: L('선택된 비상 로봇', 'Selected emergency robot'), src: './assets/goalie/map-marker-emergency-glow.svg' },
+      { state: 'operation.active', label: L('운행 로봇', 'Operating robot'), src: './assets/goalie/map-marker-active.svg' },
+      { state: 'safety.emergency', label: L('비상 로봇', 'Emergency robot'), src: './assets/goalie/map-marker-emergency.svg' },
+    ];
+    const audioActive = this.state.audioState === 'on';
+    const audioStates = [
+      { className: 'gl-audio-pill gl-audio-pill--off', label: L('마이크', 'Microphone'), src: './assets/goalie/microphone-off-gray.svg' },
+      { className: 'gl-audio-pill gl-audio-pill--on', label: L('마이크가 켜져있습니다.', 'Microphone is on.'), src: './assets/goalie/microphone-on-white.svg' },
+      { className: 'gl-audio-pill gl-audio-pill--muted', label: L('마이크를 끕니다.', 'Turning microphone off.'), src: './assets/goalie/microphone-off-white.svg' },
+    ];
+
+    const courseOptions = [
+      ['1단지 A코스', 'Complex 1 · Course A'],
+      ['1단지 B코스', 'Complex 1 · Course B'],
+      ['2단지 A코스', 'Complex 2 · Course A'],
+      ['3단지 C코스', 'Complex 3 · Course C'],
+    ].map(([value, english]) => ({
+      value,
+      label: L(value, english),
+      selected: this.state.selectedCourse === value ? 'true' : 'false',
+    }));
+    const timeDefinitions = ['00 : 30', '01 : 00', '01 : 30', '02 : 00'];
+    const timeOptions = timeDefinitions.map((value) => ({
+      value,
+      label: value,
+      selected: this.state.selectedTime === value ? 'true' : 'false',
+    }));
+    const missionCardStates = [
+      { label: L('기본', 'Default'), state: 'default', className: 'gl-mission-card', pressed: 'false', number: '01' },
+      { label: 'Hover', state: 'hover', className: 'gl-mission-card gl-mission-card--hover', pressed: 'false', number: '02' },
+      { label: L('선택', 'Selected'), state: 'selected', className: 'gl-mission-card gl-mission-card--selected', pressed: 'true', number: '04' },
+      { label: L('선택 · 삭제 affordance', 'Selected · delete affordance'), state: 'selected + removable', className: 'gl-mission-card gl-mission-card--selected gl-mission-card--removable', pressed: 'true', number: '09' },
+    ];
+    const patrolCourses = [
+      ['1단지 A코스', '오후 09:00'],
+      ['1단지 B코스', '오후 09:00'],
+      ['2단지 C코스', '오후 09:00'],
+    ].map(([id, time]) => ({ id, name: ko ? id : id.replace('단지 ', ' · Course '), time, selected: this.state.selectedPatrolCourse === id ? 'true' : 'false' }));
+    const patrolMissions = [
+      ['01', '20'], ['02', '10'], ['04', '10'], ['09', '10'],
+    ].map(([number, seconds]) => ({ number, seconds }));
+    const videoFiles = ['2024-05-23_00:23:24', '2024-05-23_00:28:24', '2024-05-23_00:33:24', '2024-05-23_00:38:24'].map((name) => ({ name, selected: this.state.selectedVideoFile === name ? 'true' : 'false' }));
+    const templateModes = [
+      ['home', L('홈 · 미등록', 'Home · unregistered')],
+      ['paused', L('정지', 'Paused')],
+      ['speaking', L('발화', 'Speaking')],
+      ['emergency', L('비상', 'Emergency')],
+    ].map(([value, label]) => ({ value, label, checked: this.state.templateMode === value ? 'true' : 'false' }));
+    const templateModeLabels = Object.fromEntries(templateModes.map((mode) => [mode.value, mode.label]));
+
+    const navDefinitions = [
+      ['home', L('홈', 'Home'), './assets/goalie/nav-home.svg'],
+      ['patrol', L('순찰관리', 'Patrol'), './assets/goalie/nav-patrol.svg'],
+      ['video', L('영상관리', 'Video'), './assets/goalie/nav-video.svg'],
+      ['statistics', L('통계', 'Statistics'), './assets/goalie/nav-statistics.png'],
+    ];
+    const navItems = navDefinitions.map(([value, label, icon]) => ({
+      value,
+      label,
+      icon,
+      current: this.state.navSection === value ? 'page' : 'false',
+    }));
+    const navLabels = Object.fromEntries([
+      ...navDefinitions.map(([value, label]) => [value, label]),
+      ['settings', L('설정', 'Settings')],
+    ]);
+    const cameraLayoutDefinitions = [
+      ['single', L('단일 화면', 'Single view'), 'layout-single'],
+      ['quad', L('4분할', 'Four views'), 'layout-quad'],
+      ['primaryQuad', L('주 화면과 3개 보조 화면', 'Primary plus three views'), 'layout-primary-quad'],
+      ['six', L('6분할', 'Six views'), 'layout-six'],
+    ];
+    const cameraLayouts = cameraLayoutDefinitions.map(([value, label, asset]) => ({
+      value,
+      ariaLabel: label,
+      checked: this.state.cameraLayout === value ? 'true' : 'false',
+      defaultSrc: `./assets/goalie/${asset}.png`,
+      hoverSrc: `./assets/goalie/${asset}-hover.png`,
+      selectedSrc: `./assets/goalie/${asset}-selected.png`,
+    }));
+    const toolbarContracts = [
+      { axis: 'expanded', values: 'true | false', rule: L('도구 모음 자체의 접힘 상태입니다.', 'Collapse state of the toolbar itself.') },
+      { axis: 'layoutPickerOpen', values: 'true | false', rule: L('카메라 레이아웃 popover의 공개 상태입니다.', 'Disclosure state of the camera layout picker.') },
+      { axis: 'cameraLayout', values: 'single | quad | primaryQuad | six', rule: L('한 번에 하나만 선택되는 값입니다.', 'A single selected camera composition.') },
+      { axis: 'microphone', values: 'off | on', rule: L('화면 분할이나 안전 상태와 독립입니다.', 'Independent from camera layout and safety state.') },
+    ];
+    const handleStates = [
+      { label: L('접기 · 기본', 'Collapse · default'), state: 'default', src: './assets/goalie/handle-collapse-default.png' },
+      { label: L('접기 · hover', 'Collapse · hover'), state: 'hover', src: './assets/goalie/handle-collapse-hover.png' },
+      { label: L('접기 · pressed', 'Collapse · pressed'), state: 'pressed', src: './assets/goalie/handle-collapse-pressed.png' },
+      { label: L('펼치기 · 기본', 'Expand · default'), state: 'default', src: './assets/goalie/handle-expand-default.png' },
+      { label: L('펼치기 · hover', 'Expand · hover'), state: 'hover', src: './assets/goalie/handle-expand-hover.png' },
+      { label: L('펼치기 · pressed', 'Expand · pressed'), state: 'pressed', src: './assets/goalie/handle-expand-pressed.png' },
+    ];
+
     return {
       rootRef: this.rootRef, lang, activePage,
-      isOverview: activePage === 'overview', isSystemSummary: activePage === 'systemsummary', isPrinciples: activePage === 'principles', isColors: activePage === 'colors', isTypography: activePage === 'typography', isSpacing: activePage === 'spacing', isButton: activePage === 'button', isStatus: activePage === 'status',
-      truthbarLabel: L('Goalie 문서 근거와 접근성 상태', 'Goalie documentation evidence and accessibility status'), evidenceLabel: L('Figma 근거 고정', 'Figma evidence pinned'), accessibilityLabel: L('접근성 보정 명시', 'Accessibility differences explicit'), sourcePin: activePage === 'colors' ? '230:2058' : activePage === 'typography' ? '2051:3017' : activePage === 'button' ? '351:2306 · 351:2435' : activePage === 'status' ? '230:2007 · 735:7167' : '32 nodes',
+      isOverview: activePage === 'overview', isSystemSummary: activePage === 'systemsummary', isPrinciples: activePage === 'principles', isColors: activePage === 'colors', isTypography: activePage === 'typography', isSpacing: activePage === 'spacing', isIconography: activePage === 'iconography', isButton: activePage === 'button', isInput: activePage === 'input', isStatus: activePage === 'status', isNavigation: activePage === 'navigation', isPatrol: activePage === 'patrol', isVideo: activePage === 'video', isTemplates: activePage === 'templates',
+      truthbarLabel: L('Goalie 문서 근거와 접근성 상태', 'Goalie documentation evidence and accessibility status'), evidenceLabel: L('Figma 근거 고정', 'Figma evidence pinned'), accessibilityLabel: L('접근성 보정 명시', 'Accessibility differences explicit'), sourcePin: activePage === 'colors' ? '230:2058' : activePage === 'typography' ? '2051:3017' : activePage === 'iconography' ? '351:2119 · 351:1032 · 3411:24015 · 3536:25686' : activePage === 'button' ? '351:2306 · 351:2435' : activePage === 'input' ? '1923:3693 · 1917:9234 · 1923:4348 · 2150:5572 · 2150:6371' : activePage === 'status' ? '230:2007 · 735:7167' : activePage === 'navigation' ? '230:4018 · 230:3631 · 465:3008 · 557:3515' : activePage === 'patrol' ? '2226:13757 · 3874:44703' : activePage === 'video' ? '3874:33505' : activePage === 'templates' ? '4021:36373 · 2933:9118 · 3536:24567' : '32 nodes',
       overviewTitle: L('로봇 운영의 상태와 안전을 한 언어로 연결한다', 'One language for robot operation, state and safety'), overviewBody: L('Goalie는 밝은 관제 UI의 시각 규칙과 순찰·영상·발화·비상 흐름의 행동 계약을 함께 관리합니다. Figma를 복제하는 데서 끝나지 않고 각 화면이 같은 토큰과 독립 상태축을 재사용하게 합니다.', 'Goalie manages both the visual language of the light control UI and behavioral contracts for patrol, video, speaking and emergency flows. Screens reuse the same tokens and independent state axes rather than stopping at Figma reproduction.'), overviewFacts, layerMapLabel: L('Foundation에서 Template까지 네 계층', 'Four layers from foundation to template'), layerMap,
       contractTitle: L('완성 화면보다 먼저 지킬 계약', 'Contracts before finished screens'), contractBody: L('안전한 조합과 변경 가능성을 시각적 유사도와 함께 검증합니다.', 'Validate safe composition and changeability alongside visual fidelity.'), overviewRules,
       buildTitle: L('구축 순서', 'Build sequence'), buildBody: L('상위 단계가 승인되지 않으면 다음 단계의 하드코딩으로 넘어가지 않습니다.', 'Do not hardcode the next layer before its dependency is approved.'), buildFlow,
@@ -485,10 +903,36 @@ class Component extends DCLogic {
       manualDisabledAria: L('수동 모드, 비활성', 'Manual mode, disabled'), automaticDisabledAria: L('자동 모드, 비활성', 'Automatic mode, disabled'), disabledRule: L('권한 또는 연결 상태가 명확할 때만 비활성', 'Disable only with explicit permission or connection reason'),
       componentContractTitle: L('코드 API는 Figma variant보다 의미가 먼저다', 'Code API puts meaning before Figma variants'), componentContractBody: L('시각 상태를 props로 강제하지 않고 browser interaction과 semantic state에서 파생합니다. 문서의 hover/pressed 고정은 시각 회귀용입니다.', 'Do not force visual states through product props; derive them from browser interaction and semantic state. Pinned hover/pressed examples are documentation-only visual fixtures.'), buttonContracts,
       alertTitle: L('현재 사건과 누적 이력을 한 컴포넌트로 연결한다', 'Connect the current event and its history'), alertBody: L('severity와 expanded는 독립 축입니다. 오류 banner가 항상 펼쳐진 패널을 의미하지 않으며, 펼침은 aria-expanded와 연결된 영역으로 노출합니다.', 'Severity and expanded state are independent. An error banner does not imply an expanded panel; disclosure is exposed through aria-expanded and its controlled region.'),
-      infoAlertMessage: L('A코스로 순찰을 시작합니다.', 'Starting patrol on A course.'), dangerAlertMessage: L('대체경로를 찾을 수 없습니다.', 'No alternate route found.'), alertExpanded: this.state.alertExpanded ? 'true' : 'false', alertExpandedBool: this.state.alertExpanded, toggleAlertHistory: this.toggleAlertHistory, alertExpandLabel: this.state.alertExpanded ? L('알림 이력 접기', 'Collapse alert history') : L('알림 이력 펼치기', 'Expand alert history'), alertDismissLabel: L('현재 알림 닫기', 'Dismiss current alert'), historyTitle: L('알림 내역', 'Alert history'), historyCloseLabel: L('알림 내역 닫기', 'Close alert history'), alertHistory,
+      infoAlertMessage: L('A코스로 순찰을 시작합니다.', 'Starting patrol on A course.'), dangerAlertMessage: L('대체경로를 찾을 수 없습니다.', 'No alternate route found.'), alertExpanded: this.state.alertExpanded ? 'true' : 'false', alertExpandedBool: this.state.alertExpanded, toggleAlertHistory: this.toggleAlertHistory, alertExpandLabel: this.state.alertExpanded ? L('알림 이력 접기', 'Collapse alert history') : L('알림 이력 펼치기', 'Expand alert history'), alertDismissLabel: L('현재 알림 닫기', 'Dismiss current alert'), historyTitle: L('알림 내역', 'Alert history'), historyCloseLabel: L('알림 내역 닫기', 'Close alert history'), historyListLabel: L('시간순 알림 내역', 'Chronological alert history'), alertHistory,
       notificationTitle: L('알림 진입점은 상태를 보존한다', 'The notification entry preserves state'), notificationBody: L('Default, hover, pressed는 시각 상태이며 읽지 않음 수량은 별도 badge나 accessible name으로 전달합니다.', 'Default, hover and pressed are visual states; unread count belongs in a separate badge or accessible name.'), notificationStates, notificationText: L('알림', 'Alerts'),
       modalTitle: L('메시지 종류보다 필요한 결정을 기준으로 나눈다', 'Classify modals by required decision'), modalBody: L('확인, 위험 변경, 변경 폐기는 같은 크기와 구조를 공유하지만 action 의미와 초기 포커스가 다릅니다.', 'Confirmation, dangerous change and discard share geometry while action meaning and initial focus differ.'), modalExamples,
       scrollbarTitle: L('스크롤 위치는 조용하게, 가능성은 명확하게', 'Keep position quiet and scrollability clear'), scrollbarBody: L('6px thumb와 4px radius를 유지하되 실제 scroll region은 native keyboard·wheel·touch behavior를 보존합니다.', 'Keep the 6px thumb and 4px radius while preserving native keyboard, wheel and touch behavior in real scroll regions.'), scrollbarStates,
+      robotPanelTitle: L('한 패널에서 상태 축을 합성하되 섞지 않는다', 'Compose state axes in one panel without merging them'), robotPanelBody: L('GOALIE panel은 driveMode, connection, battery, operation과 mission selection을 한눈에 보여주지만 각 값은 독립 semantic과 accessible name을 유지합니다.', 'The GOALIE panel presents driveMode, connection, battery, operation and mission selection together while each keeps an independent semantic and accessible name.'), robotPanelA11yTitle: L('원본의 대기 행 대비를 production에서 보정', 'Correct source queued-row contrast in production'), robotPanelA11yBody: L('Figma #B7BDC3 텍스트는 흰색·#EFEFF0 표면에서 부족합니다. 제품 specimen은 geometry와 selected surface를 유지하고 queued 텍스트를 #626D77로 사용합니다.', 'Figma #B7BDC3 text is insufficient on white and #EFEFF0 surfaces. The product specimen retains geometry and selection surfaces while using #626D77 for queued copy.'),
+      fullBatteryLabel: L('배터리 100퍼센트, 상세 보기', 'Battery 100 percent, view details'), missionListLabel: L('로봇의 순찰 임무 목록', 'Robot patrol missions'), statusColumn: L('상태', 'Status'), courseColumn: L('순찰코스', 'Patrol course'), robotMissions, returnLabel: L('복귀', 'Return'), pauseLabel: L('일시 정지', 'Pause'),
+      batteryTitle: L('잔량과 충전 상태를 함께 읽힌다', 'Expose level and charging state together'), batteryBody: L('퍼센트만 색으로 꾸미지 않고 숫자, 아이콘 내부 색, 충전 여부를 accessible name으로 함께 전달합니다. 임계값은 제품 정책으로 별도 관리합니다.', 'Pair the numeric level, icon fill and charge condition in the accessible name instead of decorating the percentage with color. Thresholds remain product policy.'), batteryStates,
+      markerTitle: L('색은 operation과 safety, glow는 selection을 표현한다', 'Color expresses operation and safety; glow expresses selection'), markerBody: L('Cyan/Red는 로봇의 운행·비상 의미이고 glow는 현재 선택 문맥입니다. 비상 표시는 glow가 없어도 색과 accessible label로 유지됩니다.', 'Cyan/red carry operating/emergency meaning, while glow is current selection context. Emergency remains explicit through color and accessible labeling without glow.'), markerStates,
+      audioSafetyTitle: L('발화와 비상은 독립 축이며 우선순위만 다르다', 'Audio and emergency are independent axes with different priority'), audioSafetyBody: L('마이크는 on/off 송출 상태를, 비상은 safety 상태 전환 요청을 담당합니다. 비상 진입 시 발화 처리 정책은 제품 승인 전까지 컴포넌트가 임의로 결정하지 않습니다.', 'Microphone controls transmission state; emergency requests a safety-state transition. The component does not invent an audio policy during emergency before product approval.'),
+      audioActive: audioActive ? 'true' : 'false', audioState: this.state.audioState, audioIcon: audioActive ? './assets/goalie/microphone-on-white.svg' : './assets/goalie/microphone-off-gray.svg', toggleAudio: this.toggleAudio, audioStatusText: audioActive ? L('발화 준비 상태입니다.', 'Audio transmission is ready.') : L('마이크가 꺼져 있습니다.', 'Microphone is off.'), audioStates,
+      emergencyLabel: L('비상모드', 'Emergency mode'), emergencyContract: L('이 control은 onRequestEmergency만 발생시킵니다. 즉시 활성화·확인·길게 누르기 중 어느 정책을 사용할지는 safety 승인 항목입니다.', 'This control emits onRequestEmergency only. Immediate activation, confirmation, or press-and-hold remains a safety approval item.'), emergencyReferenceLabel: L('Figma의 비상모드 default와 hover 원본 표본', 'Figma emergency default and hover reference specimens'),
+      inputSelectTitle: L('선택값과 공개 상태를 분리하는 입력', 'Inputs that separate value from disclosure'), inputSelectBody: L('Select와 시간 선택은 값, 목록 공개, focus를 독립적으로 관리합니다. 오전/오후는 한 개만 선택되는 radiogroup입니다.', 'Select and time controls keep value, disclosure and focus independent. AM/PM is a single-select radiogroup.'),
+      courseSelectLabel: L('순찰 코스 선택', 'Select patrol course'), courseOpen: this.state.courseOpen ? 'true' : 'false', courseOpenBool: this.state.courseOpen, courseChevron: this.state.courseOpen ? './assets/goalie/select-chevron-up.svg' : './assets/goalie/select-chevron-down.svg', selectedCourse: ko ? this.state.selectedCourse : courseOptions.find((option) => option.selected === 'true').label, courseOptions, toggleCourseList: this.toggleCourseList, selectCourse: this.selectCourse,
+      meridiemLabel: L('출발 시간 구분', 'Departure period'), amLabel: L('오전', 'AM'), pmLabel: L('오후', 'PM'), amChecked: this.state.meridiem === 'am' ? 'true' : 'false', pmChecked: this.state.meridiem === 'pm' ? 'true' : 'false', selectMeridiem: this.selectMeridiem,
+      timeTitle: L('시간과 송출 길이는 서로 다른 입력 계약이다', 'Clock time and duration use different input contracts'), timeBody: L('출발 시간은 목록에서 고르고 송출 길이는 단계 조절합니다. Figma의 “5분 미만” 문구를 근거로 현재 specimen은 0–4분 50초 범위를 사용하며 실제 제한은 제품 정책으로 확정해야 합니다.', 'Choose departure time from a list and adjust transmission duration in steps. The specimen uses 0–4:50 from the Figma “under 5 minutes” note; the actual limit remains a product policy decision.'),
+      startTimeLabel: L('출발 시간', 'Departure time'), timeOpen: this.state.timeOpen ? 'true' : 'false', timeOpenBool: this.state.timeOpen, selectedTime: this.state.selectedTime, timeChevron: this.state.timeOpen ? './assets/goalie/time-chevron-up.svg' : './assets/goalie/time-chevron-down.svg', timeOptions, toggleTimeList: this.toggleTimeList, selectTime: this.selectTime,
+      durationLabel: L('송출 시간', 'Transmission duration'), durationMinuteLabel: L(`송출 시간 ${this.state.durationMinutes}분`, `Duration ${this.state.durationMinutes} minutes`), durationSecondLabel: L(`송출 시간 ${this.state.durationSeconds}초`, `Duration ${this.state.durationSeconds} seconds`), durationMinutes: this.state.durationMinutes, durationSeconds: String(this.state.durationSeconds).padStart(2, '0'), minuteUnit: L('분', 'min'), secondUnit: L('초', 'sec'), minuteIncreaseLabel: L('분 1 증가', 'Increase minutes by 1'), minuteDecreaseLabel: L('분 1 감소', 'Decrease minutes by 1'), secondIncreaseLabel: L('초 10 증가', 'Increase seconds by 10'), secondDecreaseLabel: L('초 10 감소', 'Decrease seconds by 10'), adjustDuration: this.adjustDuration, durationHint: L('현재 표본 범위: 0분 00초–4분 50초 · 실제 상한은 제품 승인 필요', 'Specimen range: 0:00–4:50 · product approval required for the actual limit'),
+      missionCardTitle: L('업무 종류와 순서를 스캔하는 카드', 'Mission cards for scanning type and order'), missionCardBody: L('순번, 음성 방송 횟수, 고화질 송출 시간을 고정된 열에 배치합니다. 선택과 삭제 가능 상태는 분리합니다.', 'Keep order, voice count and high-quality transmission duration in stable columns. Selection and removability remain separate states.'), missionCardStates, voiceLabel: L('음성 방송', 'Voice broadcast'), countUnit: L('회', '×'), streamLabel: L('고화질 송출', 'High-quality stream'),
+      patrolPatternTitle: L('코스 선택·편집과 지도 문맥을 동시에 보존한다', 'Preserve course editing and map context together'), patrolPatternBody: L('목록 선택, 편집 session, waypoint/route 문맥을 서로 다른 상태로 유지하고 저장 전 dirty state와 삭제 권한을 제품에서 연결합니다.', 'Keep list selection, edit session and waypoint/route context as separate states; product code must connect dirty state and delete permission before saving.'), patrolContractTitle: L('Figma 여섯 상태를 하나의 상태기계로 통합', 'Unify six Figma frames in one state machine'), patrolContractBody: L('empty → course selected → missions loaded → scrolled → edit → save 흐름입니다. 지도 선택과 폼 변경은 같은 enum으로 압축하지 않습니다.', 'The flow is empty → course selected → missions loaded → scrolled → edit → save. Map selection and form changes do not collapse into one enum.'), patrolWorkspaceLabel: L('순찰 코스 관리 패턴', 'Patrol course management pattern'), courseListTitle: L('순찰 코스 목록', 'Patrol course list'), reservationTimeLabel: L('예약시간', 'Scheduled time'), patrolCourses, selectPatrolCourse: this.selectPatrolCourse, selectedPatrolCourse: this.state.selectedPatrolCourse, patrolEditorTitle: L('순찰 코스 편집', 'Edit patrol course'), savedMissionLabel: L('저장한 임무', 'Saved missions'), patrolMissions, deleteLabel: L('삭제', 'Delete'), saveLabel: L('저장', 'Save'), patrolMapAlt: L('순찰 경로와 대체 경로가 표시된 단지 지도', 'Campus map with patrol and alternate routes'), patrolRouteLabel: L('순찰 경로', 'Patrol route'), alternateRouteLabel: L('대체 경로', 'Alternate route'),
+      videoPatternTitle: L('검색 결과와 재생 문맥을 분리하는 영상관리', 'Video management separating query and playback context'), videoPatternBody: L('기간 조회 결과는 날짜·카메라·파일 tree로 유지하고, 선택한 파일만 player에 전달합니다. timeline 구간 의미와 export 범위는 제품 데이터 계약이 필요합니다.', 'Keep query results in a date/camera/file tree and pass only the selected file to the player. Timeline segment meaning and export scope require a product data contract.'), videoWorkspaceLabel: L('영상 조회와 재생 패턴', 'Video query and playback pattern'), videoQueryTitle: L('영상 조회', 'Video query'), startDateLabel: L('시작일', 'Start date'), endDateLabel: L('종료일', 'End date'), searchLabel: L('조회', 'Search'), videoTreeLabel: L('날짜와 카메라별 영상 파일', 'Video files by date and camera'), videoFiles, selectVideoFile: this.selectVideoFile, cameraOneLabel: L('카메라 1', 'Camera 1'), cameraTwoLabel: L('카메라 2', 'Camera 2'), cameraThreeLabel: L('카메라 3', 'Camera 3'), cameraFourLabel: L('카메라 4', 'Camera 4'), thermalCameraLabel: L('열화상 카메라', 'Thermal camera'), exportLabel: L('데이터 내보내기', 'Export data'), selectedVideoFile: this.state.selectedVideoFile, videoFrameAlt: L('선택한 전방 카메라 영상 프레임', 'Selected front-camera video frame'), previousLabel: L('이전 구간', 'Previous segment'), playLabel: L('재생', 'Play'), nextLabel: L('다음 구간', 'Next segment'), defaultPlaybackLabel: L('기본', 'Default'),
+      templateTitle: L('같은 shell에서 독립 상태축을 안전하게 조합한다', 'Safely compose independent state axes in one shell'), templateBody: L('홈 카메라/지도 구조는 유지하면서 operation, audio, safety 상태만 바꿉니다. 템플릿은 새 값을 만들지 않고 검증된 component contract를 조합합니다.', 'Keep the home camera/map structure while changing only operation, audio and safety state. Templates compose verified component contracts instead of inventing new values.'), templateModeLabel: L('운영 화면 상태 선택', 'Choose operational template state'), templateModes, selectTemplateMode: this.selectTemplateMode, templateMode: this.state.templateMode, currentTemplateLabel: L(`${templateModeLabels[this.state.templateMode]} 운영 화면`, `${templateModeLabels[this.state.templateMode]} operational screen`), templateHome: this.state.templateMode === 'home', templatePaused: this.state.templateMode === 'paused', templateSpeaking: this.state.templateMode === 'speaking', templateEmergency: this.state.templateMode === 'emergency', currentRobotLabel: this.state.templateMode === 'home' ? L('등록된 골리가 없습니다.', 'No Goalie is registered.') : L('골리 1호기', 'Goalie 1'), currentModeLabel: ({ home: L('홈', 'Home'), paused: L('비상모드', 'Emergency mode'), speaking: L('발화모드', 'Speaking mode'), emergency: L('비상모드', 'Emergency mode') })[this.state.templateMode], unregisteredRobotText: L('로봇을 등록하면 상태·코스·명령이 이 영역에 표시됩니다.', 'Robot status, course and commands appear here after registration.'), pausedText: L('비상모드 중입니다. 사이렌과 조명을 중단하려면 해제하기를 누르세요.', 'Emergency mode is active. Press release to stop the siren and lights.'), speakingText: L('마이크가 연결되어있습니다.', 'Microphone is connected.'), emergencyTemplateText: L('비상 상태가 모든 선택·운행·발화 표현보다 우선합니다.', 'Emergency state overrides selection, operation and audio presentation.'), releaseEmergencyLabel: L('해제하기', 'Release'), stopSpeakingLabel: L('발화모드 해제하기', 'Stop speaking mode'), campusMapAlt: L('골리 위치가 표시된 단지 지도', 'Campus map showing Goalie position'), templateMarker: this.state.templateMode === 'emergency' || this.state.templateMode === 'paused' ? './assets/goalie/map-marker-emergency-glow.svg' : './assets/goalie/map-marker-active-glow.svg', frontCameraAlt: L('전방 카메라', 'Front camera'), leftCameraAlt: L('좌방 카메라', 'Left camera'), rearCameraAlt: L('후방 카메라', 'Rear camera'), rightCameraAlt: L('우방 카메라', 'Right camera'), frontLabel: L('전방', 'Front'), leftLabel: L('좌방', 'Left'), rearLabel: L('후방', 'Rear'), rightLabel: L('우방', 'Right'),
+      shellTitle: L('고정 shell은 위치와 상태를 분리한다', 'The fixed shell separates location from state'), shellBody: L('Header는 브랜드·시각 정보·window control을, SideNav는 현재 정보 구조 위치만 담당합니다. 로봇 상태나 경고를 메뉴 선택 색으로 표현하지 않습니다.', 'The header owns brand, time and window controls; SideNav communicates only information-architecture location. Robot state and alerts never reuse navigation selection color.'),
+      shellA11yTitle: L('비활성처럼 보이는 원본 메뉴 보정', 'Correction for source navigation that appears disabled'), shellA11yBody: L('Figma inactive #B7BDC3는 작은 텍스트 대비가 부족합니다. 제품 navigation은 동일한 구조와 active indicator를 유지하고 inactive label을 #626D77로 올립니다.', 'Figma inactive #B7BDC3 is insufficient for small text. Product navigation preserves geometry and the active indicator while raising inactive labels to #626D77.'),
+      shellDemoLabel: L('Goalie 앱 header와 side navigation 예시', 'Goalie application header and side navigation specimen'), headerTime: L('오후 09:48', '09:48 PM'), windowControlLabel: L('창 제어', 'Window controls'), minimizeLabel: L('창 최소화', 'Minimize window'), maximizeLabel: L('창 최대화', 'Maximize window'), closeLabel: L('창 닫기', 'Close window'), primaryNavLabel: L('주요 메뉴', 'Primary navigation'), navItems, selectNavSection: this.selectNavSection,
+      settingsLabel: L('설정', 'Settings'), settingsCurrent: this.state.navSection === 'settings' ? 'page' : 'false', currentNavLabel: navLabels[this.state.navSection], shellStageLabel: L('선택한 메뉴의 콘텐츠 예시', 'Selected navigation content specimen'), shellStageTitle: L('현재 위치는 하나만 표시합니다', 'Expose exactly one current location'), shellStageBody: L('왼쪽 Cyan indicator와 aria-current="page"가 같은 항목을 가리킵니다.', 'The cyan indicator and aria-current="page" point to the same item.'),
+      toolbarTitle: L('카메라 구성과 장치 제어를 분리한다', 'Separate camera composition from device control'), toolbarBody: L('화면 분할은 단일 선택 picker를 여는 disclosure이고 마이크와 화면 변경은 독립 명령입니다. 툴바 접기는 기능 상태를 변경하지 않습니다.', 'Screen split is a disclosure that opens a single-select picker; microphone and screen change are independent commands. Collapsing the toolbar does not change tool states.'),
+      cameraLayoutLabel: L('카메라 화면 분할', 'Camera layout'), cameraLayouts, selectCameraLayout: this.selectCameraLayout, layoutPickerOpen: this.state.layoutPickerOpen ? 'true' : 'false', toggleLayoutPicker: this.toggleLayoutPicker,
+      quickToolsLabel: L('빠른 화면 및 오디오 도구', 'Quick display and audio tools'), splitLabel: L('화면 분할', 'Screen split'), microphoneLabel: L('마이크', 'Microphone'), screenChangeLabel: L('화면 변경', 'Change view'), microphoneActive: this.state.microphoneActive ? 'true' : 'false', toggleMicrophone: this.toggleMicrophone,
+      toolbarCollapsed: this.state.toolbarCollapsed ? 'true' : 'false', toolbarVisible: !this.state.toolbarCollapsed, toolbarHidden: this.state.toolbarCollapsed, toggleToolbar: this.toggleToolbar, collapseToolbarLabel: L('빠른 도구 모음 접기', 'Collapse quick toolbar'), expandToolbarLabel: L('빠른 도구 모음 펼치기', 'Expand quick toolbar'), toolbarContracts,
+      handleTitle: L('가장자리 handle도 완전한 control이다', 'The edge handle is a complete control'), handleBody: L('28×80 원본 형태와 default·hover·pressed 자산을 사용하되 실제 클릭 영역은 최소 44px 너비로 확장하고 accessible name을 제공합니다.', 'Use the exact 28×80 default, hover and pressed assets while expanding the real hit target to at least 44px wide and providing an accessible name.'), handleGalleryLabel: L('접기와 펼치기 handle 상태 표본', 'Collapse and expand handle state specimens'), handleStates,
     };
   }
 }
