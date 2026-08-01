@@ -458,3 +458,165 @@
     flex-direction: column;
   }
 }
+
+/* Catalog -------------------------------------------------------------
+   Finding an icon should not require reading a state matrix, so each entry
+   shows one default glyph with its name and source. */
+
+.pk-catalog-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-3);
+}
+
+.pk-catalog-block + .pk-catalog-block {
+  margin-top: var(--parkie-space-6);
+}
+
+.pk-catalog-block h3 {
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+  overflow: hidden;
+  gap: 1px;
+  background: var(--parkie-border);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-catalog-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface);
+}
+
+.pk-catalog-glyph {
+  display: inline-flex;
+  margin-bottom: 6px;
+  color: var(--parkie-icon-default);
+}
+
+.pk-catalog-glyph svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pk-catalog-ko {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+}
+
+.pk-catalog-en {
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pk-catalog-item .pk-icon-source {
+  margin-top: 5px;
+}
+
+/* Keyboard focus combinations -----------------------------------------
+   Focus layers on top of another state, so it is shown as combinations
+   rather than as one more mutually exclusive column. */
+
+.pk-focus-combos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+  gap: var(--parkie-space-6);
+  padding: var(--parkie-space-6);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-focus-combo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.pk-focus-cell {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  color: var(--parkie-icon-default);
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-focus-cell svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pk-focus-cell.is-on {
+  color: var(--parkie-icon-selected);
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-focus-cell.has-focus {
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-focus-combo-name {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-focus-combo-note {
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+/* Development QA disclosure ------------------------------------------- */
+
+.pk-icon-qa {
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-qa > summary {
+  padding: var(--parkie-space-4) var(--parkie-space-5);
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+  cursor: pointer;
+}
+
+.pk-icon-qa > summary:focus-visible {
+  outline: 0;
+  border-radius: var(--parkie-radius-lg);
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-icon-qa[open] > summary {
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+/* Only this table scrolls sideways; the page itself must not. */
+.pk-icon-qa-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-8);
+  overflow-x: auto;
+  padding: var(--parkie-space-5);
+}

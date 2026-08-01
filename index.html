@@ -651,7 +651,50 @@
               </sc-for>
             </div>
 
-            <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
+            <section class="pk-icon-group">
+              <div class="pk-icon-group-head">
+                <div>
+                  <h2>아이콘 카탈로그 · Catalog</h2>
+                  <p>아이콘을 찾는 것이 먼저입니다. 각 항목은 기본 상태 하나와 이름·출처만 보여 줍니다. 상호작용 6상태 전체는 아래 개발 스펙에 있습니다.</p>
+                </div>
+                <span class="pk-icon-group-count">{{ totalParkieIcons }} ICONS</span>
+              </div>
+              <sc-for list="{{ iconCatalog }}" as="cat" hint-placeholder-count="5">
+                <div class="pk-catalog-block">
+                  <h3>{{ cat.title }}</h3>
+                  <div class="pk-catalog-grid">
+                    <sc-for list="{{ cat.items }}" as="icon" hint-placeholder-count="6">
+                      <div class="pk-catalog-item">
+                        <span class="pk-catalog-glyph" role="img" aria-label="{{ icon.label }}">{{ icon.svg }}</span>
+                        <span class="pk-catalog-ko">{{ icon.ko }}</span>
+                        <span class="pk-catalog-en">{{ icon.en }}</span>
+                        <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </section>
+
+            <section class="pk-icon-group">
+              <div class="pk-icon-group-head">
+                <div>
+                  <h2>키보드 포커스 · Keyboard focus</h2>
+                  <p>포커스는 Hover·Pressed와 나란한 여섯 번째 상태가 아니라, 이미 어떤 상태에 있든 그 위에 겹치는 키보드 위치 표시입니다. 그래서 Rest와 Selected를 각각 링이 있는 경우와 없는 경우로 함께 보여 줍니다. Disabled는 포커스를 받지 않습니다.</p>
+                </div>
+              </div>
+              <div class="pk-focus-combos">
+                <sc-for list="{{ focusCombos }}" as="combo" hint-placeholder-count="4">
+                  <div class="pk-focus-combo">
+                    <span class="{{ combo.className }}" role="img" aria-label="{{ combo.label }}">{{ combo.svg }}</span>
+                    <span class="pk-focus-combo-name">{{ combo.name }}</span>
+                    <span class="pk-focus-combo-note">{{ combo.note }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+
+            <sc-for list="{{ semanticIconGroups }}" as="group" hint-placeholder-count="4">
               <section class="pk-icon-group">
                 <div class="pk-icon-group-head">
                   <div>
@@ -682,6 +725,44 @@
                 </div>
               </section>
             </sc-for>
+
+            <details class="pk-icon-qa">
+              <summary>개발 스펙 보기 · Development spec — 상호작용 6상태 전체 매트릭스</summary>
+              <div class="pk-icon-qa-body">
+            <sc-for list="{{ interactionIconGroups }}" as="group" hint-placeholder-count="4">
+              <section class="pk-icon-group">
+                <div class="pk-icon-group-head">
+                  <div>
+                    <h2>{{ group.title }}</h2>
+                    <p>{{ group.description }}</p>
+                  </div>
+                  <span class="pk-icon-group-count">{{ group.count }}</span>
+                </div>
+                <div class="pk-icon-specs">
+                  <sc-for list="{{ group.items }}" as="icon" hint-placeholder-count="6">
+                    <div class="{{ icon.rowClassName }}">
+                      <div class="pk-icon-name">
+                        <span class="pk-icon-name-ko">{{ icon.ko }}</span>
+                        <span class="pk-icon-name-en">{{ icon.en }}</span>
+                        <span class="{{ icon.sourceClassName }}">{{ icon.source }}</span>
+                      </div>
+                      <div class="pk-icon-spec-states">
+                        <sc-for list="{{ icon.states }}" as="state" hint-placeholder-count="6">
+                          <div class="pk-icon-spec-row">
+                            <span class="{{ state.className }}" role="img" aria-label="{{ state.label }}">{{ state.svg }}</span>
+                            <span class="pk-icon-spec-leader" aria-hidden="true"></span>
+                            <span class="pk-icon-spec-state">{{ state.stateName }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </section>
+            </sc-for>
+              </div>
+            </details>
+
 
             <sc-for list="{{ parkieDomainGroups }}" as="group" hint-placeholder-count="5">
               <section class="pk-icon-group">
@@ -3335,7 +3416,7 @@ class Component extends DCLogic {
     const stateDefs = [
       { id: 'enabled', label: 'Default', short: 'Default' },
       { id: 'hover', label: 'Hover', short: 'Hover' },
-      { id: 'focus', label: 'Focus visible', short: 'Focus' },
+      { id: 'focus', label: 'Keyboard focus visible', short: 'Keyboard focus' },
       { id: 'pressed', label: 'Pressed', short: 'Pressed' },
       { id: 'selected', label: 'Selected · On', short: 'Selected / On' },
       { id: 'disabled', label: 'Disabled', short: 'Disabled' },
@@ -3441,6 +3522,48 @@ class Component extends DCLogic {
         { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'link-reconnect' },
       ]),
     ];
+    /* Keyboard focus is not a seventh mutually exclusive state — it sits on top
+       of whatever state the control is already in. Showing Rest and Selected
+       both with and without the ring is what makes that legible; a single
+       "Focus" column next to Hover and Pressed teaches the wrong model. */
+    const focusReference = parkieData('Monitoring');
+    const focusCombos = [
+      { className: 'pk-focus-cell is-rest', name: 'Rest',
+        note: L('키보드 포커스 없음. 아이콘은 중립색.', 'No keyboard focus. The icon stays neutral.'),
+        label: L('모니터링 · 기본', 'Monitoring · rest'), svg: iconSvg(focusReference, 'focus-rest') },
+      { className: 'pk-focus-cell is-rest has-focus', name: 'Rest + Focus',
+        note: L('아이콘 색은 그대로 두고 클릭 타깃 외곽에 링만 더합니다.', 'The icon colour is unchanged; only the ring is added around the target.'),
+        label: L('모니터링 · 기본 + 키보드 포커스', 'Monitoring · rest plus keyboard focus'), svg: iconSvg(focusReference, 'focus-rest-ring') },
+      { className: 'pk-focus-cell is-on', name: 'Selected / On',
+        note: L('지속되는 선택 상태. 브랜드 파랑을 씁니다.', 'A persistent selection, carried in brand blue.'),
+        label: L('모니터링 · 선택', 'Monitoring · selected'), svg: iconSvg(focusReference, 'focus-selected') },
+      { className: 'pk-focus-cell is-on has-focus', name: 'Selected + Focus',
+        note: L('선택 배경과 파랑을 유지한 채 링이 바깥에 겹칩니다.', 'Selection keeps its background and blue; the ring layers outside it.'),
+        label: L('모니터링 · 선택 + 키보드 포커스', 'Monitoring · selected plus keyboard focus'), svg: iconSvg(focusReference, 'focus-selected-ring') },
+    ];
+
+    /* A browsable list comes first: one default glyph per icon with its name and
+       source. The full state matrix is a QA artefact and lives behind a
+       disclosure so finding an icon does not mean scrolling past 144 samples. */
+    const iconCatalog = [
+      { title: L('핵심 내비게이션', 'Core navigation'), items: coreIcons },
+      { title: L('로봇·주차 운영', 'Robot & parking operations'), items: robotOperationIcons },
+      { title: L('미디어·일반 제어', 'Media & utility controls'), items: controlIcons },
+      { title: L('로봇 상태', 'Robot status'), items: robotStatusIcons },
+      { title: L('안전·결과', 'Safety & results'), items: safetyIcons },
+    ].map((group) => ({
+      title: group.title,
+      count: `${group.items.length}`,
+      items: group.items.map((icon) => ({
+        ko: icon.ko,
+        en: icon.en,
+        source: icon.source,
+        sourceClassName: icon.sourceClassName,
+        label: `${icon.ko} · ${icon.en}`,
+        svg: icon.states[0].svg,
+      })),
+    }));
+
     const parkieIconGroups = [
       iconGroup(
         '핵심 내비게이션',
@@ -3478,6 +3601,13 @@ class Component extends DCLogic {
         safetyIcons
       ),
     ];
+    /* Split by axis: the interaction matrix is a QA artefact and goes behind a
+       disclosure, while the semantic rows stay in the open because their colour
+       IS the documentation. */
+    const interactionIconGroups = parkieIconGroups.filter(
+      (group) => group.items.length > 0 && /is-interaction-axis/.test(group.items[0].rowClassName));
+    const semanticIconGroups = parkieIconGroups.filter(
+      (group) => group.items.length > 0 && /is-semantic-axis/.test(group.items[0].rowClassName));
     const totalParkieIcons = parkieIconGroups.reduce((sum, group) => sum + group.items.length, 0);
     const parkieIconSummary = [
       { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
@@ -4147,6 +4277,8 @@ class Component extends DCLogic {
       navSources,
       tabDemoItems,
       activeTabLabel,
+      focusCombos,
+      iconCatalog,
       buttonTokenGroups,
       copiedNotice,
       hasButtonTokens: buttonTokenGroups.length > 0,
@@ -4219,6 +4351,8 @@ class Component extends DCLogic {
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
       parkieIconSummary,
       parkieIconGroups,
+      interactionIconGroups,
+      semanticIconGroups,
       parkieDomainGroups,
       summaryIdentityFacts,
       summaryTypeScale,

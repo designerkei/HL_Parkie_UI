@@ -203,13 +203,36 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(page.locator('.pk-icon-state')).toHaveCount((24 * 6) + (6 * 4));
   await expect(page.locator('.pk-domain-icon')).toHaveCount(22);
 
-  await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
-  await expect(page.locator('.pk-icon-source.is-custom')).toHaveCount(6);
-  await expect(page.locator('.pk-icon-source.is-ms')).toHaveCount(19);
-  await expect(page.locator('.pk-icon-source.is-ms').first()).toHaveText('Adopted');
+  // Source badges on the state rows — same contract, now scoped because the
+  // catalog carries its own badge per icon.
+  await expect(page.locator('.pk-icon-name .pk-icon-source.is-original')).toHaveCount(5);
+  await expect(page.locator('.pk-icon-name .pk-icon-source.is-custom')).toHaveCount(6);
+  await expect(page.locator('.pk-icon-name .pk-icon-source.is-ms')).toHaveCount(19);
+  await expect(page.locator('.pk-icon-name .pk-icon-source.is-ms').first()).toHaveText('Adopted');
+
+  // The catalog is the browsable view: one entry per documented icon, each
+  // with its source, and no state matrix to read through.
+  await expect(page.locator('.pk-catalog-item')).toHaveCount(30);
+  await expect(page.locator('.pk-catalog-item .pk-icon-source')).toHaveCount(30);
+
+  // Keyboard focus is documented as a combination, not a seventh column.
+  await expect(page.locator('.pk-focus-cell')).toHaveCount(4);
+  await expect(page.locator('.pk-focus-cell.has-focus')).toHaveCount(2);
+  await expect(page.locator('.pk-focus-combo-name').nth(3)).toHaveText('Selected + Focus');
+
+  // The 144-sample interaction matrix stays available but starts collapsed.
+  const qa = page.locator('.pk-icon-qa');
+  await expect(qa).toHaveCount(1);
+  expect(await qa.evaluate((el) => el.open)).toBe(false);
+  await expect(page.locator('.pk-icon-qa .pk-icon-row.is-interaction-axis')).toHaveCount(24);
+  await qa.locator('summary').click();
+  expect(await qa.evaluate((el) => el.open)).toBe(true);
+  await expect(page.locator('.pk-icon-qa .pk-icon-row').first()).toBeVisible();
   expect(await page.locator('main').innerText()).not.toMatch(/\bMS\b/);
 
-  const firstRow = rows.first();
+  // Interaction-state colours belong to the interaction axis, so read the
+  // first row of that axis rather than whatever row happens to render first.
+  const firstRow = page.locator('.pk-icon-row.is-interaction-axis').first();
   await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
   await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
   await expect(firstRow.locator('.is-focus')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
