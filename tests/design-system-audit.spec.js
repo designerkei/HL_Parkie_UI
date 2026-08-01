@@ -196,8 +196,6 @@ test('dark fixed token contract and hidden theme control remain intact', async (
   expect(source.match(/--parkie-info:\s*#7CC7E8;/g)).toHaveLength(2);
 
   const countToken = (css, token) => (css.match(new RegExp(`${token}:`, 'g')) || []).length;
-  const mutated = source.replace(/\s+--parkie-icon-focus:[^\n]+\n/, '\n');
-  expect(countToken(mutated, '--parkie-icon-focus'), 'parity gate must detect a one-scope mutation').toBe(1);
 
   /* Generalised parity. The five checks above pin specific tokens; this covers
      every themed token at once, so a new one cannot slip through the way
@@ -209,29 +207,179 @@ test('dark fixed token contract and hidden theme control remain intact', async (
      "every token in both scopes" is not the real contract. What is invariant:
      no token may exist only in the dark scope, and a token that is paired today
      must stay paired. */
-  const scopeBody = (selector) => {
-    const at = source.indexOf(selector);
-    const open = source.indexOf('{', at);
-    const close = source.indexOf('\n}', open);
-    return source.slice(open, close);
+  /* Scope-anchored, not whole-file. The earlier implementation located scopes
+     with `indexOf(':root')` — matching the full selector only as a prefix, by
+     coincidence — and counted declarations across the entire file. Both
+     assumptions break as soon as a token is declared anywhere outside the two
+     scopes, which is exactly what the forced-colors block at the end of
+     parkie-tokens.css now does. Anchoring on the exact selectors and counting
+     per scope makes the gate assert what it actually means. */
+  const ROOT_SCOPE = ':root[data-system="parkie"][data-color-mode="dark"]';
+  const DARK_SCOPE = '[data-theme="dark"][data-system="parkie"]';
+
+  const scopeBody = (css, selector) => {
+    const at = css.indexOf(selector);
+    expect(at, `token scope must exist: ${selector}`).toBeGreaterThan(-1);
+    const open = css.indexOf('{', at);
+    let depth = 1;
+    let index = open + 1;
+    while (index < css.length && depth > 0) {
+      if (css[index] === '{') depth += 1;
+      else if (css[index] === '}') depth -= 1;
+      index += 1;
+    }
+    return css.slice(open + 1, index - 1);
   };
   const declared = (css) => new Set(
     [...css.matchAll(/(--parkie-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
-  const rootTokens = declared(scopeBody(':root'));
-  const darkTokens = declared(scopeBody('[data-theme="dark"]'));
+  const countIn = (css, token) => (css.match(new RegExp(`${token}\\s*:`, 'g')) || []).length;
 
-  const darkOnly = [...darkTokens].filter((token) => !rootTokens.has(token));
-  expect(darkOnly, 'a token declared only in the dark scope is undefined in :root').toEqual([]);
+  const parity = (css) => {
+    const rootBody = scopeBody(css, ROOT_SCOPE);
+    const darkBody = scopeBody(css, DARK_SCOPE);
+    const rootTokens = declared(rootBody);
+    const darkTokens = declared(darkBody);
+    return {
+      rootTokens,
+      darkTokens,
+      darkOnly: [...darkTokens].filter((token) => !rootTokens.has(token)),
+      unpaired: [...darkTokens].filter(
+        (token) => countIn(rootBody, token) !== 1 || countIn(darkBody, token) !== 1),
+    };
+  };
 
-  const unpaired = [...darkTokens].filter((token) => countToken(source, token) !== 2);
-  expect(unpaired, 'every themed token must keep exactly one declaration per scope').toEqual([]);
-  expect(darkTokens.size, 'themed token count should not shrink silently').toBeGreaterThanOrEqual(68);
+  const live = parity(source);
+  expect(live.darkOnly, 'a token declared only in the dark scope is undefined in :root').toEqual([]);
+  expect(live.unpaired, 'every themed token must keep exactly one declaration per scope').toEqual([]);
+  expect(live.darkTokens.size, 'themed token count should not shrink silently').toBeGreaterThanOrEqual(68);
+
+  /* Mutation: dropping one of the two declarations must be caught. */
+  const mutated = source.replace(/\n\s+--parkie-icon-focus:[^\n]+/, '');
+  expect(countToken(mutated, '--parkie-icon-focus'), 'mutation must remove one declaration').toBe(1);
+  expect(parity(mutated).unpaired, 'parity gate must detect a one-scope mutation')
+    .toContain('--parkie-icon-focus');
+
+  /* Windows high contrast. The overrides deliberately sit outside both scopes so
+     they never distort the pairing count, and may only touch real tokens. */
+  const forcedAt = source.indexOf('@media (forced-colors: active)');
+  expect(forcedAt, 'Parkie must answer Windows high contrast').toBeGreaterThan(-1);
+  const forcedBlock = source.slice(forcedAt);
+  expect(forcedBlock).toContain('Highlight');
+  const forcedTokens = [...declared(forcedBlock)];
+  expect(forcedTokens.length, 'forced-colors block must override something').toBeGreaterThan(0);
+  expect(
+    forcedTokens.filter((token) => !live.rootTokens.has(token)),
+    'forced-colors may only override tokens that exist in the token scopes',
+  ).toEqual([]);
 
   await page.goto('/#systemsummary');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('body [data-theme]').first()).toHaveAttribute('data-theme', 'dark');
   const themeControl = page.locator('button[aria-hidden="true"][tabindex="-1"]');
   await expect(themeControl).toBeHidden();
+});
+
+test('Goalie token scope stays isolated and every reference resolves', async () => {
+  const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const tokenSource = strip(fs.readFileSync(
+    path.join(process.cwd(), 'tokens', 'goalie-tokens.css'), 'utf8'));
+
+  const SCOPE = '[data-system="goalie"][data-color-mode="light"]';
+  const at = tokenSource.indexOf(SCOPE);
+  expect(at, 'Goalie token scope must exist').toBeGreaterThan(-1);
+  const open = tokenSource.indexOf('{', at);
+  let depth = 1;
+  let index = open + 1;
+  while (index < tokenSource.length && depth > 0) {
+    if (tokenSource[index] === '{') depth += 1;
+    else if (tokenSource[index] === '}') depth -= 1;
+    index += 1;
+  }
+  const scopeBody = tokenSource.slice(open + 1, index - 1);
+  const declaredTokens = new Set(
+    [...scopeBody.matchAll(/(--goalie-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
+  expect(declaredTokens.size, 'Goalie token count should not shrink silently')
+    .toBeGreaterThanOrEqual(130);
+
+  /* The stated contract: no :root defaults, so a missing product wrapper fails
+     visibly instead of silently inheriting the other product's theme. */
+  expect(tokenSource).not.toMatch(/:root/);
+
+  /* Every consumer reference must resolve, or a component renders with an
+     unset custom property — the same class of defect as an unpaired token. */
+  const consumers = ['components/goalie.css', 'GoaliePages.dc.html', 'styles.css', 'index.html'];
+  const referenced = new Set();
+  for (const relative of consumers) {
+    const body = fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
+    for (const match of body.matchAll(/var\((--goalie-[a-z0-9-]+)/g)) referenced.add(match[1]);
+  }
+  expect(referenced.size, 'Goalie components must consume the token layer').toBeGreaterThan(50);
+  expect(
+    [...referenced].filter((token) => !declaredTokens.has(token)).sort(),
+    'every referenced Goalie token must be declared in the product scope',
+  ).toEqual([]);
+
+  /* Windows high contrast, matching the Parkie gate. */
+  const forcedAt = tokenSource.indexOf('@media (forced-colors: active)');
+  expect(forcedAt, 'Goalie must answer Windows high contrast').toBeGreaterThan(-1);
+  const forcedBlock = tokenSource.slice(forcedAt);
+  expect(forcedBlock).toContain('Highlight');
+  const forcedTokens = [...forcedBlock.matchAll(/(--goalie-[a-z0-9-]+)\s*:/g)].map((m) => m[1]);
+  expect(
+    forcedTokens.filter((token) => !declaredTokens.has(token)),
+    'forced-colors may only override tokens that exist in the token scope',
+  ).toEqual([]);
+});
+
+/* Rendered, not read. An earlier version of this test asserted the CSS text and
+   passed while the rule did nothing: the forced-colors block sat above
+   `.guide-nav-item__soon` in source order, so at equal specificity the authored
+   background won and the pill stayed invisible in high contrast. Only rendering
+   under emulation catches that. */
+test('high contrast is answered in the rendered chrome, both products', async ({ page }) => {
+  const probe = () => page.evaluate(() => {
+    const root = document.querySelector('.guide-root');
+    const active = document.querySelector('.guide-system-link.is-active');
+    const soon = document.querySelector('.guide-nav-item__soon');
+    return {
+      accent: getComputedStyle(root).getPropertyValue('--guide-accent').trim(),
+      underline: getComputedStyle(active, '::after').backgroundColor,
+      underlineHeight: getComputedStyle(active, '::after').height,
+      soonBg: soon ? getComputedStyle(soon).backgroundColor : null,
+      soonBorder: soon ? getComputedStyle(soon).borderTopWidth : null,
+      ringOuter: getComputedStyle(root).getPropertyValue('--parkie-focus-ring-outer').trim(),
+    };
+  });
+
+  for (const [system, hash] of [['parkie', '#/parkie/overview'], ['goalie', '#/goalie/overview']]) {
+    await page.emulateMedia({ forcedColors: 'none' });
+    await page.goto(`/${hash}`);
+    await page.locator('[data-guide-root] h1').waitFor();
+    const normal = await probe();
+
+    await page.emulateMedia({ forcedColors: 'active' });
+    const forced = await probe();
+
+    expect(forced.accent, `${system}: chrome accent must defer to the system highlight`)
+      .toBe('Highlight');
+    expect(forced.underline, `${system}: the active tab underline must repaint`)
+      .not.toBe(normal.underline);
+    expect(forced.underlineHeight, `${system}: the underline must survive, not vanish`).toBe('2px');
+    expect(forced.soonBg, `${system}: the soon pill must adopt a system surface`)
+      .not.toBe(normal.soonBg);
+    expect(forced.soonBorder, `${system}: the soon pill needs an edge once fills flatten`)
+      .toBe('1px');
+
+    if (system === 'parkie') {
+      /* The 2-tone ring loses its separation when the OS flattens colour, so the
+         outer stop must become the system highlight. */
+      expect(normal.ringOuter, 'Parkie ring should be authored in normal mode').not.toBe('Highlight');
+      expect(forced.ringOuter, 'Parkie focus ring must defer to the system highlight')
+        .toBe('Highlight');
+    }
+  }
+
+  await page.emulateMedia({ forcedColors: 'none' });
 });
 
 test('Parkie documentation never falls below the 12px RMS caption floor', async () => {

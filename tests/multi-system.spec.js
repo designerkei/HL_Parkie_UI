@@ -452,3 +452,101 @@ test('representative Parkie and every Goalie route have complete accessible stru
     expect(results.violations, `${system}/${pageId} axe violations`).toEqual([]);
   }
 });
+
+/* The chrome contract introduced when the product switcher moved into the top
+   bar. Height is asserted at several widths because the previous flex-wrap
+   layout was correct at one width and broken at the next: 390px produced 151px
+   while 320px produced 112px, from the same rules. */
+test('the global chrome is one band and holds its height across widths', async ({ page }) => {
+  const WIDE = 64;
+  const NARROW_MAX = 100;
+
+  for (const system of ['parkie', 'goalie']) {
+    for (const width of [1440, 1100, 901, 700, 640, 480, 390, 360, 320]) {
+      await page.setViewportSize({ width, height: 820 });
+      await page.goto(canonicalUrl(system, 'overview'));
+      await expectSystemRoute(page, system, 'overview');
+
+      const chrome = await page.evaluate(() => {
+        const bar = document.querySelector('.guide-topbar');
+        const nav = document.querySelector('[data-system-nav]');
+        const workspace = document.querySelector('.guide-workspace');
+        const active = document.querySelector('.guide-system-link.is-active');
+        const style = getComputedStyle(active);
+        const underline = getComputedStyle(active, '::after');
+        const tabs = [...document.querySelectorAll('[data-system-nav] [data-system-id]')];
+        return {
+          // Everything above the workspace, however the bar nests internally.
+          height: Math.round(workspace.getBoundingClientRect().top),
+          navInsideTopbar: bar.contains(nav),
+          background: style.backgroundColor,
+          borderWidth: style.borderTopWidth,
+          underlineHeight: underline.height,
+          smallestTab: Math.min(...tabs.map((tab) => Math.round(tab.getBoundingClientRect().height))),
+          tabMinHeight: parseFloat(style.minHeight) || 0,
+          tabCount: tabs.length,
+        };
+      });
+
+      const label = `${system}@${width}px`;
+
+      /* One band: the tabs are inside the top bar, not a second stacked nav. */
+      expect(chrome.navInsideTopbar, `${label} product tabs must live in the top bar`).toBe(true);
+      expect(chrome.tabCount, `${label} both products must be reachable`).toBe(2);
+
+      if (width >= 901) {
+        expect(chrome.height, `${label} wide chrome height`).toBe(WIDE);
+      } else {
+        expect(chrome.height, `${label} narrow chrome must stay compact`)
+          .toBeLessThanOrEqual(NARROW_MAX);
+      }
+
+      /* Active state is an underline alone. Stacking background + border + colour
+         reads as a pressed button rather than a location. */
+      expect(chrome.background, `${label} active tab must not be filled`)
+        .toBe('rgba(0, 0, 0, 0)');
+      expect(chrome.borderWidth, `${label} active tab must not be outlined`).toBe('0px');
+      expect(chrome.underlineHeight, `${label} active tab needs its underline`).toBe('2px');
+
+      /* WCAG 2.2 target size. The tab collapsed to a 16px text box once it
+         wrapped onto a line of its own under the old flex layout. */
+      expect(chrome.smallestTab, `${label} tab target size`).toBeGreaterThanOrEqual(24);
+
+      /* The grid layout currently sizes the tab row from its taller sibling, so
+         the rendered height alone would stay compliant even if the floor were
+         deleted. Assert the floor directly: it is what keeps the target legal
+         if the search field is ever moved, resized, or removed. */
+      expect(chrome.tabMinHeight, `${label} tab must keep an intrinsic target floor`)
+        .toBeGreaterThanOrEqual(24);
+    }
+  }
+});
+
+/* The product name used to appear three times at once — top tab, sidebar source
+   heading, and the page eyebrow. The eyebrow now carries navigation group, the
+   one piece of location the other two do not provide. */
+test('the page eyebrow locates the page in the IA rather than repeating the product', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  const cases = [
+    ['parkie', 'overview', '시작하기'],
+    ['parkie', 'colors', '파운데이션'],
+    ['parkie', 'robotcard', '로봇 운영'],
+    ['goalie', 'overview', '시작하기'],
+    ['goalie', 'brand', '리소스'],
+  ];
+
+  for (const [system, pageId, group] of cases) {
+    await page.goto(canonicalUrl(system, pageId));
+    await expectSystemRoute(page, system, pageId);
+    const eyebrow = page.locator('.guide-page-header__eyebrow');
+    await expect(eyebrow, `${system}/${pageId} eyebrow must name its nav group`).toContainText(group);
+    await expect(eyebrow, `${system}/${pageId} eyebrow must not repeat the product`)
+      .not.toContainText(system === 'goalie' ? 'Goalie UI' : 'Parkie UI');
+  }
+
+  /* Secondary sources keep their prefix: "which library am I reading" is a real
+     distinction for the MS reference set. */
+  await page.goto(canonicalUrl('parkie', 'ms-button'));
+  await expect(page.locator('.guide-page-header__eyebrow')).toContainText('MS 참조');
+});

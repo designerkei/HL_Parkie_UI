@@ -486,3 +486,25 @@
     inset 0 0 0 2px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
 }
+
+/* =====================================================================
+   Windows high contrast
+
+   Focus indicators and borders must adopt system colours; the OS otherwise
+   flattens the fixed dark palette and the 2-tone focus ring loses the
+   separation that makes it visible on a same-coloured fill. Mirrors the
+   treatment already shipped in tokens/goalie-tokens.css.
+
+   Declared outside the two token scopes on purpose — the parity gate counts
+   declarations per scope, so overrides here never distort that count.
+   ===================================================================== */
+@media (forced-colors: active) {
+  :root[data-system="parkie"][data-color-mode="dark"],
+  [data-system="parkie"][data-color-mode="dark"],
+  [data-theme="dark"][data-system="parkie"] {
+    --parkie-focus-ring-inner: Canvas;
+    --parkie-focus-ring-outer: Highlight;
+    --parkie-border: CanvasText;
+    --parkie-border-strong: CanvasText;
+  }
+}

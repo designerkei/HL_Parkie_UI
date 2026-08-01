@@ -1,6 +1,6 @@
 /* Parkie RMS Design System — global entry.
    Add future @imports (materialized tokens, typography) here. */
-@import "./tokens/parkie-tokens.css?v=0.5";
+@import "./tokens/parkie-tokens.css?v=0.6";
 @import "./components/controls.css?v=0.4";
 @import "./components/robot-status.css?v=0.3";
 @import "./components/operations.css?v=0.4";
@@ -244,6 +244,10 @@ img {
   position: relative;
   display: flex;
   align-items: center;
+  /* The tab stretches to the bar height when the nav shares a flex line, but
+     collapses to the text box (16px) once it wraps onto a line of its own.
+     The floor keeps the target above the WCAG 2.2 24px minimum at every width. */
+  min-height: 36px;
   padding: 0 var(--guide-space-3);
   color: var(--guide-text-secondary);
   font-weight: 600;
@@ -1323,13 +1327,26 @@ img {
     overflow: visible;
   }
 
+  /* Two deterministic rows: identity + language, then tabs + search.
+     Grid rather than flex-wrap on purpose — wrapping is emergent from pixel
+     arithmetic, so "these two on row 1, those two on row 2" held at one width
+     and broke at the next (390px landed on two rows while 320px fell to three).
+     Grid states the placement directly and holds at every width.
+     Redefining the padding variable, rather than overriding padding-block,
+     keeps the active tab underline aligned to the bar's bottom border. */
   .guide-topbar {
-    flex-wrap: wrap;
-    padding-block: var(--guide-space-3);
+    --guide-topbar-pad-y: var(--guide-space-2);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "identity language"
+      "tabs     search";
+    align-items: center;
+    gap: var(--guide-space-2);
   }
 
   .guide-identity {
-    max-width: calc(100% - 92px);
+    grid-area: identity;
   }
 
   .guide-identity__title {
@@ -1342,22 +1359,35 @@ img {
   }
 
   .guide-language {
-    margin-left: auto;
-  }
-
-  .guide-search {
-    order: 3;
-    width: 100%;
+    grid-area: language;
     margin-left: 0;
   }
 
+  /* Column 2 is shared with the language toggle, so the search field sets its
+     own width instead of inheriting the 30vw rule that would collapse it. */
+  .guide-search {
+    grid-area: search;
+    width: clamp(120px, 28vw, 240px);
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  /* Tabs keep their intrinsic width and scroll inside their own cell, so adding
+     a third product widens the scroller rather than the document. */
   .guide-system-nav {
-    padding: 6px var(--guide-space-3);
+    grid-area: tabs;
+    margin-left: 0;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .guide-system-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .guide-system-link {
-    min-width: 0;
-    flex: 1 1 0;
+    flex: 0 0 auto;
   }
 
   .guide-workspace {
@@ -1477,5 +1507,29 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .pk-modal-spinner {
     animation-duration: 1.8s;
+  }
+}
+
+/* Windows high contrast for the product-neutral chrome. Forced-colors drops
+   author backgrounds, so the two indicators that are painted rather than drawn
+   — the active tab underline and the `soon` pill — opt out and use system
+   colours. Without this the active product would be unmarked. */
+@media (forced-colors: active) {
+  .guide-root[data-theme] {
+    --guide-border: CanvasText;
+    --guide-border-strong: CanvasText;
+    --guide-accent: Highlight;
+  }
+
+  .guide-system-link.is-active::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .guide-nav-item__soon {
+    forced-color-adjust: none;
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
   }
 }

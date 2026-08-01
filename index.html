@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.7">
+<link rel="stylesheet" href="styles.css?v=0.8">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -139,7 +139,7 @@
 
         <!-- page header -->
         <div class="guide-page-header pk-page-header">
-          <div class="guide-page-header__eyebrow pk-page-header__eyebrow">{{ activeSystemName }} · {{ curSub }}</div>
+          <div class="guide-page-header__eyebrow pk-page-header__eyebrow">{{ curGroupName }} · {{ curSub }}</div>
           <h1 id="pk-page-title" class="guide-page-header__title pk-page-header__title" tabindex="-1">{{ curTitle }}</h1>
           <p class="guide-page-header__description pk-page-header__description">{{ curDesc }}</p>
         </div>
@@ -3123,7 +3123,9 @@ class Component extends DCLogic {
   ];
 
   GOALIE_NAV = [
-    { source: 'Goalie UI', sub: 'Light product system', groups: [
+    /* `Goalie`, not `Goalie UI`: the top tab already carries the full product
+       name, and Parkie's source heading is likewise the bare product name. */
+    { source: 'Goalie', sub: 'Light product system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles'] },
       { ko: '파운데이션', en: 'Foundations', items: ['colors', 'typography', 'spacing', 'iconography'] },
       { ko: '컴포넌트', en: 'Components', items: ['button', 'input', 'status', 'navigation'] },
@@ -3405,6 +3407,25 @@ class Component extends DCLogic {
     const currentNav = isGoalieSystem ? this.GOALIE_NAV : this.NAV;
     const cur = currentMeta[active] || currentMeta.overview;
     const version = 'v0.1';
+
+    /* The page eyebrow used to repeat the product name, which by then appeared
+       three times on screen: top tab, sidebar source heading, and here. The tab
+       already marks the active product, so this slot carries the navigation
+       group instead — the one piece of location the other two do not give.
+       Secondary sources (the MS reference set) keep their source prefix, since
+       "which library am I reading" is a real distinction there. */
+    const locateGroup = () => {
+      for (const src of currentNav) {
+        for (const group of src.groups || []) {
+          if ((group.items || []).includes(active)) {
+            const label = L(group.ko, group.en);
+            return src === currentNav[0] ? label : `${src.source} · ${label}`;
+          }
+        }
+      }
+      return '';
+    };
+    const curGroupName = locateGroup();
 
     const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
     const buildItems = (ids) => ids.filter((id) => {
@@ -4470,6 +4491,9 @@ class Component extends DCLogic {
       guideTitle: 'UX/UI Design Guide System',
       guideSubtitle: L('제품 디자인 시스템', 'Product design systems'),
       activeSystemName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
+      /* Falls back to the product name only when a page sits outside every nav
+         group, so the eyebrow is never blank. */
+      curGroupName: curGroupName || (isGoalieSystem ? 'Goalie UI' : 'Parkie UI'),
       brandName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
       subtitle: isGoalieSystem ? L('라이트 디자인 시스템', 'Light Design System') : L('RMS 디자인 시스템', 'RMS Design System'),
       ver: version,
