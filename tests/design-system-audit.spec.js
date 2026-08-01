@@ -199,6 +199,34 @@ test('dark fixed token contract and hidden theme control remain intact', async (
   const mutated = source.replace(/\s+--parkie-icon-focus:[^\n]+\n/, '\n');
   expect(countToken(mutated, '--parkie-icon-focus'), 'parity gate must detect a one-scope mutation').toBe(1);
 
+  /* Generalised parity. The five checks above pin specific tokens; this covers
+     every themed token at once, so a new one cannot slip through the way
+     --parkie-emergency did when it shipped declared in :root only.
+
+     Note what this can and cannot do. The codebase declares 288 tokens in
+     :root and 68 in the dark scope — structural families (primitives, spacing,
+     type, elevation, operation base values) are deliberately single-scope, so
+     "every token in both scopes" is not the real contract. What is invariant:
+     no token may exist only in the dark scope, and a token that is paired today
+     must stay paired. */
+  const scopeBody = (selector) => {
+    const at = source.indexOf(selector);
+    const open = source.indexOf('{', at);
+    const close = source.indexOf('\n}', open);
+    return source.slice(open, close);
+  };
+  const declared = (css) => new Set(
+    [...css.matchAll(/(--parkie-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
+  const rootTokens = declared(scopeBody(':root'));
+  const darkTokens = declared(scopeBody('[data-theme="dark"]'));
+
+  const darkOnly = [...darkTokens].filter((token) => !rootTokens.has(token));
+  expect(darkOnly, 'a token declared only in the dark scope is undefined in :root').toEqual([]);
+
+  const unpaired = [...darkTokens].filter((token) => countToken(source, token) !== 2);
+  expect(unpaired, 'every themed token must keep exactly one declaration per scope').toEqual([]);
+  expect(darkTokens.size, 'themed token count should not shrink silently').toBeGreaterThanOrEqual(68);
+
   await page.goto('/#systemsummary');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('body [data-theme]').first()).toHaveAttribute('data-theme', 'dark');
@@ -382,4 +410,78 @@ test('all release-critical local assets are served and all Parkie token referenc
     .filter((token) => !defined.has(token))
     .sort();
   expect(missing).toEqual([]);
+});
+
+test('button state contrast and focus ring visibility are enforced', async ({ page }) => {
+  await page.goto('/#button');
+  await expect(page.locator('h1')).toContainText('버튼');
+  await expect(page.locator('.pk-token-table')).toHaveCount(3);
+  await expect.poll(() => page.evaluate(() => (
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--parkie-focus-ring-inner')
+      .trim()
+  ))).not.toBe('');
+
+  /* The page computes these from the live CSS, so asserting on what it renders
+     also asserts that the tokens themselves still pass. Danger hover used to
+     sit at 4.29:1 under white text. */
+  const verdicts = page.locator('.pk-token-verdict');
+  await expect(verdicts).toHaveCount(12);
+  await expect(page.locator('.pk-token-verdict.is-fail')).toHaveCount(0);
+
+  /* WCAG 2.2 Focus Appearance wants 3:1 against the adjacent colour. A single
+     translucent ring cannot hold that everywhere — the previous one measured
+     1.00:1 on the Primary button, where it composited into the button and
+     vanished. Two tones satisfy it because at least one always contrasts. */
+  const rings = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(probe);
+    const read = (token) => {
+      probe.style.color = '';
+      probe.style.color = 'var(' + token + ')';
+      return getComputedStyle(probe).color;
+    };
+    const parse = (value) => {
+      const source = String(value).trim();
+      const rgb = source.match(/rgba?\(([^)]+)\)/i);
+      if (rgb) {
+        const p = rgb[1].split(/[\s,\/]+/).filter(Boolean).map(Number);
+        return { r: p[0], g: p[1], b: p[2] };
+      }
+      const srgb = source.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/i);
+      if (srgb) {
+        return { r: Number(srgb[1]) * 255, g: Number(srgb[2]) * 255, b: Number(srgb[3]) * 255 };
+      }
+      throw new Error('Unsupported computed colour: ' + source);
+    };
+    const lum = (c) => {
+      const ch = (v) => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+    };
+    const ratio = (a, b) => {
+      const la = lum(a);
+      const lb = lum(b);
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    };
+    const inner = parse(read('--parkie-focus-ring-inner'));
+    const outer = parse(read('--parkie-focus-ring-outer'));
+    const backgrounds = [
+      '--parkie-bg', '--parkie-surface', '--parkie-surface-elevation-12',
+      '--parkie-action-primary-bg', '--parkie-action-danger-bg',
+      '--parkie-action-danger-bg-hover', '--parkie-warning', '--parkie-success',
+    ];
+    const pair = ratio(inner, outer);
+    const worst = Math.min(...backgrounds.map((token) => {
+      const bg = parse(read(token));
+      return Math.max(ratio(inner, bg), ratio(outer, bg));
+    }));
+    probe.remove();
+    return { pair, worst };
+  });
+  expect(rings.pair, 'the two ring tones must separate from each other').toBeGreaterThanOrEqual(3);
+  expect(rings.worst, 'one ring tone must clear 3:1 on every adjacent surface').toBeGreaterThanOrEqual(3);
 });
