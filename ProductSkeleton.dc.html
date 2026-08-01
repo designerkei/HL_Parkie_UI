@@ -1,51 +1,53 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Goalie UI · Design System</title>
+  <title>Product skeleton · Design System</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./tokens/goalie-tokens.css">
-  <link rel="stylesheet" href="./components/goalie.css">
+  <link rel="stylesheet" href="./styles.css">
   <style>
-    html, body { height: 100%; margin: 0; background: #F7F9FC; }
+    html, body { height: 100%; margin: 0; }
     x-dc { display: none !important; }
   </style>
   <script src="./support.js"></script>
 </head>
 <body>
 <!-- =====================================================================
-     Goalie UI — documentation skeleton
+     Shared documentation skeleton
 
-     Goalie has no approved design system yet. Every page here is an empty
-     receiving slot; content is authored only from material that has
-     actually been handed over, never inferred.
+     Every product whose design system has not been delivered yet renders
+     this same component. Product-specific values arrive as props, so the
+     guide mounts it once and adding a product needs no template change.
 
-     The single exception is `brand`, which documents the intake contract
-     itself (swap points, handover order, contrast gate) — process, not
-     design. See tokens/goalie-tokens.css for the swap layer.
+     Styling uses the product-neutral --guide-* layer rather than a product
+     token namespace, so a light product renders light and a dark one dark
+     without a per-product stylesheet.
+
+     The exception to "everything is empty" is the brand page, which
+     documents the intake contract itself — process, not design.
      ===================================================================== -->
 <x-dc>
-  <div class="gl-root gl-root--content" ref="{{ rootRef }}" data-system="goalie" data-color-mode="light" lang="{{ lang }}">
-    <div class="gl-content">
+  <div class="ps-root" ref="{{ rootRef }}" lang="{{ lang }}">
+    <div class="ps-content">
 
           <!-- AWAITING HANDOFF ---------------------------------------- -->
           <sc-if value="{{ isPending }}" hint-placeholder-val="true">
-            <section class="gl-pending" aria-labelledby="gl-pending-title">
-              <span class="gl-pending__mark" aria-hidden="true"></span>
-              <span class="gl-pending__eyebrow">{{ pendingEyebrow }}</span>
-              <h2 class="gl-pending__title" id="gl-pending-title">{{ pendingTitle }}</h2>
-              <p class="gl-pending__body">{{ pendingBody }}</p>
+            <section class="ps-pending" aria-labelledby="ps-pending-title">
+              <span class="ps-pending__mark" aria-hidden="true"></span>
+              <span class="ps-pending__eyebrow">{{ pendingEyebrow }}</span>
+              <h2 class="ps-pending__title" id="ps-pending-title">{{ pendingTitle }}</h2>
+              <p class="ps-pending__body">{{ pendingBody }}</p>
             </section>
 
-            <section class="gl-section">
-              <header class="gl-section-head">
-                <div><span class="gl-section-index">{{ pendingStepsIndex }}</span><h2>{{ pendingStepsTitle }}</h2></div>
+            <section class="ps-section">
+              <header class="ps-section-head">
+                <div><span class="ps-section-index">{{ pendingStepsIndex }}</span><h2>{{ pendingStepsTitle }}</h2></div>
                 <p>{{ pendingStepsBody }}</p>
               </header>
-              <ul class="gl-line-list">
+              <ul class="ps-line-list">
                 <sc-for list="{{ pendingSteps }}" as="step" hint-placeholder-count="3">
-                  <li class="gl-line-row"><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li>
+                  <li class="ps-line-row"><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li>
                 </sc-for>
               </ul>
             </section>
@@ -53,44 +55,44 @@
 
           <!-- BRAND — INTAKE CONTRACT -------------------------------- -->
           <sc-if value="{{ isBrand }}" hint-placeholder-val="false">
-            <section class="gl-brand-lockup" aria-label="Goalie UI">
-              <span class="gl-product-mark" aria-hidden="true"></span>
-              <div class="gl-brand-word">Goalie <span>UI</span></div>
+            <section class="ps-brand-lockup" aria-label="{{ product }}">
+              <span class="ps-product-mark" aria-hidden="true"></span>
+              <div class="ps-brand-word">{{ product }}</div>
             </section>
-            <p class="gl-note">{{ brandLockupNote }}</p>
+            <p class="ps-note">{{ brandLockupNote }}</p>
 
-            <section class="gl-section">
-              <header class="gl-section-head">
-                <div><span class="gl-section-index">01 · SWAP POINTS</span><h2>{{ swapTitle }}</h2></div>
+            <section class="ps-section">
+              <header class="ps-section-head">
+                <div><span class="ps-section-index">01 · SWAP POINTS</span><h2>{{ swapTitle }}</h2></div>
                 <p>{{ swapBody }}</p>
               </header>
-              <ul class="gl-line-list">
+              <ul class="ps-line-list">
                 <sc-for list="{{ swapPoints }}" as="point" hint-placeholder-count="3">
-                  <li class="gl-line-row"><strong>{{ point.title }}</strong><p>{{ point.body }}</p></li>
+                  <li class="ps-line-row"><strong>{{ point.title }}</strong><p>{{ point.body }}</p></li>
                 </sc-for>
               </ul>
             </section>
 
-            <section class="gl-section">
-              <header class="gl-section-head">
-                <div><span class="gl-section-index">02 · INTAKE ORDER</span><h2>{{ intakeTitle }}</h2></div>
+            <section class="ps-section">
+              <header class="ps-section-head">
+                <div><span class="ps-section-index">02 · INTAKE ORDER</span><h2>{{ intakeTitle }}</h2></div>
                 <p>{{ intakeBody }}</p>
               </header>
-              <ul class="gl-line-list">
+              <ul class="ps-line-list">
                 <sc-for list="{{ intakeSteps }}" as="step" hint-placeholder-count="4">
-                  <li class="gl-line-row"><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li>
+                  <li class="ps-line-row"><strong>{{ step.title }}</strong><p>{{ step.body }}</p></li>
                 </sc-for>
               </ul>
             </section>
 
-            <section class="gl-section">
-              <header class="gl-section-head">
-                <div><span class="gl-section-index">03 · CONTRAST GATE</span><h2>{{ gateTitle }}</h2></div>
+            <section class="ps-section">
+              <header class="ps-section-head">
+                <div><span class="ps-section-index">03 · CONTRAST GATE</span><h2>{{ gateTitle }}</h2></div>
                 <p>{{ gateBody }}</p>
               </header>
-              <ul class="gl-line-list">
+              <ul class="ps-line-list">
                 <sc-for list="{{ gateRules }}" as="rule" hint-placeholder-count="4">
-                  <li class="gl-line-row"><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p></li>
+                  <li class="ps-line-row"><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p></li>
                 </sc-for>
               </ul>
             </section>
@@ -100,23 +102,16 @@
   </div>
 </x-dc>
 
-<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["ko","en"],"default":"ko","tsType":"\"ko\"|\"en\"","section":"General"},"activePage":{"editor":"enum","options":["overview","systemsummary","principles","colors","typography","spacing","iconography","button","input","status","navigation","templates","brand"],"default":"overview","tsType":"string","section":"General"}}'>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["ko","en"],"default":"ko","tsType":"\"ko\"|\"en\"","section":"General"},"product":{"editor":"string","default":"Product UI","tsType":"string","section":"General"},"tokenPath":{"editor":"string","default":"tokens/product-tokens.css","tsType":"string","section":"General"},"activePage":{"editor":"string","default":"overview","tsType":"string","section":"General"}}'>
 class Component extends DCLogic {
   rootRef = React.createRef();
-
-  PAGES = ['overview', 'systemsummary', 'principles', 'colors', 'typography', 'spacing', 'iconography', 'button', 'input', 'status', 'navigation', 'templates', 'brand'];
 
   normalizeLang(value) {
     return value === 'en' ? 'en' : 'ko';
   }
 
-  normalizePage(value) {
-    return this.PAGES.includes(value) ? value : 'overview';
-  }
-
   state = {
     lang: this.normalizeLang(this.props.lang || this.props.defaultLang),
-    active: this.normalizePage(this.props.activePage || this.props.page || this.props.initialPage),
   };
 
   componentDidUpdate(prevProps) {
@@ -126,41 +121,30 @@ class Component extends DCLogic {
       const lang = this.normalizeLang(incomingLang);
       if (lang !== this.state.lang) this.setState({ lang });
     }
-
-    const incomingPage = this.props.activePage || this.props.page || this.props.initialPage;
-    const previousPage = prevProps.activePage || prevProps.page || prevProps.initialPage;
-    if (incomingPage && incomingPage !== previousPage) {
-      const active = this.normalizePage(incomingPage);
-      if (active !== this.state.active) this.setState({ active });
-    }
   }
 
   select = (id) => {
-    const active = this.normalizePage(id);
-    if (typeof this.props.onNavigate === 'function') {
-      this.props.onNavigate(active);
-    } else {
-      this.setState({ active });
-    }
-  };
-
-  setLanguage = (value) => {
-    const lang = this.normalizeLang(value);
-    this.setState({ lang });
-    if (typeof this.props.onLanguageChange === 'function') this.props.onLanguageChange(lang);
+    if (typeof this.props.onNavigate === 'function') this.props.onNavigate(id);
   };
 
   renderVals() {
-    const { lang, active } = this.state;
+    const { lang } = this.state;
     const ko = lang === 'ko';
     const L = (k, e) => ko ? k : e;
     const line = (titleKo, titleEn, bodyKo, bodyEn) => ({ title: L(titleKo, titleEn), body: L(bodyKo, bodyEn) });
 
+    /* Read straight from props rather than mirrored into state: the guide
+       remounts nothing when switching products, so a stale copy would show the
+       previous product's name for a frame. */
+    const product = this.props.product || 'Product UI';
+    const tokenPath = this.props.tokenPath || 'tokens/product-tokens.css';
+    const active = this.props.activePage || 'overview';
     const isBrand = active === 'brand';
 
     return {
       rootRef: this.rootRef,
       lang,
+      product,
       isBrand,
       isPending: !isBrand,
 
@@ -168,8 +152,8 @@ class Component extends DCLogic {
       pendingEyebrow: L('전달 대기 · AWAITING HANDOFF', 'AWAITING HANDOFF'),
       pendingTitle: L('이 페이지는 아직 비어 있습니다', 'This page is still empty'),
       pendingBody: L(
-        'Goalie는 순찰 로봇 관제 소프트웨어이고, 디자인 시스템은 아직 확정되지 않았습니다. 이 문서는 전달받은 자료를 근거로만 채웁니다 — 추측으로 채우지 않습니다.',
-        'Goalie is the patrol-robot control software, and its design system is not settled yet. These pages are authored only from material that has been handed over — never inferred.',
+        `${product}의 디자인 시스템은 아직 확정되지 않았습니다. 이 문서는 전달받은 자료를 근거로만 채웁니다 — 추측으로 채우지 않습니다.`,
+        `The ${product} design system is not settled yet. These pages are authored only from material that has been handed over — never inferred.`,
       ),
 
       pendingStepsIndex: L('전달 절차', 'HANDOFF'),
@@ -183,8 +167,8 @@ class Component extends DCLogic {
           '스펙 이미지나 파일을 전달받습니다. 표기가 모호하거나 서로 어긋나면 추측하지 않고 먼저 확인합니다.',
           'A spec image or file arrives. Where labels are ambiguous or contradict each other, we confirm rather than guess.'),
         line('02 · 토큰 주입', '02 · Token injection',
-          '값을 tokens/goalie-tokens.css의 스왑 레이어에 넣습니다. 컴포넌트는 원시값이 아니라 의미 토큰만 참조합니다.',
-          'Values land in the swap layer of tokens/goalie-tokens.css. Components reference semantic aliases, never raw palette values.'),
+          `값을 ${tokenPath}의 스왑 레이어에 넣습니다. 컴포넌트는 원시값이 아니라 의미 토큰만 참조합니다.`,
+          `Values land in the swap layer of ${tokenPath}. Components reference semantic aliases, never raw palette values.`),
         line('03 · 스펙과 검증', '03 · Spec and verification',
           '컴포넌트 문서를 작성하고 대비 게이트를 통과시킵니다. 통과하지 못한 조합은 근거 수치와 함께 되돌려 확인합니다.',
           'Component docs are written and must clear the contrast gate. Combinations that fail go back for confirmation with the measured numbers.'),
@@ -192,25 +176,25 @@ class Component extends DCLogic {
 
       /* ---- Brand — intake contract ----------------------------------- */
       brandLockupNote: L(
-        '위 마크와 워드마크는 자리표시자입니다. Goalie 전용 자산을 전달받으면 교체합니다.',
-        'The mark and wordmark above are placeholders, to be replaced once Goalie-specific assets are handed over.',
+        `위 마크와 워드마크는 자리표시자입니다. ${product} 전용 자산을 전달받으면 교체합니다.`,
+        `The mark and wordmark above are placeholders, to be replaced once ${product}-specific assets are handed over.`,
       ),
 
       swapTitle: L('교체 지점 세 곳', 'Three swap points'),
       swapBody: L(
-        '이 세 곳만 고치면 Goalie 전체가 리테마됩니다. 다른 파일에 색·폰트 값을 직접 적지 않는 것이 이 구조를 지키는 조건입니다.',
-        'Changing only these three retheme all of Goalie. Keeping color and font values out of every other file is what preserves that property.',
+        `이 세 곳만 고치면 ${product} 전체가 리테마됩니다. 다른 파일에 색·폰트 값을 직접 적지 않는 것이 이 구조를 지키는 조건입니다.`,
+        `Changing only these three rethemes all of ${product}. Keeping color and font values out of every other file is what preserves that property.`,
       ),
       swapPoints: [
         line('브랜드 색', 'Brand color',
-          'tokens/goalie-tokens.css의 --goalie-color-brand-50 ~ 950 램프. 현재 값은 자리표시자이며 전달받은 팔레트로 교체됩니다. 의미 별칭(--goalie-brand-primary 등)은 램프를 참조하므로 함께 따라옵니다.',
-          'The --goalie-color-brand-50 to 950 ramp in tokens/goalie-tokens.css. Current values are placeholders awaiting the delivered palette. Semantic aliases such as --goalie-brand-primary follow automatically.'),
+          `${tokenPath}의 브랜드 램프(50~950). 현재 값은 자리표시자이며 전달받은 팔레트로 교체됩니다. 의미 별칭은 램프를 참조하므로 함께 따라옵니다.`,
+          `The 50–950 brand ramp in ${tokenPath}. Current values are placeholders awaiting the delivered palette; semantic aliases follow automatically.`),
         line('타이포그래피', 'Typography',
-          '같은 파일의 --goalie-font-sans / --goalie-font-mono. 크기 스케일은 12px 하한을 유지합니다.',
-          'The --goalie-font-sans and --goalie-font-mono declarations in the same file. The size scale keeps a 12px floor.'),
+          `같은 파일의 sans / mono 글꼴 선언. 크기 스케일은 12px 하한을 유지합니다.`,
+          `The sans and mono font declarations in the same file. The size scale keeps a 12px floor.`),
         line('로고와 마크', 'Logo and mark',
-          '.gl-product-mark와 .gl-brand-word가 렌더하는 자리표시자. 전달받은 SVG로 교체하며, 배경이 칠해진 자산은 투명 배경으로 정리합니다.',
-          'The placeholder drawn by .gl-product-mark and .gl-brand-word, to be replaced by the delivered SVG. Assets shipped with a painted background get flattened to transparent.'),
+          '이 페이지 상단의 마크와 워드마크가 렌더하는 자리표시자. 전달받은 SVG로 교체하며, 배경이 칠해진 자산은 투명 배경으로 정리합니다.',
+          'The placeholder mark and wordmark at the top of this page, to be replaced by the delivered SVG. Assets shipped with a painted background get flattened to transparent.'),
       ],
 
       intakeTitle: L('전달 순서', 'Handover order'),
@@ -229,8 +213,8 @@ class Component extends DCLogic {
           '버튼, 입력, 상태, 내비게이션. 상태별(기본·호버·누름·비활성·포커스) 값이 모두 필요합니다.',
           'Button, input, status and navigation — each needs values for rest, hover, pressed, disabled and focus.'),
         line('04 · 화면 패턴', '04 · Screen patterns',
-          '실제 화면(홈 · 순찰관리 · 영상관리 · 통계 · 설정)을 받아 템플릿으로 정리합니다.',
-          'Real screens — home, patrol, video, statistics, settings — are distilled into templates.'),
+          '실제 화면을 받아 템플릿으로 정리합니다. 이 단계에서 패턴 슬롯 이름을 제품 화면에 맞춥니다.',
+          'Real screens are distilled into templates. The pattern slots are renamed to match the product at this step.'),
       ],
 
       gateTitle: L('대비 게이트', 'Contrast gate'),

@@ -4,20 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script data-guide-theme-bootstrap>
-  /* The active product owns a fixed colour mode. Publish it synchronously,
-     before any stylesheet can paint, so a cold Goalie deep link never flashes
-     the Parkie dark canvas. The application router validates the page later. */
+  /* The product registry — the single definition of what products exist.
+     It lives here, not in the application class, because the active product's
+     fixed colour mode must be published before any stylesheet can paint, which
+     is earlier than the class exists. The router reads this same object, so the
+     first-paint theme and the routed theme cannot drift apart.
+
+     Adding a product is an entry here plus its token file, manifest and nav.
+     Removing one is deleting them. Nothing in the template or the router needs
+     to know a product by name. */
+  window.__GUIDE_SYSTEMS = {
+    parkie: {
+      name: 'Parkie UI',
+      theme: 'dark',
+      canvas: '#0F0F11',
+      manifest: 'META',
+      nav: 'NAV',
+      tokens: 'tokens/parkie-tokens.css',
+      /* false: ships its own authored pages. true: renders the shared
+         awaiting-handover skeleton until a design is delivered. */
+      skeleton: false,
+      subtitleKo: 'RMS 디자인 시스템',
+      subtitleEn: 'RMS Design System',
+    },
+    goalie: {
+      name: 'Goalie UI',
+      theme: 'light',
+      canvas: '#F7F9FC',
+      manifest: 'GOALIE_META',
+      nav: 'GOALIE_NAV',
+      tokens: 'tokens/goalie-tokens.css',
+      skeleton: true,
+      subtitleKo: '라이트 디자인 시스템',
+      subtitleEn: 'Light Design System',
+    },
+  };
+
   (function bootstrapGuideTheme() {
-    var hash = window.location.hash || '';
-    var system = /^#\/goalie(?:\/|$)/i.test(hash) ? 'goalie' : 'parkie';
-    var theme = system === 'goalie' ? 'light' : 'dark';
+    var systems = window.__GUIDE_SYSTEMS;
+    var hash = String(window.location.hash || '');
+    /* Mirrors parseRoute: decode, lowercase, unknown falls back to the first
+       registered product. Keep the two in step or a cold deep link paints the
+       wrong canvas before the router corrects it. */
+    var raw = /^#\//.test(hash) ? hash.slice(2).split('/')[0] : '';
+    var requested;
+    try { requested = decodeURIComponent(raw).toLowerCase(); } catch (error) { requested = raw.toLowerCase(); }
+    var system = Object.prototype.hasOwnProperty.call(systems, requested)
+      ? requested
+      : Object.keys(systems)[0];
+    var entry = systems[system];
     var root = document.documentElement;
     root.dataset.activeSystem = system;
     root.dataset.system = system;
-    root.dataset.theme = theme;
-    root.dataset.colorMode = theme;
-    root.style.colorScheme = theme;
-    root.style.backgroundColor = theme === 'light' ? '#F7F9FC' : '#0F0F11';
+    root.dataset.theme = entry.theme;
+    root.dataset.colorMode = entry.theme;
+    root.style.colorScheme = entry.theme;
+    root.style.backgroundColor = entry.canvas;
   }());
 </script>
 <title>Parkie UI · UX/UI Design Guide System</title>
@@ -26,7 +68,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=0.8">
+<link rel="stylesheet" href="styles.css?v=0.9">
 <link rel="stylesheet" href="ms2/fig-assets.css">
 <link rel="stylesheet" href="ms3/fig-assets.css">
 <link rel="stylesheet" href="ms4/fig-assets.css">
@@ -2841,13 +2883,20 @@
           </div>
         </sc-if>
 
-        <sc-if value="{{ isGoalieSystem }}" hint-placeholder-val="{{ false }}">
+        <!-- One mount serves every product still awaiting its design. `name` is
+             read at template-compile time by the DC runtime and cannot be
+             interpolated, but every other attribute can, so the product-specific
+             values arrive as props from the registry. Adding a product therefore
+             needs no change here. -->
+        <sc-if value="{{ usesSharedSkeleton }}" hint-placeholder-val="{{ false }}">
           <dc-import
-            name="GoaliePages"
+            name="ProductSkeleton"
+            product="{{ activeSystemName }}"
+            token-path="{{ activeTokenPath }}"
             active-page="{{ activePage }}"
             lang="{{ lang }}"
-            on-navigate="{{ onGoalieNavigate }}"
-            get-route-href="{{ getGoalieRouteHref }}"
+            on-navigate="{{ onProductNavigate }}"
+            get-route-href="{{ getProductRouteHref }}"
             hint-size="100%,320px"
             style="width:100%;">
           </dc-import>
@@ -3241,12 +3290,48 @@ class Component extends DCLogic {
     };
   }
 
+  /* The registry is published by the first-paint bootstrap. There is no silent
+     fallback: if it is missing the guide has no products, and failing loudly
+     beats rendering an empty shell — the same contract the token layer keeps by
+     refusing to declare :root defaults. */
+  systems() {
+    const registry = window.__GUIDE_SYSTEMS;
+    if (!registry || !Object.keys(registry).length) {
+      throw new Error('window.__GUIDE_SYSTEMS is missing — the theme bootstrap did not run.');
+    }
+    return registry;
+  }
+
+  systemIds() {
+    return Object.keys(this.systems());
+  }
+
+  defaultSystem() {
+    return this.systemIds()[0];
+  }
+
+  systemEntry(system) {
+    const registry = this.systems();
+    return registry[system] || registry[this.defaultSystem()];
+  }
+
   manifestFor(system) {
-    return system === 'goalie' ? this.GOALIE_META : this.META;
+    return this[this.systemEntry(system).manifest];
+  }
+
+  navFor(system) {
+    return this[this.systemEntry(system).nav];
+  }
+
+  themeFor(system) {
+    return this.systemEntry(system).theme;
   }
 
   normalizeRoute(route) {
-    const system = route && route.system === 'goalie' ? 'goalie' : 'parkie';
+    const requested = route && route.system;
+    const system = Object.prototype.hasOwnProperty.call(this.systems(), requested)
+      ? requested
+      : this.defaultSystem();
     const manifest = this.manifestFor(system);
     const requestedPage = route && route.page ? route.page : 'overview';
     return {
@@ -3262,21 +3347,21 @@ class Component extends DCLogic {
   }
 
   publishTheme(system) {
-    const theme = system === 'goalie' ? 'light' : 'dark';
+    const entry = this.systemEntry(system);
     const html = document.documentElement;
     html.dataset.activeSystem = system;
     html.dataset.system = system;
-    html.dataset.theme = theme;
-    html.dataset.colorMode = theme;
-    html.style.colorScheme = theme;
-    html.style.backgroundColor = theme === 'light' ? '#F7F9FC' : '#0F0F11';
+    html.dataset.theme = entry.theme;
+    html.dataset.colorMode = entry.theme;
+    html.style.colorScheme = entry.theme;
+    html.style.backgroundColor = entry.canvas;
   }
 
   syncDocument() {
     const route = this.normalizeRoute(this.state.route);
     const meta = this.manifestFor(route.system)[route.page];
     const ko = this.state.lang === 'ko';
-    const systemName = route.system === 'goalie' ? 'Goalie UI' : 'Parkie UI';
+    const systemName = this.systemEntry(route.system).name;
     document.documentElement.lang = this.state.lang;
     document.title = `${systemName} · ${ko ? meta.ko : meta.en} · UX/UI Design Guide System`;
     this.publishTheme(route.system);
@@ -3366,11 +3451,16 @@ class Component extends DCLogic {
     this.setState({ lang });
   }
 
-  onGoalieNavigate = (page, event) => {
-    this.navigate({ system: 'goalie', page }, event);
+  /* Bound to whichever product is active rather than to a named one, so the
+     shared skeleton needs no per-product handler. */
+  onProductNavigate = (page, event) => {
+    this.navigate({ system: this.normalizeRoute(this.state.route).system, page }, event);
   };
 
-  getGoalieRouteHref = (page) => this.serializeRoute({ system: 'goalie', page });
+  getProductRouteHref = (page) => this.serializeRoute({
+    system: this.normalizeRoute(this.state.route).system,
+    page,
+  });
 
   renderVals() {
     const {
@@ -3400,11 +3490,17 @@ class Component extends DCLogic {
     const normalizedRoute = this.normalizeRoute(route);
     const activeSystem = normalizedRoute.system;
     const active = normalizedRoute.page;
-    const theme = activeSystem === 'goalie' ? 'light' : 'dark';
+    const systemEntry = this.systemEntry(activeSystem);
+    const theme = systemEntry.theme;
+    /* Parkie's authored template is enormous and product-specific, so its page
+       flags stay gated on the product id. Everything else reads the registry. */
     const isParkieSystem = activeSystem === 'parkie';
-    const isGoalieSystem = activeSystem === 'goalie';
+    const usesSharedSkeleton = Boolean(systemEntry.skeleton);
+    /* "Parkie UI" -> "Parkie". Used where the label already sits next to the
+       word "design system" and the UI suffix would read twice. */
+    const systemShortName = systemEntry.name.replace(/\s*UI$/, '');
     const currentMeta = this.manifestFor(activeSystem);
-    const currentNav = isGoalieSystem ? this.GOALIE_NAV : this.NAV;
+    const currentNav = this.navFor(activeSystem);
     const cur = currentMeta[active] || currentMeta.overview;
     const version = 'v0.1';
 
@@ -4464,18 +4560,13 @@ class Component extends DCLogic {
       ? L(this.state.copiedValue + ' 복사됨', this.state.copiedValue + ' copied')
       : '';
 
-    const systemItems = [
-      {
-        id: 'parkie',
-        name: 'Parkie UI',
-        href: this.serializeRoute({ system: 'parkie', page: 'overview' }),
-      },
-      {
-        id: 'goalie',
-        name: 'Goalie UI',
-        href: this.serializeRoute({ system: 'goalie', page: 'overview' }),
-      },
-    ].map((item) => Object.assign({}, item, {
+    /* Tab order is registry order. A product appears in the top bar purely by
+       being registered — there is no second list to keep in step. */
+    const systemItems = this.systemIds().map((id) => ({
+      id,
+      name: this.systemEntry(id).name,
+      href: this.serializeRoute({ system: id, page: 'overview' }),
+    })).map((item) => Object.assign({}, item, {
       ariaCurrent: item.id === activeSystem ? 'page' : 'false',
       className: `guide-system-link${item.id === activeSystem ? ' is-active' : ''}`,
       onClick: (event) => this.navigate({ system: item.id, page: 'overview' }, event),
@@ -4486,23 +4577,24 @@ class Component extends DCLogic {
       theme, lang, tabsDemo, activeSystem,
       colorMode: theme,
       isParkieSystem,
-      isGoalieSystem,
+      usesSharedSkeleton,
       systemItems,
       guideTitle: 'UX/UI Design Guide System',
       guideSubtitle: L('제품 디자인 시스템', 'Product design systems'),
-      activeSystemName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
+      activeSystemName: systemEntry.name,
+      activeTokenPath: systemEntry.tokens,
       /* Falls back to the product name only when a page sits outside every nav
          group, so the eyebrow is never blank. */
-      curGroupName: curGroupName || (isGoalieSystem ? 'Goalie UI' : 'Parkie UI'),
-      brandName: isGoalieSystem ? 'Goalie UI' : 'Parkie UI',
-      subtitle: isGoalieSystem ? L('라이트 디자인 시스템', 'Light Design System') : L('RMS 디자인 시스템', 'RMS Design System'),
+      curGroupName: curGroupName || systemEntry.name,
+      brandName: systemEntry.name,
+      subtitle: L(systemEntry.subtitleKo, systemEntry.subtitleEn),
       ver: version,
       searchPh: L('컴포넌트 검색', 'Search components'),
       searchQuery,
       onSearchInput: (event) => this.setState({ searchQuery: event.target.value }),
       showNoNavResults: navSources.length === 0,
       noSearchResults: L(`'${searchQuery}'에 맞는 문서가 없습니다.`, `No documentation matches '${searchQuery}'.`),
-      navigationLabel: L(`${isGoalieSystem ? 'Goalie' : 'Parkie'} 디자인 시스템 문서 탐색`, `${isGoalieSystem ? 'Goalie' : 'Parkie'} design system documentation`),
+      navigationLabel: L(`${systemShortName} 디자인 시스템 문서 탐색`, `${systemShortName} design system documentation`),
       siteSelectAriaLabel: L('사이트 선택', 'Select site'),
       themeLabel: theme === 'dark' ? L('다크', 'Dark') : L('라이트', 'Light'),
       themeDotStyle,
@@ -4524,7 +4616,7 @@ class Component extends DCLogic {
       /* Pages whose specimens are designed at full application width. The top
          bar recipe needs 1214px and the control shell needs rail 80 + panel
          320 + workspace, neither of which fits the 960px reading column. */
-      contentFrameClass: isGoalieSystem
+      contentFrameClass: usesSharedSkeleton
         ? 'guide-content-frame guide-content-frame--goalie'
         : ['media', 'topbar', 'appshell'].includes(active)
           ? 'guide-content-frame pk-content-frame pk-content-frame--wide'
@@ -4536,8 +4628,8 @@ class Component extends DCLogic {
       curSub: ko ? cur.en : cur.ko,
       curDesc: L(cur.dko, cur.den),
       activePage: active,
-      onGoalieNavigate: this.onGoalieNavigate,
-      getGoalieRouteHref: this.getGoalieRouteHref,
+      onProductNavigate: this.onProductNavigate,
+      getProductRouteHref: this.getProductRouteHref,
       isOverview: isParkieSystem && active === 'overview',
       isSystemSummary: isParkieSystem && active === 'systemsummary',
       isPrinciples: isParkieSystem && active === 'principles',

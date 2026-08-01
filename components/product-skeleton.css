@@ -1,0 +1,175 @@
+/* =====================================================================
+   Shared documentation skeleton
+
+   Rendered by every product whose design system has not been delivered.
+   Built on the product-neutral --guide-* layer rather than a product token
+   namespace: those variables switch on .guide-root[data-theme], so a light
+   product renders light and a dark one dark with no per-product stylesheet.
+
+   Extracted from components/goalie.css, which defined 99 classes while the
+   skeleton used 16. Copying it per product would have duplicated the other
+   83 into every new product.
+   ===================================================================== */
+
+.ps-root {
+  color: var(--guide-text);
+  font-family: var(--guide-font-sans);
+  font-size: var(--guide-font-base);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.ps-content {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ---- Awaiting handoff ------------------------------------------------
+   The dashed treatment reads as "not yet authored" rather than "finished
+   and sparse", and every edge is a real border rather than a fill so it
+   survives forced-colors without an override. */
+.ps-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--guide-space-2);
+  padding: var(--guide-space-9) var(--guide-space-7);
+  margin-bottom: var(--guide-space-8);
+  background: var(--guide-surface);
+  border: 1px dashed var(--guide-border-strong);
+  border-radius: var(--guide-radius-lg);
+}
+
+.ps-pending__mark {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--guide-space-3);
+  border: 2px dashed var(--guide-border-strong);
+  border-radius: var(--guide-radius-md);
+}
+
+.ps-pending__eyebrow,
+.ps-section-index {
+  display: block;
+  color: var(--guide-text-tertiary);
+  font-family: var(--guide-font-mono);
+  font-size: var(--guide-font-xs);
+  letter-spacing: 0.055em;
+}
+
+.ps-pending__title {
+  margin: 0;
+  color: var(--guide-text);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ps-pending__body,
+.ps-note {
+  max-width: 64ch;
+  color: var(--guide-text-secondary);
+  font-size: var(--guide-font-base);
+  line-height: 1.65;
+}
+
+.ps-pending__body {
+  margin: 0;
+}
+
+.ps-note {
+  margin: var(--guide-space-4) 0 var(--guide-space-9);
+}
+
+/* ---- Sections -------------------------------------------------------- */
+.ps-section {
+  margin-bottom: var(--guide-space-9);
+}
+
+.ps-section-head {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.32fr) minmax(0, 0.68fr);
+  align-items: start;
+  gap: var(--guide-space-6);
+  padding-bottom: var(--guide-space-5);
+}
+
+.ps-section-head h2 {
+  margin: 5px 0 0;
+  color: var(--guide-text);
+  font-size: var(--guide-font-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ps-section-head p {
+  margin: 0;
+  color: var(--guide-text-secondary);
+  line-height: 1.65;
+}
+
+.ps-line-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--guide-border);
+}
+
+.ps-line-row {
+  display: grid;
+  min-height: 58px;
+  grid-template-columns: minmax(150px, 0.32fr) minmax(0, 0.68fr);
+  align-items: center;
+  gap: var(--guide-space-6);
+  padding: var(--guide-space-3) 0;
+  border-bottom: 1px solid var(--guide-border);
+}
+
+.ps-line-row strong {
+  color: var(--guide-text);
+  font-weight: 600;
+}
+
+.ps-line-row p {
+  margin: 0;
+  color: var(--guide-text-secondary);
+  line-height: 1.65;
+}
+
+/* ---- Brand lockup ---------------------------------------------------- */
+.ps-brand-lockup {
+  display: flex;
+  min-height: 140px;
+  align-items: center;
+  gap: var(--guide-space-5);
+  padding: var(--guide-space-8) 0;
+  border-top: 2px solid var(--guide-text);
+  border-bottom: 1px solid var(--guide-border);
+}
+
+.ps-product-mark {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 2px dashed var(--guide-border-strong);
+  border-radius: 10px;
+}
+
+.ps-brand-word {
+  color: var(--guide-text);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 760px) {
+  .ps-section-head,
+  .ps-line-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--guide-space-2);
+  }
+
+  .ps-line-row {
+    align-items: start;
+  }
+}

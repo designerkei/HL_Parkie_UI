@@ -307,7 +307,7 @@ test('Goalie token scope stays isolated and every reference resolves', async () 
 
   /* Every consumer reference must resolve, or a component renders with an
      unset custom property — the same class of defect as an unpaired token. */
-  const consumers = ['components/goalie.css', 'GoaliePages.dc.html', 'styles.css', 'index.html'];
+  const consumers = ['components/goalie.css', 'styles.css', 'index.html'];
   const referenced = new Set();
   for (const relative of consumers) {
     const body = fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
@@ -517,7 +517,7 @@ test('all release-critical local assets are served and all Parkie token referenc
   const requiredAssets = [
     '/support.js',
     '/styles.css',
-    '/GoaliePages.dc.html',
+    '/ProductSkeleton.dc.html',
     '/tokens/parkie-tokens.css',
     '/tokens/goalie-tokens.css',
     '/components/goalie.css',
@@ -567,7 +567,7 @@ test('all release-critical local assets are served and all Parkie token referenc
   const goalieDefined = new Set(
     [...goalieTokenSource.matchAll(/(--goalie-[\w-]+)\s*:/g)].map((match) => match[1]));
   const goalieSourceFiles = [
-    path.join(process.cwd(), 'GoaliePages.dc.html'),
+    path.join(process.cwd(), 'ProductSkeleton.dc.html'),
     path.join(process.cwd(), 'components', 'goalie.css'),
   ];
   const goalieReferenced = new Set(goalieSourceFiles.flatMap((file) => (

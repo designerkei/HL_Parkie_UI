@@ -10,6 +10,7 @@
 @import "./components/documentation.css?v=0.2";
 @import "./tokens/goalie-tokens.css?v=0.2";
 @import "./components/goalie.css?v=0.2";
+@import "./components/product-skeleton.css?v=0.1";
 
 html,
 body {
@@ -433,7 +434,7 @@ img {
   line-height: 1.65;
 }
 
-[data-sc-name="GoaliePages"] {
+[data-sc-name="ProductSkeleton"] {
   width: 100%;
   min-width: 0;
 }
