@@ -173,8 +173,12 @@
   --parkie-action-primary-bg-pressed: #009BE9;
   --parkie-action-primary-fg: var(--parkie-color-brand-950);
   --parkie-action-danger-bg: #DF0000;
-  --parkie-action-danger-bg-hover: #EF2020;
-  --parkie-action-danger-bg-pressed: #C00000;
+  /* Danger darkens monotonically so white stays readable and the button never
+     looks less dangerous as you interact with it. The old hover (#EF2020) was
+     both lighter than rest and only 4.29:1 under white, short of AA.
+     Now 5.08 → 6.91 → 8.94:1. */
+  --parkie-action-danger-bg-hover: var(--parkie-color-red-700);
+  --parkie-action-danger-bg-pressed: var(--parkie-color-red-800);
   --parkie-action-danger-fg: var(--parkie-color-common-white);
   --parkie-action-danger-hover-fg: #000000;
   --parkie-action-neutral-bg: var(--parkie-surface-elevation-12);
@@ -375,8 +379,25 @@
   --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
   --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
 
-  /* ---- Focus ring ---- */
-  --parkie-ring: 0 0 0 3px rgba(0,170,255,0.40);
+  /* ---- Focus ring ----
+     Two tones, so the indicator survives whatever colour it lands next to.
+     The previous single translucent blue failed WCAG 2.2 Focus Appearance on
+     every real background — 2.10:1 on canvas, 1.89:1 on elevation-12, and
+     1.00:1 on the Primary button, where it composited back into the button
+     and disappeared entirely. White is hue-neutral, which also stops the ring
+     reading as the blue Selected state. Measured minimum across canvas,
+     surface, elevation-12, Primary, Danger, warning solid and success solid:
+     5.08:1, with 16.46:1 between the two rings. */
+  --parkie-focus-ring-inner: var(--parkie-color-common-white);
+  --parkie-focus-ring-outer: var(--parkie-color-brand-950);
+  --parkie-ring:
+    0 0 0 2px var(--parkie-focus-ring-inner),
+    0 0 0 4px var(--parkie-focus-ring-outer);
+  /* For controls clipped by an overflow:hidden parent, where an outer ring
+     would be cut off (segmented control). */
+  --parkie-ring-inset:
+    inset 0 0 0 2px var(--parkie-focus-ring-inner),
+    inset 0 0 0 4px var(--parkie-focus-ring-outer);
 }
 
 /* =====================================================================
@@ -454,5 +475,13 @@
   --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
   --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
 
-  --parkie-ring: 0 0 0 3px rgba(0,170,255,0.40);
+  /* Focus ring — see the :root definition for the measurements. */
+  --parkie-focus-ring-inner: var(--parkie-color-common-white);
+  --parkie-focus-ring-outer: var(--parkie-color-brand-950);
+  --parkie-ring:
+    0 0 0 2px var(--parkie-focus-ring-inner),
+    0 0 0 4px var(--parkie-focus-ring-outer);
+  --parkie-ring-inset:
+    inset 0 0 0 2px var(--parkie-focus-ring-inner),
+    inset 0 0 0 4px var(--parkie-focus-ring-outer);
 }

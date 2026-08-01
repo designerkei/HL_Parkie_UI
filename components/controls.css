@@ -122,14 +122,17 @@
   border-color: var(--parkie-border-strong);
 }
 
+/* Rest is elevation-12, so hover has to rise above it and pressed has to sit
+   below it. Hover previously reused elevation-12 — the same value as rest —
+   which left the pointer with no feedback at all. */
 .pk-button--secondary:hover:not(:disabled),
 .pk-button--secondary.is-hover {
-  background: var(--parkie-surface-elevation-12);
+  background: var(--parkie-surface-elevation-48);
 }
 
 .pk-button--secondary:active:not(:disabled),
 .pk-button--secondary.is-pressed {
-  background: var(--parkie-surface-elevation-24);
+  background: var(--parkie-surface-elevation-08);
 }
 
 .pk-button--outline {
@@ -322,7 +325,7 @@
   position: relative;
   z-index: 1;
   outline: 0;
-  box-shadow: inset var(--parkie-ring);
+  box-shadow: var(--parkie-ring-inset);
 }
 
 .pk-segmented button[aria-checked="true"] {
