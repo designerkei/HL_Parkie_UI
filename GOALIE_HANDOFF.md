@@ -1,14 +1,38 @@
 # Goalie UI — 인수인계
 
-최종 갱신 2026-08-02, `main` = `a275d71`. 다음 작업자가 이 문서만 읽고 이어갈 수 있게 정리한다.
+최종 갱신 2026-08-02. 다음 작업자가 이 문서만 읽고 이어갈 수 있게 정리한다.
+
+## 0. 다른 PC에서 다시 시작하기
+
+인터넷이 되는 곳에서 아래 순서로 그대로 복구된다. 저장소 밖 의존성은 **Chrome 하나뿐이다.**
+
+```
+git clone https://github.com/designerkei/HL_Parkie_UI.git
+cd HL_Parkie_UI
+npm ci                          # package-lock.json이 커밋돼 있다
+npx playwright install chrome   # 아래 주의 참고
+node tests/server.js &
+npm test                        # 79개 통과하면 환경 복구 완료
+```
+
+- **Chrome이 있어야 한다.** `playwright.config.js`가 `channel: 'chrome'`이라 번들 chromium이
+  아니라 실제 Google Chrome을 쓴다. 없으면 79개가 전부 실행조차 안 된다
+- 검증된 기준선은 `node v22.23.1` · `npm 10.9.8`
+- gitignore 대상: `node_modules/` · `test-results/` · `playwright-report/` · `.route-baseline/`.
+  특히 **`.route-baseline/`는 따라오지 않으므로** §4의 before/after diff는 한 PC 안에서
+  한 세션에 끝내야 한다. 다른 PC에서 뜬 before와는 비교할 수 없다
+- 라이브 확인: <https://designerkei.github.io/HL_Parkie_UI/> (`.nojekyll`, `main` 루트를 그대로 서빙)
+- 상세 계획 원본 `~/.claude/plans/adaptive-twirling-goose.md`는 저장소 밖이라 **동기화되지 않는다.**
+  필요한 내용은 이 문서 안에 옮겨져 있으니 그 파일을 찾지 말 것
 
 ## 1. 지금 상태
 
 | | |
 |---|---|
 | 브랜치 | `main` (배포 대상. Pages가 루트를 그대로 서빙 — 커밋 = 배포) |
-| 마지막 검증 커밋 | `a275d71` = 현재 `main` — `npm test` 79개 **3회 연속 통과** (51.7s · 49.5s · 49.3s) |
-| 미검증 커밋 | 없음 |
+| 마지막 검증 커밋 | `a275d71` — `npm test` 79개 **3회 연속 통과** (51.7s · 49.5s · 49.3s) |
+| 미검증 커밋 | 없음. `a275d71` 이후는 이 문서 갱신뿐이고 사이트 파일은 건드리지 않았다 |
+| origin 동기화 | `main` = `origin/main` — 푸시까지 끝난 상태로 넘긴다 |
 | Goalie 페이지 | 15개, 전부 `impl: true`로 공개 |
 
 2026-08-02에 `3adc091..a275d71` 4개 커밋을 한꺼번에 검증했다. 문서 초판이 미검증으로 적었던
@@ -149,8 +173,7 @@ node tests/tools/route-baseline.js --diff before after
   회사 이메일이 들어가지 않게 유지
 - **제품 추가·제거**는 레지스트리 1항목 + 토큰 파일 + `@import` + META/NAV.
   자세한 것은 `PARKIE_MERGE_PLAN.md` 14절
-- 상세 계획 원본은 `~/.claude/plans/adaptive-twirling-goose.md` (저장소 밖이므로 다른 PC에는
-  동기화되지 않는다 — 필요한 내용은 이 문서에 옮겨 두었다)
+- 새 PC에서의 환경 복구·저장소 밖 의존성은 §0 참고
 
 ## 7. 착수 순서 제안
 
