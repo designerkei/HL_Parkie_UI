@@ -117,6 +117,61 @@
    button because the value is meant to be copied, and copying is the reason
    someone reads this page.
    --------------------------------------------------------------------- */
+.pk-color-hex-guide {
+  margin: 0 0 var(--parkie-space-7);
+  padding: var(--parkie-space-4) var(--parkie-space-5);
+  background: var(--parkie-brand-subtle);
+  border: 1px solid var(--parkie-brand-border);
+  border-radius: var(--parkie-radius-lg);
+  color: var(--parkie-text-secondary);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-color-hex-guide__title {
+  margin-bottom: 4px;
+  color: var(--parkie-brand-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-color-hex-guide p {
+  margin: 0;
+  font-size: var(--parkie-font-sm);
+}
+
+.pk-color-hex-guide code,
+.pk-color-hex-guide__examples code {
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-hex-guide__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 10px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-hex-guide__examples span {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pk-color-hex-guide__examples b {
+  color: var(--parkie-text);
+}
+
+.pk-color-hex-guide__examples i {
+  color: var(--parkie-brand-text);
+  font-style: normal;
+  font-family: var(--parkie-font-mono);
+}
+
 .pk-color-card {
   overflow: hidden;
   background: var(--parkie-surface);
