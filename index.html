@@ -372,7 +372,8 @@
                             <div class="pk-summary-swatch">
                               <div class="pk-summary-swatch__chip" style="{{ color.summaryChip }}" data-summary-color data-token="{{ color.varName }}"></div>
                               <strong>{{ color.name }}</strong>
-                              <code>{{ color.varName }}</code>
+                              <code class="pk-summary-swatch__value">{{ color.value }}</code>
+                              <code class="pk-summary-swatch__token">{{ color.varName }}</code>
                             </div>
                           </sc-for>
                         </div>
@@ -4434,9 +4435,18 @@ class Component extends DCLogic {
         description: L('파운데이션, 제어, 로봇 상태와 CCTV까지 같은 시각 규칙으로 탐색하고 확장할 수 있습니다.', 'Foundations, controls, robot states and CCTV now share one visual language that can be explored and extended.'),
       },
     ];
-    const summaryColorSections = colorSections.map((section) => ({
-      ...section,
-      items: section.items.slice(0, 5).map((item) => ({
+    /* Summary is a decision map, not a second colour dictionary. Keep only the
+       three axes a product team needs when choosing a token; the Colors page
+       owns the complete reference, authored rgba values, composited HEX and
+       usage guidance. */
+    const summaryColorSections = [
+      { title: L('액션 · Action', 'Action'), note: L('행동의 위계와 상호작용 상태', 'Hierarchy and interaction states'), source: colorSections[0], count: 3 },
+      { title: L('표면 · Surface', 'Surface'), note: L('캔버스에서 떠 있는 레이어까지', 'From canvas to elevated layers'), source: colorSections[1], count: 4 },
+      { title: L('상태 · Status', 'Status'), note: L('성공·주의·오류·안내의 의미', 'Meaning for success, warning, danger and info'), source: colorSections[3], count: 4 },
+    ].map((group) => ({
+      title: group.title,
+      note: group.note,
+      items: group.source.items.slice(0, group.count).map((item) => ({
         ...item,
         summaryChip: { background: `var(${item.varName})` },
       })),

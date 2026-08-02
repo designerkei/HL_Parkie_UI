@@ -596,6 +596,16 @@
   font-size:var(--parkie-font-xs);
 }
 
+.pk-summary-swatch__value {
+  color: var(--parkie-text-secondary) !important;
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-summary-swatch__token {
+  color: var(--parkie-text-tertiary) !important;
+  font-size: var(--parkie-font-xs) !important;
+}
+
 /* Iconography -------------------------------------------------------- */
 
 .pk-summary-icon-scroll {
