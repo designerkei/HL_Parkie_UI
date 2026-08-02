@@ -262,6 +262,77 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(page.locator('.pk-domain-icon.is-charging circle')).toHaveCount(0);
 });
 
+/* Reads the archive without going back through the writer that produced it, so
+   a malformed header fails here instead of round-tripping cleanly. Entries are
+   stored, never deflated, which is what makes a reader this small correct. */
+function readStoredZip(buffer) {
+  const entries = new Map();
+  let at = 0;
+  while (at + 4 <= buffer.length && buffer.readUInt32LE(at) === 0x04034b50) {
+    const method = buffer.readUInt16LE(at + 8);
+    const size = buffer.readUInt32LE(at + 18);
+    const nameLength = buffer.readUInt16LE(at + 26);
+    const extraLength = buffer.readUInt16LE(at + 28);
+    const name = buffer.subarray(at + 30, at + 30 + nameLength).toString('utf8');
+    const start = at + 30 + nameLength + extraLength;
+    if (method !== 0) throw new Error(`${name} is not stored`);
+    entries.set(name, buffer.subarray(start, start + size).toString('utf8'));
+    at = start + size;
+  }
+  if (!entries.size) throw new Error('no local file headers found');
+  return entries;
+}
+
+test('the icon page downloads every documented icon as tool-ready SVG', async ({ page }) => {
+  await openComponent(page, '아이콘');
+
+  const button = page.locator('[data-icon-download]');
+  await expect(button).toBeVisible();
+
+  // One file per icon, not one per state: the label must track the catalogue.
+  const documented = await page.locator('.pk-icon-row').count();
+  await expect(button).toHaveText(/SVG \d+개 내려받기/);
+  const advertised = Number((await button.innerText()).match(/(\d+)/)[1]);
+  expect(advertised).toBeGreaterThanOrEqual(documented);
+
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    button.click(),
+  ]);
+  expect(download.suggestedFilename()).toBe('parkie-icons.zip');
+
+  const stream = await download.createReadStream();
+  const chunks = [];
+  for await (const chunk of stream) chunks.push(chunk);
+  const entries = readStoredZip(Buffer.concat(chunks));
+
+  const svgNames = [...entries.keys()].filter((name) => name.startsWith('svg/'));
+  expect(svgNames.length).toBe(advertised);
+  expect(entries.has('README.txt')).toBe(true);
+
+  // currentColor and var() are the two things that do not survive the trip into
+  // a design tool; neither may reach the archive.
+  const unresolved = svgNames.filter((name) => (
+    entries.get(name).includes('currentColor') || entries.get(name).includes('var(')
+  ));
+  expect(unresolved).toEqual([]);
+
+  for (const name of svgNames) {
+    expect(entries.get(name), `${name} must be a standalone svg`).toMatch(/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+    expect(entries.get(name), `${name} must declare a viewBox`).toMatch(/viewBox="[\d\s.]+"/);
+  }
+
+  // Semantic fills are the ones that were silently dropping out as var().
+  expect(entries.get('svg/BatteryChargingHigh.svg')).toContain('#00C000');
+  expect(entries.get('svg/BatteryCritical.svg')).toContain('#EE0000');
+
+  // The manifest has to carry the state colours the geometry cannot.
+  const readme = entries.get('README.txt');
+  for (const token of ['--parkie-icon-default', '--parkie-icon-hover', '--parkie-icon-pressed', '--parkie-icon-disabled']) {
+    expect(readme, `${token} must be documented`).toContain(token);
+  }
+});
+
 test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {
   await openComponent(page, '미디어·비상 제어');
   await expect(page.locator('h1')).toContainText('미디어·비상 제어');

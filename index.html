@@ -102,6 +102,7 @@
   @keyframes pk-spin { to { transform: rotate(360deg); } }
 </style>
 <script src="./support.js"></script>
+<script src="./icons/svg-export.js"></script>
 <script type="module">
   import icons from './ms/icon-data.js';
   import parkieIcons from './icons/parkie-icon-data.js';
@@ -816,6 +817,13 @@
                   <strong class="pk-icon-summary-value">{{ summary.value }}</strong>
                 </div>
               </sc-for>
+            </div>
+
+            <div class="pk-icon-actions">
+              <button type="button" class="pk-button pk-icon-download" data-icon-download onClick="{{ iconDownload.onClick }}" title="{{ iconDownload.title }}">
+                {{ iconDownload.label }}
+              </button>
+              <p class="pk-icon-actions-note">{{ iconDownload.title }}</p>
             </div>
 
             <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
@@ -3313,6 +3321,63 @@ class Component extends DCLogic {
     }
   }
 
+  /* Icon states live in CSS, so a downloaded file carries geometry only. The
+     archive ships black artwork rather than the white-on-dark token value: the
+     catalogue renders on a dark surface, and that white would arrive invisible
+     on the default artboard of every design tool. */
+  ICON_STATE_TOKENS = [
+    ['Enabled', '--parkie-icon-default'],
+    ['Hover', '--parkie-icon-hover'],
+    ['Pressed / On', '--parkie-icon-pressed'],
+    ['Disabled', '--parkie-icon-disabled'],
+  ];
+
+  downloadIconSvgs(entries) {
+    const exporter = window.__parkieSvgExport;
+    if (!exporter || !entries || !entries.length) return;
+
+    const computed = window.getComputedStyle(document.documentElement);
+    const resolveToken = (token) => computed.getPropertyValue(token).trim();
+
+    const files = entries.map((entry) => ({
+      name: `svg/${entry.name}.svg`,
+      text: exporter.buildSvg(entry.data, '#000000', resolveToken),
+    }));
+
+    const stateLines = this.ICON_STATE_TOKENS
+      .map(([label, token]) => `  ${label}: ${token} = ${resolveToken(token) || '(unset)'}`)
+      .join('\n');
+
+    files.push({
+      name: 'README.txt',
+      text: [
+        'Parkie icon SVG export',
+        '',
+        `${entries.length} icons, 24x24, artwork in #000000.`,
+        '',
+        'Colour',
+        '  Source bodies paint with currentColor and var(--parkie-*). Both are',
+        '  resolved on export because design tools understand neither. Artwork is',
+        '  black so it is visible on a white artboard; recolour as needed.',
+        '',
+        'Interaction states',
+        '  Every state shares one geometry and differs only in colour, so there is',
+        '  one file per icon rather than one per state. Focus rings and pressed or',
+        '  selected plates are container styling and are not part of the artwork.',
+        stateLines,
+        '',
+        'Strokes',
+        '  Parkie icons are stroked; MS-adopted icons are filled paths. Enable',
+        '  stroke scaling when resizing, or outline the strokes first.',
+        '',
+      ].join('\n'),
+    });
+
+    exporter.save(exporter.zip(files), 'parkie-icons.zip');
+    this.setState({ iconDownloadDone: true });
+    window.setTimeout(() => this.setState({ iconDownloadDone: false }), 1600);
+  }
+
   NAV = [
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles', 'changelog'] },
@@ -3947,6 +4012,28 @@ class Component extends DCLogic {
     };
     const parkieData = (name) => parkieIconData[name];
     const msData = (name) => icoData[name];
+    /* Download manifest. Collected from the same calls that render the rows so
+       the archive can never drift from what the page documents. Keyed by body
+       because the six interaction states and the four emphasis levels reuse one
+       geometry — they differ only in CSS colour, so they are one file, not ten. */
+    const iconExports = [];
+    const iconExportSeen = new Set();
+    const iconExportName = (data) => {
+      for (const key of Object.keys(parkieIconData)) {
+        if (parkieIconData[key] === data) return key;
+      }
+      for (const key of Object.keys(icoData)) {
+        if (icoData[key] === data) return key.replace(/Size\d+Theme(Regular|Filled)$/, '');
+      }
+      return '';
+    };
+    const trackExport = (data) => {
+      if (!data || !data.body || iconExportSeen.has(data.body)) return data;
+      iconExportSeen.add(data.body);
+      const name = iconExportName(data);
+      if (name) iconExports.push({ name, data });
+      return data;
+    };
     const stateDefs = [
       { id: 'enabled', label: 'Default', short: 'Default' },
       { id: 'hover', label: 'Hover', short: 'Hover' },
@@ -3970,7 +4057,7 @@ class Component extends DCLogic {
         className: `pk-icon-state is-${state.id}`,
         label: `${koLabel} · ${state.label}`,
         stateName: state.short,
-        svg: iconSvg(data, `${enLabel}-${state.id}`),
+        svg: iconSvg(trackExport(data), `${enLabel}-${state.id}`),
       })),
     });
     /* Status icons report a condition, so they never take the interaction
@@ -3986,7 +4073,7 @@ class Component extends DCLogic {
         className: `pk-icon-state ${cell.emphasis}${cell.tone ? ` tone-${cell.tone}` : ''}`,
         label: `${koLabel} · ${cell.name}`,
         stateName: cell.name,
-        svg: iconSvg(cell.data, `${enLabel}-${cell.name}`),
+        svg: iconSvg(trackExport(cell.data), `${enLabel}-${cell.name}`),
       })),
     });
     const iconGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
@@ -4103,7 +4190,7 @@ class Component extends DCLogic {
     const domainItem = (labelKo, labelEn, data, tone) => ({
       label: L(labelKo, labelEn),
       className: `pk-domain-icon ${tone || ''}`.trim(),
-      svg: iconSvg(data, `domain-${labelEn}`),
+      svg: iconSvg(trackExport(data), `domain-${labelEn}`),
     });
     const domainGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
       title: L(titleKo, titleEn),
@@ -4175,6 +4262,25 @@ class Component extends DCLogic {
         ]
       ),
     ];
+
+    /* One geometry per icon, not one per state: the six interaction states and
+       the four emphasis levels share a single SVG and differ only in the colour
+       CSS applies. The focus ring and the pressed and selected plates are
+       container chrome, not artwork, so they cannot travel in a file at all —
+       the manifest in the archive records the token for each state instead. */
+    const iconDownloadCount = iconExports.length;
+    const iconDownload = {
+      label: L(`SVG ${iconDownloadCount}개 내려받기`, `Download ${iconDownloadCount} SVG`),
+      /* The summary above counts documented rows; this counts distinct
+         geometries, and the two differ because the battery and connection rows
+         each document four separate icons. Say so rather than leave two numbers
+         disagreeing on one screen. */
+      title: L(
+        '문서화된 아이콘을 도형 단위로 내려받습니다. 배터리·통신처럼 한 행이 여러 도형을 문서화하는 경우가 있어 위 행 수보다 많습니다. 상태별 색은 함께 담기는 안내 파일에 정리돼 있습니다.',
+        'Downloads one SVG per distinct geometry. That runs ahead of the row count above because rows such as battery and connection each document several icons. Per-state colours are listed in the manifest inside the archive.'
+      ),
+      onClick: () => this.downloadIconSvgs(iconExports),
+    };
 
     const cameraFeeds = ['01', '02', '03', '04'].map((id, index) => {
       const refreshing = cameraRefreshing === id;
@@ -4904,6 +5010,7 @@ class Component extends DCLogic {
       isMsComp: isParkieSystem && ['ms-button', 'ms-checkbox', 'ms-toggle', 'ms-input', 'ms-badge', 'ms-tooltip', 'ms-colors', 'ms-type', 'ms-icons', 'ms-radio', 'ms-dropdown', 'ms-alert', 'ms-toast', 'ms-listitem', 'ms-searchbox', 'ms-progress'].includes(active),
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
       parkieIconSummary,
+      iconDownload,
       parkieIconGroups,
       parkieDomainGroups,
       summaryIdentityFacts,

@@ -618,6 +618,7 @@ test('all release-critical local assets are served and all Parkie token referenc
     '/components/system-summary.css',
     '/components/cpms-documentation.css',
     '/icons/parkie-icon-data.js',
+    '/icons/svg-export.js',
     '/ms/icon-data.js',
     '/ms/Components.bundle.js',
     '/ms2/Components.bundle.js',
