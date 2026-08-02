@@ -1,22 +1,24 @@
 # Goalie UI — 인수인계
 
-작성 시점 기준 `main` = `c3a4e0b`. 다음 작업자가 이 문서만 읽고 이어갈 수 있게 정리한다.
+최종 갱신 2026-08-02, `main` = `a275d71`. 다음 작업자가 이 문서만 읽고 이어갈 수 있게 정리한다.
 
 ## 1. 지금 상태
 
 | | |
 |---|---|
 | 브랜치 | `main` (배포 대상. Pages가 루트를 그대로 서빙 — 커밋 = 배포) |
-| 마지막 검증 커밋 | `3adc091` — `npm test` 79개 통과 · 57초 |
-| **미검증 커밋** | **`c3a4e0b` (docs: clarify semantic color hex values) — 테스트 미실행** |
+| 마지막 검증 커밋 | `a275d71` = 현재 `main` — `npm test` 79개 **3회 연속 통과** (51.7s · 49.5s · 49.3s) |
+| 미검증 커밋 | 없음 |
 | Goalie 페이지 | 15개, 전부 `impl: true`로 공개 |
 
-**첫 할 일: `c3a4e0b` 검증.** 이 저장소에서 미검증 커밋이 타임아웃 2건을 안고 배포된
-전례가 있다.
+2026-08-02에 `3adc091..a275d71` 4개 커밋을 한꺼번에 검증했다. 문서 초판이 미검증으로 적었던
+`c3a4e0b` 외에 `9641776`(`index.html` + `system-summary.css` — 실제 화면 변경), `366f0cd`,
+`a275d71`이 더 쌓여 있었다. **작성 시점의 HEAD를 그대로 적으면 그 뒤 커밋이 검증 대상에서
+빠진다.** 다음에는 커밋 해시가 아니라 `git log <마지막 검증>..HEAD` 범위로 확인할 것.
 
 ```
-node tests/server.js &
-npm test            # 3회 연속 통과가 릴리스 기준
+node tests/server.js &     # 이미 4173을 쓰고 있으면 그대로 재사용 (playwright reuseExistingServer)
+npm test                   # 3회 연속 통과가 릴리스 기준
 ```
 
 ## 2. 이미 확인된 사실 — 다시 조사하지 말 것
@@ -113,12 +115,14 @@ error 색을 파괴적 액션에만 예약한다. **대비 문제보다 심각�
 node tests/server.js &
 
 npm test  ×3                                    계약 (릴리스 기준)
-npx playwright test tests/route-sweep.spec.js   90경로 구조·런타임 에러·4xx
 node tests/tools/route-baseline.js before       변경 전 기록
 #   … 변경 …
 node tests/tools/route-baseline.js after
 node tests/tools/route-baseline.js --diff before after
 ```
+
+`route-sweep.spec.js`는 따로 돌릴 필요가 없다. `testDir: './tests'`라서 `npm test`가
+7개 스펙 79개를 전부 실행하고 route-sweep도 그 안에 있다.
 
 배포 후 라이브에서 확인하고 **배포 커밋 = 통과 커밋**을 지킨다.
 
@@ -151,12 +155,12 @@ node tests/tools/route-baseline.js --diff before after
 ## 7. 착수 순서 제안
 
 ```
-1. c3a4e0b 검증 (npm test 3회)            ← 미검증 커밋이 배포돼 있다
-2. B-1 Pressed 채움 + 문구 갱신           ← 짧고 안전, AA 하나 확보
-3. C 감사 도구 정비 + 거짓 양성 0 확인      ← 이후 모든 판단의 전제
-4. C로 재측정한 결함 목록 확정
-5. A-1~A-3 사용자 승인 후 착수             ← 설계 결정
-6. B-2~B-5 소진
+   (완료) 3adc091..a275d71 검증 — 2026-08-02, npm test 3회 통과
+1. B-1 Pressed 채움 + 문구 갱신           ← 짧고 안전, AA 하나 확보
+2. C 감사 도구 정비 + 거짓 양성 0 확인      ← 이후 모든 판단의 전제
+3. C로 재측정한 결함 목록 확정
+4. A-1~A-3 사용자 승인 후 착수             ← 설계 결정
+5. B-2~B-5 소진
 ```
 
 각 단계를 `npm test` 3회 + 커밋 + 배포로 닫아, 중간에 끊겨도 공개 상태가 망가지지 않게 한다.
