@@ -630,6 +630,15 @@
             <h2 style="margin:0 0 4px;font-size:var(--parkie-font-2xl);font-weight:600;color:var(--parkie-text);">{{ semanticTitle }}</h2>
             <p style="margin:0;font-size:var(--parkie-font-sm);color:var(--parkie-text-tertiary);">{{ semanticNote }}</p>
           </div>
+          <aside class="pk-color-hex-guide" aria-label="색상 값 읽는 방법">
+            <div class="pk-color-hex-guide__title">HEX 보조 설명 · Reading color values</div>
+            <p>불투명 토큰은 카드의 <code>HEX</code> 값을 그대로 사용합니다. <code>rgba()</code> 토큰은 투명도가 의미의 일부이므로 원본 값을 유지하고, 아래에 <strong>Surface #131315</strong> 위에서 보이는 합성 HEX를 함께 표시합니다.</p>
+            <div class="pk-color-hex-guide__examples">
+              <span><b>Primary</b><code>#00AAFF</code> · 액션 배경</span>
+              <span><b>Subtle</b><code>rgba(0, 170, 255, 0.14)</code><i>→ #102836</i> · 선택 배경</span>
+              <span><b>Border</b><code>rgba(0, 170, 255, 0.42)</code><i>→ #0B5277</i> · 강조 경계</span>
+            </div>
+          </aside>
           <sc-for list="{{ colorSections }}" as="cs" hint-placeholder-count="5">
             <div style="margin-bottom:var(--parkie-space-8);">
               <h3 style="margin:0 0 4px;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">{{ cs.title }}</h3>
@@ -4344,7 +4353,7 @@ class Component extends DCLogic {
         value: spec.value || '…',
         hasValue: Boolean(spec.value),
         composited: spec.composited
-          ? L(`표면 위 ${spec.composited}`, `on surface ${spec.composited}`)
+          ? L(`합성 HEX · 표면 위 ${spec.composited}`, `composite HEX · on surface ${spec.composited}`)
           : '',
         copyLabel: L(`${item.token} 값 복사`, `Copy ${item.token} value`),
         onCopyValue: () => { if (spec.value) this.copyValue(spec.value); },

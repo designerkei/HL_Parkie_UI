@@ -331,12 +331,24 @@ test('the deliberate departure from the delivered button spec is stated on the p
     const note = page.locator('[data-spec-deviation]');
     await expect(note, `${pageId} must state the departure`).toHaveCount(1);
     await expect(note).toContainText('흰색');
-    await expect(note).toContainText('4.5:1');
 
-    /* The evidence line must quote measurable ratios, not just assert a problem. */
+    /* The first version of this note said white failed on every filled state,
+       which was wrong: red pressed reaches 4.49:1 and clears the 3:1 large-text
+       threshold, and dark ink is actually worse there at 3.61:1. A note that
+       over-claims is as misleading as no note, so the gate now requires the
+       statement to be state-specific and to admit the unresolved case. */
+    await expect(note, 'the note must distinguish states, not generalise')
+      .toContainText('4.49');
+    await expect(note, 'it must say dark ink is worse on pressed')
+      .toContainText('3.61');
+
     const evidence = await page.locator('[data-spec-deviation] ~ code').textContent();
-    expect(evidence, `${pageId} must quote the measured ratios`).toMatch(/2\.02:1/);
-    expect(evidence).toMatch(/3\.51:1/);
+    for (const ratio of ['2.02', '2.93', '3.51', '4.49', '8.02', '5.54', '4.62', '3.61']) {
+      expect(evidence, `${pageId} evidence must quote ${ratio}:1`).toContain(ratio);
+    }
+    /* Large text is judged at 3:1, and omitting that is how the first version
+       reached a wrong conclusion. */
+    expect(evidence, 'the large-text threshold must be stated').toMatch(/3:1/);
   }
 
   /* And the build must actually be doing what the note claims — dark ink, not
