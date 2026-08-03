@@ -48,7 +48,11 @@ if (label === '--diff') {
 }
 
 const PARKIE = ['overview', 'systemsummary', 'principles', 'changelog', 'colors', 'typography', 'spacing', 'radius', 'elevation', 'iconography', 'button', 'segmented', 'selection', 'input', 'select', 'badge', 'statuslabel', 'alert', 'alertfeed', 'topbar', 'tabs', 'breadcrumb', 'card', 'table', 'avatar', 'robotstatus', 'robotcard', 'media', 'modal', 'alertcenter', 'appshell', 'dashboard', 'brand', 'downloads', 'ms-getstarted', 'ms-intro', 'ms-changelog', 'ms-colors', 'ms-type', 'ms-icons', 'ms-shape', 'ms-layout', 'ms-appstructure', 'ms-tabs', 'ms-personal', 'ms-messaging', 'ms-button', 'ms-checkbox', 'ms-toggle', 'ms-input', 'ms-badge', 'ms-tooltip', 'ms-card', 'ms-alert', 'ms-dropdown', 'ms-radio', 'ms-toast', 'ms-dialog', 'ms-breadcrumb', 'ms-listitem', 'ms-searchbox', 'ms-progress'];
-const GOALIE = ['overview', 'systemsummary', 'principles', 'colors', 'typography', 'spacing', 'iconography', 'button', 'input', 'status', 'navigation', 'templates', 'brand'];
+/* patrol and video were missing while the header above claimed every route.
+   They are two of the fifteen Goalie pages, both shipped with impl: true, and
+   a refactor could have moved either without this noticing. tests/tools/
+   goalie-audit.js lists all fifteen; these two lists must not drift apart. */
+const GOALIE = ['overview', 'systemsummary', 'principles', 'colors', 'typography', 'spacing', 'iconography', 'button', 'input', 'status', 'navigation', 'patrol', 'video', 'templates', 'brand'];
 const CPMS = ['overview', 'systemsummary', 'principles', 'colors', 'typography', 'layout', 'shell', 'controls', 'data-display', 'states', 'permissions', 'accessibility', 'governance'];
 
 (async () => {
