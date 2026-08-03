@@ -25,7 +25,12 @@ export default {
   Connection: {
     viewBox: '0 0 24 24',
     source: 'Parkie Original',
-    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 17a3 3 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19" r="1.25" fill="currentColor"/>',
+    /* Inner arc and dot match the rest of the connection family. They used to
+       sit 0.5 lower, 0.2 higher and 0.05 wider respectively — three differences
+       all closing the same gap, which left barely a pixel of daylight between
+       the dot and the arc at 24px. The outer arcs stay as drawn: this is the
+       reconnecting mark, not a second copy of ConnectionGood. */
+    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
   VehicleTransport: {
     viewBox: '0 0 24 24',
@@ -85,16 +90,16 @@ export default {
   ConnectionGood: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
   ConnectionWeak: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M7 13a8 8 0 0 1 10 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M7 13a8 8 0 0 1 10 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
   ConnectionLost: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
 };
