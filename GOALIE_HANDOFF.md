@@ -30,20 +30,46 @@ npm test                        # 79개 통과하면 환경 복구 완료
 | | |
 |---|---|
 | 브랜치 | `main` (배포 대상. Pages가 루트를 그대로 서빙 — 커밋 = 배포) |
-| 마지막 검증 커밋 | `a275d71` — `npm test` 79개 **3회 연속 통과** (51.7s · 49.5s · 49.3s) |
-| 미검증 커밋 | 없음. `a275d71` 이후는 이 문서 갱신뿐이고 사이트 파일은 건드리지 않았다 |
-| origin 동기화 | `main` = `origin/main` — 푸시까지 끝난 상태로 넘긴다 |
+| 마지막 검증 커밋 | `8077988` = 현재 `main` — `npm test` **82개 3회 연속 통과** (60.0s · 58.1s · 59.1s) |
+| 미검증 커밋 | 없음 |
+| origin 동기화 | `main` = `origin/main` — 푸시·배포까지 끝난 상태 |
 | Goalie 페이지 | 15개, 전부 `impl: true`로 공개 |
+| 미착수 백로그 | §3 그대로. Goalie 쪽은 하나도 손대지 않았다 |
 
-2026-08-02에 `3adc091..a275d71` 4개 커밋을 한꺼번에 검증했다. 문서 초판이 미검증으로 적었던
-`c3a4e0b` 외에 `9641776`(`index.html` + `system-summary.css` — 실제 화면 변경), `366f0cd`,
-`a275d71`이 더 쌓여 있었다. **작성 시점의 HEAD를 그대로 적으면 그 뒤 커밋이 검증 대상에서
-빠진다.** 다음에는 커밋 해시가 아니라 `git log <마지막 검증>..HEAD` 범위로 확인할 것.
+**작성 시점의 HEAD를 그대로 적지 말 것.** 8월 2일에 이 문서가 `c3a4e0b` 하나만 미검증으로
+적어둔 사이 커밋 3개가 더 쌓여 검증 대상에서 빠졌다. 해시가 아니라
+`git log <마지막 검증>..HEAD` **범위**로 확인한다.
 
 ```
 node tests/server.js &     # 이미 4173을 쓰고 있으면 그대로 재사용 (playwright reuseExistingServer)
 npm test                   # 3회 연속 통과가 릴리스 기준
 ```
+
+### 8월 3일에 있었던 일 — 롤백 1건
+
+다른 PC에서 올라온 `6c833da` · `6435458`(아이콘 페이지 재작성)이 `main`을 망가뜨렸다.
+`index.html`이 5,131 → 2,815줄로 잘려 **사이드바 목적지가 0개**가 됐고, 렌더되지 않은
+`{{ preview.dataUrl }}`이 URL로 요청돼 404가 났다. `npm test`가 400초를 넘겨 끝나지 않았다.
+
+`66a65ea`로 두 커밋을 revert했다. 이미 배포된 커밋이고 여러 작업자가 쓰는 저장소라
+`reset --hard` + 강제 푸시 대신 revert를 썼다. **작업은 버리지 않았다** —
+`wip/iconography-rewrite-2026-08-03`에 원격 보존돼 있다. §8 참고.
+
+### 그 뒤 Parkie 아이콘 쪽에서 끝낸 것
+
+| 커밋 | 내용 |
+|---|---|
+| `6604c3e` | 아이콘 도형 SVG 일괄 내려받기 (ZIP 38개). 자체 STORE ZIP 라이터, 의존성 0 |
+| `27bdf4f` → `ce45979` | 상태별 낱개 152파일 → **상태 시트 SVG 한 장**으로 교체 |
+| `b5f6f50` | `hover`·`focus`·`pressed` 토큰이 셋 다 0.95였던 것을 0.85 / 0.95 / 1 로 분리 |
+| `c9595b8` | 요약 칩이 행 수(30)를 아이콘 수라고 말하던 것을 실제 도형 수(38)로 |
+| `d427764` · `8077988` | 획 두께 1.8/1.9/2/2.2 네 종 → **2px 11개 + 1.8px 2개** |
+
+- **획 척도는 테스트에 정책으로 고정돼 있다.** `1.8`과 `2` 외의 값이 들어오면
+  `tests/design-system-audit.spec.js`가 실패한다. 넓히려면 테스트를 의도적으로 고쳐야 한다.
+  예외 2개는 측정 근거가 있다 — ParkingBay는 2px에서 속공간이 가독 하한 4px²로 떨어지고,
+  ManualControl은 틈이 아예 봉해진다 (24px 렌더에서 flood fill로 측정)
+- **요약 칩은 이제 카탈로그에서 파생된다.** 문자열로 적어두면 또 어긋난다 (두 번 어긋났다)
 
 ## 2. 이미 확인된 사실 — 다시 조사하지 말 것
 
@@ -187,3 +213,25 @@ node tests/tools/route-baseline.js --diff before after
 ```
 
 각 단계를 `npm test` 3회 + 커밋 + 배포로 닫아, 중간에 끊겨도 공개 상태가 망가지지 않게 한다.
+
+## 8. 보류 중인 브랜치 — `wip/iconography-rewrite-2026-08-03`
+
+8월 3일에 revert한 아이콘 페이지 재작성이 그대로 들어 있다. **통째로 되살리면 안 된다** —
+`main`을 망가뜨렸던 그 커밋이고, 그때 없던 상태 시트·획 통일·토큰 수정이 지금 `main`에 있다.
+
+살릴 값어치가 있는 것만 추려두었다. `PARKIE_ICONS` 25항목을 `main` 및 `ms/icon-data.js`의
+path와 대조한 결과:
+
+| 분류 | 항목 |
+|---|---|
+| **새 도메인 도형 7종** | `park-in` · `park-out` · `slot-map` · `queue` · `maintenance` · `power` · `control-settings` |
+| MS 복사본 | `location` · `settings` · `restart` · `lock` — `ms/icon-data.js`에 이미 있다 |
+| main과 동일 | `monitoring` · `emergency-stop` · `robot-status` · `charge` |
+| 기존 채택본과 경합 | `home` · `camera` · `alert` · `profile` · `play` · `pause` — MS 채택본을 다시 그린 것 |
+| 미완성 | `stop` · `navigation` · `robot-parking` · `control` — path가 없다 |
+
+**가져올 것은 새 도형 7종뿐이다.** 가져오려면 도형만 `icons/parkie-icon-data.js`의
+`export default` 객체에 넣고(브랜치는 named export로 바꿔놨는데 그게 로드를 깨뜨린 원인 중
+하나다), 페이지 행과 테스트를 함께 추가한다. 데이터 파일만 따로 가져오면 즉시 깨진다.
+
+되살릴 계획이 없다고 판단되면 브랜치를 지워도 된다 — 위 표가 그 안에 뭐가 있었는지의 기록이다.
