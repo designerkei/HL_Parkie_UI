@@ -574,3 +574,67 @@ test('disabled buttons state their own colours instead of fading', async ({ page
       .toBeGreaterThanOrEqual(3);
   }
 });
+
+/* The delivered ghost surfaces arrived flattened: #FFECEB for hover, #F9D6D4
+   for pressed, both opaque. An opaque fill on a ghost button is the defect B-5
+   describes — it stops reading as a ghost and starts reading as a different
+   component — and it composites wrongly anywhere the page is not white.
+
+   They were already state layers, handed over pre-multiplied. Solving per
+   channel, #FFECEB is --goalie-ref-red-400 at 12% over white and #F9D6D4 is
+   --goalie-ref-red-600 at 20%, with a channel spread of 0.002 and 0.007. So
+   this is not a departure from the delivered colour: it is the same colour
+   written in the form that behaves. This asserts both halves — that the paint
+   is genuinely translucent, and that it still lands exactly on the delivered
+   value over white. Either half alone would pass a wrong change. */
+test('the danger ghost states are the delivered surfaces written as layers', async ({ page }) => {
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+
+  const DELIVERED = { hover: [255, 236, 235], pressed: [249, 214, 212] };
+
+  const states = await page.evaluate(() => {
+    const parse = (value) => {
+      const srgb = String(value).match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/i);
+      if (srgb) return [+srgb[1] * 255, +srgb[2] * 255, +srgb[3] * 255, srgb[4] === undefined ? 1 : +srgb[4]];
+      const n = (String(value).match(/[\d.]+/g) || []).map(Number);
+      return n.length >= 3 ? [n[0], n[1], n[2], n.length > 3 ? n[3] : 1] : null;
+    };
+    const over = (fg, bg) => fg.slice(0, 3).map((c, i) => c * fg[3] + bg[i] * (1 - fg[3]));
+    const behind = (el) => {
+      let acc = null;
+      for (let n = el.parentElement; n; n = n.parentElement) {
+        const c = parse(getComputedStyle(n).backgroundColor);
+        if (!c || c[3] === 0) continue;
+        acc = acc === null ? c : [...over(acc, c), c[3] + acc[3] * (1 - c[3])];
+        if (acc[3] >= 0.999) break;
+      }
+      return acc ? acc.slice(0, 3) : [255, 255, 255];
+    };
+
+    const out = {};
+    for (const state of ['hover', 'pressed']) {
+      const el = document.querySelector(
+        `main .gl-button--danger.gl-button--text[data-demo-state="${state}"]`);
+      if (!el) continue;
+      const own = parse(getComputedStyle(el).backgroundColor);
+      out[state] = { alpha: own[3], composited: over(own, behind(el)) };
+    }
+    return out;
+  });
+
+  for (const state of ['hover', 'pressed']) {
+    expect(states[state], `a danger ghost ${state} specimen must exist to measure`).toBeTruthy();
+
+    /* Half one: it is a layer, not a flat fill. This is what B-5 changed, and
+       reverting the token to the delivered literal fails here. */
+    expect(states[state].alpha, `danger ghost ${state} must paint as a layer, got alpha ${states[state].alpha}`)
+      .toBeLessThan(1);
+
+    /* Half two: and it is still the delivered colour. Any alpha at all would
+       satisfy the assertion above; only the right one satisfies this. */
+    const got = states[state].composited.map(Math.round);
+    expect(got, `danger ghost ${state} must still composite to the delivered surface over white`)
+      .toEqual(DELIVERED[state]);
+  }
+});

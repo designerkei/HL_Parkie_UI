@@ -279,8 +279,21 @@
   --goalie-button-danger-bg-disabled: color-mix(in srgb, var(--goalie-ref-red-500) 30%, #FFFFFF);
   --goalie-button-danger-fg-disabled: var(--goalie-color-neutral-700);
   --goalie-button-danger-border-disabled: var(--goalie-button-danger-bg-disabled);
-  --goalie-button-danger-subtle-hover: var(--goalie-ref-button-red-hover-surface);
-  --goalie-button-danger-subtle-pressed: var(--goalie-ref-button-red-pressed-surface);
+  /* The delivered ghost surfaces are state layers that were handed over
+     flattened. Solved per channel, #FFECEB is --goalie-ref-red-400 at 12% over
+     white and #F9D6D4 is --goalie-ref-red-600 at 20%, with the spread across
+     channels only 0.002 and 0.007 — those are the designer's own layers, not a
+     coincidence. Written as opacity they reproduce the delivered colour pixel
+     for pixel on the white page and composite correctly anywhere else, which
+     an opaque fill on a ghost button cannot: it stops reading as a ghost and
+     starts reading as a different component.
+
+     Cyan is not converted. Its pressed surface spreads 0.087 across channels
+     against any single alpha, so it is not one layer of its own fill, and
+     forcing it into this shape would change a delivered colour to make a
+     pattern look tidier. Those stay literals. */
+  --goalie-button-danger-subtle-hover: color-mix(in srgb, var(--goalie-ref-red-400) 12%, transparent);
+  --goalie-button-danger-subtle-pressed: color-mix(in srgb, var(--goalie-ref-red-600) 20%, transparent);
   --goalie-switch-width: 60px;
   --goalie-switch-height: 24px;
   --goalie-switch-knob-size: 20px;
