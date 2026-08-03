@@ -339,8 +339,14 @@ test('the deliberate departure from the delivered button spec is stated on the p
        statement to be state-specific and to admit the unresolved case. */
     await expect(note, 'the note must distinguish states, not generalise')
       .toContainText('4.49');
-    await expect(note, 'it must say dark ink is worse on pressed')
+    await expect(note, 'it must say the body ink is worse on pressed')
       .toContainText('3.61');
+    /* The note used to end by saying pressed was left failing. It is not: the
+       ink there drops to pure black and reaches 4.67:1. Both losing candidates
+       stay on the page — they are why the answer is odd — but the conclusion has
+       to be the one that shipped. */
+    await expect(note, 'it must state the value that actually ships on pressed')
+      .toContainText('4.67');
 
     const evidence = await page.locator('[data-spec-deviation] ~ code').textContent();
     for (const ratio of ['2.02', '2.93', '3.51', '4.49', '8.02', '5.54', '4.62', '3.61']) {
@@ -370,4 +376,49 @@ test('the deliberate departure from the delivered button spec is stated on the p
     channels.every((c) => c < 120),
     `filled label should be dark ink as the note states, got ${filled}`,
   ).toBe(true);
+
+  /* Prose is not the guarantee. The state the note is about is measured here,
+     with the background composited through its ancestors — this repo has
+     already produced a 1.05:1 misreading by taking a translucent panel at face
+     value — and required to clear the threshold it claims to clear. */
+  const pressed = await page.evaluate(() => {
+    const el = document.querySelector(
+      '.gl-button--danger.gl-button--contained[data-demo-state="pressed"]');
+    if (!el) return null;
+    const parse = (c) => {
+      const n = (c.match(/[\d.]+/g) || []).map(Number);
+      return n.length >= 3 ? { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 } : null;
+    };
+    let bg = null;
+    for (let node = el; node; node = node.parentElement) {
+      const c = parse(getComputedStyle(node).backgroundColor);
+      if (!c || c.a === 0) continue;
+      bg = bg === null ? c : {
+        r: bg.r + (c.r - bg.r) * (1 - bg.a),
+        g: bg.g + (c.g - bg.g) * (1 - bg.a),
+        b: bg.b + (c.b - bg.b) * (1 - bg.a),
+        a: bg.a + c.a * (1 - bg.a),
+      };
+      if (bg.a >= 0.999) break;
+    }
+    const s = getComputedStyle(el);
+    const fg = parse(s.color);
+    if (!bg || !fg) return null;
+    return {
+      bg: [bg.r, bg.g, bg.b], fg: [fg.r, fg.g, fg.b],
+      size: parseFloat(s.fontSize), weight: Number(s.fontWeight),
+    };
+  });
+  expect(pressed, 'the pressed danger button the note describes must exist').not.toBeNull();
+
+  const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const [hi, lo] = [lum(pressed.bg), lum(pressed.fg)].sort((a, b) => b - a);
+  const contrast = Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  const large = pressed.size >= 18.66 && pressed.weight >= 600;
+  const threshold = large ? 3 : 4.5;
+  expect(
+    contrast,
+    `pressed danger label is ${contrast}:1 at ${pressed.size}px/${pressed.weight}, needs ${threshold}`,
+  ).toBeGreaterThanOrEqual(threshold);
 });
