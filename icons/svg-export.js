@@ -160,17 +160,12 @@
 
   var PAINT_ATTRS = [['fill', 'fill-opacity'], ['stroke', 'stroke-opacity']];
 
-  /* One state of one icon. Only currentColor picks up the state paint; literal
-     colours in the body (semantic battery fills, the white charging bolt) are
-     what they are and stay put. Alpha multiplies into any opacity the element
-     already carries, which is how the browser composites it on the page. */
-  function buildStateSvg(data, stateValue, resolveToken) {
-    var paint = splitColor(stateValue);
-    var body = resolveVars(data.body, paint.color, resolveToken);
-    var doc = new DOMParser().parseFromString(wrap(data.viewBox, body), 'image/svg+xml');
-    if (doc.querySelector('parsererror')) throw new Error('icon body is not well-formed XML');
-
-    var nodes = doc.documentElement.querySelectorAll('*');
+  /* Only currentColor picks up the state paint; literal colours in the body
+     (semantic battery fills, the white charging bolt) are what they are and stay
+     put. Alpha multiplies into any opacity the element already carries, which is
+     how the browser composites it on the page. */
+  function repaint(root, paint) {
+    var nodes = root.querySelectorAll('*');
     for (var i = 0; i < nodes.length; i += 1) {
       for (var a = 0; a < PAINT_ATTRS.length; a += 1) {
         var attr = PAINT_ATTRS[a][0];
@@ -183,8 +178,203 @@
         nodes[i].setAttribute(opacityAttr, String(Math.round(combined * 1000) / 1000));
       }
     }
+    return root;
+  }
 
-    return new XMLSerializer().serializeToString(doc.documentElement) + '\n';
+  /* One state of one icon, as a standalone file. */
+  function buildStateSvg(data, stateValue, resolveToken) {
+    var paint = splitColor(stateValue);
+    var body = resolveVars(data.body, paint.color, resolveToken);
+    var doc = new DOMParser().parseFromString(wrap(data.viewBox, body), 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('icon body is not well-formed XML');
+    return new XMLSerializer().serializeToString(repaint(doc.documentElement, paint)) + '\n';
+  }
+
+  /* ---- state sheet ----------------------------------------------------- */
+
+  var SHEET = {
+    pad: 32,
+    labelWidth: 168,
+    cellWidth: 68,
+    cellHeight: 64,
+    headerHeight: 34,
+    captionHeight: 16,
+    titleHeight: 30,
+    blockGap: 40,
+    glyph: 24,
+  };
+
+  function esc(text) {
+    return String(text === undefined || text === null ? '' : text)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function round(value) {
+    return Math.round(value * 100) / 100;
+  }
+
+  /* Group ids become layer names in Illustrator, and state labels carry things
+     that read badly there — "Selected / On", "정상 26% 이상". Keep the label for
+     the caption, slug it for the id. */
+  function slug(text) {
+    return String(text === undefined || text === null ? '' : text)
+      .replace(/[^0-9A-Za-zㄱ-ㆎ가-힣]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  /* A paint the sheet can draw: hex plus a separate opacity, because SVG paint
+     attributes carry no alpha and design tools reject rgba() outright. */
+  function paintAttrs(attr, value) {
+    var paint = splitColor(value);
+    var out = attr + '="' + paint.color + '"';
+    if (paint.alpha < 1) out += ' ' + attr + '-opacity="' + round(paint.alpha) + '"';
+    return out;
+  }
+
+  function isTransparent(value) {
+    if (!value) return true;
+    if (/^transparent$/i.test(value)) return true;
+    return splitColor(value).alpha === 0;
+  }
+
+  /* getComputedStyle reports box-shadow as "<colour> 0px 0px 0px 3px". The last
+     length is the spread, which is the whole of the focus ring. */
+  function ringOf(boxShadow) {
+    if (!boxShadow || boxShadow === 'none') return null;
+    var colour = (boxShadow.match(/^(rgba?\([^)]*\)|#[0-9a-f]+)/i) || [])[0];
+    var lengths = boxShadow.replace(/rgba?\([^)]*\)/i, '').match(/-?[\d.]+px/g);
+    if (!colour || !lengths || !lengths.length) return null;
+    var spread = parseFloat(lengths[lengths.length - 1]);
+    if (!spread) return null;
+    return { color: colour, spread: spread };
+  }
+
+  /* One cell: the plate behind the glyph, the ring around it, then the glyph.
+     Every visual property arrives already computed from the page, so the tone
+     tables in the stylesheet are never reimplemented here and cannot drift. */
+  function cellMarkup(cell, resolveToken) {
+    var parts = [];
+    var cx = SHEET.cellWidth / 2;
+    var cy = SHEET.cellHeight / 2;
+    var w = cell.width || SHEET.glyph;
+    var h = cell.height || SHEET.glyph;
+    var r = cell.radius || 0;
+
+    var ring = ringOf(cell.boxShadow);
+    if (ring) {
+      var rw = w + ring.spread;
+      var rh = h + ring.spread;
+      parts.push('<rect x="' + round(cx - rw / 2) + '" y="' + round(cy - rh / 2) + '"'
+        + ' width="' + round(rw) + '" height="' + round(rh) + '"'
+        + ' rx="' + round(r + ring.spread / 2) + '" fill="none" '
+        + paintAttrs('stroke', ring.color) + ' stroke-width="' + ring.spread + '"/>');
+    }
+
+    if (!isTransparent(cell.background)) {
+      parts.push('<rect x="' + round(cx - w / 2) + '" y="' + round(cy - h / 2) + '"'
+        + ' width="' + round(w) + '" height="' + round(h) + '"'
+        + ' rx="' + round(r) + '" ' + paintAttrs('fill', cell.background) + '/>');
+    }
+
+    var doc = new DOMParser().parseFromString(
+      resolveVars(cell.svg, splitColor(cell.color).color, resolveToken), 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('cell glyph is not well-formed XML');
+    var glyph = repaint(doc.documentElement, splitColor(cell.color));
+    var box = (glyph.getAttribute('viewBox') || '0 0 24 24').split(/[\s,]+/).map(Number);
+    var scale = SHEET.glyph / (box[2] || 24);
+    var inner = '';
+    for (var i = 0; i < glyph.childNodes.length; i += 1) {
+      inner += new XMLSerializer().serializeToString(glyph.childNodes[i]);
+    }
+    parts.push('<g transform="translate(' + round(cx - SHEET.glyph / 2) + ' '
+      + round(cy - SHEET.glyph / 2) + ') scale(' + round(scale) + ')">' + inner + '</g>');
+
+    return parts.join('');
+  }
+
+  /* blocks: [{ id, title, columns, rows: [{ id, ko, en, cells }] }]
+     A block with `columns` gets one shared header; without it each cell carries
+     its own caption, which the semantic rows need because battery and connection
+     label their four cells differently from warning and error. */
+  function buildSheet(blocks, options) {
+    var opts = options || {};
+    var resolveToken = opts.resolveToken;
+    var font = opts.font || 'Pretendard, sans-serif';
+    var line = opts.gridLine || 'rgba(255,255,255,0.09)';
+    var primary = opts.textPrimary || 'rgba(255,255,255,0.95)';
+    var secondary = opts.textSecondary || 'rgba(255,255,255,0.60)';
+
+    var widest = 0;
+    blocks.forEach(function (block) {
+      block.rows.forEach(function (row) { widest = Math.max(widest, row.cells.length); });
+    });
+    var width = SHEET.pad * 2 + SHEET.labelWidth + widest * SHEET.cellWidth;
+
+    var body = [];
+    var y = SHEET.pad;
+
+    blocks.forEach(function (block) {
+      var captioned = !block.columns;
+      var rowHeight = SHEET.cellHeight + (captioned ? SHEET.captionHeight : 0);
+      var out = ['<g id="' + esc(block.id) + '">'];
+
+      out.push('<text x="' + SHEET.pad + '" y="' + round(y + 14) + '" font-family="' + esc(font)
+        + '" font-size="13" font-weight="600" ' + paintAttrs('fill', primary) + '>'
+        + esc(block.title) + '</text>');
+      y += SHEET.titleHeight;
+
+      var gridLeft = SHEET.pad + SHEET.labelWidth;
+      if (block.columns) {
+        block.columns.forEach(function (label, index) {
+          out.push('<text x="' + round(gridLeft + index * SHEET.cellWidth + SHEET.cellWidth / 2)
+            + '" y="' + round(y + 20) + '" text-anchor="middle" font-family="' + esc(font)
+            + '" font-size="10" ' + paintAttrs('fill', secondary) + '>' + esc(label) + '</text>');
+        });
+        y += SHEET.headerHeight;
+      }
+
+      block.rows.forEach(function (row, rowIndex) {
+        var top = y + rowIndex * rowHeight;
+        var group = ['<g id="' + esc(row.id) + '">'];
+
+        group.push('<text x="' + SHEET.pad + '" y="' + round(top + SHEET.cellHeight / 2 - 1)
+          + '" font-family="' + esc(font) + '" font-size="11" ' + paintAttrs('fill', primary)
+          + '>' + esc(row.ko) + '</text>');
+        group.push('<text x="' + SHEET.pad + '" y="' + round(top + SHEET.cellHeight / 2 + 12)
+          + '" font-family="' + esc(font) + '" font-size="9" ' + paintAttrs('fill', secondary)
+          + '>' + esc(row.en) + '</text>');
+
+        row.cells.forEach(function (cell, cellIndex) {
+          var x = gridLeft + cellIndex * SHEET.cellWidth;
+          group.push('<g id="' + esc(row.id + '-' + (slug(cell.state) || String(cellIndex + 1)))
+            + '" transform="translate('
+            + round(x) + ' ' + round(top) + ')">' + cellMarkup(cell, resolveToken) + '</g>');
+          if (captioned) {
+            group.push('<text x="' + round(x + SHEET.cellWidth / 2) + '" y="'
+              + round(top + SHEET.cellHeight + 10) + '" text-anchor="middle" font-family="'
+              + esc(font) + '" font-size="8" ' + paintAttrs('fill', secondary) + '>'
+              + esc(cell.state) + '</text>');
+          }
+        });
+
+        group.push('<line x1="' + SHEET.pad + '" y1="' + round(top + rowHeight) + '" x2="'
+          + round(width - SHEET.pad) + '" y2="' + round(top + rowHeight) + '" '
+          + paintAttrs('stroke', line) + ' stroke-width="1"/>');
+        group.push('</g>');
+        out.push(group.join(''));
+      });
+
+      y += block.rows.length * rowHeight + SHEET.blockGap;
+      out.push('</g>');
+      body.push(out.join('\n  '));
+    });
+
+    var height = y - SHEET.blockGap + SHEET.pad;
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + round(width) + '" height="'
+      + round(height) + '" viewBox="0 0 ' + round(width) + ' ' + round(height) + '" fill="none">\n'
+      + '  <rect width="' + round(width) + '" height="' + round(height) + '" '
+      + paintAttrs('fill', opts.background || '#131315') + '/>\n  '
+      + body.join('\n  ') + '\n</svg>\n';
   }
 
   function save(blob, filename) {
@@ -203,6 +393,7 @@
     zip: zip,
     buildSvg: buildSvg,
     buildStateSvg: buildStateSvg,
+    buildSheet: buildSheet,
     splitColor: splitColor,
     save: save,
     crc32: crc32,

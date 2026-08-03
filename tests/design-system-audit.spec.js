@@ -939,6 +939,7 @@ test('the icon summary states what the catalogue actually contains', async ({ pa
   expect(documented, 'rows undercount; distinct shapes is the honest figure')
     .toBeGreaterThanOrEqual(await page.locator('.pk-icon-row').count());
 
-  const stateButton = Number((await page.locator('[data-icon-state-download]').innerText()).match(/\d+/)[0]);
-  expect(stateButton, 'the state download is four files per documented icon').toBe(documented * 4);
+  /* The sheet quotes no count of its own, so what has to hold is that it is
+     offered at all — the summary describes a catalogue both downloads serve. */
+  await expect(page.locator('[data-icon-sheet-download]')).toBeVisible();
 });

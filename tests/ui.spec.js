@@ -349,80 +349,92 @@ test('the icon page downloads every documented icon as tool-ready SVG', async ({
   }
 });
 
-test('the icon page downloads each icon as one folder of interaction states', async ({ page }) => {
+test('the icon page downloads its state matrix as one sheet', async ({ page }) => {
   await openComponent(page, '아이콘');
 
-  const button = page.locator('[data-icon-state-download]');
+  const button = page.locator('[data-icon-sheet-download]');
   await expect(button).toBeVisible();
+
+  /* The sheet has to hold the whole page, so the page is what it is measured
+     against — not a number written down here that would rot the next time a row
+     is added. */
+  const pageRows = await page.locator('.pk-icon-row').count();
+  const pageCells = await page.locator('.pk-icon-state').count();
+  const columnLabels = await page.locator('.pk-icon-row.is-interaction-axis').first()
+    .locator('.pk-icon-spec-state').allInnerTexts();
 
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     button.click(),
   ]);
-  expect(download.suggestedFilename()).toBe('parkie-icons-states.zip');
+  expect(download.suggestedFilename()).toBe('parkie-icon-sheet.svg');
 
   const stream = await download.createReadStream();
   const chunks = [];
   for await (const chunk of stream) chunks.push(chunk);
-  const entries = readStoredZip(Buffer.concat(chunks));
+  const svg = Buffer.concat(chunks).toString('utf8');
 
-  const svgNames = [...entries.keys()].filter((name) => name.endsWith('.svg'));
-  const folders = new Map();
-  for (const name of svgNames) {
-    const [folder, file] = name.split('/');
-    expect(file, `${name} must sit one level down`).toBeTruthy();
-    folders.set(folder, [...(folders.get(folder) || []), file].sort());
+  // Nothing a design tool cannot read may reach the file.
+  expect(svg, 'currentColor must be resolved').not.toContain('currentColor');
+  expect(svg, 'custom properties must be resolved').not.toContain('var(');
+  expect(svg, 'paint attributes carry no alpha channel').not.toMatch(/(?:fill|stroke)="rgba?\(/);
+
+  const sheet = await page.evaluate((text) => {
+    const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+    if (doc.querySelector('parsererror')) return { error: 'not well-formed XML' };
+    const root = doc.documentElement;
+    const cellOf = (id) => root.querySelector(`g[id="${id}"]`);
+    const describe = (id) => {
+      const cell = cellOf(id);
+      if (!cell) return null;
+      const rects = [...cell.querySelectorAll(':scope > rect')];
+      const paint = [...cell.querySelectorAll('path, rect, circle, ellipse, line, polygon, polyline')]
+        .map((node) => `${node.getAttribute('fill') || ''}|${node.getAttribute('fill-opacity') || ''}`
+          + `|${node.getAttribute('stroke') || ''}|${node.getAttribute('stroke-opacity') || ''}`)
+        .join(';');
+      return {
+        ring: rects.some((r) => r.getAttribute('fill') === 'none' && r.getAttribute('stroke-width')),
+        plate: rects.some((r) => (r.getAttribute('fill') || 'none') !== 'none'),
+        paint,
+      };
+    };
+    return {
+      blocks: [...root.querySelectorAll(':scope > g[id]')].map((g) => g.id),
+      rows: root.querySelectorAll(':scope > g[id] > g[id]').length,
+      cells: root.querySelectorAll(':scope > g[id] > g[id] > g[id]').length,
+      texts: [...root.querySelectorAll('text')].map((t) => t.textContent.trim()),
+      states: ['Default', 'Hover', 'Focus', 'Pressed', 'Selected-On', 'Disabled']
+        .map((state) => [state, describe(`Home-${state}`)]),
+    };
+  }, svg);
+
+  expect(sheet.error).toBeUndefined();
+  expect(sheet.blocks, 'both axes must be present').toEqual(['interaction', 'semantic']);
+  expect(sheet.rows, 'every documented row must reach the sheet').toBe(pageRows);
+  expect(sheet.cells, 'every documented cell must reach the sheet').toBe(pageCells);
+
+  const states = Object.fromEntries(sheet.states);
+  for (const [name, cell] of sheet.states) {
+    expect(cell, `Home-${name} must exist in the sheet`).not.toBeNull();
   }
-  expect(folders.size).toBeGreaterThan(0);
-  for (const [folder, files] of folders) {
-    expect(files, `${folder} must carry all four states`).toEqual([
-      'Disabled.svg', 'Enabled.svg', 'Hover.svg', 'Pressed.svg',
-    ]);
+
+  /* The chrome is the reason a sheet beats loose files: the ring and the plates
+     are container styling that cannot travel in a per-icon export at all. */
+  expect(states.Focus.ring, 'focus must draw its ring').toBe(true);
+  expect(states.Pressed.plate, 'pressed must draw its plate').toBe(true);
+  expect(states['Selected-On'].plate, 'selected must draw its plate').toBe(true);
+  expect(states.Default.ring, 'default has no ring').toBe(false);
+  expect(states.Default.plate, 'default has no plate').toBe(false);
+
+  const paints = sheet.states.map(([, cell]) => cell.paint);
+  expect(new Set(paints).size, `six states must paint six ways: ${paints.length}`).toBe(6);
+
+  // Labels are what make it readable as a table rather than a pile of glyphs.
+  for (const label of columnLabels) {
+    expect(sheet.texts, `column ${label} must be labelled`).toContain(label.trim());
   }
-  expect(svgNames.length).toBe(folders.size * 4);
-
-  // rgba() in a paint attribute is the failure that design tools reject; the
-  // alpha has to travel as a separate opacity instead.
-  for (const name of svgNames) {
-    const text = entries.get(name);
-    expect(text, `${name} must not carry rgba() paint`).not.toMatch(/(?:fill|stroke)="rgba?\(/);
-    expect(text, `${name} must resolve currentColor`).not.toContain('currentColor');
-    expect(text, `${name} must resolve custom properties`).not.toContain('var(');
-  }
-
-  /* Four states have to arrive as four files. They did not always: hover, focus
-     and pressed shared one token value, so the archive shipped duplicates that
-     looked like an export fault. */
-  const stateFiles = ['Enabled', 'Hover', 'Pressed', 'Disabled']
-    .map((state) => entries.get(`Home/${state}.svg`));
-  expect(new Set(stateFiles).size, 'every state must be a distinct file').toBe(4);
-
-  const enabled = entries.get('Home/Enabled.svg');
-  expect(enabled).toMatch(/fill="#FFFFFF"/);
-  expect(enabled).toMatch(/fill-opacity="0\.7"/);
-  expect(entries.get('Home/Hover.svg')).toMatch(/fill-opacity="0\.85"/);
-  expect(entries.get('Home/Disabled.svg')).toMatch(/fill-opacity="0\.35"/);
-  // Fully opaque paint needs no opacity attribute, and must not invent one.
-  expect(entries.get('Home/Pressed.svg')).toMatch(/fill="#FFFFFF"/);
-  expect(entries.get('Home/Pressed.svg')).not.toMatch(/fill-opacity=/);
-
-  // Stroked icons take the state on the stroke, not the fill.
-  expect(entries.get('Monitoring/Enabled.svg')).toMatch(/stroke="#FFFFFF"/);
-  expect(entries.get('Monitoring/Enabled.svg')).toMatch(/stroke-opacity="0\.7"/);
-
-  // The battery outline already carried fill-opacity 0.95, so the state alpha
-  // multiplies into it rather than replacing it.
-  expect(entries.get('BatteryFull/Enabled.svg')).toMatch(/fill-opacity="0\.665"/);
-
-  // Literal artwork colour is not state paint and must survive untouched.
-  const charging = entries.get('BatteryChargingHigh/Enabled.svg');
-  expect(charging).toContain('#00C000');
-  expect(charging).toContain('fill="white"');
-
-  const readme = entries.get('README.txt');
-  for (const token of ['--parkie-icon-default', '--parkie-icon-hover', '--parkie-icon-pressed', '--parkie-icon-disabled']) {
-    expect(readme, `${token} must be documented`).toContain(token);
-  }
+  expect(sheet.texts, 'rows must carry their Korean name').toContain('홈');
+  expect(sheet.texts, 'rows must carry their English name').toContain('Home');
 });
 
 test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {
