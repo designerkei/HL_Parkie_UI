@@ -18,26 +18,17 @@
 const { test, expect } = require('@playwright/test');
 const { PAGES, auditPage } = require('./tools/goalie-audit');
 
-/* Everything the audit currently reports, by kind. These are open items, not
-   approvals — the point is that the set cannot grow without this failing, and
-   cannot shrink without someone updating it and saying why. */
+/* Everything the audit still reports. After the false positives were removed
+   and every internal value was fixed, the remainder has one cause: the selected
+   and switched-on states are painted with --goalie-ref-cyan-500 (#00B4ED),
+   which is 2.19–2.40:1 against white. That token is transcribed from the
+   delivered spec and matches it exactly, so raising it is a decision about the
+   spec rather than a defect to quietly repair — the same shape as the filled
+   button label the button page already documents. Pinned individually: a count
+   would let one of these be fixed while something else appeared. */
 const OPEN = [
   'button|gl-switch|track',
   'iconography|gl-switch|track',
-  'iconography|sc-interp|text',
-  'input|BUTTON|borderTop',
-  'input|gl-number-stepper|borderLeft',
-  'input|gl-number-stepper|borderTop',
-  'input|gl-select-trigger|borderLeft',
-  'input|gl-select-trigger|borderTop',
-  'input|gl-time-trigger|borderLeft',
-  'input|gl-time-trigger|borderTop',
-  'patrol|BUTTON|borderTop',
-  'patrol|gl-select-trigger|borderLeft',
-  'patrol|gl-select-trigger|borderTop',
-  'patrol|gl-time-trigger|borderLeft',
-  'patrol|gl-time-trigger|borderTop',
-  'status|gl-alert-history__list|focus ring',
   'templates|BUTTON|borderLeft',
   'templates|BUTTON|borderTop',
   'templates|gl-switch|track',
@@ -48,11 +39,13 @@ test('Goalie pages report no accessibility defect beyond the pinned set', async 
 
   const found = [];
   let decorativeSkipped = 0;
+  let focusChecked = 0;
   const structural = [];
 
   for (const id of PAGES) {
     const r = await auditPage(page, id);
     decorativeSkipped += r.decorativeSkipped;
+    focusChecked += r.focusChecked;
 
     for (const f of r.textFails) found.push(`${id}|${f.cls}|text`);
     for (const f of r.edgeFails) found.push(`${id}|${f.cls}|${f.what}`);
@@ -86,4 +79,15 @@ test('Goalie pages report no accessibility defect beyond the pinned set', async 
     decorativeSkipped,
     'decorative hairlines must be excluded, not measured',
   ).toBeGreaterThan(300);
+
+  /* Pinning findings cannot protect a check that has stopped finding anything.
+     Once the one focus defect was fixed, deleting the focus check outright left
+     every assertion above still green — so the gate now also requires the check
+     to have actually run over the controls it claims to cover. */
+  expect(
+    focusChecked,
+    'the focus check must be measuring controls, not skipped',
+    /* 117 today across the fifteen pages; the floor only has to catch the check
+       being gutted, not police how many controls the pages happen to hold. */
+  ).toBeGreaterThan(80);
 });

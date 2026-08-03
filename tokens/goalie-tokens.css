@@ -243,8 +243,15 @@
   --goalie-control-height-md: 40px;
   --goalie-control-height-lg: 48px;
   --goalie-control-bg: var(--goalie-surface);
-  --goalie-control-border: var(--goalie-border-strong);
-  --goalie-control-border-hover: var(--goalie-color-neutral-600);
+  /* A control's border is the only thing showing where the field is, which is
+     the case WCAG 1.4.11 exists for. At neutral-500 it measured 2.31:1, and the
+     controls sit on --goalie-surface-muted rather than on white, so neutral-600
+     still landed at 2.98 — a hundredth short, which is not a pass. neutral-650
+     reaches 3.85 there. Neither value is a --goalie-ref-* token, so the
+     delivered spec is untouched; both are steps on the internal neutral scale,
+     and hover stays one step darker so the two edges remain distinguishable. */
+  --goalie-control-border: var(--goalie-color-neutral-650);
+  --goalie-control-border-hover: var(--goalie-color-neutral-700);
   --goalie-control-disabled-bg: var(--goalie-surface-muted);
   --goalie-control-disabled-fg: var(--goalie-text-disabled);
 

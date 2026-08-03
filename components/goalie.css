@@ -112,6 +112,18 @@
   outline: 0;
 }
 
+/* Scroll regions carry tabindex="0" so the keyboard can reach what is inside
+   them, which makes them focusable — and they were the only focusable things in
+   Goalie still falling back to the browser's own outline. On the light pages
+   that happened to clear 3:1; over the alert history panel, which is
+   rgba(0,0,0,0.7), the default blue lands at 1.49:1. Inset, because an outset
+   ring on a scrolling box is drawn by the very box that clips it. */
+[data-system="goalie"] :is(.gl-alert-history__list, .gl-mission-list,
+  .gl-patrol-missions, .gl-handle-state-grid):focus-visible {
+  box-shadow: var(--goalie-focus-ring-inset);
+  outline: 0;
+}
+
 [data-system="goalie"] .gl-button:disabled,
 [data-system="goalie"] .gl-button[data-demo-state="disabled"] {
   cursor: not-allowed;

@@ -3,7 +3,7 @@
  *   node tests/server.js &
  *   node tests/tools/goalie-audit.js
  *
- * This script produced two classes of false positive. Both are fixed now, and
+ * This script produced three classes of false positive. All are fixed now, and
  * the fixes are the reason to trust the numbers, so they are written down here
  * rather than left in a commit message nobody will find.
  *
@@ -13,6 +13,12 @@
  * white text was judged against white. It reported 1.05:1 on text that is fine.
  * bgOf() composites every layer now, which is what the browser does.
  * index.html's colorProbe() has the same over() calculation.
+ *
+ * FIXED — color(srgb …) was read as 0..255. color-mix() computes to CSS Color 4
+ * syntax, whose channels run 0..1, and scraping digits out of
+ * "color(srgb 0.919 0.983 1)" turned the active mission row's pale cyan tint
+ * into very nearly black. It reported two contrast failures on text that
+ * measures 6.61:1 and 4.97:1. rgba() understands that syntax now.
  *
  * FIXED — border scope. The check measured every border on the page and
  * returned about 290 findings at 1.27:1, nearly all of them --goalie-border:
@@ -71,8 +77,22 @@ async function auditPage(page, id) {
     const chan = (v) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4); };
     const lum = (c) => 0.2126 * chan(c[0]) + 0.7152 * chan(c[1]) + 0.0722 * chan(c[2]);
     const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    /* color-mix() computes to CSS Color 4 syntax — color(srgb 0.92 0.98 1) —
+       whose channels are 0..1, not 0..255. Scraping digits out of that read the
+       active mission row's pale cyan tint as very nearly black and reported two
+       contrast failures on text that is fine. */
     const rgba = (v) => {
-      const m = String(v).match(/[\d.]+/g);
+      const s = String(v);
+      const srgb = s.match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/i);
+      if (srgb) {
+        return {
+          r: Number(srgb[1]) * 255,
+          g: Number(srgb[2]) * 255,
+          b: Number(srgb[3]) * 255,
+          a: srgb[4] === undefined ? 1 : Number(srgb[4]),
+        };
+      }
+      const m = s.match(/[\d.]+/g);
       if (!m) return null;
       const p = m.map(Number);
       return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
@@ -112,6 +132,7 @@ async function auditPage(page, id) {
     const focusFails = [];
     const smallTargets = [];
     let decorativeSkipped = 0;
+    let focusChecked = 0;
 
     for (const el of main.querySelectorAll('*')) {
       const cs = shown(el);
@@ -184,6 +205,7 @@ async function auditPage(page, id) {
        one of them, the other still reads. */
     for (const el of main.querySelectorAll(sel.FOCUSABLE)) {
       if (!shown(el) || isDisabled(el)) continue;
+      focusChecked += 1;
       el.focus();
       const cs = getComputedStyle(el);
       const rings = [];
@@ -239,6 +261,7 @@ async function auditPage(page, id) {
       dupIds: [...counts].filter(([, c]) => c > 1).map(([i]) => i),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       decorativeSkipped,
+      focusChecked,
     };
   }, PROBE);
 }
