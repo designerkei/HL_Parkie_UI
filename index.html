@@ -15,8 +15,8 @@
 </script>
 <script type="module">
   import { PARKIE_ICONS, PARKIE_ICON_SECTIONS, PARKIE_ICON_STATES, STATE_COLORS } from './icons/parkie-icon-data.js';
-  import { generatePreviewHTML, downloadIconFamily, downloadAllIcons, downloadSingleSVG } from './icons/icon-download.js';
-  window.__parkieIconData = { PARKIE_ICONS, PARKIE_ICON_SECTIONS, PARKIE_ICON_STATES, STATE_COLORS, generatePreviewHTML };
+  import { generatePreviewDataUrl, downloadIconFamily, downloadAllIcons, downloadSingleSVG } from './icons/icon-download.js';
+  window.__parkieIconData = { PARKIE_ICONS, PARKIE_ICON_SECTIONS, PARKIE_ICON_STATES, STATE_COLORS, generatePreviewDataUrl };
   window.parkieIconDownload = { downloadIconFamily, downloadAllIcons, downloadSingleSVG };
   (window.__parkieIconCbs || []).forEach(fn => fn());
   window.__parkieIconsLoaded = true;
@@ -401,7 +401,7 @@
                   <!-- state previews -->
                   <sc-for list="{{ icon.statePreviews }}" as="preview" hint-placeholder-count="6">
                     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                      {{ preview.html }}
+                      <img src="{{ preview.dataUrl }}" width="40" height="40" alt="{{ preview.stateLabel }}" style="display:block;border-radius:8px;">
                     </div>
                   </sc-for>
                   <!-- per-icon download -->
@@ -2217,6 +2217,7 @@ class Component extends DCLogic {
     selectedRobot: '02',
     expandedRobot: '02',
     robotCameraActive: false,
+    parkieIconsReady: false,
   };
 
   componentDidMount() {
@@ -2227,6 +2228,11 @@ class Component extends DCLogic {
       this.setState({ icons: window.__msIcons });
     } else {
       (window.__msIconsCbs = window.__msIconsCbs || []).push((icons) => this.setState({ icons }));
+    }
+    if (window.__parkieIconsLoaded) {
+      this.setState({ parkieIconsReady: true });
+    } else {
+      (window.__parkieIconCbs = window.__parkieIconCbs || []).push(() => this.setState({ parkieIconsReady: true }));
     }
   }
 
@@ -2542,7 +2548,7 @@ class Component extends DCLogic {
         statePreviews: pkd.PARKIE_ICON_STATES.map(state => ({
           stateId: state.id,
           stateLabel: state.label,
-          html: pkd.generatePreviewHTML(icon, state.id),
+          dataUrl: pkd.generatePreviewDataUrl(icon, state.id),
         })),
       })),
     })) : [];

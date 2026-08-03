@@ -11,12 +11,8 @@ export function generateSVG(icon, stateId) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CANVAS} ${CANVAS}" width="${CANVAS}" height="${CANVAS}">\n  ${bg}${overlay}${ring}\n  <g transform="translate(${OFFSET},${OFFSET})">${body}</g>\n</svg>`;
 }
 
-export function generatePreviewHTML(icon, stateId) {
-  const sc = STATE_COLORS[stateId];
-  const overlay = sc.bg ? `background:${sc.bg};` : '';
-  const ring = sc.ring ? `outline:2.5px solid ${sc.ring};outline-offset:-2.5px;border-radius:${R}px;` : '';
-  const body = icon.body.replace(/currentColor/g, sc.icon);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${icon.viewBox}" width="24" height="24" style="display:block;">${body}</svg>`;
+export function generatePreviewDataUrl(icon, stateId) {
+  return 'data:image/svg+xml,' + encodeURIComponent(generateSVG(icon, stateId));
 }
 
 function iconById(iconId) {
