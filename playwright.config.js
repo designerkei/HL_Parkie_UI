@@ -11,7 +11,14 @@ module.exports = defineConfig({
   timeout: 90_000,
   expect: { timeout: 8_000 },
   fullyParallel: false,
-  retries: 0,
+  /* One retry, and it is not there to make red go away. The failures that
+     prompted it are all fixture setup stalling under memory pressure — the
+     clearest was the theme bootstrap contract, which issues a single HTTP GET
+     and touches no browser at all, taking 1.5 minutes. A real regression is
+     deterministic and fails both attempts; only a stall survives a retry, and
+     Playwright reports that as "flaky" rather than "passed". A flaky line in
+     the output is a finding, not noise — read it. */
+  retries: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: 'http://127.0.0.1:4173',

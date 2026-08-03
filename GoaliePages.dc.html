@@ -129,6 +129,14 @@
 
     <!-- DOMAIN SIGNALS / ICONOGRAPHY ============================== -->
     <sc-if value="{{ isIconography }}" hint-placeholder-val="false">
+      <!-- Second knowing departure, and a different subject from the one on the
+           button page: there the question is the label on a fill, here it is
+           whether the fill's own edge is findable. -->
+      <aside class="gl-callout gl-callout--warning" aria-labelledby="gl-iconography-boundary">
+        <strong id="gl-iconography-boundary">{{ boundaryTitle }}</strong>
+        <p data-spec-boundary>{{ boundaryBody }}</p>
+        <code>{{ boundaryEvidence }}</code>
+      </aside>
       <section class="gl-section gl-section--first" aria-labelledby="gl-robot-panel-title">
         <header class="gl-section__head"><div><span>01 · ROBOT INFORMATION</span><h2 id="gl-robot-panel-title">{{ robotPanelTitle }}</h2></div><p>{{ robotPanelBody }}</p></header>
         <div class="gl-component-note">
@@ -271,6 +279,14 @@
 
     <!-- OPERATIONAL TEMPLATES ===================================== -->
     <sc-if value="{{ isTemplates }}" hint-placeholder-val="false">
+      <!-- Second knowing departure, and a different subject from the one on the
+           button page: there the question is the label on a fill, here it is
+           whether the fill's own edge is findable. -->
+      <aside class="gl-callout gl-callout--warning" aria-labelledby="gl-templates-boundary">
+        <strong id="gl-templates-boundary">{{ boundaryTitle }}</strong>
+        <p data-spec-boundary>{{ boundaryBody }}</p>
+        <code>{{ boundaryEvidence }}</code>
+      </aside>
       <section class="gl-section gl-section--first" aria-labelledby="gl-template-title">
         <header class="gl-section__head"><div><span>01 · OPERATION STATE COMPOSITION</span><h2 id="gl-template-title">{{ templateTitle }}</h2></div><p>{{ templateBody }}</p></header>
         <div class="gl-template-mode-picker" role="radiogroup" aria-label="{{ templateModeLabel }}"><sc-for list="{{ templateModes }}" as="mode" hint-placeholder-count="4"><button type="button" role="radio" aria-checked="{{ mode.checked }}" tabindex="{{ mode.tabIndex }}" data-template-mode="{{ mode.value }}" onClick="{{ selectTemplateMode }}" onKeyDown="{{ onRadioKeyDown }}">{{ mode.label }}</button></sc-for></div>
@@ -307,6 +323,14 @@
         <strong id="gl-button-deviation">{{ deviationTitle }}</strong>
         <p data-spec-deviation>{{ deviationBody }}</p>
         <code>{{ deviationEvidence }}</code>
+      </aside>
+      <!-- Second knowing departure, and a different subject from the one on the
+           button page: there the question is the label on a fill, here it is
+           whether the fill's own edge is findable. -->
+      <aside class="gl-callout gl-callout--warning" aria-labelledby="gl-button-boundary">
+        <strong id="gl-button-boundary">{{ boundaryTitle }}</strong>
+        <p data-spec-boundary>{{ boundaryBody }}</p>
+        <code>{{ boundaryEvidence }}</code>
       </aside>
       <section class="gl-section gl-section--first" aria-labelledby="gl-button-title">
         <header class="gl-section__head"><div><span>01 · ACTION BUTTON</span><h2 id="gl-button-title">{{ buttonTitle }}</h2></div><p>{{ buttonBody }}</p></header>
@@ -974,6 +998,12 @@ class Component extends DCLogic {
         'The Figma spec sets the label on filled buttons and alert banners in white. Measured per state, the answer differs. On the cyan fills and the red hover, white clears neither the 4.5:1 body threshold nor the 3:1 large-text one, so dark ink is the only option. Red pressed is the tight one. White reaches 4.49:1, short of body text by a hundredth, and the body ink #1C2126 is worse at 3.61:1. Between those two there appeared to be no answer, but pure black clears it at 4.67:1. So that one state drops its ink to pure black and the fills keep their specified values. Every filled state now clears the 4.5:1 body threshold.',
       ),
       deviationEvidence: '흰 라벨 — #00C5FB 2.02 · #FF6358 2.93 · #FF3E31 3.51 · #E03327 4.49:1 │ 본문 잉크 #1C2126 — #00C5FB 8.02 · #FF6358 5.54 · #FF3E31 4.62 · #E03327 3.61:1 │ 출하값 — Pressed만 #E03327 위 #000000 으로 4.67:1, 나머지는 본문 잉크 그대로 │ 큰 글자(18.66px 이상 굵게)는 3:1 기준',
+      boundaryTitle: L('전달 스펙과 다른 두 번째 곳 · 선택·켜짐 상태의 경계', 'A second departure from the delivered spec, at the edge of the on state'),
+      boundaryBody: L(
+        '선택과 켜짐 상태는 전달 스펙의 브랜드 시안 #00B4ED로 칠합니다. 이 색은 흰 배경 위에서 스위치 트랙이 2.40:1, 선택된 라디오 테두리가 2.19:1이라 비텍스트 대비 기준 3:1에 못 미칩니다. 상태 자체는 색만으로 전달하지 않습니다 — 스위치는 안에 자동·수동 글자와 손잡이 위치를 함께 두고, 라디오는 aria-checked와 라벨을 가집니다. 전달 램프 안의 시안 600 #0098C8을 쓰면 3.32:1로 기준을 넘지만, 그것은 이 상태가 어느 스펙 색을 쓰느냐를 바꾸는 결정입니다. 채움 값을 스펙 그대로 두는 이 가이드의 원칙에 따라 지금은 바꾸지 않고 적어 둡니다.',
+        'Selected and switched-on states are painted with the delivered brand cyan #00B4ED. Over white that edge measures 2.40:1 on the switch track and 2.19:1 on the selected radio, short of the 3:1 non-text threshold. The state is not carried by colour alone — the switch holds its auto and manual words and the knob position, and the radio carries aria-checked and a label. Cyan 600 #0098C8, already in the delivered ramp, would clear it at 3.32:1, but choosing it is a decision about which spec colour the state uses. The guide keeps delivered fills as given, so this is written down rather than changed.'
+      ),
+      boundaryEvidence: '흰 배경 대비 — 스위치 트랙 #00B4ED 2.40:1 · 선택 라디오 테두리 #00B4ED 2.19:1 │ 전달 램프의 대안 — #0098C8 (시안 600) 3.32:1 │ 비텍스트 기준 3:1 · 상태는 글자와 손잡이 위치로도 전달',
       isOverview: activePage === 'overview', isSystemSummary: activePage === 'systemsummary', isPrinciples: activePage === 'principles', isColors: activePage === 'colors', isTypography: activePage === 'typography', isSpacing: activePage === 'spacing', isIconography: activePage === 'iconography', isButton: activePage === 'button', isInput: activePage === 'input', isStatus: activePage === 'status', isNavigation: activePage === 'navigation', isPatrol: activePage === 'patrol', isVideo: activePage === 'video', isTemplates: activePage === 'templates', isBrand: activePage === 'brand',
       truthbarLabel: L('Goalie 문서 근거와 접근성 상태', 'Goalie documentation evidence and accessibility status'), evidenceLabel: L('Figma 근거 고정', 'Figma evidence pinned'), accessibilityLabel: L('접근성 보정 명시', 'Accessibility differences explicit'), sourcePin: activePage === 'colors' ? '230:2058' : activePage === 'typography' ? '2051:3017' : activePage === 'iconography' ? '351:2119 · 351:1032 · 3411:24015 · 3536:25686' : activePage === 'button' ? '351:2306 · 351:2435' : activePage === 'input' ? '1923:3693 · 1917:9234 · 1923:4348 · 2150:5572 · 2150:6371' : activePage === 'status' ? '230:2007 · 735:7167' : activePage === 'navigation' ? '230:4018 · 230:3631 · 465:3008 · 557:3515' : activePage === 'patrol' ? '2226:13757 · 3874:44703' : activePage === 'video' ? '3874:33505' : activePage === 'templates' ? '4021:36373 · 2933:9118 · 3536:24567' : '32 nodes',
       overviewTitle: L('로봇 운영의 상태와 안전을 한 언어로 연결한다', 'One language for robot operation, state and safety'), overviewBody: L('Goalie는 밝은 관제 UI의 시각 규칙과 순찰·영상·발화·비상 흐름의 행동 계약을 함께 관리합니다. Figma를 복제하는 데서 끝나지 않고 각 화면이 같은 토큰과 독립 상태축을 재사용하게 합니다.', 'Goalie manages both the visual language of the light control UI and behavioral contracts for patrol, video, speaking and emergency flows. Screens reuse the same tokens and independent state axes rather than stopping at Figma reproduction.'), overviewFacts, layerMapLabel: L('Foundation에서 Template까지 네 계층', 'Four layers from foundation to template'), layerMap,

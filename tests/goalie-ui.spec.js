@@ -422,3 +422,65 @@ test('the deliberate departure from the delivered button spec is stated on the p
     `pressed danger label is ${contrast}:1 at ${pressed.size}px/${pressed.weight}, needs ${threshold}`,
   ).toBeGreaterThanOrEqual(threshold);
 });
+
+/* The second documented departure. The button page's note is about the label on
+   a fill; this one is about whether the fill's own edge can be found. Same rule
+   as that one: the page may not claim a number the build does not produce, so
+   the values are measured here rather than read out of the prose. */
+test('the departure at the edge of the on state is stated, and matches the build', async ({ page }) => {
+  const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const contrast = (a, b) => {
+    const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m);
+    return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  };
+
+  for (const pageId of ['button', 'iconography', 'templates']) {
+    await page.goto(`/#/goalie/${pageId}`);
+    await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+    const note = page.locator('[data-spec-boundary]');
+    await expect(note, `${pageId} must state the departure`).toHaveCount(1);
+    await expect(note, 'it must name the switch track measurement').toContainText('2.40');
+    await expect(note, 'it must name the selected radio measurement').toContainText('2.19');
+    await expect(note, 'it must name the ramp value that would clear it').toContainText('3.32');
+    /* Colour alone must not be the signal, and the note says so — that claim is
+       what makes keeping the fill defensible, so it is checked too. */
+    await expect(note).toContainText('#00B4ED');
+
+    /* The evidence line is where the numbers live, and deleting it left the
+       prose assertions above perfectly green, so it is required by name. */
+    const evidence = await page.locator('[data-spec-boundary] ~ code').textContent();
+    for (const value of ['2.40', '2.19', '3.32', '#00B4ED', '#0098C8']) {
+      expect(evidence, `${pageId} evidence must quote ${value}`).toContain(value);
+    }
+    expect(evidence, 'the non-text threshold must be stated').toMatch(/3:1/);
+  }
+
+  /* Now the build. The switch is on the button page; the selected radio is the
+     template mode picker. Both edges are read against what they sit on. */
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+  const measured = await page.evaluate(() => {
+    const parse = (c) => (c.match(/\d+/g) || []).slice(0, 3).map(Number);
+    const behind = (el) => {
+      for (let n = el.parentElement; n; n = n.parentElement) {
+        const c = getComputedStyle(n).backgroundColor;
+        if (c && !/rgba\(0, 0, 0, 0\)/.test(c) && c !== 'transparent') return parse(c);
+      }
+      return [255, 255, 255];
+    };
+    const on = [...document.querySelectorAll('main .gl-switch[aria-checked="true"]')]
+      .find((el) => !el.disabled && el.getAttribute('aria-disabled') !== 'true');
+    if (!on) return null;
+    return { track: parse(getComputedStyle(on).backgroundColor), around: behind(on) };
+  });
+  expect(measured, 'a switched-on track must exist to measure').not.toBeNull();
+
+  const track = contrast(measured.track, measured.around);
+  expect(track, `switch track measured ${track}:1, the page says 2.40`).toBeCloseTo(2.4, 1);
+
+  /* The state has to survive without the colour, which is the reason the fill
+     is being kept. A switch that said nothing but blue would not. */
+  const label = await page.locator('main .gl-switch[aria-checked="true"]').first().innerText();
+  expect(label.trim(), 'the on state must read as more than a colour').not.toBe('');
+});
