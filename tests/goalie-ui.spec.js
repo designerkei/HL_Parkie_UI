@@ -484,3 +484,93 @@ test('the departure at the edge of the on state is stated, and matches the build
   const label = await page.locator('main .gl-switch[aria-checked="true"]').first().innerText();
   expect(label.trim(), 'the on state must read as more than a colour').not.toBe('');
 });
+
+/* Disabled buttons were one `opacity: 0.3` rule, and it faded the label with
+   the fill: 1.63:1 on the outlined and ghost variants, 1.81:1 on danger
+   contained. Disabled is exempt from WCAG, so nothing was failing — which is
+   exactly why this needed a gate rather than a fix alone. At that range the
+   control stops reading as switched off and starts reading as absent, and
+   opacity composites against whatever sits behind it, so the same button
+   changed colour off white.
+   
+   The fills did not move. --goalie-ref-cyan-disabled is the enabled cyan at
+   30% over white, and danger derives from the same 30% to the #FFC5C1 that
+   opacity was already painting. Only the ink is now stated rather than faded.
+   This measures the ink, because the reason to trust the number is that the
+   build produced it. */
+test('disabled buttons state their own colours instead of fading', async ({ page }) => {
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+
+  const measured = await page.evaluate(() => {
+    const parse = (value) => {
+      const srgb = String(value).match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/i);
+      if (srgb) return [+srgb[1] * 255, +srgb[2] * 255, +srgb[3] * 255, srgb[4] === undefined ? 1 : +srgb[4]];
+      const n = (String(value).match(/[\d.]+/g) || []).map(Number);
+      return n.length >= 3 ? [n[0], n[1], n[2], n.length > 3 ? n[3] : 1] : null;
+    };
+    const over = (fg, bg) => fg.slice(0, 3).map((c, i) => c * fg[3] + bg[i] * (1 - fg[3]));
+    /* Composited, not read off the element. This repo has already produced a
+       1.05:1 misreading by taking a translucent panel at face value. */
+    const behind = (el) => {
+      let acc = null;
+      for (let n = el; n; n = n.parentElement) {
+        const c = parse(getComputedStyle(n).backgroundColor);
+        if (!c || c[3] === 0) continue;
+        acc = acc === null ? c : [...over(acc, c), c[3] + acc[3] * (1 - c[3])];
+        if (acc[3] >= 0.999) break;
+      }
+      return acc ? acc.slice(0, 3) : [255, 255, 255];
+    };
+    /* Ancestor opacity multiplies, so reading the element's own is not enough
+       to prove the label is no longer being faded. */
+    const effectiveOpacity = (el) => {
+      let a = 1;
+      for (let n = el; n; n = n.parentElement) a *= Number(getComputedStyle(n).opacity);
+      return a;
+    };
+
+    return [...document.querySelectorAll('main .gl-button')]
+      .filter((el) => el.disabled || el.dataset.demoState === 'disabled')
+      .map((el) => {
+        const cs = getComputedStyle(el);
+        const page = behind(el.parentElement);
+        const alpha = effectiveOpacity(el);
+        const rawFill = parse(cs.backgroundColor) || [0, 0, 0, 0];
+        const fill = over([rawFill[0], rawFill[1], rawFill[2], rawFill[3] * alpha], page);
+        const rawInk = parse(cs.color) || [0, 0, 0, 1];
+        return {
+          variant: [...el.classList].filter((c) => c.startsWith('gl-button--')).join('.'),
+          opacity: alpha,
+          ink: over([rawInk[0], rawInk[1], rawInk[2], rawInk[3] * alpha], fill),
+          fill,
+        };
+      });
+  });
+
+  /* The trap section 5 records: fixing a defect emptied the pinned set, and the
+     check could then be deleted with every assertion still green. Assert the
+     specimens exist before asserting anything about them. */
+  expect(measured.length, 'the button page must render disabled specimens to measure')
+    .toBeGreaterThanOrEqual(6);
+
+  const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const contrast = (a, b) => {
+    const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m);
+    return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  };
+
+  for (const state of measured) {
+    /* The specific regression this guards: reintroducing a blanket fade. */
+    expect(state.opacity, `${state.variant} disabled must not be faded, got opacity ${state.opacity}`)
+      .toBeCloseTo(1, 2);
+
+    /* Not a WCAG threshold — disabled is exempt. This is the floor at which
+       "switched off" stays distinguishable from "not rendered". The build
+       measures 3.53:1 at its lowest, on danger contained. */
+    const ratio = contrast(state.ink, state.fill);
+    expect(ratio, `${state.variant} disabled label is ${ratio}:1 against its own fill`)
+      .toBeGreaterThanOrEqual(3);
+  }
+});

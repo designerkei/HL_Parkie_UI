@@ -137,13 +137,48 @@
   color: var(--goalie-button-primary-fg-disabled);
 }
 
+/* These five states were one `opacity: 0.3` rule. Fading the whole button is
+   what a disabled style looks like until it is measured: the label went down
+   with the fill, to 1.63:1 on the outlined and ghost variants and 1.81:1 on
+   danger contained, which is the range where "disabled" and "not there" stop
+   being distinguishable. Opacity also composites against whatever is behind
+   the button, so the same control changed colour off white.
+
+   Each state now names its own colours, which is what primary contained was
+   already doing at 4.17:1. The disabled fills are not new colours: the
+   delivered --goalie-ref-cyan-disabled is its enabled fill at 30% over white,
+   and danger derives from the same 30% to #FFC5C1 — the exact colour opacity
+   was producing. Only the ink moves, to 3.53:1 contained and 5.29:1 on the
+   variants that keep the page behind them. Disabled is exempt from WCAG, so
+   these are not thresholds being met; they are the difference between a
+   control that reads as switched off and one that reads as missing. */
+[data-system="goalie"] .gl-button--danger.gl-button--contained:disabled,
+[data-system="goalie"] .gl-button--danger.gl-button--contained[data-demo-state="disabled"] {
+  background: var(--goalie-button-danger-bg-disabled);
+  border-color: var(--goalie-button-danger-bg-disabled);
+  color: var(--goalie-button-danger-fg-disabled);
+}
+
 [data-system="goalie"] .gl-button--primary.gl-button--outlined:disabled,
-[data-system="goalie"] .gl-button--primary.gl-button--outlined[data-demo-state="disabled"],
+[data-system="goalie"] .gl-button--primary.gl-button--outlined[data-demo-state="disabled"] {
+  border-color: var(--goalie-button-primary-border-disabled);
+  color: var(--goalie-button-primary-fg-disabled);
+}
+
 [data-system="goalie"] .gl-button--primary.gl-button--text:disabled,
-[data-system="goalie"] .gl-button--primary.gl-button--text[data-demo-state="disabled"],
-[data-system="goalie"] .gl-button--danger:disabled,
-[data-system="goalie"] .gl-button--danger[data-demo-state="disabled"] {
-  opacity: 0.3;
+[data-system="goalie"] .gl-button--primary.gl-button--text[data-demo-state="disabled"] {
+  color: var(--goalie-button-primary-fg-disabled);
+}
+
+[data-system="goalie"] .gl-button--danger.gl-button--outlined:disabled,
+[data-system="goalie"] .gl-button--danger.gl-button--outlined[data-demo-state="disabled"] {
+  border-color: var(--goalie-button-danger-border-disabled);
+  color: var(--goalie-button-danger-fg-disabled);
+}
+
+[data-system="goalie"] .gl-button--danger.gl-button--text:disabled,
+[data-system="goalie"] .gl-button--danger.gl-button--text[data-demo-state="disabled"] {
+  color: var(--goalie-button-danger-fg-disabled);
 }
 
 [data-system="goalie"] .gl-button__icon {

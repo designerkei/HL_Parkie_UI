@@ -262,12 +262,23 @@
   --goalie-button-primary-bg-pressed: var(--goalie-ref-button-cyan-pressed);
   --goalie-button-primary-bg-disabled: var(--goalie-ref-cyan-disabled);
   --goalie-button-primary-fg-disabled: var(--goalie-color-neutral-700);
+  --goalie-button-primary-border-disabled: var(--goalie-ref-cyan-disabled);
   --goalie-button-primary-subtle-hover: var(--goalie-ref-button-cyan-hover-surface);
   --goalie-button-primary-subtle-pressed: var(--goalie-ref-button-cyan-pressed-surface);
   --goalie-button-danger-bg: var(--goalie-danger);
   --goalie-button-danger-fg: var(--goalie-danger-on);
   --goalie-button-danger-bg-hover: var(--goalie-ref-red-400);
   --goalie-button-danger-bg-pressed: var(--goalie-ref-red-600);
+  /* Danger has no delivered disabled value the way cyan does, so it is derived
+     rather than invented: --goalie-ref-cyan-disabled (#B3EEFE) is exactly its
+     enabled fill (#00C5FB) at 30% over white, and the same 30% on #FF3E31 gives
+     #FFC5C1 — the identical colour the old opacity: 0.3 was already painting.
+     The fill was never the problem. Fading the whole button also faded the
+     label to 1.81:1, and made the result depend on whatever sat behind it.
+     Stays out of the --goalie-ref-* namespace, which means delivered. */
+  --goalie-button-danger-bg-disabled: color-mix(in srgb, var(--goalie-ref-red-500) 30%, #FFFFFF);
+  --goalie-button-danger-fg-disabled: var(--goalie-color-neutral-700);
+  --goalie-button-danger-border-disabled: var(--goalie-button-danger-bg-disabled);
   --goalie-button-danger-subtle-hover: var(--goalie-ref-button-red-hover-surface);
   --goalie-button-danger-subtle-pressed: var(--goalie-ref-button-red-pressed-surface);
   --goalie-switch-width: 60px;
