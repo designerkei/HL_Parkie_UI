@@ -4256,14 +4256,6 @@ class Component extends DCLogic {
         safetyIcons
       ),
     ];
-    const totalParkieIcons = parkieIconGroups.reduce((sum, group) => sum + group.items.length, 0);
-    const parkieIconSummary = [
-      { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
-      { label: L('선형 두께', 'Outline stroke'), value: '2 px · ROUND' },
-      { label: L('문서화 아이콘', 'Documented icons'), value: `${totalParkieIcons} ICONS` },
-      { label: L('상호작용 축', 'Interaction axis'), value: '6 STATES · SEMANTIC SEPARATE' },
-    ];
-
     const domainItem = (labelKo, labelEn, data, tone) => ({
       label: L(labelKo, labelEn),
       className: `pk-domain-icon ${tone || ''}`.trim(),
@@ -4345,16 +4337,25 @@ class Component extends DCLogic {
        CSS applies. The focus ring and the pressed and selected plates are
        container chrome, not artwork, so they cannot travel in a file at all —
        the manifest in the archive records the token for each state instead. */
+    /* Defined here, after every group has been built, so it counts what the page
+       actually holds. Counting rows instead reported 30 against the 38 shapes
+       the page documents, because the battery and connection rows each carry
+       four different icons, and it disagreed with the download buttons on
+       screen. Stroke width is stated as the range that is really drawn: only
+       four of the thirteen stroked icons are at 2px. */
+    const parkieIconSummary = [
+      { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
+      { label: L('선형 두께', 'Outline stroke'), value: '1.8–2.2 px · ROUND' },
+      { label: L('문서화 아이콘', 'Documented icons'), value: `${iconExports.length} ICONS` },
+      { label: L('상호작용 축', 'Interaction axis'), value: '6 STATES · SEMANTIC SEPARATE' },
+    ];
+
     const iconDownloadCount = iconExports.length;
     const iconDownload = {
       label: L(`SVG ${iconDownloadCount}개 내려받기`, `Download ${iconDownloadCount} SVG`),
-      /* The summary above counts documented rows; this counts distinct
-         geometries, and the two differ because the battery and connection rows
-         each document four separate icons. Say so rather than leave two numbers
-         disagreeing on one screen. */
       title: L(
-        '문서화된 아이콘을 도형 단위로 내려받습니다. 배터리·통신처럼 한 행이 여러 도형을 문서화하는 경우가 있어 위 행 수보다 많습니다. 상태별 색은 함께 담기는 안내 파일에 정리돼 있습니다.',
-        'Downloads one SVG per distinct geometry. That runs ahead of the row count above because rows such as battery and connection each document several icons. Per-state colours are listed in the manifest inside the archive.'
+        '문서화된 아이콘 전체를 도형 단위로 내려받습니다. 상태별 색은 함께 담기는 안내 파일에 정리돼 있습니다.',
+        'Downloads every documented icon, one file per shape. Per-state colours are listed in the manifest inside the archive.'
       ),
       onClick: () => this.downloadIconSvgs(iconExports),
     };

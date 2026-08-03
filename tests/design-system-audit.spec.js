@@ -896,3 +896,49 @@ test('the colour page leads with semantic tokens, not the raw ramps', async ({ p
   expect(order.elevation, 'elevation explains the surface tokens and follows them')
     .toBeGreaterThan(order.semantic);
 });
+
+test('the icon summary states what the catalogue actually contains', async ({ page }) => {
+  /* Derived from the icon source, not pinned to a string. The two figures this
+     guards were both wrong and no test noticed: the stroke chip claimed a flat
+     2px when only four of the thirteen stroked icons are at 2px, and the count
+     chip reported documented rows, which undercounts because the battery and
+     connection rows each carry four different icons. */
+  const source = fs.readFileSync(path.join(process.cwd(), 'icons', 'parkie-icon-data.js'), 'utf8');
+  const widths = [...source.matchAll(/stroke-width="([\d.]+)"/g)].map((match) => Number(match[1]));
+  expect(widths.length, 'the Parkie icons must actually be stroked').toBeGreaterThan(0);
+  const low = Math.min(...widths);
+  const high = Math.max(...widths);
+
+  await page.goto('/#iconography');
+  await expect(page.locator('.pk-icon-summary-item').first()).toBeVisible();
+
+  const chips = Object.fromEntries(await page.locator('.pk-icon-summary-item').evaluateAll((items) => (
+    items.map((item) => [
+      item.querySelector('.pk-icon-summary-label').textContent.trim(),
+      item.querySelector('.pk-icon-summary-value').textContent.trim(),
+    ])
+  )));
+
+  const stroke = chips['선형 두께'];
+  expect(stroke, 'the stroke chip must exist').toBeTruthy();
+  const stated = [...stroke.matchAll(/[\d.]+/g)].map((match) => Number(match[0]));
+  expect(Math.min(...stated), `icons are drawn from ${low}px`).toBe(low);
+  expect(Math.max(...stated), `icons are drawn up to ${high}px`).toBe(high);
+
+  /* The chip also claims ROUND, so every cap and join has to be round. */
+  if (/ROUND/i.test(stroke)) {
+    const caps = [...source.matchAll(/stroke-linecap="([a-z]+)"/g)].map((m) => m[1]);
+    const joins = [...source.matchAll(/stroke-linejoin="([a-z]+)"/g)].map((m) => m[1]);
+    expect([...new Set([...caps, ...joins])], 'ROUND must be the whole story').toEqual(['round']);
+  }
+
+  /* One number for "how many icons", agreeing with what the buttons hand out. */
+  const documented = Number(chips['문서화 아이콘'].match(/\d+/)[0]);
+  const shapeButton = Number((await page.locator('[data-icon-download]').innerText()).match(/\d+/)[0]);
+  expect(documented, 'the summary and the shape download must agree').toBe(shapeButton);
+  expect(documented, 'rows undercount; distinct shapes is the honest figure')
+    .toBeGreaterThanOrEqual(await page.locator('.pk-icon-row').count());
+
+  const stateButton = Number((await page.locator('[data-icon-state-download]').innerText()).match(/\d+/)[0]);
+  expect(stateButton, 'the state download is four files per documented icon').toBe(documented * 4);
+});
