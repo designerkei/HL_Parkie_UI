@@ -12,6 +12,8 @@
   --gl-button-pressed: var(--goalie-button-primary-bg-pressed);
   --gl-button-subtle-hover: var(--goalie-button-primary-subtle-hover);
   --gl-button-subtle-pressed: var(--goalie-button-primary-subtle-pressed);
+  --gl-button-edge-hover: var(--goalie-button-primary-edge-hover);
+  --gl-button-edge-pressed: var(--goalie-button-primary-edge-pressed);
   align-items: center;
   appearance: none;
   background: transparent;
@@ -55,6 +57,8 @@
   --gl-button-pressed: var(--goalie-button-danger-bg-pressed);
   --gl-button-subtle-hover: var(--goalie-button-danger-subtle-hover);
   --gl-button-subtle-pressed: var(--goalie-button-danger-subtle-pressed);
+  --gl-button-edge-hover: var(--goalie-button-danger-edge-hover);
+  --gl-button-edge-pressed: var(--goalie-button-danger-edge-pressed);
 }
 
 [data-system="goalie"] .gl-button--contained {
@@ -104,6 +108,32 @@
   background: var(--gl-button-subtle-pressed);
   border-color: var(--gl-button-pressed);
   color: var(--gl-button-text);
+}
+
+/* A filled button sets its border to its own fill, so it has no edge of its
+   own and its visibility is entirely the fill's. Both delivered ramps lighten
+   on hover, which on this fixed light theme makes hover the least visible of
+   the three states — 3.51 enabled, 2.93 hover, 4.49 pressed against the page,
+   and 2.02, 1.73, 2.75 for cyan. The button recedes at the moment before the
+   click.
+
+   The fills are delivered and are not touched. These two rules give the
+   engaged states an edge instead, taking the darker value from the same ramp,
+   which puts the boundary at 4.49:1 and 3.32:1 and makes the sequence stop
+   going backwards. Only contained needs it: outlined and text already draw a
+   border that is not their fill, and neither of their sequences inverts.
+
+   The declaration order matters. These match the rules above at equal
+   specificity, so they win by coming after; moving them up silently restores
+   the old behaviour with no test touching either file. */
+[data-system="goalie"] .gl-button--contained:hover:not(:disabled),
+[data-system="goalie"] .gl-button--contained[data-demo-state="hover"] {
+  border-color: var(--gl-button-edge-hover);
+}
+
+[data-system="goalie"] .gl-button--contained:active:not(:disabled),
+[data-system="goalie"] .gl-button--contained[data-demo-state="pressed"] {
+  border-color: var(--gl-button-edge-pressed);
 }
 
 [data-system="goalie"] .gl-button:focus-visible,

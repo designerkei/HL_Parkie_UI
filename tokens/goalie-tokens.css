@@ -265,6 +265,25 @@
   --goalie-button-primary-border-disabled: var(--goalie-ref-cyan-disabled);
   --goalie-button-primary-subtle-hover: var(--goalie-ref-button-cyan-hover-surface);
   --goalie-button-primary-subtle-pressed: var(--goalie-ref-button-cyan-pressed-surface);
+  /* Both delivered ramps lighten on hover and darken on pressed, which on the
+     fixed light theme makes hover the least visible state of the three: the
+     filled button measures 3.51 enabled, 2.93 hover, 4.49 pressed against the
+     page, and cyan 2.02, 1.73, 2.75. Hover is the moment before the click and
+     the button recedes into the page instead of coming forward.
+
+     The fills are delivered and stay exactly as delivered. What is added is an
+     edge, on the border box the button already reserves as transparent, so
+     nothing reflows. Both values come out of the delivered ramps rather than
+     being mixed for the purpose — red 600 at 4.49:1 and cyan 600 at 3.32:1
+     against the page. Pressed carries it too, otherwise fixing hover alone
+     would leave cyan hover (3.32) more prominent than cyan pressed (2.75) and
+     just move the inversion one state along.
+
+     This is not the cyan 600 decision the boundary note declines. That one
+     would replace a delivered fill on the switch and the selected radio. This
+     one repaints nothing. */
+  --goalie-button-primary-edge-hover: var(--goalie-ref-cyan-600);
+  --goalie-button-primary-edge-pressed: var(--goalie-ref-cyan-600);
   --goalie-button-danger-bg: var(--goalie-danger);
   --goalie-button-danger-fg: var(--goalie-danger-on);
   --goalie-button-danger-bg-hover: var(--goalie-ref-red-400);
@@ -294,6 +313,12 @@
      pattern look tidier. Those stay literals. */
   --goalie-button-danger-subtle-hover: color-mix(in srgb, var(--goalie-ref-red-400) 12%, transparent);
   --goalie-button-danger-subtle-pressed: color-mix(in srgb, var(--goalie-ref-red-600) 20%, transparent);
+  /* See the cyan edge note above. Red pressed already paints --goalie-ref-red-600
+     as its own fill, so the pressed edge here changes nothing today; it is
+     declared so the rule is one rule, and so a later change to the pressed fill
+     cannot silently take the edge with it. */
+  --goalie-button-danger-edge-hover: var(--goalie-ref-red-600);
+  --goalie-button-danger-edge-pressed: var(--goalie-ref-red-600);
   --goalie-switch-width: 60px;
   --goalie-switch-height: 24px;
   --goalie-switch-knob-size: 20px;

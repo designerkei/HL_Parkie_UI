@@ -638,3 +638,107 @@ test('the danger ghost states are the delivered surfaces written as layers', asy
       .toEqual(DELIVERED[state]);
   }
 });
+
+/* B-3. A filled button's border is its own fill, so how findable it is on the
+   page is entirely the fill's doing — and both delivered ramps lighten on
+   hover. On this fixed light theme that made hover the least visible of the
+   three states, which is backwards: hover is the moment before the click.
+
+   The fills are delivered and were not touched, so the numbers the deviation
+   note quotes are still the numbers. What changed is that the engaged states
+   draw an edge from the darker end of the same ramp. This measures the
+   property that fix is for — prominence must never fall as a button goes from
+   idle to hovered to pressed — rather than the colours that currently satisfy
+   it, so re-tuning the ramp stays free and re-inverting it does not. */
+test('a filled button never becomes less visible as it is engaged', async ({ page }) => {
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+
+  /* The delivered sheet draws no edge on a filled button, so this build adds
+     something rather than reinterpreting it, and the page has to say so — the
+     same rule the other two departures follow. */
+  const note = page.locator('[data-spec-edge]');
+  await expect(note, 'the button page must state the added edge').toHaveCount(1);
+  await expect(note, 'it must name the ramp values that were added')
+    .toContainText('#0098C8');
+  await expect(note).toContainText('#E03327');
+  /* It must also admit why pressed carries the edge, because "hover only" is
+     the version of this fix that looks finished and moves the inversion one
+     state along instead of removing it. */
+  await expect(note, 'it must say why pressed carries the edge too')
+    .toContainText('2.75');
+
+  /* Deleting the evidence line left the prose assertions above green in the
+     sibling test, so it is required by name here too. */
+  const evidence = await page.locator('[data-spec-edge] ~ code').textContent();
+  for (const value of ['3.51', '2.93', '4.49', '2.02', '1.73', '2.75', '3.32']) {
+    expect(evidence, `the edge evidence must quote ${value}`).toContain(value);
+  }
+  expect(evidence, 'the non-text threshold must be stated').toMatch(/3:1/);
+
+  const specimens = await page.evaluate(() => {
+    const parse = (value) => {
+      const srgb = String(value).match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/i);
+      if (srgb) return [+srgb[1] * 255, +srgb[2] * 255, +srgb[3] * 255, srgb[4] === undefined ? 1 : +srgb[4]];
+      const n = (String(value).match(/[\d.]+/g) || []).map(Number);
+      return n.length >= 3 ? [n[0], n[1], n[2], n.length > 3 ? n[3] : 1] : null;
+    };
+    const over = (fg, bg) => fg.slice(0, 3).map((c, i) => c * fg[3] + bg[i] * (1 - fg[3]));
+    const behind = (el) => {
+      let acc = null;
+      for (let n = el.parentElement; n; n = n.parentElement) {
+        const c = parse(getComputedStyle(n).backgroundColor);
+        if (!c || c[3] === 0) continue;
+        acc = acc === null ? c : [...over(acc, c), c[3] + acc[3] * (1 - c[3])];
+        if (acc[3] >= 0.999) break;
+      }
+      return acc ? acc.slice(0, 3) : [255, 255, 255];
+    };
+
+    const found = {};
+    for (const el of document.querySelectorAll('main .gl-button--contained')) {
+      const tone = el.classList.contains('gl-button--danger') ? 'danger' : 'primary';
+      const state = el.dataset.demoState || 'enabled';
+      if (!['enabled', 'hover', 'pressed'].includes(state)) continue;
+      if (found[`${tone}/${state}`]) continue;
+      const cs = getComputedStyle(el);
+      const page = behind(el);
+      found[`${tone}/${state}`] = {
+        page,
+        fill: over(parse(cs.backgroundColor) || [0, 0, 0, 0], page),
+        edge: over(parse(cs.borderTopColor) || [0, 0, 0, 0], page),
+      };
+    }
+    return found;
+  });
+
+  const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const contrast = (a, b) => {
+    const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m);
+    return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  };
+
+  for (const tone of ['primary', 'danger']) {
+    /* Section 5: assert the specimens are there before asserting about them,
+       or the loop below passes loudest when it has nothing to measure. */
+    const states = ['enabled', 'hover', 'pressed'].map((state) => {
+      const found = specimens[`${tone}/${state}`];
+      expect(found, `a ${tone} contained ${state} specimen must exist to measure`).toBeTruthy();
+      /* Whichever of fill or edge carries further is what makes the control
+         findable, so the weaker one is allowed to be anything. */
+      return {
+        state,
+        prominence: Math.max(contrast(found.fill, found.page), contrast(found.edge, found.page)),
+      };
+    });
+
+    for (let i = 1; i < states.length; i += 1) {
+      expect(
+        states[i].prominence,
+        `${tone} ${states[i].state} is ${states[i].prominence}:1 against the page, `
+        + `less visible than ${states[i - 1].state} at ${states[i - 1].prominence}:1`,
+      ).toBeGreaterThanOrEqual(states[i - 1].prominence);
+    }
+  }
+});
