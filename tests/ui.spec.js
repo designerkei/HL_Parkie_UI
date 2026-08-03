@@ -222,11 +222,27 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(firstRow).toBeVisible();
   await expect(firstRow.locator('.pk-icon-spec-state')).toHaveText(interactionStates);
   await expect(firstRow.locator('.is-enabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.7)');
-  await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(firstRow.locator('.is-hover')).toHaveCSS('color', 'rgba(255, 255, 255, 0.85)');
   await expect(firstRow.locator('.is-focus')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
-  await expect(firstRow.locator('.is-pressed')).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(firstRow.locator('.is-pressed')).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(firstRow.locator('.is-selected')).toHaveCSS('color', 'rgb(0, 170, 255)');
   await expect(firstRow.locator('.is-disabled')).toHaveCSS('color', 'rgba(255, 255, 255, 0.35)');
+
+  /* Pinning the values above is not enough on its own: they were all 0.95 once,
+     and every assertion still passed. Engagement has to actually climb. */
+  const stateAlpha = async (className) => {
+    const colour = await firstRow.locator(className).evaluate((el) => getComputedStyle(el).color);
+    const parts = colour.match(/[\d.]+/g);
+    return parts.length > 3 ? Number(parts[3]) : 1;
+  };
+  const ladder = [
+    await stateAlpha('.is-enabled'),
+    await stateAlpha('.is-hover'),
+    await stateAlpha('.is-focus'),
+    await stateAlpha('.is-pressed'),
+  ];
+  expect(new Set(ladder).size, `enabled/hover/focus/pressed must differ: ${ladder}`).toBe(4);
+  expect([...ladder].sort((a, b) => a - b), `engagement must brighten: ${ladder}`).toEqual(ladder);
 
   const batteryRow = rows.filter({ hasText: 'Battery' });
   await expect(batteryRow).toHaveCount(1);
@@ -374,13 +390,21 @@ test('the icon page downloads each icon as one folder of interaction states', as
     expect(text, `${name} must resolve custom properties`).not.toContain('var(');
   }
 
-  // Each state must actually differ where the tokens differ.
+  /* Four states have to arrive as four files. They did not always: hover, focus
+     and pressed shared one token value, so the archive shipped duplicates that
+     looked like an export fault. */
+  const stateFiles = ['Enabled', 'Hover', 'Pressed', 'Disabled']
+    .map((state) => entries.get(`Home/${state}.svg`));
+  expect(new Set(stateFiles).size, 'every state must be a distinct file').toBe(4);
+
   const enabled = entries.get('Home/Enabled.svg');
-  const disabled = entries.get('Home/Disabled.svg');
   expect(enabled).toMatch(/fill="#FFFFFF"/);
   expect(enabled).toMatch(/fill-opacity="0\.7"/);
-  expect(disabled).toMatch(/fill-opacity="0\.35"/);
-  expect(enabled).not.toEqual(disabled);
+  expect(entries.get('Home/Hover.svg')).toMatch(/fill-opacity="0\.85"/);
+  expect(entries.get('Home/Disabled.svg')).toMatch(/fill-opacity="0\.35"/);
+  // Fully opaque paint needs no opacity attribute, and must not invent one.
+  expect(entries.get('Home/Pressed.svg')).toMatch(/fill="#FFFFFF"/);
+  expect(entries.get('Home/Pressed.svg')).not.toMatch(/fill-opacity=/);
 
   // Stroked icons take the state on the stroke, not the fill.
   expect(entries.get('Monitoring/Enabled.svg')).toMatch(/stroke="#FFFFFF"/);

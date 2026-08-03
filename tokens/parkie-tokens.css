@@ -197,10 +197,13 @@
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
+  /* Engagement reads as brightness, so the four steps have to be four values.
+     Hover, focus and pressed were all 0.95, which made three states one state
+     wherever the icon carried the signal on its own. */
   --parkie-icon-default: rgba(255,255,255,0.70);
-  --parkie-icon-hover: rgba(255,255,255,0.95);
+  --parkie-icon-hover: rgba(255,255,255,0.85);
   --parkie-icon-focus: rgba(255,255,255,0.95);
-  --parkie-icon-pressed: rgba(255,255,255,0.95);
+  --parkie-icon-pressed: rgba(255,255,255,1);
   --parkie-icon-selected: var(--parkie-color-brand-500);
   --parkie-icon-disabled: rgba(255,255,255,0.35);
   --parkie-icon-battery-full: #F4F4F4;
@@ -432,10 +435,13 @@
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
   --parkie-text-disabled: rgba(255,255,255,0.30);
+  /* Engagement reads as brightness, so the four steps have to be four values.
+     Hover, focus and pressed were all 0.95, which made three states one state
+     wherever the icon carried the signal on its own. */
   --parkie-icon-default: rgba(255,255,255,0.70);
-  --parkie-icon-hover: rgba(255,255,255,0.95);
+  --parkie-icon-hover: rgba(255,255,255,0.85);
   --parkie-icon-focus: rgba(255,255,255,0.95);
-  --parkie-icon-pressed: rgba(255,255,255,0.95);
+  --parkie-icon-pressed: rgba(255,255,255,1);
   --parkie-icon-selected: var(--parkie-color-brand-500);
   --parkie-icon-disabled: rgba(255,255,255,0.35);
   --parkie-icon-battery-full: #F4F4F4;
