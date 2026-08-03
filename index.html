@@ -825,6 +825,12 @@
               </button>
               <p class="pk-icon-actions-note">{{ iconDownload.title }}</p>
             </div>
+            <div class="pk-icon-actions">
+              <button type="button" class="pk-button pk-button--secondary pk-icon-download" data-icon-state-download onClick="{{ iconStateDownload.onClick }}" title="{{ iconStateDownload.title }}">
+                {{ iconStateDownload.label }}
+              </button>
+              <p class="pk-icon-actions-note">{{ iconStateDownload.title }}</p>
+            </div>
 
             <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
               <section class="pk-icon-group">
@@ -3325,11 +3331,14 @@ class Component extends DCLogic {
      archive ships black artwork rather than the white-on-dark token value: the
      catalogue renders on a dark surface, and that white would arrive invisible
      on the default artboard of every design tool. */
+  /* [filename, documented label, token]. The filename is kept separate from the
+     label because the catalogue calls one state "Pressed / On", which is right
+     on the page and wrong in a path. */
   ICON_STATE_TOKENS = [
-    ['Enabled', '--parkie-icon-default'],
-    ['Hover', '--parkie-icon-hover'],
-    ['Pressed / On', '--parkie-icon-pressed'],
-    ['Disabled', '--parkie-icon-disabled'],
+    ['Enabled', 'Enabled', '--parkie-icon-default'],
+    ['Hover', 'Hover', '--parkie-icon-hover'],
+    ['Pressed', 'Pressed / On', '--parkie-icon-pressed'],
+    ['Disabled', 'Disabled', '--parkie-icon-disabled'],
   ];
 
   downloadIconSvgs(entries) {
@@ -3345,7 +3354,7 @@ class Component extends DCLogic {
     }));
 
     const stateLines = this.ICON_STATE_TOKENS
-      .map(([label, token]) => `  ${label}: ${token} = ${resolveToken(token) || '(unset)'}`)
+      .map(([, label, token]) => `  ${label}: ${token} = ${resolveToken(token) || '(unset)'}`)
       .join('\n');
 
     files.push({
@@ -3376,6 +3385,74 @@ class Component extends DCLogic {
     exporter.save(exporter.zip(files), 'parkie-icons.zip');
     this.setState({ iconDownloadDone: true });
     window.setTimeout(() => this.setState({ iconDownloadDone: false }), 1600);
+  }
+
+  downloadIconStateSvgs(entries) {
+    const exporter = window.__parkieSvgExport;
+    if (!exporter || !entries || !entries.length) return;
+
+    const computed = window.getComputedStyle(document.documentElement);
+    const resolveToken = (token) => computed.getPropertyValue(token).trim();
+
+    const states = this.ICON_STATE_TOKENS.map(([file, label, token]) => ({
+      file,
+      label,
+      token,
+      value: resolveToken(token),
+    }));
+
+    const files = [];
+    entries.forEach((entry) => {
+      states.forEach((state) => {
+        files.push({
+          name: `${entry.name}/${state.file}.svg`,
+          text: exporter.buildStateSvg(entry.data, state.value, resolveToken),
+        });
+      });
+    });
+
+    /* Two of the four are the same file. That is not an export fault — the
+       hover and pressed tokens hold the same value — but a folder of duplicates
+       looks like one, so it is said out loud rather than left to be discovered. */
+    const byValue = new Map();
+    states.forEach((state) => {
+      const list = byValue.get(state.value) || [];
+      list.push(state.label);
+      byValue.set(state.value, list);
+    });
+    const duplicates = [...byValue.values()].filter((list) => list.length > 1);
+
+    files.push({
+      name: 'README.txt',
+      text: [
+        'Parkie icon SVG export — one folder per icon, one file per state',
+        '',
+        `${entries.length} icons x ${states.length} states = ${files.length} files.`,
+        '',
+        'State colours',
+        ...states.map((state) => `  ${state.file}: ${state.token} = ${state.value || '(unset)'}`),
+        '',
+        'These are dark-theme values: every state is white at some opacity, so on a',
+        'white artboard the artwork is there but invisible. Place it on a dark',
+        'background, or recolour after import.',
+        '',
+        ...(duplicates.length ? [
+          'Identical states',
+          ...duplicates.map((list) => `  ${list.join(' and ')} resolve to the same token value,`
+            + ' so those files are identical.'),
+          '',
+        ] : []),
+        'How the colour is written',
+        '  SVG paint attributes carry no alpha channel, so rgba() is split into a',
+        '  hex fill plus fill-opacity (or stroke-opacity). Where an element already',
+        '  had an opacity the two are multiplied, matching how the page composites it.',
+        '  Literal colours in the artwork — semantic battery fills, the white',
+        '  charging bolt — are not state paint and are left untouched.',
+        '',
+      ].join('\n'),
+    });
+
+    exporter.save(exporter.zip(files), 'parkie-icons-states.zip');
   }
 
   NAV = [
@@ -4281,6 +4358,15 @@ class Component extends DCLogic {
       ),
       onClick: () => this.downloadIconSvgs(iconExports),
     };
+    const iconStateCount = iconDownloadCount * this.ICON_STATE_TOKENS.length;
+    const iconStateDownload = {
+      label: L(`상태별 SVG ${iconStateCount}개 내려받기`, `Download ${iconStateCount} state SVG`),
+      title: L(
+        '아이콘마다 폴더 하나를 만들고 Enabled·Hover·Pressed·Disabled를 각각 파일로 담습니다. 네 상태 모두 다크 테마 흰색이라 흰 아트보드에서는 보이지 않습니다.',
+        'One folder per icon holding Enabled, Hover, Pressed and Disabled as separate files. All four are dark-theme white, so they are invisible on a white artboard.'
+      ),
+      onClick: () => this.downloadIconStateSvgs(iconExports),
+    };
 
     const cameraFeeds = ['01', '02', '03', '04'].map((id, index) => {
       const refreshing = cameraRefreshing === id;
@@ -5011,6 +5097,7 @@ class Component extends DCLogic {
       msInputs, msBadges, msBadgeSizes, msTooltips, msColorGroups, msType, msIcons, msRadios, msAlerts, msToasts, msListItems, msSearchBoxes, msProgress,
       parkieIconSummary,
       iconDownload,
+      iconStateDownload,
       parkieIconGroups,
       parkieDomainGroups,
       summaryIdentityFacts,

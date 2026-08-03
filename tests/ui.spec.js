@@ -333,6 +333,74 @@ test('the icon page downloads every documented icon as tool-ready SVG', async ({
   }
 });
 
+test('the icon page downloads each icon as one folder of interaction states', async ({ page }) => {
+  await openComponent(page, '아이콘');
+
+  const button = page.locator('[data-icon-state-download]');
+  await expect(button).toBeVisible();
+
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    button.click(),
+  ]);
+  expect(download.suggestedFilename()).toBe('parkie-icons-states.zip');
+
+  const stream = await download.createReadStream();
+  const chunks = [];
+  for await (const chunk of stream) chunks.push(chunk);
+  const entries = readStoredZip(Buffer.concat(chunks));
+
+  const svgNames = [...entries.keys()].filter((name) => name.endsWith('.svg'));
+  const folders = new Map();
+  for (const name of svgNames) {
+    const [folder, file] = name.split('/');
+    expect(file, `${name} must sit one level down`).toBeTruthy();
+    folders.set(folder, [...(folders.get(folder) || []), file].sort());
+  }
+  expect(folders.size).toBeGreaterThan(0);
+  for (const [folder, files] of folders) {
+    expect(files, `${folder} must carry all four states`).toEqual([
+      'Disabled.svg', 'Enabled.svg', 'Hover.svg', 'Pressed.svg',
+    ]);
+  }
+  expect(svgNames.length).toBe(folders.size * 4);
+
+  // rgba() in a paint attribute is the failure that design tools reject; the
+  // alpha has to travel as a separate opacity instead.
+  for (const name of svgNames) {
+    const text = entries.get(name);
+    expect(text, `${name} must not carry rgba() paint`).not.toMatch(/(?:fill|stroke)="rgba?\(/);
+    expect(text, `${name} must resolve currentColor`).not.toContain('currentColor');
+    expect(text, `${name} must resolve custom properties`).not.toContain('var(');
+  }
+
+  // Each state must actually differ where the tokens differ.
+  const enabled = entries.get('Home/Enabled.svg');
+  const disabled = entries.get('Home/Disabled.svg');
+  expect(enabled).toMatch(/fill="#FFFFFF"/);
+  expect(enabled).toMatch(/fill-opacity="0\.7"/);
+  expect(disabled).toMatch(/fill-opacity="0\.35"/);
+  expect(enabled).not.toEqual(disabled);
+
+  // Stroked icons take the state on the stroke, not the fill.
+  expect(entries.get('Monitoring/Enabled.svg')).toMatch(/stroke="#FFFFFF"/);
+  expect(entries.get('Monitoring/Enabled.svg')).toMatch(/stroke-opacity="0\.7"/);
+
+  // The battery outline already carried fill-opacity 0.95, so the state alpha
+  // multiplies into it rather than replacing it.
+  expect(entries.get('BatteryFull/Enabled.svg')).toMatch(/fill-opacity="0\.665"/);
+
+  // Literal artwork colour is not state paint and must survive untouched.
+  const charging = entries.get('BatteryChargingHigh/Enabled.svg');
+  expect(charging).toContain('#00C000');
+  expect(charging).toContain('fill="white"');
+
+  const readme = entries.get('README.txt');
+  for (const token of ['--parkie-icon-default', '--parkie-icon-hover', '--parkie-icon-pressed', '--parkie-icon-disabled']) {
+    expect(readme, `${token} must be documented`).toContain(token);
+  }
+});
+
 test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {
   await openComponent(page, '미디어·비상 제어');
   await expect(page.locator('h1')).toContainText('미디어·비상 제어');

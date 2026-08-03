@@ -39,12 +39,19 @@
   font-weight: var(--parkie-weight-semibold);
 }
 
+/* The doc column spaces its children generously; the action rows sit tight to
+   the summary above them instead. Only the first pulls up to it — the rows
+   after that space off the row before, not off the summary. */
 .pk-icon-actions {
   display: flex;
   align-items: center;
   gap: var(--parkie-space-4);
-  margin-top: calc(var(--parkie-space-9) * -1 + var(--parkie-space-4));
+  margin-top: calc(var(--parkie-space-9) * -1 + var(--parkie-space-3));
   flex-wrap: wrap;
+}
+
+.pk-icon-actions + .pk-icon-actions {
+  margin-top: calc(var(--parkie-space-9) * -1 + var(--parkie-space-2));
 }
 
 /* Styling comes from .pk-button so this stays one button, not a second one

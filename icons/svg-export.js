@@ -124,18 +124,67 @@
     return new Blob([out.bytes], { type: 'application/zip' });
   }
 
-  /* data: { viewBox, body } -> standalone SVG text with no unresolved paint. */
-  function buildSvg(data, color, resolveToken) {
-    var body = String(data.body)
-      .replace(/var\((--[a-zA-Z0-9-]+)\)/g, function (whole, token) {
-        var value = resolveToken ? resolveToken(token) : '';
-        return value || color;
-      })
-      .replace(/currentColor/g, color);
+  function resolveVars(body, fallback, resolveToken) {
+    return String(body).replace(/var\((--[a-zA-Z0-9-]+)\)/g, function (whole, token) {
+      var value = resolveToken ? resolveToken(token) : '';
+      return value || fallback;
+    });
+  }
+
+  function wrap(viewBox, body) {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="'
-      + (data.viewBox || '0 0 24 24') + '" fill="none">\n  '
+      + (viewBox || '0 0 24 24') + '" fill="none">\n  '
       + body.trim().replace(/\s*\n\s*/g, '\n  ')
       + '\n</svg>\n';
+  }
+
+  /* data: { viewBox, body } -> standalone SVG text with no unresolved paint. */
+  function buildSvg(data, color, resolveToken) {
+    var body = resolveVars(data.body, color, resolveToken).replace(/currentColor/g, color);
+    return wrap(data.viewBox, body);
+  }
+
+  /* rgba(255,255,255,0.7) -> { color: '#FFFFFF', alpha: 0.7 }
+     SVG 1.1 paint attributes take no alpha channel, so the two halves have to
+     travel separately or design tools reject the value outright. */
+  function splitColor(value) {
+    var text = String(value || '').trim();
+    var rgba = text.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,/]+([\d.]+))?\s*\)$/i);
+    if (!rgba) return { color: text || '#000000', alpha: 1 };
+    var hex = [rgba[1], rgba[2], rgba[3]].map(function (part) {
+      var n = Math.max(0, Math.min(255, Math.round(parseFloat(part)))).toString(16);
+      return n.length < 2 ? '0' + n : n;
+    }).join('');
+    return { color: '#' + hex.toUpperCase(), alpha: rgba[4] === undefined ? 1 : parseFloat(rgba[4]) };
+  }
+
+  var PAINT_ATTRS = [['fill', 'fill-opacity'], ['stroke', 'stroke-opacity']];
+
+  /* One state of one icon. Only currentColor picks up the state paint; literal
+     colours in the body (semantic battery fills, the white charging bolt) are
+     what they are and stay put. Alpha multiplies into any opacity the element
+     already carries, which is how the browser composites it on the page. */
+  function buildStateSvg(data, stateValue, resolveToken) {
+    var paint = splitColor(stateValue);
+    var body = resolveVars(data.body, paint.color, resolveToken);
+    var doc = new DOMParser().parseFromString(wrap(data.viewBox, body), 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('icon body is not well-formed XML');
+
+    var nodes = doc.documentElement.querySelectorAll('*');
+    for (var i = 0; i < nodes.length; i += 1) {
+      for (var a = 0; a < PAINT_ATTRS.length; a += 1) {
+        var attr = PAINT_ATTRS[a][0];
+        var opacityAttr = PAINT_ATTRS[a][1];
+        if (nodes[i].getAttribute(attr) !== 'currentColor') continue;
+        nodes[i].setAttribute(attr, paint.color);
+        if (paint.alpha >= 1) continue;
+        var existing = parseFloat(nodes[i].getAttribute(opacityAttr));
+        var combined = (isNaN(existing) ? 1 : existing) * paint.alpha;
+        nodes[i].setAttribute(opacityAttr, String(Math.round(combined * 1000) / 1000));
+      }
+    }
+
+    return new XMLSerializer().serializeToString(doc.documentElement) + '\n';
   }
 
   function save(blob, filename) {
@@ -150,5 +199,12 @@
     window.setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
   }
 
-  window.__parkieSvgExport = { zip: zip, buildSvg: buildSvg, save: save, crc32: crc32 };
+  window.__parkieSvgExport = {
+    zip: zip,
+    buildSvg: buildSvg,
+    buildStateSvg: buildStateSvg,
+    splitColor: splitColor,
+    save: save,
+    crc32: crc32,
+  };
 }());
