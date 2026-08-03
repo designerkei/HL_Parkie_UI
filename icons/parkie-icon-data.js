@@ -1,185 +1,100 @@
-// Parkie icon definitions — 22 icons × 6 states
-// MS-sourced icons: Apache-2.0 licensed Fluent UI paths
-// Parkie Original icons: custom paths designed for the Parkie RMS domain
+const batteryOutline = `
+  <path d="M9.67857 21C8.96817 21 8.28687 20.6881 7.78454 20.1329C7.28221 19.5777 7 18.8247 7 18.0395V7.53947C7 6.75429 7.28221 6.00127 7.78453 5.44606C8.28686 4.89086 8.96817 4.57895 9.67857 4.57895H10.5714V3.78947C10.5714 3.58009 10.6467 3.37929 10.7806 3.23123C10.9146 3.08318 11.0963 3 11.2857 3H12.7143C12.9037 3 13.0854 3.08318 13.2194 3.23123C13.3533 3.37929 13.4286 3.58009 13.4286 3.78947V4.57895H14.3214C15.0318 4.57895 15.7131 4.89086 16.2155 5.44606C16.7178 6.00127 17 6.75429 17 7.53947V18.0395C17 18.8247 16.7178 19.5777 16.2155 20.1329C15.7131 20.6881 15.0318 21 14.3214 21H9.67857ZM8.07143 18.0395C8.07143 18.5106 8.24075 18.9624 8.54215 19.2955C8.84355 19.6286 9.25233 19.8158 9.67857 19.8158H14.3214C14.7477 19.8158 15.1565 19.6286 15.4579 19.2955C15.7592 18.9624 15.9286 18.5106 15.9286 18.0395V7.53947C15.9286 7.06836 15.7592 6.61655 15.4578 6.28343C15.1565 5.9503 14.7477 5.76316 14.3214 5.76316H9.67857C9.25233 5.76316 8.84355 5.9503 8.54215 6.28343C8.24075 6.61655 8.07143 7.06837 8.07143 7.53947V18.0395Z" fill="currentColor" fill-opacity="0.95"/>
+`;
 
-export const PARKIE_ICON_STATES = [
-  { id: 'default',  label: 'Default'      },
-  { id: 'hover',    label: 'Hover'        },
-  { id: 'focus',    label: 'Focus'        },
-  { id: 'pressed',  label: 'Pressed'      },
-  { id: 'selected', label: 'Selected / On'},
-  { id: 'disabled', label: 'Disabled'     },
-];
+const chargingBolt = `
+  <path d="M13.8006 12.7625C13.796 12.6602 13.7653 12.5608 13.7114 12.4737C13.6575 12.3867 13.5823 12.3149 13.4929 12.2651C13.4035 12.2154 13.3028 12.1893 13.2005 12.1894H11.7706L12.5373 10.6575C12.6085 10.515 12.6202 10.3501 12.5699 10.199C12.5195 10.0479 12.4112 9.92296 12.2687 9.85173C12.1263 9.7805 11.9613 9.76877 11.8102 9.81915C11.6591 9.86953 11.5342 9.97786 11.463 10.1203L10.2627 12.521C10.2169 12.6125 10.1952 12.7143 10.1998 12.8165C10.2044 12.9188 10.2351 13.0181 10.2889 13.1052C10.3427 13.1923 10.4179 13.2641 10.5074 13.3139C10.5968 13.3637 10.6975 13.3898 10.7998 13.3897H12.2297L11.463 14.9217C11.3918 15.0641 11.3801 15.2291 11.4304 15.3802C11.4808 15.5313 11.5891 15.6562 11.7316 15.7274C11.874 15.7986 12.039 15.8104 12.1901 15.76C12.3412 15.7096 12.4661 15.6013 12.5373 15.4588L13.7377 13.0581C13.7835 12.9666 13.8051 12.8648 13.8006 12.7625Z" fill="white"/>
+`;
 
-export const STATE_COLORS = {
-  default:  { icon: 'rgba(255,255,255,0.60)', bg: null,                     ring: null },
-  hover:    { icon: 'rgba(255,255,255,0.95)', bg: 'rgba(255,255,255,0.35)', ring: null },
-  focus:    { icon: 'rgba(255,255,255,0.60)', bg: null,                     ring: '#00AAFF' },
-  pressed:  { icon: 'rgba(255,255,255,0.95)', bg: '#3D3D3F',                ring: null },
-  selected: { icon: '#00AAFF',                bg: 'rgba(0,170,255,0.12)',   ring: null },
-  disabled: { icon: 'rgba(255,255,255,0.28)', bg: null,                     ring: null },
+export default {
+  Monitoring: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: '<path d="M15.375 21H8.625M3 13.56V6.84C3 5.496 3 4.824 3.24525 4.3104C3.46125 3.858 3.80437 3.492 4.2285 3.2616C4.71 3 5.34 3 6.6 3H17.4C18.66 3 19.29 3 19.7704 3.2616C20.1945 3.492 20.5387 3.858 20.7547 4.3104C21 4.8228 21 5.4948 21 6.8364V13.5636C21 14.9052 21 15.576 20.7547 16.0884C20.5389 16.5406 20.1943 16.9082 19.7704 17.1384C19.29 17.4 18.6611 17.4 17.4034 17.4H6.59663C5.33888 17.4 4.70888 17.4 4.2285 17.1384C3.80498 16.908 3.46077 16.5404 3.24525 16.0884C3 15.576 3 14.904 3 13.56Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  Robot: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: '<rect x="5" y="8" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8V5M9.5 13h.01M14.5 13h.01M8.5 17h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  Charger: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: '<rect x="6" y="7" width="9" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 11h2v4h-2M10 10l-1 3h2l-1 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  Connection: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 17a3 3 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.25" fill="currentColor"/>',
+  },
+  VehicleTransport: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M5 13.5 6.5 9h11l1.5 4.5M4 13.5h16v4H4v-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor"/><path d="M8 21h8M12 18.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  },
+  ParkingBay: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<rect x="4" y="3" width="10" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 13V6h2.2a2.3 2.3 0 0 1 0 4.6H8M4 20h16M7 16v4M17 9v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  Route: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 18h3a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2.4 2.4"/>',
+  },
+  Obstacle: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M4 14h16l-2-6H6l-2 6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 2 6M14 8l2 6M7 14v4M17 14v4M5 18h4M15 18h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  },
+  ManualControl: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M7.5 8h9a4 4 0 0 1 3.8 2.8l1.1 3.7a3 3 0 0 1-5 3l-1.5-1.5H9.1l-1.5 1.5a3 3 0 0 1-5-3l1.1-3.7A4 4 0 0 1 7.5 8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11v4M6 13h4M16.5 11.5h.01M18.5 13.5h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  EmergencyStop: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="m8 3-5 5v8l5 5h8l5-5V8l-5-5H8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 7v6M12 17h.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  },
+  BatteryFull: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: `${batteryOutline}<rect x="8.98438" y="7.04688" width="6.01562" height="11.4856" rx="1" fill="currentColor"/>`,
+  },
+  BatteryMedium: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: `${batteryOutline}<rect x="8.98438" y="12.7875" width="6.01562" height="5.745" rx="1" fill="var(--parkie-icon-battery-full)"/>`,
+  },
+  BatteryCritical: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: `${batteryOutline}<rect x="8.98438" y="15.6625" width="6.01562" height="2.87" rx="1" fill="var(--parkie-icon-battery-critical)"/>`,
+  },
+  BatteryChargingLow: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: `${batteryOutline}<rect x="8.98438" y="15.6625" width="6.01562" height="2.87" rx="1" fill="var(--parkie-icon-charging)"/>${chargingBolt}`,
+  },
+  BatteryChargingHigh: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Original',
+    body: `${batteryOutline}<rect x="8.98438" y="12.7875" width="6.01562" height="5.745" rx="1" fill="var(--parkie-icon-charging)"/>${chargingBolt}`,
+  },
+  ConnectionGood: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+  },
+  ConnectionWeak: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M7 13a8 8 0 0 1 10 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+  },
+  ConnectionLost: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+  },
 };
-
-export const PARKIE_ICONS = [
-  // ─── 핵심 내비게이션 ─────────────────────────────────────────────────────
-  {
-    id: 'home', name_ko: '홈', name_en: 'Home',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 7.55 0.53 C 8.387 -0.177 9.613 -0.177 10.45 0.53 L 17.2 6.222 C 17.707 6.65 18 7.279 18 7.942 L 18 17.252 C 18 18.218 17.216 19.002 16.25 19.002 L 12.75 19.002 C 11.783 19.002 11 18.218 11 17.252 L 11 12.245 C 11 12.107 10.888 11.995 10.75 11.995 L 7.25 11.995 C 7.112 11.995 7 12.107 7 12.245 L 7 17.252 C 7 18.218 6.216 19.002 5.25 19.002 L 1.75 19.002 C 0.784 19.002 0 18.218 0 17.252 L 0 7.942 C 0 7.279 0.293 6.65 0.8 6.222 Z M 9.483 1.677 C 9.204 1.441 8.796 1.441 8.517 1.677 L 1.767 7.369 C 1.598 7.511 1.5 7.721 1.5 7.942 L 1.5 17.252 C 1.5 17.39 1.612 17.502 1.75 17.502 L 5.25 17.502 C 5.388 17.502 5.5 17.39 5.5 17.252 L 5.5 12.245 C 5.5 11.278 6.283 10.495 7.25 10.495 L 10.75 10.495 C 11.716 10.495 12.5 11.278 12.5 12.245 L 12.5 17.252 C 12.5 17.39 12.612 17.502 12.75 17.502 L 16.25 17.502 C 16.388 17.502 16.5 17.39 16.5 17.252 L 16.5 7.942 C 16.5 7.721 16.402 7.511 16.233 7.369 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3 2.002)"/>`,
-  },
-  {
-    id: 'monitoring', name_ko: '모니터링', name_en: 'Monitoring',
-    label: 'Parkie Original', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M15.375 21H8.625M3 13.56V6.84C3 5.496 3 4.824 3.24525 4.3104C3.46125 3.858 3.80437 3.492 4.2285 3.2616C4.71 3 5.34 3 6.6 3H17.4C18.66 3 19.29 3 19.7704 3.2616C20.1945 3.492 20.5387 3.858 20.7547 4.3104C21 4.8228 21 5.4948 21 6.8364V13.5636C21 14.9052 21 15.576 20.7547 16.0884C20.5389 16.5406 20.1943 16.9082 19.7704 17.1384C19.29 17.4 18.6611 17.4 17.4034 17.4H6.59663C5.33888 17.4 4.70888 17.4 4.2285 17.1384C3.80498 16.908 3.46077 16.5404 3.24525 16.0884C3 15.576 3 14.904 3 13.56Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-  {
-    id: 'location', name_ko: '위치·지도', name_en: 'Location',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 2.55 2.55 C 5.951 -0.85 11.464 -0.85 14.864 2.55 C 18.265 5.951 18.265 11.464 14.864 14.864 L 13.677 16.038 C 12.802 16.897 11.667 18.001 10.271 19.35 C 9.399 20.194 8.015 20.194 7.143 19.35 L 3.652 15.954 C 3.213 15.523 2.846 15.16 2.55 14.864 C -0.85 11.464 -0.85 5.951 2.55 2.55 Z M 13.804 3.611 C 10.989 0.796 6.426 0.796 3.611 3.611 C 0.796 6.426 0.796 10.989 3.611 13.804 L 5.098 15.271 C 5.917 16.073 6.946 17.073 8.186 18.272 C 8.477 18.553 8.938 18.553 9.229 18.272 L 12.624 14.971 C 13.093 14.51 13.486 14.121 13.804 13.804 C 16.618 10.989 16.618 6.426 13.804 3.611 Z M 8.707 5.981 C 10.365 5.981 11.709 7.325 11.709 8.983 C 11.709 10.64 10.365 11.984 8.707 11.984 C 7.05 11.984 5.706 10.64 5.706 8.983 C 5.706 7.325 7.05 5.981 8.707 5.981 Z M 8.707 7.481 C 7.878 7.481 7.206 8.153 7.206 8.983 C 7.206 9.812 7.878 10.484 8.707 10.484 C 9.537 10.484 10.209 9.812 10.209 8.983 C 10.209 8.153 9.537 7.481 8.707 7.481 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3.293 2.018)"/>`,
-  },
-  {
-    id: 'camera', name_ko: '카메라', name_en: 'Camera',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 11.925 0 C 12.723 0 13.461 0.422 13.865 1.11 L 14.679 2.497 L 16.75 2.497 C 18.545 2.497 20 3.952 20 5.747 L 20 15.247 C 20 17.042 18.545 18.497 16.75 18.497 L 3.25 18.497 C 1.455 18.497 0 17.042 0 15.247 L 0 5.747 C 0 3.952 1.455 2.497 3.25 2.497 L 5.33 2.497 L 6.205 1.073 C 6.614 0.406 7.34 0 8.122 0 Z M 11.925 1.5 L 8.122 1.5 C 7.899 1.5 7.689 1.599 7.548 1.768 L 7.483 1.858 L 6.389 3.639 C 6.253 3.862 6.011 3.997 5.75 3.997 L 3.25 3.997 C 2.284 3.997 1.5 4.78 1.5 5.747 L 1.5 15.247 C 1.5 16.213 2.284 16.997 3.25 16.997 L 16.75 16.997 C 17.716 16.997 18.5 16.213 18.5 15.247 L 18.5 5.747 C 18.5 4.78 17.716 3.997 16.75 3.997 L 14.25 3.997 C 13.984 3.997 13.738 3.856 13.603 3.627 L 12.571 1.87 C 12.437 1.641 12.191 1.5 11.925 1.5 Z M 10 5.497 C 12.485 5.497 14.5 7.512 14.5 9.997 C 14.5 12.482 12.485 14.497 10 14.497 C 7.515 14.497 5.5 12.482 5.5 9.997 C 5.5 7.512 7.515 5.497 10 5.497 Z M 10 6.997 C 8.343 6.997 7 8.34 7 9.997 C 7 11.654 8.343 12.997 10 12.997 C 11.657 12.997 13 11.654 13 9.997 C 13 8.34 11.657 6.997 10 6.997 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 2 2.503)"/>`,
-  },
-  {
-    id: 'alert', name_ko: '알림', name_en: 'Alert',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 8.975 0 C 13.025 0 16.332 3.195 16.471 7.249 L 16.475 7.5 L 16.475 11.597 L 17.855 14.753 C 17.925 14.911 17.96 15.081 17.96 15.254 C 17.96 15.944 17.401 16.504 16.71 16.504 L 11.975 16.505 C 11.975 18.162 10.632 19.505 8.975 19.505 C 7.378 19.505 6.072 18.256 5.981 16.682 L 5.975 16.503 L 1.25 16.504 C 1.079 16.504 0.909 16.469 0.752 16.4 C 0.119 16.125 -0.171 15.389 0.104 14.756 L 1.475 11.598 L 1.475 7.5 C 1.476 3.345 4.828 0 8.975 0 Z M 10.475 16.503 L 7.475 16.505 C 7.475 17.334 8.147 18.005 8.975 18.005 C 9.755 18.005 10.396 17.41 10.469 16.65 Z M 8.975 1.5 C 5.655 1.5 2.976 4.174 2.975 7.5 L 2.975 11.91 L 1.631 15.004 L 16.328 15.004 L 14.975 11.911 L 14.976 7.513 L 14.972 7.288 C 14.861 4.054 12.217 1.5 8.975 1.5 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3.025 1.996)"/>`,
-  },
-  {
-    id: 'profile', name_ko: '사용자', name_en: 'Profile',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 13.751 11.995 C 14.993 11.995 16 13.002 16 14.244 L 16 14.82 C 16 15.714 15.68 16.579 15.098 17.258 C 13.529 19.092 11.142 19.996 7.996 19.996 C 4.851 19.996 2.465 19.091 0.898 17.257 C 0.319 16.578 0 15.715 0 14.822 L 0 14.244 C 0 13.002 1.007 11.995 2.249 11.995 Z M 13.751 13.495 L 2.249 13.495 C 1.835 13.495 1.5 13.831 1.5 14.244 L 1.5 14.822 C 1.5 15.358 1.691 15.876 2.039 16.283 C 3.292 17.751 5.258 18.496 7.996 18.496 C 10.735 18.496 12.702 17.751 13.959 16.283 C 14.308 15.875 14.5 15.356 14.5 14.82 L 14.5 14.244 C 14.5 13.831 14.164 13.495 13.751 13.495 Z M 7.996 0 C 10.758 0 12.996 2.239 12.996 5 C 12.996 7.761 10.758 10 7.996 10 C 5.235 10 2.996 7.761 2.996 5 C 2.996 2.239 5.235 0 7.996 0 Z M 7.996 1.5 C 6.063 1.5 4.496 3.067 4.496 5 C 4.496 6.933 6.063 8.5 7.996 8.5 C 9.929 8.5 11.496 6.933 11.496 5 C 11.496 3.067 9.929 1.5 7.996 1.5 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 4.004 2.005)"/>`,
-  },
-  {
-    id: 'settings', name_ko: '설정', name_en: 'Settings',
-    label: 'Adopted', category: 'navigation',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 9.373 0 C 10.107 0.008 10.838 0.093 11.554 0.253 C 11.867 0.323 12.101 0.584 12.136 0.902 L 12.306 2.429 C 12.383 3.13 12.975 3.661 13.681 3.662 C 13.871 3.662 14.058 3.622 14.234 3.545 L 15.634 2.93 C 15.925 2.802 16.266 2.871 16.483 3.104 C 17.495 4.185 18.249 5.481 18.688 6.896 C 18.783 7.201 18.674 7.532 18.417 7.722 L 17.175 8.637 C 16.821 8.897 16.612 9.31 16.612 9.749 C 16.612 10.189 16.821 10.602 17.176 10.863 L 18.419 11.778 C 18.676 11.968 18.785 12.299 18.69 12.604 C 18.251 14.018 17.498 15.315 16.486 16.396 C 16.269 16.628 15.929 16.698 15.638 16.571 L 14.232 15.955 C 13.829 15.778 13.367 15.804 12.987 16.024 C 12.607 16.244 12.354 16.631 12.305 17.068 L 12.136 18.594 C 12.101 18.909 11.873 19.168 11.564 19.241 C 10.116 19.586 8.607 19.586 7.158 19.241 C 6.85 19.168 6.621 18.909 6.587 18.594 L 6.418 17.07 C 6.368 16.634 6.115 16.248 5.735 16.029 C 5.355 15.81 4.894 15.784 4.493 15.959 L 3.086 16.576 C 2.795 16.703 2.454 16.633 2.237 16.401 C 1.225 15.318 0.472 14.021 0.034 12.605 C -0.061 12.3 0.048 11.969 0.305 11.779 L 1.549 10.863 C 1.903 10.603 2.112 10.19 2.112 9.75 C 2.112 9.311 1.903 8.898 1.548 8.637 L 0.306 7.723 C 0.048 7.533 -0.061 7.202 0.034 6.897 C 0.472 5.482 1.226 4.186 2.238 3.105 C 2.456 2.872 2.796 2.803 3.088 2.931 L 4.488 3.546 C 4.891 3.723 5.354 3.696 5.736 3.473 C 6.116 3.252 6.37 2.864 6.419 2.428 L 6.589 0.902 C 6.624 0.583 6.858 0.323 7.171 0.253 C 7.888 0.093 8.62 0.009 9.373 0 Z M 9.373 1.5 C 8.919 1.505 8.466 1.544 8.018 1.617 L 7.909 2.594 C 7.807 3.504 7.28 4.311 6.491 4.769 C 5.696 5.233 4.728 5.289 3.885 4.919 L 2.987 4.525 C 2.415 5.219 1.959 6.001 1.639 6.842 L 2.437 7.429 C 3.175 7.972 3.612 8.834 3.612 9.75 C 3.612 10.667 3.175 11.529 2.437 12.072 L 1.638 12.66 C 1.959 13.502 2.414 14.286 2.986 14.982 L 3.891 14.585 C 4.73 14.219 5.692 14.273 6.484 14.729 C 7.276 15.186 7.805 15.992 7.908 16.903 L 8.017 17.886 C 8.907 18.038 9.816 18.038 10.705 17.886 L 10.814 16.903 C 10.915 15.992 11.443 15.184 12.236 14.725 C 13.03 14.267 13.994 14.213 14.833 14.58 L 15.738 14.977 C 16.309 14.282 16.764 13.499 17.085 12.659 L 16.287 12.071 C 15.548 11.528 15.112 10.666 15.112 9.749 C 15.112 8.833 15.548 7.971 16.286 7.428 L 17.083 6.841 C 16.762 6.001 16.307 5.218 15.735 4.524 L 14.839 4.917 C 14.473 5.079 14.078 5.162 13.679 5.162 C 12.209 5.16 10.976 4.054 10.815 2.594 L 10.707 1.617 C 10.261 1.544 9.813 1.505 9.373 1.5 Z M 9.36 6 C 11.431 6 13.11 7.679 13.11 9.75 C 13.11 11.821 11.431 13.5 9.36 13.5 C 7.289 13.5 5.61 11.821 5.61 9.75 C 5.61 7.679 7.289 6 9.36 6 Z M 9.36 7.5 C 8.117 7.5 7.11 8.507 7.11 9.75 C 7.11 10.993 8.117 12 9.36 12 C 10.603 12 11.61 10.993 11.61 9.75 C 11.61 8.507 10.603 7.5 9.36 7.5 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 2.640 2.250)"/>`,
-  },
-
-  // ─── 로봇 주차 운영 ───────────────────────────────────────────────────────
-  {
-    id: 'park-in', name_ko: '입차', name_en: 'Park In',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="M5 13.5 6.5 9h11l1.5 4.5M4 13.5h16v4H4v-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor"/><path d="M16 5l-3 3-3-3M13 2v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-  {
-    id: 'park-out', name_ko: '출차', name_en: 'Park Out',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="M5 13.5 6.5 9h11l1.5 4.5M4 13.5h16v4H4v-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor"/><path d="M10 5l3-3 3 3M13 8V2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-  {
-    id: 'emergency-stop', name_ko: '비상정지', name_en: 'Emergency Stop',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="m8 3-5 5v8l5 5h8l5-5V8l-5-5H8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 7v6M12 17h.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
-  },
-  {
-    id: 'robot-status', name_ko: '로봇 상태', name_en: 'Robot Status',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<rect x="5" y="8" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8V5M9.5 13h.01M14.5 13h.01M8.5 17h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-  {
-    id: 'slot-map', name_ko: '슬롯 맵', name_en: 'Slot Map',
-    label: 'Adopted', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 5.75 10 C 6.993 10 8 11.007 8 12.25 L 8 15.75 C 8 16.993 6.993 18 5.75 18 L 2.25 18 C 1.007 18 0 16.993 0 15.75 L 0 12.25 C 0 11.007 1.007 10 2.25 10 Z M 15.75 10 C 16.993 10 18 11.007 18 12.25 L 18 15.75 C 18 16.993 16.993 18 15.75 18 L 12.25 18 C 11.007 18 10 16.993 10 15.75 L 10 12.25 C 10 11.007 11.007 10 12.25 10 Z M 5.75 11.5 L 2.25 11.5 C 1.836 11.5 1.5 11.836 1.5 12.25 L 1.5 15.75 C 1.5 16.164 1.836 16.5 2.25 16.5 L 5.75 16.5 C 6.164 16.5 6.5 16.164 6.5 15.75 L 6.5 12.25 C 6.5 11.836 6.164 11.5 5.75 11.5 Z M 15.75 11.5 L 12.25 11.5 C 11.836 11.5 11.5 11.836 11.5 12.25 L 11.5 15.75 C 11.5 16.164 11.836 16.5 12.25 16.5 L 15.75 16.5 C 16.164 16.5 16.5 16.164 16.5 15.75 L 16.5 12.25 C 16.5 11.836 16.164 11.5 15.75 11.5 Z M 5.75 0 C 6.993 0 8 1.007 8 2.25 L 8 5.75 C 8 6.993 6.993 8 5.75 8 L 2.25 8 C 1.007 8 0 6.993 0 5.75 L 0 2.25 C 0 1.007 1.007 0 2.25 0 Z M 15.75 0 C 16.993 0 18 1.007 18 2.25 L 18 5.75 C 18 6.993 16.993 8 15.75 8 L 12.25 8 C 11.007 8 10 6.993 10 5.75 L 10 2.25 C 10 1.007 11.007 0 12.25 0 Z M 5.75 1.5 L 2.25 1.5 C 1.836 1.5 1.5 1.836 1.5 2.25 L 1.5 5.75 C 1.5 6.164 1.836 6.5 2.25 6.5 L 5.75 6.5 C 6.164 6.5 6.5 6.164 6.5 5.75 L 6.5 2.25 C 6.5 1.836 6.164 1.5 5.75 1.5 Z M 15.75 1.5 L 12.25 1.5 C 11.836 1.5 11.5 1.836 11.5 2.25 L 11.5 5.75 C 11.5 6.164 11.836 6.5 12.25 6.5 L 15.75 6.5 C 16.164 6.5 16.5 6.164 16.5 5.75 L 16.5 2.25 C 16.5 1.836 16.164 1.5 15.75 1.5 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3 3)"/>`,
-  },
-  {
-    id: 'queue', name_ko: '대기열', name_en: 'Queue',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="M4 15h16M4 18h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 11c0-1.66 1.34-3 3-3s3 1.34 3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 11c0-1.66 1.34-3 3-3s3 1.34 3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 11c0-1.66 1.34-3 3-3s3 1.34 3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
-  },
-  {
-    id: 'charge', name_ko: '충전', name_en: 'Charge',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<rect x="6" y="7" width="9" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 11h2v4h-2M10 10l-1 3h2l-1 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-  {
-    id: 'maintenance', name_ko: '유지보수', name_en: 'Maintenance',
-    label: 'Parkie Original', category: 'robot-parking',
-    viewBox: '0 0 24 24',
-    body: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
-  },
-
-  // ─── 일반 제어 ────────────────────────────────────────────────────────────
-  {
-    id: 'play', name_ko: '재생', name_en: 'Play',
-    label: 'Adopted', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 2.608 1.594 C 2.109 1.322 1.5 1.684 1.5 2.253 L 1.5 15.705 C 1.5 16.274 2.109 16.636 2.608 16.364 L 14.97 9.638 C 15.492 9.354 15.492 8.605 14.97 8.321 Z M 0 2.253 C 0 0.546 1.826 -0.539 3.325 0.277 L 15.687 7.003 C 17.253 7.855 17.253 10.104 15.687 10.956 L 3.325 17.682 C 1.826 18.498 0 17.412 0 15.705 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 5 3.021)"/>`,
-  },
-  {
-    id: 'stop', name_ko: '정지', name_en: 'Stop',
-    label: 'Parkie Original', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor"/>`,
-  },
-  {
-    id: 'pause', name_ko: '일시정지', name_en: 'Pause',
-    label: 'Adopted', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 1.75 0 C 0.784 0 0 0.784 0 1.75 L 0 16.25 C 0 17.216 0.784 18 1.75 18 L 5.25 18 C 6.216 18 7 17.216 7 16.25 L 7 1.75 C 7 0.784 6.216 0 5.25 0 Z M 1.5 1.75 C 1.5 1.612 1.612 1.5 1.75 1.5 L 5.25 1.5 C 5.388 1.5 5.5 1.612 5.5 1.75 L 5.5 16.25 C 5.5 16.388 5.388 16.5 5.25 16.5 L 1.75 16.5 C 1.612 16.5 1.5 16.388 1.5 16.25 Z M 10.75 0 C 9.784 0 9 0.784 9 1.75 L 9 16.25 C 9 17.216 9.784 18 10.75 18 L 14.25 18 C 15.216 18 16 17.216 16 16.25 L 16 1.75 C 16 0.784 15.216 0 14.25 0 Z M 10.5 1.75 C 10.5 1.612 10.612 1.5 10.75 1.5 L 14.25 1.5 C 14.388 1.5 14.5 1.612 14.5 1.75 L 14.5 16.25 C 14.5 16.388 14.388 16.5 14.25 16.5 L 10.75 16.5 C 10.612 16.5 10.5 16.388 10.5 16.25 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3.996 3)"/>`,
-  },
-  {
-    id: 'restart', name_ko: '재시작', name_en: 'Restart',
-    label: 'Adopted', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 13.001 3.93 C 12.749 4.259 12.813 4.73 13.142 4.981 C 14.93 6.345 16 8.458 16 10.75 C 16 14.486 13.174 17.562 9.543 17.957 L 10.22 17.28 C 10.513 16.987 10.513 16.513 10.22 16.22 C 9.953 15.953 9.537 15.929 9.243 16.147 L 9.159 16.22 L 7.159 18.22 C 6.893 18.486 6.869 18.903 7.086 19.196 L 7.159 19.28 L 9.159 21.28 C 9.452 21.573 9.927 21.573 10.22 21.28 C 10.486 21.014 10.51 20.597 10.292 20.304 L 10.22 20.22 L 9.469 19.471 C 13.965 19.105 17.5 15.34 17.5 10.75 C 17.5 7.985 16.208 5.433 14.052 3.789 C 13.722 3.537 13.252 3.601 13.001 3.93 Z M 7.28 0.22 C 6.987 0.513 6.987 0.987 7.28 1.28 L 8.03 2.029 C 3.534 2.396 0 6.16 0 10.75 C 0 13.394 1.181 15.847 3.181 17.499 C 3.5 17.763 3.973 17.718 4.237 17.399 C 4.5 17.079 4.455 16.606 4.136 16.343 C 2.478 14.973 1.5 12.942 1.5 10.75 C 1.5 7.014 4.325 3.939 7.956 3.543 L 7.28 4.22 C 6.987 4.513 6.987 4.987 7.28 5.28 C 7.573 5.573 8.048 5.573 8.341 5.28 L 10.341 3.28 C 10.634 2.987 10.634 2.513 10.341 2.22 L 8.341 0.22 C 8.048 -0.073 7.573 -0.073 7.28 0.22 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3.250 1.250)"/>`,
-  },
-  {
-    id: 'power', name_ko: '전원', name_en: 'Power',
-    label: 'Parkie Original', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M12 2v10M6.8 6.8a8 8 0 1 0 10.4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
-  },
-  {
-    id: 'lock', name_ko: '잠금', name_en: 'Lock',
-    label: 'Adopted', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 8 0 C 10.209 0 12 1.791 12 4 L 12 6 L 13.75 6 C 14.993 6 16 7.007 16 8.25 L 16 17.75 C 16 18.993 14.993 20 13.75 20 L 2.25 20 C 1.007 20 0 18.993 0 17.75 L 0 8.25 C 0 7.007 1.007 6 2.25 6 L 4 6 L 4 4 C 4 1.791 5.791 0 8 0 Z M 13.75 7.5 L 2.25 7.5 C 1.836 7.5 1.5 7.836 1.5 8.25 L 1.5 17.75 C 1.5 18.164 1.836 18.5 2.25 18.5 L 13.75 18.5 C 14.164 18.5 14.5 18.164 14.5 17.75 L 14.5 8.25 C 14.5 7.836 14.164 7.5 13.75 7.5 Z M 8 11.5 C 8.829 11.5 9.5 12.172 9.5 13 C 9.5 13.828 8.829 14.5 8 14.5 C 7.172 14.5 6.5 13.828 6.5 13 C 6.5 12.172 7.172 11.5 8 11.5 Z M 8 1.5 C 6.619 1.5 5.5 2.619 5.5 4 L 5.5 6 L 10.5 6 L 10.5 4 C 10.5 2.619 9.381 1.5 8 1.5 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 4 2)"/>`,
-  },
-  {
-    id: 'control-settings', name_ko: '제어 설정', name_en: 'Control Settings',
-    label: 'Adopted', category: 'control',
-    viewBox: '0 0 24 24',
-    body: `<path d="M 14.751 0 L 14.936 0.005 C 16.584 0.097 17.904 1.417 17.996 3.066 L 18.001 3.25 L 18.001 9.022 C 17.538 8.725 17.034 8.486 16.5 8.313 L 16.5 5 L 1.501 5 L 1.5 14.75 C 1.5 15.668 2.207 16.421 3.106 16.494 L 3.25 16.5 L 8.314 16.5 C 8.486 17.033 8.726 17.537 9.022 18 L 3.25 18 C 1.517 18 0.101 16.644 0.005 14.934 L 0 14.75 L 0 3.25 C 0 1.517 1.356 0.101 3.066 0.005 L 3.25 0 Z M 14.751 1.5 L 3.251 1.5 C 2.284 1.5 1.501 2.284 1.501 3.25 L 1.501 3.5 L 16.501 3.5 L 16.501 3.25 C 16.501 2.284 15.717 1.5 14.751 1.5 Z M 7.25 6.5 C 7.63 6.5 7.943 6.782 7.993 7.148 L 8 7.25 L 8 14.25 C 8 14.63 7.718 14.943 7.352 14.993 L 7.25 15 L 3.75 15 C 3.37 15 3.057 14.718 3.007 14.352 L 3 14.25 L 3 7.25 C 3 6.87 3.282 6.557 3.648 6.507 Z M 6.5 8 L 4.5 8 L 4.5 13.5 L 6.5 13.5 Z M 15 7.25 C 15 6.836 14.664 6.5 14.25 6.5 L 9.754 6.5 L 9.653 6.507 C 9.287 6.557 9.004 6.87 9.004 7.25 C 9.004 7.664 9.34 8 9.754 8 L 14.25 8 L 14.352 7.993 C 14.718 7.943 15 7.63 15 7.25 Z M 11.279 10.975 C 11.594 12.066 10.94 13.199 9.838 13.472 L 9.254 13.616 C 9.209 13.904 9.186 14.199 9.186 14.5 C 9.186 14.814 9.211 15.123 9.26 15.423 L 9.8 15.553 C 10.912 15.821 11.573 16.966 11.25 18.064 L 11.063 18.695 C 11.502 19.081 12.003 19.394 12.547 19.616 L 13.041 19.098 C 13.829 18.268 15.152 18.269 15.94 19.098 L 16.439 19.623 C 16.982 19.403 17.482 19.093 17.921 18.71 L 17.723 18.024 C 17.409 16.934 18.063 15.8 19.165 15.528 L 19.748 15.384 C 19.793 15.096 19.816 14.801 19.816 14.5 C 19.816 14.185 19.791 13.876 19.742 13.576 L 19.203 13.446 C 18.09 13.178 17.429 12.033 17.753 10.936 L 17.939 10.305 C 17.5 9.919 16.999 9.606 16.455 9.383 L 15.962 9.902 C 15.173 10.731 13.851 10.731 13.063 9.901 L 12.564 9.376 C 12.02 9.597 11.52 9.907 11.081 10.289 Z M 14.501 16 C 13.7 16 13.051 15.328 13.051 14.5 C 13.051 13.671 13.7 13 14.501 13 C 15.302 13 15.951 13.671 15.951 14.5 C 15.951 15.328 15.302 16 14.501 16 Z" fill="currentColor" fill-rule="nonzero" transform="matrix(1 0 0 1 3 3)"/>`,
-  },
-];
-
-export const PARKIE_ICON_SECTIONS = [
-  {
-    id: 'navigation',
-    title_ko: '핵심 내비게이션',
-    title_en: 'Navigation & Structure',
-    desc_ko: 'RMS 전역 이동과 관제 진입점입니다. 익숙한 범용 기호는 검증된 원본을 Parkie 토큰으로 채택합니다.',
-    icons: PARKIE_ICONS.filter(i => i.category === 'navigation'),
-  },
-  {
-    id: 'robot-parking',
-    title_ko: '로봇 주차 운영',
-    title_en: 'Robot Parking Operation',
-    desc_ko: '입출차·로봇 관제·슬롯 관리에 특화된 아이콘입니다. Parkie 도메인 고유 아이콘은 Original로 표기합니다.',
-    icons: PARKIE_ICONS.filter(i => i.category === 'robot-parking'),
-  },
-  {
-    id: 'control',
-    title_ko: '일반 제어',
-    title_en: 'General Control',
-    desc_ko: '재생·정지·전원 등 범용 제어 아이콘입니다.',
-    icons: PARKIE_ICONS.filter(i => i.category === 'control'),
-  },
-];
