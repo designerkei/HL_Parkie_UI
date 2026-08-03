@@ -25,12 +25,12 @@ export default {
   Connection: {
     viewBox: '0 0 24 24',
     source: 'Parkie Original',
-    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 17a3 3 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.25" fill="currentColor"/>',
+    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 17a3 3 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19" r="1.25" fill="currentColor"/>',
   },
   VehicleTransport: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M5 13.5 6.5 9h11l1.5 4.5M4 13.5h16v4H4v-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor"/><path d="M8 21h8M12 18.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+    body: '<path d="M5 13.5 6.5 9h11l1.5 4.5M4 13.5h16v4H4v-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor"/><path d="M8 21h8M12 18.5V21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   },
   ParkingBay: {
     viewBox: '0 0 24 24',
@@ -40,22 +40,22 @@ export default {
   Route: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 18h3a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2.4 2.4"/>',
+    body: '<circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 18h3a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.4 2.4"/>',
   },
   Obstacle: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M4 14h16l-2-6H6l-2 6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 2 6M14 8l2 6M7 14v4M17 14v4M5 18h4M15 18h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+    body: '<path d="M4 14h16l-2-6H6l-2 6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8 8 2 6M14 8l2 6M7 14v4M17 14v4M5 18h4M15 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   },
   ManualControl: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M7.5 8h9a4 4 0 0 1 3.8 2.8l1.1 3.7a3 3 0 0 1-5 3l-1.5-1.5H9.1l-1.5 1.5a3 3 0 0 1-5-3l1.1-3.7A4 4 0 0 1 7.5 8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11v4M6 13h4M16.5 11.5h.01M18.5 13.5h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    body: '<path d="M7.5 8h9a4 4 0 0 1 3.8 2.8l1.1 3.7a3 3 0 0 1-5 3l-1.5-1.5H9.1l-1.5 1.5a3 3 0 0 1-5-3l1.1-3.7A4 4 0 0 1 7.5 8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11v4M6 13h4M16.5 11.5h.01M18.5 13.5h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
   },
   EmergencyStop: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="m8 3-5 5v8l5 5h8l5-5V8l-5-5H8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 7v6M12 17h.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+    body: '<path d="m8 3-5 5v8l5 5h8l5-5V8l-5-5H8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v6M12 17h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   },
   BatteryFull: {
     viewBox: '0 0 24 24',
@@ -85,16 +85,16 @@ export default {
   ConnectionGood: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
   ConnectionWeak: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M7 13a8 8 0 0 1 10 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M7 13a8 8 0 0 1 10 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
   ConnectionLost: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
-    body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+    body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
   },
 };

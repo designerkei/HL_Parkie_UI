@@ -909,6 +909,16 @@ test('the icon summary states what the catalogue actually contains', async ({ pa
   const low = Math.min(...widths);
   const high = Math.max(...widths);
 
+  /* The chip derives its range from this same catalogue, so comparing the two
+     cannot catch an icon drifting to a width nobody chose — both sides move
+     together. The scale itself is therefore pinned here, deliberately, as
+     policy: 2px is the weight, and 1.8px is the exception for the three
+     drawings that lose a counter or seal a gap at 2px. Widening this set is a
+     design decision and should cost a test edit. */
+  const SANCTIONED = [1.8, 2];
+  const offScale = [...new Set(widths)].filter((w) => !SANCTIONED.includes(w)).sort();
+  expect(offScale, `stroke widths outside the ${SANCTIONED.join('/')} scale`).toEqual([]);
+
   await page.goto('/#iconography');
   await expect(page.locator('.pk-icon-summary-item').first()).toBeVisible();
 

@@ -4360,11 +4360,23 @@ class Component extends DCLogic {
        actually holds. Counting rows instead reported 30 against the 38 shapes
        the page documents, because the battery and connection rows each carry
        four different icons, and it disagreed with the download buttons on
-       screen. Stroke width is stated as the range that is really drawn: only
-       four of the thirteen stroked icons are at 2px. */
+       screen.
+
+       Stroke width is read out of the catalogue rather than written down. It has
+       been wrong twice — a flat "2 px" while four widths were drawn, then a
+       stale range after the widths were unified — and both times because it was
+       a string somebody had to remember to update. */
+    const strokeWidths = [...new Set(Object.keys(parkieIconData).flatMap((key) => (
+      [...String(parkieIconData[key].body || '').matchAll(/stroke-width="([\d.]+)"/g)]
+        .map((match) => Number(match[1]))
+    )))].sort((a, b) => a - b);
+    const strokeChip = strokeWidths.length
+      ? `${strokeWidths.length === 1 ? strokeWidths[0] : `${strokeWidths[0]}–${strokeWidths[strokeWidths.length - 1]}`} px · ROUND`
+      : '—';
+
     const parkieIconSummary = [
       { label: L('기본 그리드', 'Base grid'), value: '24 × 24' },
-      { label: L('선형 두께', 'Outline stroke'), value: '1.8–2.2 px · ROUND' },
+      { label: L('선형 두께', 'Outline stroke'), value: strokeChip },
       { label: L('문서화 아이콘', 'Documented icons'), value: `${iconExports.length} ICONS` },
       { label: L('상호작용 축', 'Interaction axis'), value: '6 STATES · SEMANTIC SEPARATE' },
     ];
