@@ -103,6 +103,9 @@ authored route를 제공합니다.
 - `components/system-summary.css` — 전체 요약 탭의 2열·1열 반응형 인덱스
 - `ms/`, `ms2/`, `ms3/`, `ms4/`, `ms6/` — RMS의 MS 참조 컴포넌트
 - `tests/` — 기능·치수·상태·반응형·고대비·시각 캡처 검증
+- `HANDOFF.md` — **다른 PC에서 이어받을 때 먼저 읽을 것.** 현재 상태, 열려 있는 작업,
+  그리고 이 저장소에서 이미 밟은 함정들
+- `GOALIE_HANDOFF.md` — Goalie 상세 인수인계
 - `PARKIE_MERGE_PLAN.md` — 병합 방향과 검증 기준
 - `DESIGN_SYSTEM_AUDIT.md` — 감사 결과와 릴리스 기준
 
