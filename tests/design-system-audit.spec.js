@@ -953,3 +953,112 @@ test('the icon summary states what the catalogue actually contains', async ({ pa
      offered at all — the summary describes a catalogue both downloads serve. */
   await expect(page.locator('[data-icon-sheet-download]')).toBeVisible();
 });
+
+/* WCAG 2.5.8 across every Parkie destination.
+ *
+ * The handoff carried this as a defect — ".pk-icon-button is a real product
+ * control at 24x24, far short of Material's 48dp and only just clearing 2.5.8".
+ * Measured, none of that holds: the class appears five times, all of them
+ * specimens on the component stage, and 24x24 is a pass rather than a near
+ * miss. Its four size variants are used nowhere at all.
+ *
+ * What the measurement did find is that every genuinely undersized control on
+ * these pages — robot commands at 22.5x15, modal checkboxes at 16x16 — clears
+ * the spacing exception with 33px or more to its nearest neighbour. So there is
+ * nothing to fix, and that is exactly why this gate exists: nothing was
+ * stopping the next one from failing.
+ *
+ * 2.5.8 is not a flat 24x24 rule and asserting it as one would over-report the
+ * way the Goalie border check did before it was scoped. Both exceptions are
+ * applied: a 24px circle centred on an undersized target must reach no other
+ * target's circle, and targets inline in a run of text are excused.
+ */
+test('every Parkie target is reachable under WCAG 2.5.8', async ({ page }) => {
+  test.setTimeout(300_000);
+
+  /* One implementation, used for the real pages and for the probe below. It was
+     briefly two — and mutating either copy left the other one passing, so the
+     self-check gave false confidence rather than catching anything. */
+  const scan = (pageId, plant) => {
+    let planted = null;
+    if (plant) {
+      planted = document.createElement('div');
+      planted.style.cssText = 'display:flex;gap:1px;position:absolute;left:-9999px';
+      planted.innerHTML = '<button type="button" aria-label="probe a" style="width:16px;height:16px"></button>'
+        + '<button type="button" aria-label="probe b" style="width:16px;height:16px"></button>';
+      document.querySelector('main').appendChild(planted);
+    }
+
+    const selector = 'button, a[href], input:not([type="hidden"]), select, textarea, '
+      + '[role="button"], [role="tab"], [role="radio"], [role="switch"], [role="checkbox"], [role="option"]';
+    const targets = [...document.querySelector('main').querySelectorAll(selector)]
+      .filter((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+        const box = el.getBoundingClientRect();
+        return box.width > 0 && box.height > 0;
+      })
+      .map((el) => ({ el, box: el.getBoundingClientRect() }));
+
+    const centre = (b) => ({ x: b.left + b.width / 2, y: b.top + b.height / 2 });
+    const failed = [];
+
+    for (const { el, box } of targets) {
+      if (Math.min(box.width, box.height) >= 24) continue;
+
+      /* Inline exception: the target sits in a run of text. */
+      const cs = getComputedStyle(el);
+      const own = (el.textContent || '').trim();
+      const around = (el.parentElement?.textContent || '').trim();
+      if (cs.display.startsWith('inline') && around.length > own.length + 4) continue;
+
+      /* Spacing exception: no other target's 24px circle reaches this one. */
+      const here = centre(box);
+      let nearest = Infinity;
+      for (const other of targets) {
+        if (other.el === el) continue;
+        const there = centre(other.box);
+        nearest = Math.min(nearest, Math.hypot(here.x - there.x, here.y - there.y));
+      }
+      if (nearest >= 24) continue;
+
+      failed.push(`${pageId}: .${(el.className || '').toString().trim().split(' ')[0] || el.tagName}`
+        + ` ${Math.round(box.width)}x${Math.round(box.height)}, nearest target ${Math.round(nearest)}px`);
+    }
+
+    if (planted) planted.remove();
+    return { failed, counted: targets.length };
+  };
+
+  const violations = [];
+  let checked = 0;
+
+  for (const id of TARGET_PAGES) {
+    await page.goto(`/#${id}`);
+    await expect(page.locator('h1')).toBeVisible();
+    const result = await page.evaluate(
+      ([body, pageId]) => new Function(`return (${body})`)()(pageId, false),
+      [scan.toString(), id],
+    );
+    violations.push(...result.failed);
+    checked += result.counted;
+  }
+
+  expect(violations, 'undersized targets must be spaced, inline, or resized').toEqual([]);
+
+  /* A check that stopped finding targets would pass this silently, which has
+     already happened once in this repo to a gate that had just succeeded. */
+  expect(checked, 'the target check must be measuring controls, not skipped')
+    .toBeGreaterThan(200);
+
+  /* And the routine has to still be able to fail. These pages are clean, so
+     nothing above exercises the rejection path — planting a crowded pair does,
+     and because it runs the same function, weakening either exception shows up
+     here instead of passing quietly. */
+  const probed = await page.evaluate(
+    ([body]) => new Function(`return (${body})`)()('probe', true).failed.length,
+    [scan.toString()],
+  );
+  expect(probed, 'the spacing exception must still reject a crowded pair')
+    .toBeGreaterThanOrEqual(2);
+});
