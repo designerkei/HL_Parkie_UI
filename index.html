@@ -833,7 +833,7 @@
             </div>
 
             <sc-for list="{{ parkieIconGroups }}" as="group" hint-placeholder-count="4">
-              <section class="pk-icon-group">
+              <section class="pk-icon-group" data-icon-group="{{ group.slug }}">
                 <div class="pk-icon-group-head">
                   <div>
                     <h2>{{ group.title }}</h2>
@@ -3393,7 +3393,7 @@ class Component extends DCLogic {
      tone tables in components/iconography.css — twelve of them, for battery and
      connection alone — are read rather than copied, and the file cannot drift
      away from what the page shows. */
-  collectIconSheetBlocks() {
+  collectIconSheetCategories() {
     const read = (element) => {
       const style = window.getComputedStyle(element);
       return {
@@ -3406,7 +3406,7 @@ class Component extends DCLogic {
       };
     };
 
-    const rowsOf = (selector) => [...document.querySelectorAll(selector)].map((row) => {
+    const rowsIn = (section) => [...section.querySelectorAll('.pk-icon-row')].map((row) => {
       const cells = [...row.querySelectorAll('.pk-icon-state')].map((cell) => {
         const svg = cell.querySelector('svg');
         if (!svg) return null;
@@ -3425,53 +3425,115 @@ class Component extends DCLogic {
       };
     }).filter((row) => row.cells.length);
 
-    const interaction = rowsOf('.pk-icon-row.is-interaction-axis');
-    const semantic = rowsOf('.pk-icon-row.is-semantic-axis');
+    /* One category per section, in page order. data-icon-group is only on the
+       catalogue sections, so the domain markers and the usage rules — which
+       share .pk-icon-group but hold no state rows — drop out without needing to
+       be named here.
 
-    /* L() belongs to render(); this runs from a click handler, so the language
-       comes off state the same way render() derives it. */
-    const ko = this.state.lang === 'ko';
+       The title comes off the rendered <h2>, which is already L(ko, en), so it
+       follows the language switch the way everything else on the page does. The
+       slug does not: it names the exported file, and a filename that changed
+       with the language would be worse than useless. */
+    return [...document.querySelectorAll('[data-icon-group]')].map((section) => {
+      const rows = rowsIn(section);
+      if (!rows.length) return null;
 
-    const blocks = [];
-    if (interaction.length) {
-      blocks.push({
-        id: 'interaction',
-        title: ko ? '상호작용 축 · Interaction axis' : 'Interaction axis',
-        /* One shared header: every row here runs the same six states. */
-        columns: interaction[0].cells.map((cell) => cell.state),
-        rows: interaction,
-      });
-    }
-    if (semantic.length) {
-      blocks.push({
-        id: 'semantic',
-        title: ko ? '의미 축 · Semantic axis' : 'Semantic axis',
-        /* No shared header — battery and connection label their four cells by
-           level, warning and error by emphasis, so the caption goes per cell. */
-        columns: null,
-        rows: semantic,
-      });
-    }
-    return blocks;
+      const slug = section.dataset.iconGroup;
+      const title = (section.querySelector('h2')?.textContent || slug).trim();
+
+      /* A shared header is correct only when every row runs the same states in
+         the same order. Deciding it per category rather than per axis is what
+         makes this better than what it replaces: safety and results is four
+         rows of outline/subtle/solid/muted and had been getting per-cell
+         captions purely for being on the semantic axis, while robot status
+         genuinely needs them — battery labels its cells by charge level and
+         connection by link quality. */
+      const sequence = (row) => row.cells.map((cell) => cell.state).join(' ');
+      const shared = rows.every((row) => sequence(row) === sequence(rows[0]));
+
+      return {
+        slug,
+        title,
+        block: {
+          id: slug,
+          title,
+          columns: shared ? rows[0].cells.map((cell) => cell.state) : null,
+          rows,
+        },
+      };
+    }).filter(Boolean);
   }
 
-  downloadIconSheet() {
+  /* One sheet per category rather than one sheet for everything. The catalogue
+     exports as thirty-eight separate shapes, which means opening thirty-eight
+     files to compare one icon's states side by side — the thing the sheet
+     format exists to make easy. Splitting by category keeps each file small
+     enough to work in while still holding whole state families. */
+  downloadIconSheets() {
     const exporter = window.__parkieSvgExport;
-    if (!exporter || !exporter.buildSheet) return;
+    if (!exporter || !exporter.buildSheet || !exporter.zip) return;
 
-    const blocks = this.collectIconSheetBlocks();
-    if (!blocks.length) return;
+    const categories = this.collectIconSheetCategories();
+    if (!categories.length) return;
 
     const computed = window.getComputedStyle(document.documentElement);
-    const sheet = exporter.buildSheet(blocks, {
-      resolveToken: (token) => computed.getPropertyValue(token).trim(),
-      background: computed.getPropertyValue('--parkie-surface-elevation-00').trim() || '#131315',
-      gridLine: computed.getPropertyValue('--parkie-alpha-white-09').trim(),
-      textPrimary: computed.getPropertyValue('--parkie-text').trim(),
-      textSecondary: computed.getPropertyValue('--parkie-text-secondary').trim(),
+    const resolveToken = (token) => computed.getPropertyValue(token).trim();
+    const options = {
+      resolveToken,
+      background: resolveToken('--parkie-surface-elevation-00') || '#131315',
+      gridLine: resolveToken('--parkie-alpha-white-09'),
+      textPrimary: resolveToken('--parkie-text'),
+      textSecondary: resolveToken('--parkie-text-secondary'),
+    };
+
+    /* Numbered so the archive opens in the order the page documents. */
+    const files = categories.map((category, index) => ({
+      name: `${String(index + 1).padStart(2, '0')}-${category.slug}.svg`,
+      text: exporter.buildSheet([category.block], options),
+    }));
+
+    const stateLines = this.ICON_STATE_TOKENS
+      .map(([, label, token]) => `  ${label}: ${token} = ${resolveToken(token) || '(unset)'}`)
+      .join('\n');
+    const manifest = files
+      .map((file, index) => `  ${file.name}  —  ${categories[index].block.rows.length} icons`)
+      .join('\n');
+
+    files.push({
+      name: 'README.txt',
+      text: [
+        'Parkie icon sheets',
+        '',
+        `${categories.length} files, one per catalogue category.`,
+        'Each file is a single wide artboard: a row per icon, a column per state.',
+        '',
+        manifest,
+        '',
+        'Format',
+        '  SVG, not .ai. Illustrator opens these as editable artwork; save as .ai',
+        '  from there if that is the format you need.',
+        '',
+        'Colour',
+        '  Source bodies paint with currentColor and var(--parkie-*). Both are',
+        '  resolved on export because design tools understand neither.',
+        '',
+        'The dark plate is deliberate',
+        '  States share one geometry and differ only in colour, so the background',
+        '  is part of the file. On a white artboard the hover and disabled greys',
+        '  are very close to invisible. Delete the background rectangle only if',
+        '  you are going to recolour the artwork anyway.',
+        '',
+        'Interaction states',
+        stateLines,
+        '',
+        'Strokes',
+        '  Parkie icons are stroked; MS-adopted icons are filled paths. Enable',
+        '  stroke scaling when resizing, or outline the strokes first.',
+        '',
+      ].join('\n'),
     });
 
-    exporter.save(new Blob([sheet], { type: 'image/svg+xml' }), 'parkie-icon-sheet.svg');
+    exporter.save(exporter.zip(files), 'parkie-icon-sheets.zip');
   }
 
   NAV = [
@@ -4172,7 +4234,15 @@ class Component extends DCLogic {
         svg: iconSvg(trackExport(cell.data), `${enLabel}-${cell.name}`),
       })),
     });
-    const iconGroup = (titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
+    /* The slug is passed rather than derived from the title, because title is
+       L(ko, en): a filename taken from it would be Korean while the page is in
+       Korean and English while it is in English, and the export would change
+       name with the language switch. It also reaches the DOM as
+       data-icon-group, which is what the sheet export groups by — the three
+       sections that share .pk-icon-group but carry no state rows (domain
+       markers, usage rules) simply do not have it. */
+    const iconGroup = (slug, titleKo, titleEn, descriptionKo, descriptionEn, items) => ({
+      slug,
       title: L(titleKo, titleEn),
       description: L(descriptionKo, descriptionEn),
       count: `${items.length} ICONS`,
@@ -4240,6 +4310,7 @@ class Component extends DCLogic {
     ];
     const parkieIconGroups = [
       iconGroup(
+        'core-navigation',
         '핵심 내비게이션',
         'Core navigation',
         'RMS 전역 이동과 관제 진입점입니다. 익숙한 범용 기호는 검증된 원본을 Parkie 토큰으로 채택합니다.',
@@ -4247,6 +4318,7 @@ class Component extends DCLogic {
         coreIcons
       ),
       iconGroup(
+        'robot-operations',
         '로봇·주차 운영',
         'Robot & parking operations',
         '차량 인식·운반·주차·충전·통신·경로·장애물·수동 제어에 필요한 Parkie 도메인 아이콘입니다.',
@@ -4254,6 +4326,7 @@ class Component extends DCLogic {
         robotOperationIcons
       ),
       iconGroup(
+        'media-controls',
         '미디어·일반 제어',
         'Media & utility controls',
         '카메라와 관제 화면에서 반복되는 복구 가능한 범용 액션입니다.',
@@ -4261,6 +4334,7 @@ class Component extends DCLogic {
         controlIcons
       ),
       iconGroup(
+        'robot-status',
         '로봇 상태',
         'Robot status',
         '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 배터리는 부족 단계까지 중립색과 잔량 형태·텍스트로 구분하고, 위험과 충전만 의미색을 사용합니다.',
@@ -4268,6 +4342,7 @@ class Component extends DCLogic {
         robotStatusIcons
       ),
       iconGroup(
+        'safety-results',
         '안전·결과',
         'Safety & results',
         '경고·오류·비상·완료는 색이 곧 의미입니다. 6개 상호작용 상태 대신 강조 단계(Outline·Subtle·Solid)로 표현합니다. 비상정지는 실제 화면에서 Solid만 사용합니다 — Outline은 오류와 혼동되므로 목록에 쓰지 않습니다.',
@@ -4390,13 +4465,14 @@ class Component extends DCLogic {
       ),
       onClick: () => this.downloadIconSvgs(iconExports),
     };
+    const iconSheetCount = parkieIconGroups.length;
     const iconSheetDownload = {
-      label: L('상태 시트 SVG 내려받기', 'Download state sheet'),
+      label: L(`카테고리 시트 ${iconSheetCount}장 내려받기`, `Download ${iconSheetCount} category sheets`),
       title: L(
-        '이 페이지의 표를 그대로 담은 SVG 한 장입니다. 행은 아이콘, 열은 상태이고 포커스 링과 Pressed·Selected 판까지 도형으로 들어갑니다. 다크 배경 위에 그려지므로 열면 화면과 같아 보입니다.',
-        'A single SVG holding this page as a table — icons down, states across, with the focus ring and the pressed and selected plates drawn in. It carries its own dark background, so it opens looking like the screen.'
+        '카테고리마다 SVG 한 장씩, 묶어서 ZIP으로 받습니다. 한 장이 넓은 대지 하나이고 행은 아이콘, 열은 상태여서 Default·Hover·Pressed·Disabled를 나란히 놓고 볼 수 있습니다. 포커스 링과 Pressed·Selected 판까지 도형으로 들어가고, 다크 배경을 함께 담기 때문에 열면 화면과 같아 보입니다.',
+        'One SVG per category, delivered together as a zip. Each file is a single wide artboard with a row per icon and a column per state, so default, hover, pressed and disabled sit side by side. The focus ring and the pressed and selected plates are drawn in, and each file carries its own dark background so it opens looking like the screen.'
       ),
-      onClick: () => this.downloadIconSheet(),
+      onClick: () => this.downloadIconSheets(),
     };
 
     const cameraFeeds = ['01', '02', '03', '04'].map((id, index) => {

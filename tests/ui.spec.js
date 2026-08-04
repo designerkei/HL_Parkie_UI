@@ -349,17 +349,20 @@ test('the icon page downloads every documented icon as tool-ready SVG', async ({
   }
 });
 
-test('the icon page downloads its state matrix as one sheet', async ({ page }) => {
+test('the icon page downloads its state matrix as one sheet per category', async ({ page }) => {
   await openComponent(page, '아이콘');
 
   const button = page.locator('[data-icon-sheet-download]');
   await expect(button).toBeVisible();
 
-  /* The sheet has to hold the whole page, so the page is what it is measured
-     against — not a number written down here that would rot the next time a row
-     is added. */
+  /* The sheets have to hold the whole page between them, so the page is what
+     they are measured against — not numbers written down here that would rot
+     the next time a row or a category is added. */
   const pageRows = await page.locator('.pk-icon-row').count();
   const pageCells = await page.locator('.pk-icon-state').count();
+  const slugs = await page.locator('[data-icon-group]').evaluateAll((sections) => sections
+    .filter((section) => section.querySelector('.pk-icon-row'))
+    .map((section) => section.dataset.iconGroup));
   const columnLabels = await page.locator('.pk-icon-row.is-interaction-axis').first()
     .locator('.pk-icon-spec-state').allInnerTexts();
 
@@ -367,19 +370,28 @@ test('the icon page downloads its state matrix as one sheet', async ({ page }) =
     page.waitForEvent('download'),
     button.click(),
   ]);
-  expect(download.suggestedFilename()).toBe('parkie-icon-sheet.svg');
+  expect(download.suggestedFilename()).toBe('parkie-icon-sheets.zip');
 
   const stream = await download.createReadStream();
   const chunks = [];
   for await (const chunk of stream) chunks.push(chunk);
-  const svg = Buffer.concat(chunks).toString('utf8');
+  const entries = readStoredZip(Buffer.concat(chunks));
 
-  // Nothing a design tool cannot read may reach the file.
-  expect(svg, 'currentColor must be resolved').not.toContain('currentColor');
-  expect(svg, 'custom properties must be resolved').not.toContain('var(');
-  expect(svg, 'paint attributes carry no alpha channel').not.toMatch(/(?:fill|stroke)="rgba?\(/);
+  const svgNames = [...entries.keys()].filter((name) => name.endsWith('.svg'));
+  expect(entries.has('README.txt'), 'the archive must carry its manifest').toBe(true);
+  expect(svgNames, 'one sheet per documented category, numbered in page order')
+    .toEqual(slugs.map((slug, index) => `${String(index + 1).padStart(2, '0')}-${slug}.svg`));
 
-  const sheet = await page.evaluate((text) => {
+  // Nothing a design tool cannot read may reach any of the files.
+  for (const name of svgNames) {
+    const text = entries.get(name);
+    expect(text, `${name}: currentColor must be resolved`).not.toContain('currentColor');
+    expect(text, `${name}: custom properties must be resolved`).not.toContain('var(');
+    expect(text, `${name}: paint attributes carry no alpha channel`)
+      .not.toMatch(/(?:fill|stroke)="rgba?\(/);
+  }
+
+  const parse = (source) => page.evaluate((text) => {
     const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
     if (doc.querySelector('parsererror')) return { error: 'not well-formed XML' };
     const root = doc.documentElement;
@@ -406,35 +418,56 @@ test('the icon page downloads its state matrix as one sheet', async ({ page }) =
       states: ['Default', 'Hover', 'Focus', 'Pressed', 'Selected-On', 'Disabled']
         .map((state) => [state, describe(`Home-${state}`)]),
     };
-  }, svg);
+  }, source);
 
-  expect(sheet.error).toBeUndefined();
-  expect(sheet.blocks, 'both axes must be present').toEqual(['interaction', 'semantic']);
-  expect(sheet.rows, 'every documented row must reach the sheet').toBe(pageRows);
-  expect(sheet.cells, 'every documented cell must reach the sheet').toBe(pageCells);
+  const sheets = [];
+  for (const name of svgNames) sheets.push([name, await parse(entries.get(name))]);
 
-  const states = Object.fromEntries(sheet.states);
-  for (const [name, cell] of sheet.states) {
-    expect(cell, `Home-${name} must exist in the sheet`).not.toBeNull();
+  for (const [name, sheet] of sheets) {
+    expect(sheet.error, `${name} must be well-formed`).toBeUndefined();
+    /* One category per file, and the block is named for the category, so a
+       sheet cannot quietly carry someone else's rows. */
+    expect(sheet.blocks, `${name} must hold exactly its own category`)
+      .toEqual([name.replace(/^\d+-|\.svg$/g, '')]);
   }
 
-  /* The chrome is the reason a sheet beats loose files: the ring and the plates
-     are container styling that cannot travel in a per-icon export at all. */
+  /* The assertion that matters most once the export is split. Every individual
+     sheet can be perfectly well-formed while a whole category is missing from
+     the archive, and nothing above would notice — only the total does. */
+  const totalRows = sheets.reduce((sum, [, sheet]) => sum + sheet.rows, 0);
+  const totalCells = sheets.reduce((sum, [, sheet]) => sum + sheet.cells, 0);
+  expect(totalRows, 'every documented row must reach some sheet').toBe(pageRows);
+  expect(totalCells, 'every documented cell must reach some sheet').toBe(pageCells);
+
+  /* Home lives in the first category; its six states are where the chrome is
+     checked, because the ring and the plates are container styling that cannot
+     travel in a per-icon export at all. That is the reason a sheet exists. */
+  const home = sheets.find(([, sheet]) => sheet.states.every(([, cell]) => cell));
+  expect(home, 'a sheet must carry the Home row to measure').toBeTruthy();
+  const [homeName, homeSheet] = home;
+  const states = Object.fromEntries(homeSheet.states);
+
   expect(states.Focus.ring, 'focus must draw its ring').toBe(true);
   expect(states.Pressed.plate, 'pressed must draw its plate').toBe(true);
   expect(states['Selected-On'].plate, 'selected must draw its plate').toBe(true);
   expect(states.Default.ring, 'default has no ring').toBe(false);
   expect(states.Default.plate, 'default has no plate').toBe(false);
 
-  const paints = sheet.states.map(([, cell]) => cell.paint);
+  const paints = homeSheet.states.map(([, cell]) => cell.paint);
   expect(new Set(paints).size, `six states must paint six ways: ${paints.length}`).toBe(6);
 
   // Labels are what make it readable as a table rather than a pile of glyphs.
   for (const label of columnLabels) {
-    expect(sheet.texts, `column ${label} must be labelled`).toContain(label.trim());
+    expect(homeSheet.texts, `${homeName}: column ${label} must be labelled`).toContain(label.trim());
   }
-  expect(sheet.texts, 'rows must carry their Korean name').toContain('홈');
-  expect(sheet.texts, 'rows must carry their English name').toContain('Home');
+  expect(homeSheet.texts, 'rows must carry their Korean name').toContain('홈');
+  expect(homeSheet.texts, 'rows must carry their English name').toContain('Home');
+
+  /* Every sheet names its category, which is the whole point of splitting. */
+  const titles = await page.locator('[data-icon-group] h2').allInnerTexts();
+  sheets.forEach(([name, sheet], index) => {
+    expect(sheet.texts, `${name} must be titled`).toContain(titles[index].trim());
+  });
 });
 
 test('Media & Emergency keeps four reference-sized CCTV feeds in a separate wide panel', async ({ page }) => {
