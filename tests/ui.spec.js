@@ -689,8 +689,9 @@ test('new icon and media controls retain accessible names, focus disclosure and 
 
    This measures what ships rather than what the note claims, because the note
    is prose and prose drifts. It also pins the floor: SC 2.4.13 wants at least
-   the area of a 2px perimeter of the component, and on the 30px plate 2px is
-   exactly that, so there is nothing left to shave. */
+   the area of a 2px perimeter of the component, and on the 32px plate 2px is
+   exactly that, so there is nothing left to shave. The floor is computed from
+   the plate the build reports, so resizing the plate moves it automatically. */
 test('the icon focus specimen is thin because it is opaque, not despite it', async ({ page }) => {
   await openComponent(page, '아이콘');
 

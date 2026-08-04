@@ -300,11 +300,19 @@
 
 .pk-icon-state.is-muted { color: var(--parkie-icon-disabled); }
 
-/* Chips need room around the glyph, so they opt out of the 24px glyph slot. */
+/* Chips need room around the glyph, so they opt out of the 24px glyph slot.
+
+   32, not 30. The four states that carry a plate or a ring were 30×30, which
+   put 3px around the 24px glyph — and 3 is not a step in --parkie-space-*,
+   which runs 4/8/12/16. At 32 the padding is 4px on every side, on the same
+   grid as everything else, and it is the size Fluent, Carbon and Ant all give
+   a 24px icon in a container. Material goes further and asks 48 for a touch
+   target, but these are documentation specimens rather than controls; the
+   product's own icon button is a separate question and is not this. */
 .pk-icon-spec-row .pk-icon-state.is-subtle,
 .pk-icon-spec-row .pk-icon-state.is-solid {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--parkie-radius-sm);
 }
 
@@ -325,8 +333,8 @@
 }
 
 .pk-icon-state.is-focus {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   color: var(--parkie-icon-focus);
   border-radius: var(--parkie-radius-sm);
   /* The supplied specimen is a single cyan halo, and it stays a single cyan
@@ -339,7 +347,7 @@
      wrong dial: at 40% the ring needed 0.60 just to reach 3.31:1, and thinning
      it while translucent would have lost contrast and area at once. 2px is the
      floor, not a preference — SC 2.4.13 wants at least the area of a 2px
-     perimeter, and on this 30px plate 2px lands exactly on it.
+     perimeter, and on this 32px plate 2px lands exactly on it.
 
      Google's own focus ring is the same shape of answer: --md-focus-ring-width
      is 3px, but the colour token is a solid theme colour, never a wash. */
@@ -347,16 +355,16 @@
 }
 
 .pk-icon-state.is-pressed {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   color: var(--parkie-icon-pressed);
   background: var(--parkie-surface-elevation-24);
   border-radius: var(--parkie-radius-sm);
 }
 
 .pk-icon-state.is-selected {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   color: var(--parkie-icon-selected);
   background: var(--parkie-brand-subtle);
   border-radius: var(--parkie-radius-sm);
