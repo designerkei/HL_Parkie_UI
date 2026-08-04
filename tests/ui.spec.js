@@ -679,3 +679,97 @@ test('new icon and media controls retain accessible names, focus disclosure and 
   ));
   expect(stateLabels).toBe(0);
 });
+
+/* The icon page's focus specimen departs from the delivered Figma, and the
+   reason is a number: the supplied halo is 3px of cyan at 40% alpha, which
+   composites to 2.11:1 over this page's surface and misses the 3:1 that WCAG
+   2.2 asks a focus indicator for. Thinner alone would have made it worse —
+   translucent at 2px loses contrast and area together — so it went opaque and
+   thin at once.
+
+   This measures what ships rather than what the note claims, because the note
+   is prose and prose drifts. It also pins the floor: SC 2.4.13 wants at least
+   the area of a 2px perimeter of the component, and on the 30px plate 2px is
+   exactly that, so there is nothing left to shave. */
+test('the icon focus specimen is thin because it is opaque, not despite it', async ({ page }) => {
+  await openComponent(page, '아이콘');
+
+  const focus = await page.evaluate(() => {
+    const cell = document.querySelector('.pk-icon-state.is-focus');
+    if (!cell) return null;
+    const style = window.getComputedStyle(cell);
+    const parse = (value) => {
+      const n = (String(value).match(/[\d.]+/g) || []).map(Number);
+      return n.length >= 3 ? { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 } : null;
+    };
+    /* Composited against what is actually behind the cell, not against an
+       assumed page colour — this repo has produced a 1.05:1 misreading by
+       taking a translucent layer at face value. */
+    let behind = null;
+    for (let node = cell.parentElement; node; node = node.parentElement) {
+      const c = parse(window.getComputedStyle(node).backgroundColor);
+      if (!c || c.a === 0) continue;
+      behind = behind === null ? c : {
+        r: behind.r + (c.r - behind.r) * (1 - behind.a),
+        g: behind.g + (c.g - behind.g) * (1 - behind.a),
+        b: behind.b + (c.b - behind.b) * (1 - behind.a),
+        a: behind.a + c.a * (1 - behind.a),
+      };
+      if (behind.a >= 0.999) break;
+    }
+    /* box-shadow is "rgb(0, 170, 255) 0px 0px 0px 2px": scraping digits out of
+       the whole string reads the first offset as the alpha channel. The colour
+       function has to come out on its own, which is what svg-export's ringOf
+       does for the same reason. */
+    const shadow = style.boxShadow;
+    const colour = shadow.match(/rgba?\([^)]*\)/i);
+    const ring = colour ? parse(colour[0]) : null;
+    const lengths = (shadow.replace(/rgba?\([^)]*\)/i, '').match(/-?[\d.]+px/g) || []).map(parseFloat);
+    return {
+      shadow,
+      ring,
+      spread: lengths.length ? lengths[lengths.length - 1] : 0,
+      plate: parseFloat(style.width),
+      behind: behind || { r: 255, g: 255, b: 255, a: 1 },
+    };
+  });
+
+  expect(focus, 'a focus specimen must exist to measure').not.toBeNull();
+  expect(focus.ring, `the focus ring must carry a colour: ${focus.shadow}`).not.toBeNull();
+
+  /* Alpha is the dial that was wrong. A wash cannot be made accessible by
+     making it thinner, so the ring has to stay opaque. */
+  expect(focus.ring.a, `the focus ring must be opaque, got alpha ${focus.ring.a}`).toBe(1);
+
+  /* SC 2.4.13 minimum area: at least the area of a 2px perimeter of the
+     component. Below 2px on this plate there is no legal thickness left. */
+  expect(focus.spread, `the focus ring is ${focus.spread}px, below the 2px area floor`)
+    .toBeGreaterThanOrEqual(2);
+  const area = (focus.plate + focus.spread * 2) ** 2 - focus.plate ** 2;
+  const floor = (focus.plate + 4) ** 2 - focus.plate ** 2;
+  expect(area, `ring area ${area}px² must clear the 2px-perimeter floor ${floor}px²`)
+    .toBeGreaterThanOrEqual(floor);
+
+  const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+  const over = (fg, bg) => ({
+    r: fg.r * fg.a + bg.r * (1 - fg.a),
+    g: fg.g * fg.a + bg.g * (1 - fg.a),
+    b: fg.b * fg.a + bg.b * (1 - fg.a),
+  });
+  const composited = over(focus.ring, focus.behind);
+  const [hi, lo] = [lum(composited), lum(focus.behind)].sort((a, b) => b - a);
+  const contrast = Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+
+  expect(contrast, `the focus ring measures ${contrast}:1 against what sits behind it`)
+    .toBeGreaterThanOrEqual(3);
+
+  /* And the page has to say it departs, with the numbers the build produces —
+     otherwise a reader compares this to the Figma and concludes the build is
+     wrong, which is the same trap the Goalie pages document. */
+  const note = page.locator('[data-icon-focus-note]');
+  await expect(note, 'the departure must be stated on the page').toHaveCount(1);
+  await expect(note, 'it must name what the delivered specimen measured').toContainText('2.11');
+  await expect(note, 'it must name what ships').toContainText('7.24');
+  await expect(note, 'it must say why thinner alone was not the answer').toContainText('0.60');
+});
