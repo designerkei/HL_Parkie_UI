@@ -291,9 +291,16 @@
   --parkie-status-warning: var(--parkie-operation-warning);
   --parkie-status-danger: var(--parkie-operation-danger);
 
+  /* Shape carries the degree, colour carries only severity — the rule battery
+     already follows ("neutral through the low range; semantic colour reserved
+     for critical and charging"). Connection used to break it: weak wore
+     warning yellow and reconnecting wore info blue, so signal strength read as
+     an alert and a state that is read wore the brand blue of things that are
+     pressed. Good, weak and reconnecting are one neutral now and separate by
+     arc count and motion; red and the dimmed grey are what is left of colour. */
   --parkie-connection-good: var(--parkie-text);
-  --parkie-connection-weak: var(--parkie-status-warning);
-  --parkie-connection-reconnecting: var(--parkie-status-info);
+  --parkie-connection-weak: var(--parkie-text);
+  --parkie-connection-reconnecting: var(--parkie-text);
   --parkie-connection-lost: var(--parkie-status-danger);
   --parkie-connection-offline: var(--parkie-color-neutral-400);
 
@@ -392,15 +399,21 @@
      reading as the blue Selected state. Measured minimum across canvas,
      surface, elevation-12, Primary, Danger, warning solid and success solid:
      5.08:1, with 16.46:1 between the two rings. */
+  /* The white band is 1px, not 2px: at 2px it read as a heavy white outline
+     around the control rather than as a focus ring. The indicator as a whole
+     is still 4px, so the 2.4.13 perimeter area is untouched — only the split
+     between the two tones moved. Both tones remain, which is what the contrast
+     argument above depends on; thinning the white does not remove it from any
+     background where it is the tone that survives. */
   --parkie-focus-ring-inner: var(--parkie-color-common-white);
   --parkie-focus-ring-outer: var(--parkie-color-brand-950);
   --parkie-ring:
-    0 0 0 2px var(--parkie-focus-ring-inner),
+    0 0 0 1px var(--parkie-focus-ring-inner),
     0 0 0 4px var(--parkie-focus-ring-outer);
   /* For controls clipped by an overflow:hidden parent, where an outer ring
      would be cut off (segmented control). */
   --parkie-ring-inset:
-    inset 0 0 0 2px var(--parkie-focus-ring-inner),
+    inset 0 0 0 1px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
 
   /* Product-neutral aliases consumed by the shared document shell. The shell
@@ -489,14 +502,15 @@
   --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
   --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
 
-  /* Focus ring — see the :root definition for the measurements. */
+  /* Focus ring — see the :root definition for the measurements and for why the
+     white band is 1px. */
   --parkie-focus-ring-inner: var(--parkie-color-common-white);
   --parkie-focus-ring-outer: var(--parkie-color-brand-950);
   --parkie-ring:
-    0 0 0 2px var(--parkie-focus-ring-inner),
+    0 0 0 1px var(--parkie-focus-ring-inner),
     0 0 0 4px var(--parkie-focus-ring-outer);
   --parkie-ring-inset:
-    inset 0 0 0 2px var(--parkie-focus-ring-inner),
+    inset 0 0 0 1px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
 
   /* Product-neutral aliases consumed by the shared document shell. The shell

@@ -460,7 +460,15 @@ test('interaction, operation and severity colors remain independent', async ({ p
   await expect(page.locator('.pk-status--battery-normal').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
   await expect(page.locator('.pk-status--battery-low').first()).toHaveCSS('color', 'rgb(244, 244, 244)');
   await expect(page.locator('.pk-status--charging').first()).toHaveCSS('color', 'rgb(0, 192, 0)');
-  await expect(page.locator('.pk-status--reconnecting').first()).toHaveCSS('color', 'rgb(124, 199, 232)');
+  /* The whole connection axis, not just reconnecting. Degree is neutral —
+     connected, weak and reconnecting share the ink and separate by arc count
+     and motion — and colour is spent only on the two failure states. Weak was
+     warning yellow and reconnecting was info blue until 2026-08-04; pinning
+     all five here is what stops either drifting back one at a time. */
+  await expect(page.locator('.pk-status--weak').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--reconnecting').first()).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(page.locator('.pk-status--lost').first()).toHaveCSS('color', 'rgb(255, 107, 107)');
+  await expect(page.locator('.pk-status--offline').first()).toHaveCSS('color', 'rgb(161, 161, 170)');
 
   const semanticColors = await page.evaluate(() => {
     const probe = document.createElement('span');
@@ -1060,5 +1068,231 @@ test('every Parkie target is reachable under WCAG 2.5.8', async ({ page }) => {
     [scan.toString()],
   );
   expect(probed, 'the spacing exception must still reject a crowded pair')
+    .toBeGreaterThanOrEqual(2);
+});
+
+/*
+ * The same robot-state vocabulary was written out twice and had drifted: the
+ * catalogue row carried four states and the domain grid five, labelled '정상
+ * 26% 이상' against '충분', with reconnecting drawn as the wifi mark in one
+ * place and the sync arrow in the other. Worse, the domain grid's own
+ * description claimed the states "differ by both shape and colour" while lost
+ * and offline shared one glyph and separated by hue alone — a false claim in
+ * the copy and a WCAG 1.4.1 problem in the build.
+ *
+ * Both surfaces derive from one array now. This holds them there, and holds
+ * the column count to the cell count: it was pinned at four, so the fifth state
+ * wrapped onto a second line and rendered under the label column.
+ */
+test('robot state icons come from one vocabulary and separate by shape', async ({ page }) => {
+  await page.goto('/#iconography');
+  await expect(page.locator('[data-icon-group="robot-status"]')).toHaveCount(1);
+
+  const read = await page.evaluate(() => {
+    const bodyOf = (el) => {
+      const svg = el.querySelector('svg');
+      return svg ? svg.innerHTML.replace(/\s+/g, ' ').trim() : '';
+    };
+    const catalogue = [...document.querySelectorAll('[data-icon-group="robot-status"] .pk-icon-row')]
+      .map((row) => ({
+        axis: row.querySelector('.pk-icon-name-en')?.textContent.trim() || '',
+        columns: getComputedStyle(row).gridTemplateColumns.split(' ').length,
+        cells: [...row.querySelectorAll('.pk-icon-spec-row')].map((cell) => ({
+          label: cell.querySelector('.pk-icon-spec-state')?.textContent.trim() || '',
+          body: bodyOf(cell),
+        })),
+      }));
+    const grids = [...document.querySelectorAll('.pk-domain-grid')].map((grid) => ({
+      title: grid.closest('section')?.querySelector('h2')?.textContent.trim() || '?',
+      cells: [...grid.querySelectorAll('.pk-domain-icon')].map((cell) => ({
+        label: cell.querySelector('.pk-domain-icon-label')?.textContent.trim() || '',
+        body: bodyOf(cell),
+        tone: [...cell.classList].find((c) => c.startsWith('is-')) || '',
+      })),
+    }));
+    return {
+      catalogue,
+      grids,
+      domain: grids
+        .filter((g) => g.cells.every((c) => /^is-(connection|battery|charging)/.test(c.tone)))
+        .map((g) => g.cells),
+    };
+  });
+
+  expect(read.catalogue, 'battery and connection both appear in the catalogue').toHaveLength(2);
+  expect(read.domain, 'battery and connection both appear as domain grids').toHaveLength(2);
+
+  /* One implementation, used for the real rows and for the planted pair below,
+     so weakening it fails the self-check instead of passing quietly. */
+  const duplicateShapes = (cells) => {
+    const seen = new Map();
+    const dupes = [];
+    for (const cell of cells) {
+      if (seen.has(cell.body)) dupes.push(`${seen.get(cell.body)} = ${cell.label}`);
+      else seen.set(cell.body, cell.label);
+    }
+    return dupes;
+  };
+
+  for (const [index, row] of read.catalogue.entries()) {
+    expect(row.cells.length, `${row.axis} must render every state`).toBe(5);
+
+    /* One track for the label, one per state. A wrapped row reports fewer. */
+    expect(row.columns, `${row.axis} needs a column per state plus the label`)
+      .toBe(row.cells.length + 1);
+
+    expect(duplicateShapes(row.cells), `${row.axis} states must differ by shape, not only by colour`)
+      .toEqual([]);
+
+    /* Same source, so the other surface must agree state for state. */
+    const twin = read.domain[index];
+    expect(twin.map((c) => c.label), `${row.axis} labels must match on both surfaces`)
+      .toEqual(row.cells.map((c) => c.label));
+    expect(twin.map((c) => c.body), `${row.axis} glyphs must match on both surfaces`)
+      .toEqual(row.cells.map((c) => c.body));
+  }
+
+  /* Connection was the only group with the defect, but the rule is not specific
+     to it: any two states in one group that share a glyph are separated by
+     colour alone. Every group is swept, so the next one is caught on arrival
+     rather than after someone notices the two icons look the same. */
+  expect(read.grids.length, 'the domain groups must be present to sweep').toBeGreaterThanOrEqual(5);
+  for (const grid of read.grids) {
+    expect(duplicateShapes(grid.cells), `${grid.title} states must differ by shape, not only by colour`)
+      .toEqual([]);
+  }
+
+  /* Every surface is clean now, so nothing above exercises the rejection path
+     — the failure this gate exists for cannot be observed from the real pages.
+     A planted pair runs the same routine and does exercise it. */
+  const planted = duplicateShapes([
+    { label: 'probe lost', body: '<path d="M4 4 20 20"/>' },
+    { label: 'probe offline', body: '<path d="M4 4 20 20"/>' },
+  ]);
+  expect(planted, 'two states sharing one glyph must still be rejected')
+    .toEqual(['probe lost = probe offline']);
+});
+
+/*
+ * Connection used to spend colour on degree: weak wore warning yellow and
+ * reconnecting wore info blue, which read as an alert and as an interactive
+ * control respectively. Battery had always done the opposite — neutral through
+ * the low range, colour only for critical and charging — so connection now
+ * follows it, and arc count and motion carry the degree instead.
+ *
+ * The bypass is the part worth gating. robot-status.css read --parkie-status-
+ * info and --parkie-status-warning directly rather than the connection tokens,
+ * so moving the tokens would have left the product badge blue and yellow while
+ * the documentation went neutral. --parkie-connection-offline meanwhile existed
+ * with no consumer at all.
+ */
+test('connection states spend colour only on severity, on every surface', async ({ page }) => {
+  const resolve = (tokens) => (list) => {
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(probe);
+    const out = {};
+    for (const token of list) {
+      probe.style.color = '';
+      probe.style.color = `var(${token})`;
+      out[token] = getComputedStyle(probe).color;
+    }
+    probe.remove();
+    return out;
+  };
+
+  await page.goto('/#iconography');
+  const doc = await page.evaluate(([body]) => {
+    const read = new Function(`return (${body})`)()();
+    const tokens = read([
+      '--parkie-connection-good', '--parkie-connection-weak',
+      '--parkie-connection-reconnecting', '--parkie-connection-lost',
+      '--parkie-connection-offline', '--parkie-status-warning', '--parkie-status-info',
+    ]);
+    const painted = {};
+    for (const state of ['good', 'weak', 'reconnecting', 'lost', 'offline']) {
+      const cell = document.querySelector(`.pk-domain-icon.is-connection-${state}`);
+      painted[state] = cell ? getComputedStyle(cell).color : null;
+    }
+    return { tokens, painted };
+  }, [resolve.toString().replace('(tokens) =>', '() =>')]);
+
+  /* Every state is drawn from its own token — the surface used to reach for the
+     generic is-warning / is-info / is-disabled tones instead. */
+  for (const state of ['good', 'weak', 'reconnecting', 'lost', 'offline']) {
+    expect(doc.painted[state], `connection ${state} must be rendered`).not.toBeNull();
+    expect(doc.painted[state], `connection ${state} must read its own token`)
+      .toBe(doc.tokens[`--parkie-connection-${state}`]);
+  }
+
+  /* The rule itself: degree is neutral, severity is not. */
+  expect(doc.tokens['--parkie-connection-weak'], 'weak is a degree, not a warning')
+    .not.toBe(doc.tokens['--parkie-status-warning']);
+  expect(doc.tokens['--parkie-connection-reconnecting'], 'reconnecting must not wear the interaction blue')
+    .not.toBe(doc.tokens['--parkie-status-info']);
+  expect(doc.tokens['--parkie-connection-weak'], 'good and weak separate by arc count, so they share a colour')
+    .toBe(doc.tokens['--parkie-connection-good']);
+  expect(doc.tokens['--parkie-connection-lost'], 'lost must stay distinct from the neutral degrees')
+    .not.toBe(doc.tokens['--parkie-connection-good']);
+  expect(doc.tokens['--parkie-connection-offline'], 'offline must stay distinct from the neutral degrees')
+    .not.toBe(doc.tokens['--parkie-connection-good']);
+
+  /* And the product badge has to follow the same tokens, not the status ramp. */
+  await page.goto('/#statuslabel');
+  const badge = await page.evaluate(([body]) => {
+    const read = new Function(`return (${body})`)()();
+    const tokens = read([
+      '--parkie-connection-weak', '--parkie-connection-reconnecting',
+      '--parkie-connection-offline',
+    ]);
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(probe);
+    const painted = {};
+    for (const [state, cls] of [['weak', 'pk-status--weak'], ['reconnecting', 'pk-status--reconnecting'], ['offline', 'pk-status--offline']]) {
+      probe.className = `pk-status-indicator ${cls}`;
+      painted[state] = getComputedStyle(probe).getPropertyValue('--status-color').trim();
+    }
+    probe.remove();
+    return { tokens, painted };
+  }, [resolve.toString().replace('(tokens) =>', '() =>')]);
+
+  for (const state of ['weak', 'reconnecting', 'offline']) {
+    expect(badge.painted[state], `the ${state} badge must route through the connection token`)
+      .not.toBe('');
+  }
+});
+
+/*
+ * The white band went from 2px to 1px because at 2px it read as a heavy outline
+ * rather than a focus ring. What must not follow it down is the indicator as a
+ * whole: WCAG 2.4.13 wants at least a 2px perimeter, and the two-tone structure
+ * is what keeps the ring visible everywhere — white is 2.56:1 on the Primary
+ * fill and the dark tone is 1.16:1 on the canvas, so each background is covered
+ * by whichever tone the other one loses.
+ *
+ * The spread is read from the colour function outward, not by scraping numbers
+ * from the string: getComputedStyle returns the offsets first, so a bare
+ * [\d.]+ sweep reads offset zero where the spread is.
+ */
+test('the Parkie focus ring keeps both tones and a 2px indicator', async ({ page }) => {
+  await page.goto('/#button');
+
+  const shadow = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(probe);
+    probe.style.boxShadow = 'var(--parkie-ring)';
+    const value = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    return value;
+  });
+
+  const layers = [...shadow.matchAll(/(rgba?\([^)]*\))\s+([-\d.]+)px\s+([-\d.]+)px\s+([-\d.]+)px\s+([-\d.]+)px/g)]
+    .map((m) => ({ colour: m[1], spread: Number(m[5]) }));
+
+  expect(layers.length, 'the ring must keep both tones — one alone vanishes on some surface').toBe(2);
+  expect(new Set(layers.map((l) => l.colour)).size, 'the two tones must actually differ').toBe(2);
+  expect(Math.max(...layers.map((l) => l.spread)), 'WCAG 2.4.13 wants a 2px indicator at minimum')
     .toBeGreaterThanOrEqual(2);
 });

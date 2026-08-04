@@ -73,9 +73,12 @@ test('robot card summary is exactly 266 by 64 and retains expandable controls', 
   const expanded = page.locator('.pk-robot-control-card.is-expanded');
   await expect(expanded.locator('.pk-robot-control-card__details')).toBeVisible();
   await expect(expanded.locator('.pk-robot-command__action')).toHaveCount(2);
+  /* Weak signal is a degree, not a warning: it was warning yellow and is now
+     the neutral ink, with the arc count carrying the strength. Battery below
+     has always worked this way, which is where the rule came from. */
   await expect(expanded.locator('.pk-robot-control-card__signal')).toHaveCSS(
     'color',
-    'rgb(245, 222, 46)'
+    'rgba(255, 255, 255, 0.95)'
   );
   await expect(expanded.locator('.pk-robot-control-card__battery')).toHaveCSS(
     'color',
@@ -200,7 +203,11 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   await expect(rows).toHaveCount(30);
   await expect(page.locator('.pk-icon-row.is-interaction-axis')).toHaveCount(24);
   await expect(page.locator('.pk-icon-row.is-semantic-axis')).toHaveCount(6);
-  await expect(page.locator('.pk-icon-state')).toHaveCount((24 * 6) + (6 * 4));
+  /* Interaction rows carry six states each. Semantic rows are not uniform:
+     battery and connection document five states, the four safety rows four
+     emphasis levels. It used to read (6 * 4), which is why adding the fifth
+     connection state failed here. */
+  await expect(page.locator('.pk-icon-state')).toHaveCount((24 * 6) + (2 * 5) + (4 * 4));
   await expect(page.locator('.pk-domain-icon')).toHaveCount(22);
 
   await expect(page.locator('.pk-icon-source.is-original')).toHaveCount(5);
@@ -247,26 +254,38 @@ test('Parkie iconography exposes sourced icons and all interaction states', asyn
   const batteryRow = rows.filter({ hasText: 'Battery' });
   await expect(batteryRow).toHaveCount(1);
   await expect(batteryRow).toHaveClass(/is-semantic-axis/);
+  /* Both axes carry five states and the same labels the domain grid uses —
+     they are generated from one array now, so a divergence here means the two
+     surfaces have been written out separately again. */
   await expect(batteryRow.locator('.pk-icon-spec-state')).toHaveText([
-    '정상 26% 이상',
-    '부족 25–11%',
-    '위험 10% 이하',
-    '충전 중',
+    '충분 · 26% 이상',
+    '중간 · 25–11%',
+    '위험 · 10% 이하',
+    '충전 중 · 낮음',
+    '충전 중 · 높음',
   ]);
   await expect(batteryRow.locator('.pk-icon-state').nth(0)).toHaveCSS('color', 'rgb(244, 244, 244)');
   await expect(batteryRow.locator('.pk-icon-state').nth(1)).toHaveCSS('color', 'rgb(244, 244, 244)');
   await expect(batteryRow.locator('.pk-icon-state').nth(2)).toHaveCSS('background-color', 'rgb(238, 0, 0)');
   await expect(batteryRow.locator('.pk-icon-state').nth(3)).toHaveCSS('color', 'rgb(0, 192, 0)');
+  await expect(batteryRow.locator('.pk-icon-state').nth(4)).toHaveCSS('color', 'rgb(0, 192, 0)');
 
   const connectionRow = rows.filter({ hasText: 'Connection' });
   await expect(connectionRow).toHaveCount(1);
   await expect(connectionRow).toHaveClass(/is-semantic-axis/);
   await expect(connectionRow.locator('.pk-icon-spec-state')).toHaveText([
-    '양호',
-    '약함',
-    '끊김',
+    '연결 양호',
+    '신호 약함',
     '재연결 중',
+    '연결 끊김',
+    '오프라인',
   ]);
+  /* Degree is neutral, severity is not — and offline is its own glyph now, not
+     the lost mark in a different colour. */
+  await expect(connectionRow.locator('.pk-icon-state').nth(0)).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(connectionRow.locator('.pk-icon-state').nth(1)).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(connectionRow.locator('.pk-icon-state').nth(2)).toHaveCSS('color', 'rgba(255, 255, 255, 0.95)');
+  await expect(connectionRow.locator('.pk-icon-state').nth(4)).toHaveCSS('color', 'rgb(161, 161, 170)');
 
   const batteryStates = page.locator('.pk-domain-grid').first().locator('.pk-domain-icon');
   await expect(batteryStates).toHaveCount(5);

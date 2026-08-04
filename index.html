@@ -966,6 +966,7 @@
               <section class="pk-control-section">
                 <h2>색상값 · Colour values</h2>
                 <p>값은 실행 시점에 CSS 토큰에서 직접 읽습니다. 마크업에 색을 따로 적어두지 않으므로 토큰을 바꾸면 이 표가 함께 바뀝니다. 대비는 실제 배경에 합성한 뒤 계산한 값이며, 값을 누르면 복사됩니다.</p>
+                <p><strong>Primary의 글씨가 흰색이 아닌 이유</strong> — 밝은 채움 위에서는 흰 글씨가 오히려 읽히지 않습니다. 지금의 어두운 글씨(<code>--parkie-action-primary-fg</code>)는 <code>#00AAFF</code> 위에서 6.42:1이지만, 같은 자리에 흰색을 쓰면 2.56:1로 AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 흰 글씨를 쓰려면 글씨가 아니라 채움을 어둡게 내려야 하며, 그때는 hover·pressed 램프와 Subtle·Outline 계열까지 함께 재조율해야 합니다.</p>
                 <sc-for list="{{ buttonTokenGroups }}" as="group" hint-placeholder-count="3">
                   <div class="pk-token-block">
                     <h3>{{ group.variant }}</h3>
@@ -4228,7 +4229,7 @@ class Component extends DCLogic {
     const statusRow = (koLabel, enLabel, source, tone, cells) => ({
       ko: koLabel,
       en: enLabel,
-      rowClassName: `pk-icon-row is-semantic-axis tone-${tone}`,
+      rowClassName: `pk-icon-row is-semantic-axis is-cells-${cells.length} tone-${tone}`,
       source: source === 'MS Adopted' ? 'Adopted' : source,
       sourceClassName: sourceClass(source),
       states: cells.map((cell) => ({
@@ -4297,21 +4298,51 @@ class Component extends DCLogic {
       statusRow('완료', 'Complete', 'MS Adopted', 'success', emphasisCells(msData('CheckmarkCircleSize24ThemeRegular'))),
     ];
     /* Battery and connection are read, not pressed. Battery level stays
-       neutral until critical; fill and text carry low-level information. */
-    const robotStatusIcons = [
-      statusRow('배터리', 'Battery', 'Parkie Original', 'neutral', [
-        { name: '정상 26% 이상', emphasis: 'is-outline', data: parkieData('BatteryFull'), tone: 'battery-full' },
-        { name: '부족 25–11%', emphasis: 'is-outline', data: parkieData('BatteryMedium'), tone: 'battery-low' },
-        { name: '위험 10% 이하', emphasis: 'is-solid', data: parkieData('BatteryCritical'), tone: 'battery-critical' },
-        { name: '충전 중', emphasis: 'is-outline', data: parkieData('BatteryChargingHigh'), tone: 'charging' },
-      ]),
-      statusRow('통신', 'Connection', 'Parkie Original', 'neutral', [
-        { name: '양호', emphasis: 'is-outline', data: parkieData('ConnectionGood'), tone: 'link-good' },
-        { name: '약함', emphasis: 'is-outline', data: parkieData('ConnectionWeak'), tone: 'link-weak' },
-        { name: '끊김', emphasis: 'is-solid', data: parkieData('ConnectionLost'), tone: 'link-lost' },
-        { name: '재연결 중', emphasis: 'is-outline', data: parkieData('Connection'), tone: 'link-reconnect' },
-      ]),
+       neutral until critical; fill and text carry low-level information.
+
+       One vocabulary, two surfaces. The catalogue row and the domain group used
+       to be written out separately and had drifted: four states against five,
+       '정상 26% 이상' against '충분', and reconnecting drawn as the wifi mark in
+       one place and the sync arrow in the other. Both derive from this now, so a
+       state cannot exist on one surface and be missing from the other. The
+       product badge in robot-status.css is CSS classes and cannot read this, so
+       a gate holds it to the same five ids instead.
+
+       Connection follows battery's rule now: arc count and motion carry the
+       degree, so good, weak and reconnecting are one neutral, and colour is
+       spent only on lost and offline. */
+    const robotStateVocabulary = [
+      {
+        key: 'battery', ko: '배터리', en: 'Battery', source: 'Parkie Original', tone: 'neutral',
+        states: [
+          { id: 'full', ko: '충분 · 26% 이상', en: 'Full · 26%+', data: parkieData('BatteryFull'), tone: 'battery-full', emphasis: 'is-outline', domainTone: 'is-battery-full' },
+          { id: 'medium', ko: '중간 · 25–11%', en: 'Medium · 25–11%', data: parkieData('BatteryMedium'), tone: 'battery-low', emphasis: 'is-outline', domainTone: 'is-battery-full' },
+          { id: 'critical', ko: '위험 · 10% 이하', en: 'Critical · 10% or less', data: parkieData('BatteryCritical'), tone: 'battery-critical', emphasis: 'is-solid', domainTone: 'is-battery-critical' },
+          { id: 'chargingLow', ko: '충전 중 · 낮음', en: 'Charging · low', data: parkieData('BatteryChargingLow'), tone: 'charging', emphasis: 'is-outline', domainTone: 'is-charging' },
+          { id: 'chargingHigh', ko: '충전 중 · 높음', en: 'Charging · high', data: parkieData('BatteryChargingHigh'), tone: 'charging', emphasis: 'is-outline', domainTone: 'is-charging' },
+        ],
+      },
+      {
+        key: 'connection', ko: '통신', en: 'Connection', source: 'Parkie Original', tone: 'neutral',
+        states: [
+          { id: 'good', ko: '연결 양호', en: 'Good', data: parkieData('ConnectionGood'), tone: 'link-good', emphasis: 'is-outline', domainTone: 'is-connection-good' },
+          { id: 'weak', ko: '신호 약함', en: 'Weak', data: parkieData('ConnectionWeak'), tone: 'link-weak', emphasis: 'is-outline', domainTone: 'is-connection-weak' },
+          { id: 'reconnecting', ko: '재연결 중', en: 'Reconnecting', data: msData('ArrowSyncSize24ThemeRegular'), tone: 'link-reconnect', emphasis: 'is-outline', domainTone: 'is-connection-reconnecting' },
+          { id: 'lost', ko: '연결 끊김', en: 'Lost', data: parkieData('ConnectionLost'), tone: 'link-lost', emphasis: 'is-solid', domainTone: 'is-connection-lost' },
+          { id: 'offline', ko: '오프라인', en: 'Offline', data: parkieData('ConnectionOffline'), tone: 'link-offline', emphasis: 'is-outline', domainTone: 'is-connection-offline' },
+        ],
+      },
     ];
+    const robotStateAxis = (key) => robotStateVocabulary.find((axis) => axis.key === key);
+    const robotStatusIcons = robotStateVocabulary.map((axis) => statusRow(
+      axis.ko, axis.en, axis.source, axis.tone,
+      axis.states.map((state) => ({
+        name: L(state.ko, state.en),
+        emphasis: state.emphasis,
+        data: state.data,
+        tone: state.tone,
+      }))
+    ));
     const parkieIconGroups = [
       iconGroup(
         'core-navigation',
@@ -4341,8 +4372,8 @@ class Component extends DCLogic {
         'robot-status',
         '로봇 상태',
         'Robot status',
-        '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 배터리는 부족 단계까지 중립색과 잔량 형태·텍스트로 구분하고, 위험과 충전만 의미색을 사용합니다.',
-        'Battery and connection are read, not pressed. Battery stays neutral through the low range; fill and text show level while semantic colour is reserved for critical and charging states.',
+        '배터리와 통신은 누르는 대상이 아니라 읽는 대상입니다. 두 축 모두 형태가 단계를 말하고 색은 심각도에만 씁니다 — 배터리는 부족 단계까지 중립색이고 위험·충전만 의미색이며, 통신은 양호·약함·재연결이 중립색이고 끊김·오프라인만 의미색입니다.',
+        'Battery and connection are read, not pressed. On both axes shape carries the degree and colour is spent only on severity: battery stays neutral through the low range with colour reserved for critical and charging, and connection keeps good, weak and reconnecting neutral with colour reserved for lost and offline.',
         robotStatusIcons
       ),
       iconGroup(
@@ -4365,32 +4396,23 @@ class Component extends DCLogic {
       count: `${items.length} STATES`,
       items,
     });
+    /* Same source as the catalogue row above — see robotStateVocabulary. */
+    const domainItemsFrom = (key) => robotStateAxis(key).states
+      .map((state) => domainItem(state.ko, state.en, state.data, state.domainTone));
     const parkieDomainGroups = [
       domainGroup(
         '배터리 · Battery',
         'Battery',
         '잔량과 충전 여부는 아이콘 내부 채움, 의미 색상, 퍼센트 텍스트를 함께 사용합니다.',
         'Charge level combines internal fill, semantic color and a percentage label in product UI.',
-        [
-          domainItem('충분', 'Full', parkieData('BatteryFull'), 'is-battery-full'),
-          domainItem('중간', 'Medium', parkieData('BatteryMedium'), 'is-battery-full'),
-          domainItem('위험', 'Critical', parkieData('BatteryCritical'), 'is-battery-critical'),
-          domainItem('충전 중 · 낮음', 'Charging low', parkieData('BatteryChargingLow'), 'is-charging'),
-          domainItem('충전 중 · 높음', 'Charging high', parkieData('BatteryChargingHigh'), 'is-charging'),
-        ]
+        domainItemsFrom('battery')
       ),
       domainGroup(
         '통신 · Connection',
         'Connection',
-        '양호·약함·재연결·끊김·오프라인을 형태와 색상 두 축으로 구분합니다.',
-        'Good, weak, reconnecting, lost and offline states differ by both shape and color.',
-        [
-          domainItem('연결 양호', 'Good', parkieData('ConnectionGood'), 'is-connection-good'),
-          domainItem('신호 약함', 'Weak', parkieData('ConnectionWeak'), 'is-warning'),
-          domainItem('재연결 중', 'Reconnecting', msData('ArrowSyncSize24ThemeRegular'), 'is-info'),
-          domainItem('연결 끊김', 'Lost', parkieData('ConnectionLost'), 'is-danger'),
-          domainItem('오프라인', 'Offline', parkieData('ConnectionLost'), 'is-disabled'),
-        ]
+        '다섯 상태가 저마다 다른 도형을 씁니다. 양호·약함·재연결은 중립색이고 호 개수와 회전으로 갈리며, 색은 끊김과 오프라인에만 씁니다. 끊김은 사선이 있고 오프라인은 없습니다.',
+        'Five states, five shapes. Good, weak and reconnecting share one neutral and separate by arc count and motion; colour is spent only on lost and offline. Lost carries the slash, offline does not.',
+        domainItemsFrom('connection')
       ),
       domainGroup(
         '동작 · Motion',

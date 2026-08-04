@@ -22,16 +22,13 @@ export default {
     source: 'Parkie Original',
     body: '<rect x="6" y="7" width="9" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 11h2v4h-2M10 10l-1 3h2l-1 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
   },
-  Connection: {
-    viewBox: '0 0 24 24',
-    source: 'Parkie Original',
-    /* Inner arc and dot match the rest of the connection family. They used to
-       sit 0.5 lower, 0.2 higher and 0.05 wider respectively — three differences
-       all closing the same gap, which left barely a pixel of daylight between
-       the dot and the arc at 24px. The outer arcs stay as drawn: this is the
-       reconnecting mark, not a second copy of ConnectionGood. */
-    body: '<path d="M3 10a13 13 0 0 1 18 0M6.5 13.5a8 8 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
-  },
+  /* `Connection` used to sit here — the reconnecting wifi mark. Its own comment
+     argued it was "not a second copy of ConnectionGood", which was true only
+     while it had a job: it differed from ConnectionGood by half a unit of arc
+     placement and nothing else. Reconnecting is the sync arrow now, because a
+     spinning mark says "in progress" and a static one cannot, so the entry lost
+     its role and became exactly the second copy it denied being. Removed rather
+     than left to be re-adopted by the next person who needs a wifi glyph. */
   VehicleTransport: {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
@@ -101,5 +98,16 @@ export default {
     viewBox: '0 0 24 24',
     source: 'Parkie Custom',
     body: '<path d="M4 4 20 20M3 9.5a14 14 0 0 1 13.2-2.2M6.5 13a8.5 8.5 0 0 1 5.2-2M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.2" r="1.2" fill="currentColor"/>',
+  },
+  /* Offline used to be ConnectionLost in a different colour, which made the
+     catalogue's own claim — that these states separate by shape and colour —
+     false, and left the pair distinguishable only by hue. The slash is what
+     "the link dropped" looks like, so offline does not get one: it is the full
+     arc stack with the dot removed. The dot is the signal, and offline has
+     none; the antenna is still drawn because the hardware still exists. */
+  ConnectionOffline: {
+    viewBox: '0 0 24 24',
+    source: 'Parkie Custom',
+    body: '<path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a8.5 8.5 0 0 1 11 0M10 16.5a3.2 3.2 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   },
 };

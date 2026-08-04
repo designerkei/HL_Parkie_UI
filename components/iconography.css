@@ -131,8 +131,19 @@
   grid-template-columns: minmax(184px, 1.4fr) repeat(6, minmax(94px, 1fr));
 }
 
+/* The column count has to match the number of cells the row actually renders.
+   It was hardcoded to four, so when battery and connection went to five states
+   the fifth wrapped onto a second line and landed under the label column.
+   repeat() cannot take a custom property as its count, so the count arrives as
+   a modifier class instead — and a gate asserts the rendered column count
+   equals the state count, so a sixth state fails the suite rather than
+   silently wrapping the way the fifth did. */
 .pk-icon-row.is-semantic-axis {
   grid-template-columns: minmax(184px, 1.4fr) repeat(4, minmax(142px, 1fr));
+}
+
+.pk-icon-row.is-semantic-axis.is-cells-5 {
+  grid-template-columns: minmax(184px, 1.4fr) repeat(5, minmax(118px, 1fr));
 }
 
 .pk-icon-name {
@@ -279,10 +290,16 @@
 .pk-icon-state.tone-battery-low      { --sem: var(--parkie-battery-low);           --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
 .pk-icon-state.tone-battery-critical { --sem: var(--parkie-icon-battery-critical); --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
 .pk-icon-state.tone-charging         { --sem: var(--parkie-icon-charging);         --sem-subtle: var(--parkie-operation-success-subtle);  --sem-on: var(--parkie-operation-on-solid); }
-.pk-icon-state.tone-link-good        { --sem: var(--parkie-connection-good);       --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
-.pk-icon-state.tone-link-weak        { --sem: var(--parkie-connection-weak);       --sem-subtle: var(--parkie-operation-warning-subtle);  --sem-on: var(--parkie-operation-on-warning); }
-.pk-icon-state.tone-link-lost        { --sem: var(--parkie-status-error);          --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
-.pk-icon-state.tone-link-reconnect   { --sem: var(--parkie-status-info);           --sem-subtle: var(--parkie-operation-info-subtle);     --sem-on: var(--parkie-operation-on-info); }
+/* Connection takes the same treatment: arc count and motion carry the degree,
+   so good, weak and reconnecting share one neutral and only lost and offline
+   spend colour. Lost and reconnecting used to read --parkie-status-error and
+   --parkie-status-info directly, which routed around the connection tokens and
+   would have left this row blue after they moved. */
+.pk-icon-state.tone-link-good        { --sem: var(--parkie-connection-good);         --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-weak        { --sem: var(--parkie-connection-weak);         --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-reconnect   { --sem: var(--parkie-connection-reconnecting); --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-lost        { --sem: var(--parkie-connection-lost);         --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-link-offline     { --sem: var(--parkie-connection-offline);      --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
 
 .pk-icon-state.is-outline { color: var(--sem); }
 
@@ -430,8 +447,29 @@
   color: var(--parkie-icon-battery-full);
 }
 
+/* The connection states used to borrow the generic is-warning / is-info /
+   is-disabled tones, which meant this surface did not follow the connection
+   tokens at all — and --parkie-connection-offline existed with no consumer.
+   Each state reads its own token now, so the two documentation surfaces and
+   the product badge move together. */
 .pk-domain-icon.is-connection-good {
   color: var(--parkie-connection-good);
+}
+
+.pk-domain-icon.is-connection-weak {
+  color: var(--parkie-connection-weak);
+}
+
+.pk-domain-icon.is-connection-reconnecting {
+  color: var(--parkie-connection-reconnecting);
+}
+
+.pk-domain-icon.is-connection-lost {
+  color: var(--parkie-connection-lost);
+}
+
+.pk-domain-icon.is-connection-offline {
+  color: var(--parkie-connection-offline);
 }
 
 .pk-domain-icon-label {

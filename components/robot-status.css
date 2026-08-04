@@ -113,19 +113,31 @@
   --status-on: var(--parkie-operation-on-success);
 }
 
-.pk-status--info,
-.pk-status--reconnecting {
+.pk-status--info {
   --status-color: var(--parkie-status-info);
   --status-subtle: var(--parkie-info-subtle);
   --status-on: var(--parkie-operation-on-info);
 }
 
-.pk-status--warning,
-.pk-status--weak {
+.pk-status--warning {
   --status-color: var(--parkie-status-warning);
   --status-subtle: rgba(245, 222, 46, 0.14);
   --status-on: var(--parkie-operation-on-warning);
 }
+
+/* Weak and reconnecting used to sit on --warning and --info, which made signal
+   strength read as an alert and put the brand blue on a state that is read
+   rather than pressed. They take the connection tokens now, like the rest of
+   the axis: the spinner and the arc count say what is happening, and colour
+   stays with lost and offline. */
+.pk-status--weak,
+.pk-status--reconnecting {
+  --status-color: var(--parkie-connection-weak);
+  --status-subtle: var(--parkie-surface-elevation-12);
+  --status-on: var(--parkie-color-brand-950);
+}
+
+.pk-status--reconnecting { --status-color: var(--parkie-connection-reconnecting); }
 
 .pk-status--battery-low {
   --status-color: var(--parkie-battery-low);
@@ -162,6 +174,7 @@
 }
 
 .pk-status--connected { --status-color: var(--parkie-connection-good); }
+.pk-status--offline { --status-color: var(--parkie-connection-offline); }
 .pk-status--running { --status-color: var(--parkie-motion-running); }
 .pk-status--paused { --status-color: var(--parkie-motion-paused); }
 .pk-status--idle { --status-color: var(--parkie-motion-idle); }
