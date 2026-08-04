@@ -696,28 +696,59 @@ test('the product tabs are the first keyboard stops and show a visible focus rin
 /* The guide is deliberately bilingual — the sidebar carries both languages and
    the eyebrow's second half is always the other language — so the assertion is
    scoped to authored Goalie body copy. */
+/* Every authored Goalie page, not the two cleanest ones.
+ *
+ * This watched only overview and brand, which are the two pages with the least
+ * Korean on them, and passed while five others carried 295 characters between
+ * them. Every one of those was an evidence line — three of them, written
+ * Korean-only by three different authors while the title and body beside them
+ * were bilingual — plus a patrol course list that translated by string surgery
+ * and rendered "1 · Course A코스".
+ *
+ * The eyebrow is excluded on purpose, not overlooked: curSub is `ko ? cur.en :
+ * cur.ko`, so it deliberately shows the other language. It is excluded by
+ * skipping its subtree rather than by replacing its text — a string replace
+ * silently does nothing when whitespace differs, which is how this same check
+ * measured patrol as failing when it was not.
+ */
 test('authored Goalie copy is fully translated in English', async ({ page }) => {
-  const koreanCount = (value) => (value.match(/[가-힣]/g) || []).length;
+  test.setTimeout(300_000);
 
-  for (const pageId of ['overview', 'brand']) {
+  const GOALIE_PAGES = ['overview', 'systemsummary', 'principles', 'colors', 'typography',
+    'spacing', 'iconography', 'button', 'input', 'status', 'navigation',
+    'patrol', 'video', 'templates', 'brand'];
+
+  const offenders = [];
+
+  for (const pageId of GOALIE_PAGES) {
     await page.goto(canonicalUrl('goalie', pageId));
     await expectSystemRoute(page, 'goalie', pageId);
     await page.getByRole('button', { name: 'EN', exact: true }).click();
     await expect(page.locator('[data-guide-root] h1')).not.toHaveText(/[가-힣]/);
 
-    const body = await page.evaluate(() => {
+    const found = await page.evaluate(() => {
       const main = document.querySelector('main');
-      const eyebrow = document.querySelector('.guide-page-header__eyebrow');
-      const eyebrowText = eyebrow ? eyebrow.innerText : '';
-      return { main: main ? main.innerText : '', eyebrow: eyebrowText };
+      if (!main) return [];
+      const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+      const out = [];
+      let node = walker.nextNode();
+      while (node) {
+        const text = node.textContent.trim();
+        if (text && /[가-힣]/.test(text) && !node.parentElement.closest('.guide-page-header__eyebrow')) {
+          out.push(text.slice(0, 60));
+        }
+        node = walker.nextNode();
+      }
+      return out;
     });
 
-    const authored = body.main.replace(body.eyebrow, '');
-    expect(koreanCount(authored), `goalie/${pageId} body must be fully English in EN mode`).toBe(0);
+    if (found.length) offenders.push(`goalie/${pageId}: ${found.join(' | ')}`);
 
     await page.getByRole('button', { name: 'KO', exact: true }).click();
     await expect(page.locator('[data-guide-root] h1')).toHaveText(/[가-힣]/);
   }
+
+  expect(offenders, 'authored copy must be fully English in EN mode').toEqual([]);
 });
 
 /* Page ids collide across products by design, so "this id belongs to that

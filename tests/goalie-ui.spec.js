@@ -33,8 +33,11 @@ test('authored Goalie foundation and component pages render on public routes', a
 test('Goalie Button and Switch expose complete state axes and operable semantics', async ({ page }) => {
   await openAuthoredGoalie(page, 'button');
   await expect(page.locator('.gl-button-matrix')).toHaveCount(2);
-  await expect(page.locator('.gl-button-matrix__row')).toHaveCount(8);
-  await expect(page.locator('.gl-button-matrix__row .gl-button')).toHaveCount(32);
+  /* Five states now, not four — focus joined the sheet once the specimen was
+     taught to draw the ring the build already had. Two matrices, five rows,
+     four variants each. */
+  await expect(page.locator('.gl-button-matrix__row')).toHaveCount(10);
+  await expect(page.locator('.gl-button-matrix__row .gl-button')).toHaveCount(40);
 
   const driveMode = page.locator('.gl-switch:not(:disabled)').first();
   await expect(driveMode).toHaveAttribute('role', 'switch');
@@ -741,4 +744,41 @@ test('a filled button never becomes less visible as it is engaged', async ({ pag
       ).toBeGreaterThanOrEqual(states[i - 1].prominence);
     }
   }
+});
+
+/* A-2. The contract declared focus and the build implemented it in twenty-five
+   places; only the specimen sheet omitted the row, which made the state look
+   like it did not exist. The row alone is not enough — a data-demo-state with
+   no matching rule renders a specimen that shows nothing — so what is asserted
+   is that the demo state paints exactly what real :focus-visible paints. */
+test('the button specimen shows focus, and shows the ring the product draws', async ({ page }) => {
+  await page.goto('/#/goalie/button');
+  await expect(page.locator('[data-guide-root] h1')).toBeVisible();
+
+  const rows = page.locator('.gl-button-matrix__row');
+  const labels = await rows.locator('> :first-child').allInnerTexts();
+  expect(labels.map((t) => t.trim()), 'every declared state needs a row')
+    .toEqual(expect.arrayContaining(['Focus']));
+
+  const demo = page.locator('.gl-button[data-demo-state="focus"]');
+  await expect(demo.first(), 'the focus row must hold real buttons').toBeVisible();
+
+  const rings = await page.evaluate(() => {
+    const specimen = document.querySelector('.gl-button[data-demo-state="focus"]');
+    const live = document.querySelector('.gl-button[data-demo-state="enabled"]');
+    if (!specimen || !live) return null;
+    const shown = getComputedStyle(specimen).boxShadow;
+    live.focus();
+    const real = getComputedStyle(live).boxShadow;
+    live.blur();
+    const resting = getComputedStyle(live).boxShadow;
+    return { shown, real, resting };
+  });
+  expect(rings, 'both a focus specimen and a resting button must exist').not.toBeNull();
+
+  expect(rings.shown, 'the specimen must draw a ring at all').not.toBe('none');
+  expect(rings.shown, 'the specimen must draw the ring the product draws').toBe(rings.real);
+  /* And the ring must be the focus state rather than something every button
+     has, or the assertion above would pass on an unstyled row. */
+  expect(rings.real, 'focus must differ from resting').not.toBe(rings.resting);
 });

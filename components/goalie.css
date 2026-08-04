@@ -136,7 +136,11 @@
   border-color: var(--gl-button-edge-pressed);
 }
 
+/* The demo state has to paint what real focus paints, or the specimen shows a
+   state the product does not have. Every other state on that sheet already has
+   its data-demo-state twin; focus did not, which is why the row was missing. */
 [data-system="goalie"] .gl-button:focus-visible,
+[data-system="goalie"] .gl-button[data-demo-state="focus"],
 [data-system="goalie"] .gl-switch:focus-visible {
   box-shadow: var(--goalie-focus-ring);
   outline: 0;
