@@ -405,6 +405,12 @@
     window.setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
   }
 
+  /* The second group is shared with export/dom-to-svg.js, which serialises whole
+     rendered components rather than single glyphs. It needs the same colour
+     splitting, the same var() resolution and the same paint-attribute spelling —
+     duplicating any of them would let the two exporters drift, and this repo has
+     already learned once that a check and the thing it checks must run the same
+     implementation, not two copies of it. */
   window.__parkieSvgExport = {
     zip: zip,
     buildSvg: buildSvg,
@@ -413,5 +419,14 @@
     splitColor: splitColor,
     save: save,
     crc32: crc32,
+
+    resolveVars: resolveVars,
+    repaint: repaint,
+    paintAttrs: paintAttrs,
+    isTransparent: isTransparent,
+    ringOf: ringOf,
+    slug: slug,
+    esc: esc,
+    round: round,
   };
 }());

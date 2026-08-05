@@ -103,6 +103,7 @@
 </style>
 <script src="./support.js"></script>
 <script src="./icons/svg-export.js"></script>
+<script src="./export/dom-to-svg.js"></script>
 <script type="module">
   import icons from './ms/icon-data.js';
   import parkieIcons from './icons/parkie-icon-data.js';
@@ -1049,10 +1050,10 @@
             <section class="pk-control-section">
               <h2>스위치 · Switch</h2>
               <p>즉시 적용되는 이진 설정입니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label>
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label>
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="비활성 설정" disabled></button><span>Disabled</span></label>
+              <div class="pk-control-grid">
+                <div class="pk-control-state"><span class="pk-control-state-label">On</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Off</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled="disabled"></button><span>Disabled</span></label></div>
               </div>
             </section>
 
