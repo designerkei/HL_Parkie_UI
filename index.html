@@ -962,7 +962,7 @@
                 <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover" data-spec="hover">확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed" data-spec="pressed">확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus" data-spec="focus-visible">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" data-spec="disabled" disabled="disabled">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" data-spec="disabled" disabled>확인</button></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" data-spec="loading" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
               </div>
             </section>
@@ -974,7 +974,7 @@
                 <button class="pk-icon-button is-hover" type="button" data-spec="expand" data-spec-label="Hover" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
                 <button class="pk-icon-button is-pressed" type="button" data-spec="close" data-spec-label="Pressed" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
                 <button class="pk-icon-button is-focus" type="button" data-spec="search" data-spec-label="Focus visible" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
-                <button class="pk-icon-button" type="button" data-spec="disabled" data-spec-label="Disabled" aria-label="사용할 수 없음" disabled="disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                <button class="pk-icon-button" type="button" data-spec="disabled" data-spec-label="Disabled" aria-label="사용할 수 없음" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
               </div>
             </section>
             <sc-if value="{{ hasButtonTokens }}" hint-placeholder-val="{{ true }}">
@@ -1039,7 +1039,7 @@
               <h2>상태 · States</h2>
               <div class="pk-control-grid" data-spec-block="segmented-states">
                 <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented" data-spec="selected"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled" data-spec="disabled"><button disabled="disabled" role="radio" aria-checked="true">열기</button><button disabled="disabled" role="radio" aria-checked="false">닫기</button></div></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled" data-spec="disabled"><button disabled role="radio" aria-checked="true">열기</button><button disabled role="radio" aria-checked="false">닫기</button></div></div>
               </div>
             </section>
           </div>
@@ -1067,7 +1067,7 @@
               <div class="pk-control-grid" data-spec-block="selection-switch">
                 <div class="pk-control-state"><span class="pk-control-state-label">On</span><label class="pk-switch-field" data-spec="on"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Off</span><label class="pk-switch-field" data-spec="off"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field" data-spec="disabled"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled="disabled"></button><span>Disabled</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field" data-spec="disabled"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled></button><span>Disabled</span></label></div>
               </div>
             </section>
 
@@ -1077,8 +1077,8 @@
               <div class="pk-control-grid" data-spec-block="selection-checkbox">
                 <div class="pk-control-state"><span class="pk-control-state-label">Unchecked</span><label class="pk-choice-field" data-spec="unchecked"><input type="checkbox" onChange="{{ noop }}"><span>오류 로봇만 표시</span></label></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Checked</span><label class="pk-choice-field" data-spec="checked"><input type="checkbox" checked="{{ specChecked }}" onChange="{{ toggleSpecChecked }}"><span>운행중 포함</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="checkbox" disabled="disabled"><span>오프라인 (비활성)</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field" data-spec="disabled-checked"><input type="checkbox" checked="checked" disabled="disabled" onChange="{{ noop }}"><span>고정 항목</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="checkbox" disabled><span>오프라인 (비활성)</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field" data-spec="disabled-checked"><input type="checkbox" checked disabled onChange="{{ noop }}"><span>고정 항목</span></label></div>
               </div>
             </section>
 
@@ -1088,7 +1088,7 @@
               <div class="pk-control-grid" data-spec-block="selection-radio">
                 <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><label class="pk-choice-field" data-spec="selected"><input type="radio" name="pk-view" checked="{{ specRadioMap }}" onChange="{{ selectSpecRadioMap }}"><span>지도 보기</span></label></div>
                 <div class="pk-control-state"><span class="pk-control-state-label">Unselected</span><label class="pk-choice-field" data-spec="unselected"><input type="radio" name="pk-view" checked="{{ specRadioList }}" onChange="{{ selectSpecRadioList }}"><span>목록 보기</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="radio" name="pk-view-disabled" disabled="disabled"><span>위성 보기 (비활성)</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="radio" name="pk-view-disabled" disabled><span>위성 보기 (비활성)</span></label></div>
               </div>
             </section>
 
@@ -2653,7 +2653,7 @@
                 </div>
                 <div class="pk-site-state-card">
                   <div class="pk-site-state-label">Disabled</div>
-                  <div class="pk-site-select pk-site-select--disabled" data-spec="disabled" data-spec-label="Disabled"><button class="pk-site-select-button" type="button" aria-label="사이트 선택 비활성" disabled="disabled"><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+                  <div class="pk-site-select pk-site-select--disabled" data-spec="disabled" data-spec-label="Disabled"><button class="pk-site-select-button" type="button" aria-label="사이트 선택 비활성" disabled><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
                 </div>
               </div>
             </section>
@@ -5422,7 +5422,7 @@ class Component extends DCLogic {
     });
     const bundleBusy = this.state.bundleBusy;
     const bundleExport = {
-      busy: bundleBusy ? 'disabled' : '',
+      busy: bundleBusy,
       label: bundleBusy
         ? L(`수집 중 ${this.state.bundleProgress}/${bundleOrder.length}`,
           `Collecting ${this.state.bundleProgress}/${bundleOrder.length}`)

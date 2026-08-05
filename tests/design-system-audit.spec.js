@@ -187,6 +187,60 @@ test('operation controls and structural components expose complete semantics', a
   await expect(page.locator('main [role="img"]')).toHaveCount(7);
 });
 
+/* Valueless boolean attributes have to reach the DOM.
+ *
+ * The DC runtime used to drop them: the parser hands `disabled` back with the value
+ * "", React reads "" as false, and the attribute never arrived. Sixteen of them were
+ * inert — a Disabled button specimen that took focus and clicks, a "Disabled input
+ * example" that accepted typing, seven checked checkboxes rendering empty.
+ *
+ * This asserts counts rather than "elements with the attribute have the property",
+ * which is the trap here: when the coercion breaks React does not set the attribute
+ * either, so a property check finds no elements and passes on an empty set. The
+ * numbers below are what the pages document, so they fail if the coercion breaks and
+ * they fail again if someone deletes a specimen without meaning to. */
+test('valueless boolean attributes reach the DOM on every product', async ({ page }) => {
+  const state = async (id, fn) => {
+    await page.goto(`/#${id}`);
+    await expect(page.locator('h1')).toBeVisible();
+    return page.evaluate(fn);
+  };
+
+  /* One Disabled specimen per states grid, and it must genuinely be disabled —
+     .is-disabled only paints it. */
+  expect(await state('button', () => {
+    const b = [...document.querySelectorAll('.pk-control-grid .pk-button')].filter((x) => x.disabled);
+    return { count: b.length, tabbable: b.some((x) => !x.disabled) };
+  }), 'the button page documents exactly one disabled button').toEqual({ count: 1, tabbable: false });
+
+  expect(await state('selection', () => {
+    const inputs = [...document.querySelectorAll('.pk-choice-field input')];
+    return {
+      checked: inputs.filter((i) => i.checked).length,
+      disabled: inputs.filter((i) => i.disabled).length,
+      switches: [...document.querySelectorAll('.pk-switch')].filter((s) => s.disabled).length,
+    };
+  }), 'selection documents checked, disabled and disabled-checked states')
+    .toEqual({ checked: 3, disabled: 3, switches: 1 });
+
+  expect(await state('input', () => document.querySelector('#robot-id-disabled').disabled),
+    'the input page must ship a read-only field that is actually read-only').toBe(true);
+
+  expect(await state('systemsummary', () => ({
+    input: document.querySelector('.pk-summary-input[aria-label="Disabled input example"]').disabled,
+    checkbox: document.querySelector('.pk-summary-check input').checked,
+    disabledButtons: [...document.querySelectorAll('.pk-summary-button-state button')]
+      .filter((b) => b.disabled).length,
+  })), 'the summary repeats those states and must not fake them')
+    .toEqual({ input: true, checkbox: true, disabledButtons: 1 });
+
+  expect(await state('modal', () => ({
+    checked: [...document.querySelectorAll('input[type="checkbox"]')].filter((c) => c.checked).length,
+    disabled: [...document.querySelectorAll('.pk-modal-button')].filter((b) => b.disabled).length,
+  })), 'the modal specimens carry checked rows and disabled actions')
+    .toEqual({ checked: 2, disabled: 5 });
+});
+
 test('dark fixed token contract and hidden theme control remain intact', async ({ page }) => {
   const tokenPath = path.join(process.cwd(), 'tokens', 'parkie-tokens.css');
   const source = fs.readFileSync(tokenPath, 'utf8');
