@@ -1059,19 +1059,21 @@
             <section class="pk-control-section">
               <h2>체크박스 · Checkbox</h2>
               <p>서로 독립적인 항목을 여러 개 고를 때 씁니다. 선택은 적용 버튼을 누른 뒤 반영됩니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-choice-field"><input type="checkbox"><span>오류 로봇만 표시</span></label>
-                <label class="pk-choice-field"><input type="checkbox" checked><span>운행중 포함</span></label>
-                <label class="pk-choice-field"><input type="checkbox" disabled><span>오프라인 (비활성)</span></label>
+              <div class="pk-control-grid">
+                <div class="pk-control-state"><span class="pk-control-state-label">Unchecked</span><label class="pk-choice-field"><input type="checkbox" onChange="{{ noop }}"><span>오류 로봇만 표시</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Checked</span><label class="pk-choice-field"><input type="checkbox" checked="{{ specChecked }}" onChange="{{ toggleSpecChecked }}"><span>운행중 포함</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field"><input type="checkbox" disabled="disabled"><span>오프라인 (비활성)</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field"><input type="checkbox" checked="checked" disabled="disabled" onChange="{{ noop }}"><span>고정 항목</span></label></div>
               </div>
             </section>
 
             <section class="pk-control-section">
               <h2>라디오 · Radio</h2>
               <p>서로 배타적인 보기 중 하나만 고를 때 씁니다. 항목이 다섯 개를 넘으면 셀렉트로 바꿉니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-choice-field"><input type="radio" name="pk-view" checked><span>지도 보기</span></label>
-                <label class="pk-choice-field"><input type="radio" name="pk-view"><span>목록 보기</span></label>
+              <div class="pk-control-grid">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><label class="pk-choice-field"><input type="radio" name="pk-view" checked="{{ specRadioMap }}" onChange="{{ selectSpecRadioMap }}"><span>지도 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Unselected</span><label class="pk-choice-field"><input type="radio" name="pk-view" checked="{{ specRadioList }}" onChange="{{ selectSpecRadioList }}"><span>목록 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field"><input type="radio" name="pk-view-disabled" disabled="disabled"><span>위성 보기 (비활성)</span></label></div>
               </div>
             </section>
 
@@ -3044,6 +3046,12 @@ class Component extends DCLogic {
     copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
+    /* The selection specimens carry real DOM state rather than a class that
+       looks like state. A valueless `checked` never reached the DOM — the DC
+       runtime coerces an undefined `checked` to false (support.js) — so the
+       page documented a checked box while rendering an empty one. */
+    specChecked: true,
+    specRadio: 'map',
     role: 'engineer',
     siteMenuOpen: false,
     selectedSite: '',
@@ -3888,6 +3896,8 @@ class Component extends DCLogic {
       lang,
       modalDemo,
       serviceActive,
+      specChecked,
+      specRadio,
       role,
       siteMenuOpen,
       selectedSite,
@@ -5299,6 +5309,16 @@ class Component extends DCLogic {
       showModalResult: () => this.setState({ modalDemo: 'result' }),
       serviceChecked: serviceActive,
       toggleService: () => this.setState({ serviceActive: !serviceActive }),
+      /* React needs the change handler or it logs a read-only-field warning and
+         the specimen stops being clickable, which for a documentation page is
+         worse than the state it is documenting. */
+      noop: () => {},
+      specChecked,
+      toggleSpecChecked: () => this.setState({ specChecked: !specChecked }),
+      specRadioMap: specRadio === 'map',
+      specRadioList: specRadio === 'list',
+      selectSpecRadioMap: () => this.setState({ specRadio: 'map' }),
+      selectSpecRadioList: () => this.setState({ specRadio: 'list' }),
       operatorSelected: role === 'operator',
       engineerSelected: role === 'engineer',
       operatorTabIndex: role === 'operator' ? 0 : -1,

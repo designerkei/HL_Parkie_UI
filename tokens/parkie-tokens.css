@@ -204,6 +204,14 @@
   --parkie-surface-3: var(--parkie-surface-elevation-02);
   --parkie-border: var(--parkie-alpha-white-09);
   --parkie-border-strong: var(--parkie-color-neutral-700);
+  /* The visible edge of an unselected interactive control, which WCAG 1.4.11
+     holds to 3:1 — unlike --parkie-border (1.26:1) and --parkie-border-strong
+     (2.13:1), which are divider and container edges and correct at those values.
+     Nothing here served that purpose because the UA used to draw it: the checkbox
+     and radio were accent-color only. 4.53:1 over the control stage, just above
+     the 4.09:1 Chrome's own unchecked box drew, so taking the paint off the UA
+     does not quietly lower the boundary. */
+  --parkie-control-border: rgba(255,255,255,0.45);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
@@ -465,6 +473,7 @@
   --parkie-surface-3: var(--parkie-surface-elevation-02);
   --parkie-border: var(--parkie-alpha-white-09);
   --parkie-border-strong: var(--parkie-color-neutral-700);
+  --parkie-control-border: rgba(255,255,255,0.45);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
@@ -563,5 +572,6 @@
     --parkie-focus-ring-outer: Highlight;
     --parkie-border: CanvasText;
     --parkie-border-strong: CanvasText;
+    --parkie-control-border: CanvasText;
   }
 }
