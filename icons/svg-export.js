@@ -217,9 +217,16 @@
     glyph: 24,
   };
 
+  /* Quotes matter as much as angle brackets here, because this escapes attribute
+     values as well as text. A computed font-family is the case that proves it:
+     Chrome returns `Pretendard, "Noto Sans KR", system-ui, …`, and those inner
+     quotes closed the attribute they were sitting in. Browsers parse SVG leniently
+     enough to render it anyway, so the files looked correct in every preview while
+     being malformed XML that a strict parser — Illustrator's included — rejects. */
   function esc(text) {
     return String(text === undefined || text === null ? '' : text)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function round(value) {

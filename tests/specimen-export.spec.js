@@ -108,6 +108,16 @@ for (const { route, slug } of PAGES) {
       expect(text, `${file} must declare a viewBox`).toContain('viewBox="');
     }
 
+    /* SVG is XML, and the tools these files exist for parse it strictly. Browsers do
+       not: every one of these rendered correctly in preview while 84 of 89 were
+       malformed, because a computed font-family carries quotes that closed the
+       attribute holding it. Nothing short of a real XML parse sees that. */
+    const malformed = await page.evaluate((files) => files.filter(([, text]) => {
+      const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+      return doc.querySelector('parsererror') !== null;
+    }).map(([name]) => name), [...entries].filter(([name]) => name.endsWith('.svg')));
+    expect(malformed, 'every exported SVG must be well-formed XML').toEqual([]);
+
     expect(errors, 'the export must not throw').toEqual([]);
   });
 }
