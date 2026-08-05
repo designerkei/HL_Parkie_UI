@@ -257,12 +257,55 @@
         });
       });
 
-      return { width: base.width, height: base.height };
+      return bounds(described, { width: base.width, height: base.height });
     } finally {
       planted.forEach(function (span) { span.remove(); });
       root.removeAttribute(MEASURE_ATTR);
       style.remove();
     }
+  }
+
+  /* The union of everything that will actually be drawn, which is not the root's own
+     rect. getBoundingClientRect() ignores absolutely-positioned descendants, so the
+     site select's open menu — a 120px popover hanging below a 30px control — reported
+     a 30px specimen and then drew over the caption and the row beneath it in the
+     sheet. Focus rings count too: they sit outside the box by their spread. */
+  function bounds(described, base) {
+    var minX = 0;
+    var minY = 0;
+    var maxX = base.width;
+    var maxY = base.height;
+
+    var take = function (box, grow) {
+      if (!box) return;
+      var pad = grow || 0;
+      minX = Math.min(minX, box.x - pad);
+      minY = Math.min(minY, box.y - pad);
+      maxX = Math.max(maxX, box.x + box.w + pad);
+      maxY = Math.max(maxY, box.y + box.h + pad);
+    };
+
+    var outset = function (style) {
+      var e = api();
+      return shadowLayers(style.boxShadow).reduce(function (most, layer) {
+        if (/\binset\b/i.test(layer)) return most;
+        var ring = e.ringOf(layer);
+        return ring ? Math.max(most, ring.spread) : most;
+      }, 0);
+    };
+
+    described.nodes.forEach(function (entry) {
+      take(entry.box, outset(entry.style));
+      entry.pseudos.forEach(function (snap) { take(snap.box, outset(snap.style)); });
+      entry.children.forEach(function (child) { take(child.box); });
+      entry.texts.forEach(function (run) {
+        run.lines.forEach(function (line) {
+          take({ x: line.x, y: line.y, w: line.w || 0, h: line.h });
+        });
+      });
+    });
+
+    return { width: maxX - minX, height: maxY - minY, offsetX: -minX, offsetY: -minY };
   }
 
   /* An <input> is a replaced element: it renders ::before and ::after once
@@ -313,17 +356,20 @@
 
       var top = Math.round(r.top * 10) / 10;
       if (!current || Math.abs(current.top - top) > 0.6) {
-        current = { top: top, y: r.top - origin.top, x: r.left - origin.left, h: r.height, text: '' };
+        current = {
+          top: top, y: r.top - origin.top, x: r.left - origin.left,
+          w: 0, h: r.height, text: '',
+        };
         lines.push(current);
       }
       current.text += data[i];
       current.h = Math.max(current.h, r.height);
+      current.w = Math.max(current.w, (r.right - origin.left) - current.x);
     }
 
     return lines.filter(function (line) { return /\S/.test(line.text); })
       .map(function (line) {
-        var lead = line.text.length - line.text.replace(/^\s+/, '').length;
-        return { x: line.x, y: line.y, h: line.h, text: line.text.trim(), lead: lead };
+        return { x: line.x, y: line.y, w: line.w, h: line.h, text: line.text.trim() };
       });
   }
 
@@ -713,7 +759,18 @@
 
     var size = measure(root, described);
     var defs = [];
+    var e = api();
+    var R = e.round;
     var markup = emit(described.tree, opts, defs);
+
+    /* Coordinates are relative to the root, and the union can start above or left of
+       it — a focus ring, or a popover positioned upward. Shifting once here means
+       every consumer can treat the specimen as starting at 0,0. */
+    if (size.offsetX || size.offsetY) {
+      markup = '  <g transform="translate(' + R(size.offsetX) + ' ' + R(size.offsetY)
+        + ')">\n' + markup + '  </g>\n';
+    }
+
     return {
       markup: markup,
       defs: defs.join(''),
