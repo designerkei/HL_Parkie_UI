@@ -149,6 +149,13 @@
     span.setAttribute(PSEUDO_ATTR, snap.which);
     span.setAttribute('aria-hidden', 'true');
     Object.keys(snap.map).forEach(function (prop) {
+      /* transform is deliberately withheld. It is re-applied as an SVG transform
+         from the snapshot, and an inline !important beats the measuring
+         stylesheet's own !important — so copying it here left the stand-in
+         measured already-transformed and then transformed a second time. That is
+         what put the service switch knob 10px above its track: translateY(-50%)
+         applied twice. */
+      if (prop === 'transform') return;
       if (snap.map[prop]) span.style.setProperty(prop, snap.map[prop], 'important');
     });
     /* content:"" paints a box and no text, so the stand-in must not pick up a line
@@ -188,6 +195,8 @@
         } else if (child.nodeType === 1) {
           if (child.localName === 'svg') {
             entry.children.push({ svg: child, depth: depth + 1 });
+          } else if (child.localName === 'img') {
+            entry.children.push({ img: child, depth: depth + 1 });
           } else {
             var sub = visit(child, depth + 1);
             if (sub) entry.children.push(sub);
@@ -244,6 +253,7 @@
         });
         entry.children.forEach(function (child) {
           if (child.svg) child.box = box(child.svg);
+          else if (child.img) child.box = box(child.img);
         });
       });
 
@@ -551,6 +561,51 @@
       + ') scale(' + R(sx) + ' ' + R(sy) + ')">' + inner + '</g>\n';
   }
 
+  /* An <img> is embedded as a data URI so the file stays self-contained — a
+     relative href would resolve against wherever the SVG was dropped and quietly
+     render nothing. The bytes are fetched before serialising (see collectImages)
+     because building the markup is synchronous; an image that was not pre-fetched
+     is skipped rather than left as a broken reference. */
+  function imgMarkup(node, box, opts) {
+    var e = api();
+    var R = e.round;
+    var images = opts.images || {};
+    var href = images[node.getAttribute('src')] || images[node.currentSrc] || images[node.src];
+    if (!href) return '';
+    return '  <image x="' + R(box.x) + '" y="' + R(box.y) + '" width="' + R(box.w)
+      + '" height="' + R(box.h) + '" preserveAspectRatio="xMidYMid meet" href="'
+      + e.esc(href) + '"/>\n';
+  }
+
+  /* Same-origin only, and failures are swallowed: a missing brand asset should
+     cost that one mark, not the whole export. */
+  function collectImages(root) {
+    var sources = [];
+    var nodes = root.querySelectorAll('img[src]');
+    for (var i = 0; i < nodes.length; i += 1) {
+      var src = nodes[i].getAttribute('src');
+      if (src && src.indexOf('data:') !== 0 && sources.indexOf(src) < 0) sources.push(src);
+    }
+
+    return Promise.all(sources.map(function (src) {
+      return fetch(src).then(function (response) {
+        if (!response.ok) throw new Error(String(response.status));
+        return response.blob();
+      }).then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () { resolve([src, reader.result]); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }).catch(function () { return null; });
+    })).then(function (pairs) {
+      var map = {};
+      pairs.filter(Boolean).forEach(function (pair) { map[pair[0]] = pair[1]; });
+      return map;
+    });
+  }
+
   var CARRY_ATTRS = [
     'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
     'stroke-miterlimit', 'stroke-dasharray', 'stroke-dashoffset', 'fill-rule',
@@ -583,6 +638,7 @@
 
     entry.children.forEach(function (child) {
       if (child.svg) body += svgMarkup(child.svg, child.box, opts.resolveToken);
+      else if (child.img) body += imgMarkup(child.img, child.box, opts);
       else body += emit(child, opts, defs);
     });
 
@@ -792,5 +848,6 @@
     serialize: serialize,
     standalone: standalone,
     buildBoxSheet: buildBoxSheet,
+    collectImages: collectImages,
   };
 }());
