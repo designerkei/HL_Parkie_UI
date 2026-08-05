@@ -118,6 +118,20 @@ for (const { route, slug } of PAGES) {
    Only comparing the drawing between states catches it. */
 test('selection specimens differ between states rather than sharing one drawing', async ({ page }) => {
   await open(page, 'selection');
+
+  /* The ink the marks are drawn in, read from the page rather than written down
+     here. Counting shapes is not enough on its own: a checked box that lost its
+     tick still draws a plate and a border, which is two shapes against the empty
+     box's one, and an earlier version of this test passed with the tick deleted. */
+  const inkColour = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    probe.style.color = 'var(--parkie-brand-on)';
+    document.body.appendChild(probe);
+    const [r, g, b] = getComputedStyle(probe).color.match(/\d+/g).map(Number);
+    probe.remove();
+    return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+  });
+
   const { entries } = await download(page);
 
   const shapes = (text) => text.replace(/<svg[^>]*>|<\/svg>|\s+/g, '')
@@ -139,13 +153,31 @@ test('selection specimens differ between states rather than sharing one drawing'
       .toBe(files.length);
   }
 
-  /* The tick and the dot are the pseudo-elements, and a checked box that lost its
-     mark is still a blue square. Assert the mark is actually drawn. */
+  const shapeCount = (text) => (text.match(/<(?:rect|path|circle|line)\b/g) || []).length;
+  const paints = (text) => new Set((text.match(/(?:fill|stroke)="#[0-9A-F]{6}"/g) || []));
+
+  /* The tick is a pseudo-element, and its absence is invisible to a shape count. */
   const checked = entries.get('svg/checkbox-checked.svg');
   const unchecked = entries.get('svg/checkbox-unchecked.svg');
-  const shapeCount = (text) => (text.match(/<(?:rect|path|circle|line)\b/g) || []).length;
-  expect(shapeCount(checked), 'the checked box must draw more than the empty one')
-    .toBeGreaterThan(shapeCount(unchecked));
+  expect(checked, `the checked box must draw its tick in ${inkColour}`).toContain(inkColour);
+  expect(unchecked, 'the empty box must not').not.toContain(inkColour);
+
+  /* Track and knob are both pseudo-elements, and both are painted in the same brand
+     hex — the track only differs by an opacity — so counting colours does not notice
+     either one going missing. Their geometry does: the track is a pill, wider than it
+     is tall, and the knob is round, width equal to height. The artboard plate carries
+     no x, so requiring one keeps it out of the count. */
+  const innerRects = (text) => [
+    ...text.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g),
+  ].map((m) => ({ w: Number(m[3]), h: Number(m[4]) }));
+
+  for (const state of ['on', 'off', 'disabled']) {
+    const rects = innerRects(entries.get(`svg/switch-${state}.svg`));
+    expect(rects.some((r) => r.w > r.h), `switch-${state} must draw its track`).toBe(true);
+    expect(rects.some((r) => r.w === r.h), `switch-${state} must draw its knob`).toBe(true);
+    expect(paints(entries.get(`svg/switch-${state}.svg`)).size,
+      `switch-${state} must paint more than one thing`).toBeGreaterThanOrEqual(2);
+  }
 
   const selected = entries.get('svg/radio-selected.svg');
   const unselected = entries.get('svg/radio-unselected.svg');
