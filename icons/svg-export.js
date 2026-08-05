@@ -149,13 +149,26 @@
      travel separately or design tools reject the value outright. */
   function splitColor(value) {
     var text = String(value || '').trim();
+
+    var pack = function (parts, alpha) {
+      var hex = parts.map(function (part) {
+        var n = Math.max(0, Math.min(255, Math.round(parseFloat(part)))).toString(16);
+        return n.length < 2 ? '0' + n : n;
+      }).join('');
+      return { color: '#' + hex.toUpperCase(), alpha: alpha === undefined ? 1 : parseFloat(alpha) };
+    };
+
     var rgba = text.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,/]+([\d.]+))?\s*\)$/i);
-    if (!rgba) return { color: text || '#000000', alpha: 1 };
-    var hex = [rgba[1], rgba[2], rgba[3]].map(function (part) {
-      var n = Math.max(0, Math.min(255, Math.round(parseFloat(part)))).toString(16);
-      return n.length < 2 ? '0' + n : n;
-    }).join('');
-    return { color: '#' + hex.toUpperCase(), alpha: rgba[4] === undefined ? 1 : parseFloat(rgba[4]) };
+    if (rgba) return pack([rgba[1], rgba[2], rgba[3]], rgba[4]);
+
+    /* color-mix() against transparent is how the icon focus specimen carries its
+       alpha, and Chromium is free to serialise the result as color(srgb ...) on
+       0–1 channels instead of rgba(). Same colour, different spelling — without
+       this branch the ring resolves to #000000 and disappears into the canvas. */
+    var srgb = text.match(/^color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)$/i);
+    if (srgb) return pack([srgb[1] * 255, srgb[2] * 255, srgb[3] * 255], srgb[4]);
+
+    return { color: text || '#000000', alpha: 1 };
   }
 
   var PAINT_ATTRS = [['fill', 'fill-opacity'], ['stroke', 'stroke-opacity']];
@@ -238,11 +251,14 @@
   }
 
   /* getComputedStyle reports box-shadow as "<colour> 0px 0px 0px 3px". The last
-     length is the spread, which is the whole of the focus ring. */
+     length is the spread, which is the whole of the focus ring. The colour is
+     lifted off the front and then stripped, because scraping digits naively
+     reads rgba()'s alpha as the first offset — and color() carries three more
+     numbers of its own. */
   function ringOf(boxShadow) {
     if (!boxShadow || boxShadow === 'none') return null;
-    var colour = (boxShadow.match(/^(rgba?\([^)]*\)|#[0-9a-f]+)/i) || [])[0];
-    var lengths = boxShadow.replace(/rgba?\([^)]*\)/i, '').match(/-?[\d.]+px/g);
+    var colour = (boxShadow.match(/^(rgba?\([^)]*\)|color\([^)]*\)|#[0-9a-f]+)/i) || [])[0];
+    var lengths = boxShadow.replace(/(?:rgba?|color)\([^)]*\)/i, '').match(/-?[\d.]+px/g);
     if (!colour || !lengths || !lengths.length) return null;
     var spread = parseFloat(lengths[lengths.length - 1]);
     if (!spread) return null;

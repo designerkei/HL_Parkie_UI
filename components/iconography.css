@@ -355,20 +355,21 @@
   color: var(--parkie-icon-focus);
   border-radius: var(--parkie-radius-sm);
   /* The supplied specimen is a single cyan halo, and it stays a single cyan
-     halo — product controls still use the stronger two-tone ring. What changed
-     is that it was 3px at 40% alpha, which composites to 2.11:1 over this
-     page's surface. WCAG 2.2 asks a focus indicator for 3:1, so the specimen
-     was drawing a thick band that did not clear the bar it exists to clear.
+     halo — product controls still use the stronger two-tone ring.
 
-     Opaque at 2px measures 7.24:1 and reads visibly thinner. Alpha was the
-     wrong dial: at 40% the ring needed 0.60 just to reach 3.31:1, and thinning
-     it while translucent would have lost contrast and area at once. 2px is the
-     floor, not a preference — SC 2.4.13 wants at least the area of a 2px
-     perimeter, and on this 32px plate 2px lands exactly on it.
+     Two things are being traded here, and only one of them is free. Area is
+     not: SC 2.4.13 wants at least the area of a 2px perimeter, and on this
+     32px plate 2px lands exactly on it, so the thickness cannot move. Alpha
+     can, down to the point where WCAG 2.2 stops allowing it — 3:1 for a focus
+     indicator. Over this page's surface 62% composites to 3.45:1, 58% to
+     3.16:1, and 55% to 2.96:1, which is where the floor actually is.
 
-     Google's own focus ring is the same shape of answer: --md-focus-ring-width
-     is 3px, but the colour token is a solid theme colour, never a wash. */
-  box-shadow: 0 0 0 2px var(--parkie-color-brand-500);
+     So 62%: the dimmest the halo goes while still clearing the bar it exists
+     to clear. Opaque it was 7.24:1 and read as a lit border rather than a
+     ring; the earlier 3px at 40% was the opposite error, a thick band at
+     2.11:1 that cleared nothing. The value lives in --parkie-focus-ring-icon
+     so the export path resolves the same number the page paints. */
+  box-shadow: 0 0 0 2px var(--parkie-focus-ring-icon);
 }
 
 .pk-icon-state.is-pressed {

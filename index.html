@@ -902,7 +902,7 @@
                 </article>
                 <article class="pk-icon-rule" data-icon-focus-note>
                   <h3>Focus 링은 전달 표본과 다릅니다</h3>
-                  <p>전달 표본은 <code>3px</code> 시안 헤일로를 <code>40%</code> 불투명도로 그렸습니다. 이 페이지 배경 위에서 합성하면 <code>2.11:1</code>이라, WCAG 2.2가 포커스 표시에 요구하는 <code>3:1</code>에 못 미칩니다. 그래서 두께를 <code>2px</code>로 줄이고 색을 불투명하게 바꿨습니다 — <code>7.24:1</code>이 되고 더 얇아 보입니다. 얇게만 하는 것으로는 풀리지 않습니다. 40%를 유지하면 <code>3:1</code>을 넘기려 불투명도를 <code>0.60</code>까지 올려야 하고, 반투명인 채로 얇게 만들면 대비와 면적을 함께 잃습니다. <code>2px</code>는 취향이 아니라 하한입니다 — SC 2.4.13이 요구하는 최소 면적이 <code>2px</code> 둘레와 같고, 이 <code>32px</code> 판에서는 정확히 그 값입니다. 제품 컨트롤은 이 헤일로가 아니라 2톤 접근성 링을 씁니다.</p>
+                  <p>여기서 맞바꾸는 값은 두 개인데 하나는 고정입니다. 면적은 못 움직입니다 — SC 2.4.13이 요구하는 최소 면적이 <code>2px</code> 둘레와 같고, 이 <code>32px</code> 판에서는 정확히 그 값입니다. 움직일 수 있는 건 불투명도이고, 그 하한은 WCAG 2.2가 포커스 표시에 요구하는 <code>3:1</code>입니다. 이 페이지 배경 위에서 합성하면 <code>62%</code>가 <code>3.45:1</code>, <code>58%</code>가 <code>3.16:1</code>, <code>55%</code>가 <code>2.96:1</code>로 떨어집니다. 그래서 <code>62%</code>입니다 — 넘어야 할 선을 지키면서 헤일로가 가장 어두워지는 지점. 불투명하게 두면 <code>7.24:1</code>로 링이 아니라 불 켜진 테두리로 읽히고, 전달 표본의 <code>3px</code>·<code>40%</code>는 반대쪽 오류로 <code>2.11:1</code>짜리 두꺼운 띠였습니다. 값은 <code>--parkie-focus-ring-icon</code>에 있어 내려받는 SVG가 화면과 같은 수치를 씁니다. 제품 컨트롤은 이 헤일로가 아니라 2톤 접근성 링을 씁니다.</p>
                 </article>
                 <article class="pk-icon-rule">
                   <h3>의미는 텍스트와 함께</h3>
