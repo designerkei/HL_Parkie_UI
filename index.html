@@ -593,7 +593,7 @@
                   <span class="pk-summary-group__index">05</span>
                   <div>
                     <h2 id="summary-group-index">문서 색인 · Documentation index</h2>
-                    <p>33개 목적지를 카테고리별로 나열합니다. 상세 규칙은 각 문서에 있습니다.</p>
+                    <p>34개 목적지를 카테고리별로 나열합니다. 상세 규칙은 각 문서에 있습니다.</p>
                   </div>
                 </div>
                 <div class="pk-summary-group__body">
@@ -3004,6 +3004,32 @@
           </dc-import>
         </sc-if>
 
+        <!-- ===== DOWNLOADS ===== -->
+        <sc-if value="{{ isDownloads }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h2>컴포넌트 SVG · Component SVG</h2>
+              <p>문서화된 컴포넌트 전체를 한 번에 받습니다. 페이지마다 폴더 하나이고, 그 안에 표본별 SVG와 상태 시트 한 장이 들어갑니다. 각 페이지에서 따로 받고 싶으면 그 페이지 상단의 버튼을 쓰면 됩니다.</p>
+              <div class="pk-export-actions">
+                <button type="button" class="pk-button pk-export-download" data-specimen-bundle
+                        disabled="{{ bundleExport.busy }}" onClick="{{ bundleExport.onClick }}"
+                        title="{{ bundleExport.title }}">
+                  {{ bundleExport.label }}
+                </button>
+                <p class="pk-export-actions-note">{{ bundleExport.title }}</p>
+              </div>
+              <table class="pk-layer-table">
+                <thead><tr><th>폴더</th><th>컴포넌트</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ bundleContents }}" as="entry" hint-placeholder-count="11">
+                    <tr><td><code>{{ entry.folder }}</code></td><td>{{ entry.title }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
           <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
             <div class="pk-doc-contract__head">
@@ -3059,6 +3085,8 @@ class Component extends DCLogic {
     buttonSpecs: null,
     colorSpecs: null,
     specimenCount: 0,
+    bundleBusy: false,
+    bundleProgress: 0,
     copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
@@ -3692,6 +3720,110 @@ class Component extends DCLogic {
     ].join('\n');
   }
 
+  /* Waits for the route's specimens to be on screen. A specimen exists only while
+     its page is mounted, so the bundle drives the router and then has to let the
+     browser catch up — two frames for React and the paint, then the same sentinel
+     wait requestTokenSpecs makes, because the stylesheet arrives late enough that
+     an early read would serialise unstyled boxes. */
+  awaitSpecimenPaint(pageId) {
+    return new Promise((resolve) => {
+      const spec = window.__parkieSpecimens[pageId];
+      const attempt = (left) => {
+        const root = this.rootRef.current;
+        const ready = root
+          && root.querySelector('[data-spec]')
+          && getComputedStyle(root).getPropertyValue('--parkie-action-primary-bg').trim() !== '';
+        if (ready || left <= 0) {
+          resolve(Boolean(ready));
+          return;
+        }
+        window.requestAnimationFrame(() => attempt(left - 1));
+      };
+      void spec;
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => attempt(90)));
+    });
+  }
+
+  /* Every documented component in one archive. The route is restored in a finally
+     so an error part-way through does not leave the reader on a page they did not
+     ask for, and the button is held disabled meanwhile — the walk repoints the
+     hash, and a second run racing the first would interleave routes. */
+  async downloadAllSpecimens() {
+    const exporter = window.__parkieSvgExport;
+    const dom = window.__parkieDomSvg;
+    if (!exporter || !dom || this.state.bundleBusy) return;
+
+    const order = window.__parkieSpecimenOrder || [];
+    const restore = window.location.hash;
+    this.setState({ bundleBusy: true, bundleProgress: 0 });
+
+    const files = [];
+    const manifest = [];
+    const skipped = [];
+
+    try {
+      const images = await dom.collectImages(document);
+      for (let index = 0; index < order.length; index += 1) {
+        const pageId = order[index];
+        const spec = window.__parkieSpecimens[pageId];
+        window.location.hash = `#/parkie/${pageId}`;
+        this.setState({ bundleProgress: index + 1 });
+        // eslint-disable-next-line no-await-in-loop
+        const painted = await this.awaitSpecimenPaint(pageId);
+        const collected = painted ? this.collectSpecimens(pageId, null, images) : null;
+        if (!collected) {
+          skipped.push(spec.slug);
+          continue;
+        }
+        const folder = `${String(index + 1).padStart(2, '0')}-${collected.slug}`;
+        collected.files.forEach((file) => files.push({ name: `${folder}/${file.name}`, text: file.text }));
+        files.push({ name: `${folder}/sheet.svg`, text: collected.sheet });
+        manifest.push(`  ${folder}/  —  ${collected.files.length} specimens · ${collected.title}`);
+      }
+    } finally {
+      window.location.hash = restore;
+      this.setState({ bundleBusy: false, bundleProgress: 0 });
+    }
+
+    if (!files.length) return;
+
+    const options = this.specimenOptions();
+    /* Anything that could not be collected is named rather than silently absent —
+       a folder missing from an archive reads as "that component has no specimens". */
+    const note = skipped.length
+      ? ['', 'Not collected', skipped.map((slug) => `  ${slug}`).join('\n'), ''].join('\n')
+      : '';
+
+    files.push({
+      name: 'README.txt',
+      text: [
+        'Parkie · component SVG',
+        '',
+        'One folder per documented component, numbered in the order the sidebar',
+        'lists them. Inside each: one SVG per specimen under svg/, plus sheet.svg,',
+        'the same specimens in a labelled grid.',
+        '',
+        'Every value was read back from the rendered page rather than restated, so',
+        'these files cannot drift from the components they document. Artboards are',
+        'dark because hover greys and disabled washes are invisible on white.',
+        '',
+        'Surface  ' + options.background,
+        '',
+        `Folders (${manifest.length})`,
+        manifest.join('\n'),
+        note,
+        'Known limits',
+        '  Animation is frozen at its first frame — the loading spinner and the',
+        '  reconnecting stream export as static arcs. filter() has no SVG paint',
+        '  equivalent and is dropped; its only use is the switch hover brightening,',
+        '  which is not a documented specimen state.',
+        '',
+      ].join('\n'),
+    });
+
+    exporter.save(exporter.zip(files), 'parkie-components.zip');
+  }
+
   /* Async only because <img> bytes have to be in hand before the markup is built:
      the top bar carries the brand mark, and a relative href in a downloaded file
      resolves against wherever it was dropped and renders nothing. */
@@ -3851,7 +3983,7 @@ class Component extends DCLogic {
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
     appshell:    { ko: '관제 앱 셸', en: 'Control App Shell', impl: true, dko: 'Top Bar·Primary Rail·Context Panel·Workspace를 조합한 주차 관제 화면 구조.', den: 'The parking-control structure combining Top Bar, Primary Rail, Context Panel and Workspace.' },
     brand:       { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: 'RMS 구조에 적용된 HL Robotics 로고와 Parkie 색상 스왑 지점.', den: 'HL Robotics logo and Parkie color swap points applied to the RMS structure.' },
-    downloads:   { ko: '다운로드', en: 'Downloads', impl: false, dko: '토큰 · 자산 패키지.', den: 'Token and asset packages.' },
+    downloads:   { ko: '다운로드', en: 'Downloads', impl: true, dko: '문서화된 컴포넌트 전체를 SVG로 내려받습니다.', den: 'Every documented component as SVG, in one archive.' },
     'ms-icons':    { ko: 'Icons', en: 'Icons', impl: true, dko: 'Teams UI Kit 아이콘 세트 (참조용). 24px · Regular 대표 글리프.', den: 'Teams UI Kit icon set (reference) — 24px Regular representative glyphs.' },
     'ms-button':   { ko: 'Button', en: 'Button', impl: true, dko: 'Microsoft Teams UI Kit의 버튼 (참조용). appearance · size · state 변형을 라이브로 렌더링합니다.', den: 'The button from Microsoft Teams UI Kit (reference) — appearance, size and state variants rendered live.' },
     'ms-checkbox': { ko: 'Checkbox', en: 'Checkbox', impl: true, dko: 'Microsoft Teams UI Kit의 체크박스 (참조용). status · state 변형.', den: 'The checkbox from Microsoft Teams UI Kit (reference) — status and state variants.' },
@@ -5250,6 +5382,16 @@ class Component extends DCLogic {
         '브랜드 교체는 토큰과 brand 자산에 한정하며 RMS 정보 구조와 안전 의미를 변경하지 않습니다.',
         'Limit brand swaps to tokens and brand assets; do not alter RMS information architecture or safety meaning.'
       ),
+      downloads: buildDocGuide(
+        '문서화된 컴포넌트를 디자인 도구로 옮길 때 사용합니다. 한 페이지만 필요하면 그 페이지 상단의 버튼을 씁니다.',
+        'Use when moving documented components into a design tool. For a single page, use the button at the top of that page.',
+        '페이지마다 폴더 하나이고, 그 안에 표본별 SVG와 상태 시트 한 장이 들어갑니다. 표본은 해당 페이지가 열려 있는 동안에만 존재하므로 전체 받기는 페이지를 차례로 열었다가 원래 자리로 돌아옵니다.',
+        'One folder per page, holding one SVG per specimen and a state sheet. A specimen exists only while its page is mounted, so the bundle walks the pages in order and returns you to where you were.',
+        '수집 중에는 버튼이 비활성이고 진행 상황을 라벨에 표시합니다. 화면이 페이지를 옮겨 다니는 동안 사용자가 길을 잃지 않도록 끝나면 원래 경로로 되돌립니다.',
+        'The button is disabled while collecting and states its progress. The route is restored when the walk ends so the view does not leave the reader somewhere they did not choose.',
+        '값은 화면에서 계산된 그대로 읽어 담습니다. CSS를 다시 구현하지 않으므로 내려받은 파일이 컴포넌트와 어긋날 수 없습니다. 애니메이션은 첫 프레임에서 멈추고, filter()는 SVG 페인트로 표현되지 않아 빠집니다.',
+        'Values are read back from the rendered page. No CSS is reimplemented, so a downloaded file cannot drift from its component. Animation is frozen at the first frame and filter() has no SVG paint equivalent, so it is dropped.'
+      ),
     };
     const documentationGuide = isParkieSystem ? (documentationGuides[active] || []) : [];
     const showDocumentationGuide = documentationGuide.length > 0;
@@ -5268,6 +5410,29 @@ class Component extends DCLogic {
         'One SVG per specimen on this page, with a labelled state sheet, delivered as a zip. Values are read back from the rendered page, so the files cannot drift from the component. The artboard is dark because hover greys and disabled washes are invisible on a white one.',
       ),
       onClick: () => this.downloadSpecimens(active),
+    };
+
+    const bundleOrder = window.__parkieSpecimenOrder || [];
+    const bundleContents = bundleOrder.map((pageId, index) => {
+      const entry = window.__parkieSpecimens[pageId];
+      return {
+        folder: `${String(index + 1).padStart(2, '0')}-${entry.slug}/`,
+        title: `${entry.titleKo} · ${entry.titleEn}`,
+      };
+    });
+    const bundleBusy = this.state.bundleBusy;
+    const bundleExport = {
+      busy: bundleBusy ? 'disabled' : '',
+      label: bundleBusy
+        ? L(`수집 중 ${this.state.bundleProgress}/${bundleOrder.length}`,
+          `Collecting ${this.state.bundleProgress}/${bundleOrder.length}`)
+        : L(`전체 컴포넌트 SVG 내려받기 (${bundleOrder.length}개)`,
+          `Download all ${bundleOrder.length} components as SVG`),
+      title: L(
+        '표본은 해당 페이지가 열려 있는 동안에만 존재하므로, 이 버튼은 문서화된 페이지를 차례로 열어 수집한 뒤 원래 보던 페이지로 돌려놓습니다. 수집 중에는 화면이 잠깐 페이지를 옮겨 다닙니다.',
+        'A specimen exists only while its page is mounted, so this walks the documented pages in order, collects each one and returns you to where you were. The view moves between pages while it runs.',
+      ),
+      onClick: () => this.downloadAllSpecimens(),
     };
 
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
@@ -5373,6 +5538,8 @@ class Component extends DCLogic {
       showDocumentationGuide,
       showSpecimenExport,
       specimenExport,
+      bundleExport,
+      bundleContents,
       documentationGuideTitle: L('운영·구현 계약', 'Usage & implementation contract'),
       documentationGuideDescription: L('실제 RMS 화면에 적용할 때 시각 샘플과 함께 지켜야 할 최소 규칙입니다.', 'Minimum rules to apply alongside the visual specimen in production RMS screens.'),
       /* Pages whose specimens are designed at full application width. The top
@@ -5487,6 +5654,7 @@ class Component extends DCLogic {
       toggleMediaMic: () => this.setState({ mediaMicActive: !mediaMicActive }),
       msRefNote: L('참조용입니다. Parkie 버전으로 가져오려면 알려주세요.', 'Reference only — tell me to build the Parkie version.'),
       isSoon: isParkieSystem && !cur.impl,
+      isDownloads: isParkieSystem && active === 'downloads',
       tokenLayers,
       primitiveTitle: L('원시 팔레트 · Primitive ramps', 'Primitive ramps'),
       primitiveNote: L('밝기 순서를 나타내는 원시값입니다. 제품 UI에는 아래 Semantic 토큰을 사용합니다.', 'Raw tonal values ordered by lightness. Use the semantic aliases below in product UI.'),

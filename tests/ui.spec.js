@@ -632,7 +632,7 @@ test('System Summary composes eight live-token sections and links to detail page
     'rgba(255, 255, 255, 0.1)'
   );
   await expect(page.locator('[data-summary-operation]')).toHaveCount(5);
-  await expect(page.locator('[data-summary-destination]')).toHaveCount(33);
+  await expect(page.locator('[data-summary-destination]')).toHaveCount(34);
 
   const unnamedButtons = await page.locator('[data-system-summary] button').evaluateAll((buttons) => (
     buttons

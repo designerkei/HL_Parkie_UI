@@ -153,6 +153,61 @@ test('selection specimens differ between states rather than sharing one drawing'
     .toBeGreaterThan(shapeCount(unselected));
 });
 
+/* The bundle walks the hash router because a specimen exists only while its page is
+   mounted. Two things there are worth holding: that it does not quietly ship fewer
+   folders than it advertises — a component missing from the archive reads as "that
+   one has no specimens" — and that it puts the reader back where they were. */
+test('the downloads page bundles every documented component and restores the route', async ({ page }) => {
+  test.setTimeout(180_000);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+
+  await page.goto('/index.html#/parkie/iconography');
+  await expect(page.locator('h1')).toBeVisible();
+  await page.goto('/index.html#/parkie/downloads');
+
+  const button = page.locator('[data-specimen-bundle]');
+  await expect(button).toBeVisible();
+
+  const listed = await page.locator('.pk-layer-table tbody tr').count();
+  expect(listed, 'the page must list what the archive will contain').toBe(PAGES.length);
+
+  const started = page.waitForEvent('download', { timeout: 150_000 });
+  await button.click();
+  const file = await started;
+  const stream = await file.createReadStream();
+  const chunks = [];
+  for await (const chunk of stream) chunks.push(chunk);
+  const entries = readStoredZip(Buffer.concat(chunks));
+
+  expect(file.suggestedFilename()).toBe('parkie-components.zip');
+
+  /* One numbered folder per component, in the order the sidebar lists them. */
+  const folders = [...new Set([...entries.keys()]
+    .filter((key) => key.includes('/'))
+    .map((key) => key.split('/')[0]))];
+  expect(folders, 'every documented component must have a folder').toHaveLength(PAGES.length);
+  PAGES.forEach(({ slug }, index) => {
+    expect(folders[index]).toBe(`${String(index + 1).padStart(2, '0')}-${slug}`);
+    expect(entries.has(`${folders[index]}/sheet.svg`), `${slug} must carry its sheet`).toBe(true);
+  });
+
+  const readme = entries.get('README.txt');
+  expect(readme, 'the archive must explain itself').toBeTruthy();
+  expect(readme, 'a component that could not be collected must be named, not just absent')
+    .not.toContain('Not collected');
+
+  for (const [name, text] of entries) {
+    if (!name.endsWith('.svg')) continue;
+    expect(text, `${name} must not carry unresolved paint`).not.toContain('var(');
+    expect(text, `${name} must not carry currentColor`).not.toContain('currentColor');
+  }
+
+  await expect(page).toHaveURL(/#\/parkie\/downloads$/);
+  await expect(button, 'the button must be usable again once the walk finishes').toBeEnabled();
+  expect(errors, 'walking the router must not throw').toEqual([]);
+});
+
 /* The focus specimen is the one place the export has to carry an alpha, because the
    ring is 62% cyan. If splitColor cannot read the colour Chrome serialises for
    color-mix(), the ring resolves to #000000 and vanishes into the dark artboard

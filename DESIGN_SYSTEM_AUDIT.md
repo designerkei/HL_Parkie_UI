@@ -4,7 +4,7 @@ Date: 2026-08-01
 
 Product: HL Robotics Parkie 주차로봇 관제 시스템
 
-Scope: Parkie 33개 목적지 전체. `MS 참조`는 비교 자료로만 유지하며 Parkie 완성도 집계에서 제외한다.
+Scope: Parkie 34개 목적지 전체. `MS 참조`는 비교 자료로만 유지하며 Parkie 완성도 집계에서 제외한다.
 
 ## 1. 최종 설계 결정
 
@@ -22,18 +22,18 @@ RMS는 정보 구조, 컴포넌트 구조, 타입 위계, 화면 밀도와 KO/EN
 
 | 기준 | 확인한 원칙 | Parkie 반영 |
 | --- | --- | --- |
-| [Apple Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility/) / [Color](https://developer.apple.com/design/human-interface-guidelines/color) | 색 외 단서, 충분한 대비, 읽기 순서와 명확한 조작 결과 | 상태마다 텍스트·수치 병기, 12px 최소 캡션, 33개 화면 axe 검사, 다크 잉크 Primary |
+| [Apple Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility/) / [Color](https://developer.apple.com/design/human-interface-guidelines/color) | 색 외 단서, 충분한 대비, 읽기 순서와 명확한 조작 결과 | 상태마다 텍스트·수치 병기, 12px 최소 캡션, 34개 화면 axe 검사, 흰 글씨 Primary |
 | [Apple SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols) | 일관된 그리드·무게·의미, 플랫폼에서 학습된 기호 재사용 | 24px 그리드, Parkie Original·Custom·Adopted 출처, 범용 기호는 Adopted |
 | [Material 3 States](https://m3.material.io/foundations/interaction/states/state-layers) | Hover·Focus·Pressed와 선택 상태를 분리 | Default·Hover·Focus·Pressed·Selected/On·Disabled 6상태 매트릭스 |
 | [Material Symbols](https://developers.google.com/fonts/docs/material_symbols) | 가변 아이콘 시스템의 일관된 크기·스타일 | 아이콘 24px 기준과 currentColor 토큰 소비 |
 | [Meta accessibility co-design](https://about.fb.com/news/2024/07/building-accessibility-into-our-mixed-reality-products/) | 접근성을 사후 체크가 아닌 설계·검증 과정에 포함 | 문서 계약에 접근성 항목 고정, 자동검사·키보드·시각검사를 같은 릴리스 게이트로 운영 |
 | [ISA High Performance HMI](https://www.isa.org/getmedia/06130a38-f7af-4b35-8c9c-2c34f25c1977/The-High-Performance-HMI-Overview-v2-01.pdf) | 정상 상태는 절제하고 비정상·조치 상태가 눈에 띄어야 함 | 운행·연결·정상 배터리 중립화, Yellow·Red를 예외와 조치 큐에 집중 |
 | [Behance Enterprise Design System](https://www.behance.net/gallery/243340343/Enterprise-Design-System-SaaS-Platform-Case-Study), [Fleet Dashboard](https://www.behance.net/gallery/77060443/Automated-Fleet-Dashboard), [Mobile robots console](https://www.behance.net/gallery/130464827/Mobile-robots-console-fleet-management-UI-UX-design) | 강한 섹션 위계, 실제 제품 장면, 컴포넌트 근거를 함께 제시 | 장식형 Hero 제거, System Summary를 실제 토큰·컴포넌트·상세 링크 중심으로 구성 |
-| [Pinterest dashboard case-study reference](https://in.pinterest.com/pin/dashboard-design-case-study-on-behance--384494886949943745/) | 빠른 스캔을 위한 카드 리듬과 명료한 인덱스 | 요약의 편집형 카드 리듬과 33개 목적지 인덱스에만 참고 |
+| [Pinterest dashboard case-study reference](https://in.pinterest.com/pin/dashboard-design-case-study-on-behance--384494886949943745/) | 빠른 스캔을 위한 카드 리듬과 명료한 인덱스 | 요약의 편집형 카드 리듬과 34개 목적지 인덱스에만 참고 |
 
 Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운영 안전 규칙은 Apple·Google·Meta·W3C·ISA 같은 규범/플랫폼 자료보다 우선하지 않는다.
 
-## 3. 감사한 33개 Parkie 목적지
+## 3. 감사한 34개 Parkie 목적지
 
 - 시작하기 4개: Overview, System Summary, Principles, Change log
 - Foundations 6개: Colors, Typography, Spacing, Radius, Elevation, Iconography
@@ -43,7 +43,7 @@ Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운�
 - Robot Operations 3개: Robot Status, Robot Card, Media & Emergency
 - Overlays & Patterns 2개: Modal, Alert Center
 - Templates 2개: Control App Shell, Control Dashboard
-- Resources 1개: Brand assets
+- Resources 2개: Brand assets, Downloads
 
 모든 목적지는 동일한 4개 문서 계약을 갖는다.
 
@@ -66,10 +66,10 @@ Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운�
 
 | 게이트 | 자동 증거 | 통과 기준 |
 | --- | --- | --- |
-| 정보 구조 | 33개 deep link, 현재 위치, history, KO/EN 검색 | 33/33 |
+| 정보 구조 | 34개 deep link, 현재 위치, history, KO/EN 검색 | 34/34 |
 | 문서 깊이 | 목적지별 4개 고유 계약 | 33 × 4 |
-| 접근성 | axe-core로 33개 전체 렌더 검사 | 위반 0 |
-| DOM 무결성 | 33개 화면 duplicate ID 검사 | 중복 0 |
+| 접근성 | axe-core로 34개 전체 렌더 검사 | 위반 0 |
+| DOM 무결성 | 34개 화면 duplicate ID 검사 | 중복 0 |
 | 반응형 | 1440·900·390px document/main overflow | 페이지 overflow 0 |
 | 타입 | Parkie HTML/CSS의 8–11px 리터럴 탐지 | 최소 12px |
 | 아이콘 | 30개 출처, 조작 아이콘 6상태, 의미 아이콘 별도 축 | 30개 + 도메인 상태 22개 |
@@ -94,7 +94,7 @@ npm test
 
 검증은 횟수 채우기가 아니라 결함 소진 방식으로 수행한다.
 
-1. 구조 루프: 33개 문서·랜드마크·제목·관계·중복 ID를 검사한다.
+1. 구조 루프: 34개 문서·랜드마크·제목·관계·중복 ID를 검사한다.
 2. 의미 루프: Brand·interaction·operation·severity 축이 섞였는지 검사한다.
 3. 제품 루프: 데이터 신선도, 로봇 상태축, CCTV 복구, P1 원인/영향/조치를 검사한다.
 4. 스트레스 루프: 100 robots, 200 alarms, 4 CCTV와 좁은 문서 뷰를 검사한다.

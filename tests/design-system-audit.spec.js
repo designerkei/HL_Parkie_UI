@@ -37,6 +37,7 @@ const TARGET_PAGES = [
   'appshell',
   'dashboard',
   'brand',
+  'downloads',
 ];
 
 test.describe.configure({ mode: 'serial' });
@@ -51,7 +52,7 @@ test.afterEach(async ({ page }) => {
   expect(page.__runtimeErrors, 'audited pages must not throw runtime errors').toEqual([]);
 });
 
-test('all 33 Parkie destinations are deep-linkable and fully documented', async ({ page }) => {
+test('all 34 Parkie destinations are deep-linkable and fully documented', async ({ page }) => {
   for (const id of TARGET_PAGES) {
     await page.goto(`/#${id}`);
     await expect(page.locator('h1')).toBeVisible();
@@ -76,7 +77,7 @@ test('all 33 Parkie destinations are deep-linkable and fully documented', async 
   expect(new Set(destinations)).toEqual(new Set(TARGET_PAGES));
 });
 
-test('all 33 Parkie destinations have no automated accessibility violations', async ({ page }) => {
+test('all 34 Parkie destinations have no automated accessibility violations', async ({ page }) => {
   test.setTimeout(180_000);
 
   const defects = [];

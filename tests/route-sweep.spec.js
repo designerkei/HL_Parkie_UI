@@ -3,7 +3,7 @@
    duplicate id, a missing or empty heading, a product frame that paints
    nothing, or horizontal overflow.
  *
- * The other specs sample Parkie — 33 destinations for axe, a handful for
+ * The other specs sample Parkie — 34 destinations for axe, a handful for
  * structure — because those checks are slow. This one is fast enough to walk
  * all 62 Parkie routes plus the Goalie skeleton and authored CPMS routes, so a defect confined to one
  * unsampled page cannot hide. It was written as an ad-hoc script during review
