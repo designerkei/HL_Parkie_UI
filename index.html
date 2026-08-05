@@ -1024,12 +1024,12 @@
             <section class="pk-control-section">
               <h2>단일 선택 · Single selection</h2>
               <p>같은 맥락 안에서 2–4개의 상호 배타적인 값을 즉시 전환합니다. 페이지 이동용 Tab과 구분하며 radiogroup 의미를 사용합니다.</p>
-              <div class="pk-control-stage">
-                <div class="pk-segmented pk-segmented--default" role="radiogroup" aria-label="사용자 역할">
+              <div class="pk-control-stage" data-spec-block="segmented-stages">
+                <div class="pk-segmented pk-segmented--default" role="radiogroup" data-spec="role" data-spec-label="역할 · Role" aria-label="사용자 역할">
                   <button role="radio" aria-checked="false">관리자</button>
                   <button role="radio" aria-checked="true">엔지니어</button>
                 </div>
-                <div class="pk-segmented" role="radiogroup" aria-label="지도 보기">
+                <div class="pk-segmented" role="radiogroup" data-spec="map" data-spec-label="지도 · Map" aria-label="지도 보기">
                   <button role="radio" aria-checked="true">2D</button>
                   <button role="radio" aria-checked="false">3D</button>
                 </div>
@@ -1037,9 +1037,9 @@
             </section>
             <section class="pk-control-section">
               <h2>상태 · States</h2>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled"><button disabled role="radio" aria-checked="true">열기</button><button disabled role="radio" aria-checked="false">닫기</button></div></div>
+              <div class="pk-control-grid" data-spec-block="segmented-states">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented" data-spec="selected"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled" data-spec="disabled"><button disabled="disabled" role="radio" aria-checked="true">열기</button><button disabled="disabled" role="radio" aria-checked="false">닫기</button></div></div>
               </div>
             </section>
           </div>
@@ -1064,31 +1064,31 @@
             <section class="pk-control-section">
               <h2>스위치 · Switch</h2>
               <p>즉시 적용되는 이진 설정입니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">On</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Off</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled="disabled"></button><span>Disabled</span></label></div>
+              <div class="pk-control-grid" data-spec-block="selection-switch">
+                <div class="pk-control-state"><span class="pk-control-state-label">On</span><label class="pk-switch-field" data-spec="on"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Off</span><label class="pk-switch-field" data-spec="off"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field" data-spec="disabled"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled="disabled"></button><span>Disabled</span></label></div>
               </div>
             </section>
 
             <section class="pk-control-section">
               <h2>체크박스 · Checkbox</h2>
               <p>서로 독립적인 항목을 여러 개 고를 때 씁니다. 선택은 적용 버튼을 누른 뒤 반영됩니다.</p>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Unchecked</span><label class="pk-choice-field"><input type="checkbox" onChange="{{ noop }}"><span>오류 로봇만 표시</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Checked</span><label class="pk-choice-field"><input type="checkbox" checked="{{ specChecked }}" onChange="{{ toggleSpecChecked }}"><span>운행중 포함</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field"><input type="checkbox" disabled="disabled"><span>오프라인 (비활성)</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field"><input type="checkbox" checked="checked" disabled="disabled" onChange="{{ noop }}"><span>고정 항목</span></label></div>
+              <div class="pk-control-grid" data-spec-block="selection-checkbox">
+                <div class="pk-control-state"><span class="pk-control-state-label">Unchecked</span><label class="pk-choice-field" data-spec="unchecked"><input type="checkbox" onChange="{{ noop }}"><span>오류 로봇만 표시</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Checked</span><label class="pk-choice-field" data-spec="checked"><input type="checkbox" checked="{{ specChecked }}" onChange="{{ toggleSpecChecked }}"><span>운행중 포함</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="checkbox" disabled="disabled"><span>오프라인 (비활성)</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field" data-spec="disabled-checked"><input type="checkbox" checked="checked" disabled="disabled" onChange="{{ noop }}"><span>고정 항목</span></label></div>
               </div>
             </section>
 
             <section class="pk-control-section">
               <h2>라디오 · Radio</h2>
               <p>서로 배타적인 보기 중 하나만 고를 때 씁니다. 항목이 다섯 개를 넘으면 셀렉트로 바꿉니다.</p>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><label class="pk-choice-field"><input type="radio" name="pk-view" checked="{{ specRadioMap }}" onChange="{{ selectSpecRadioMap }}"><span>지도 보기</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Unselected</span><label class="pk-choice-field"><input type="radio" name="pk-view" checked="{{ specRadioList }}" onChange="{{ selectSpecRadioList }}"><span>목록 보기</span></label></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field"><input type="radio" name="pk-view-disabled" disabled="disabled"><span>위성 보기 (비활성)</span></label></div>
+              <div class="pk-control-grid" data-spec-block="selection-radio">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><label class="pk-choice-field" data-spec="selected"><input type="radio" name="pk-view" checked="{{ specRadioMap }}" onChange="{{ selectSpecRadioMap }}"><span>지도 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Unselected</span><label class="pk-choice-field" data-spec="unselected"><input type="radio" name="pk-view" checked="{{ specRadioList }}" onChange="{{ selectSpecRadioList }}"><span>목록 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="radio" name="pk-view-disabled" disabled="disabled"><span>위성 보기 (비활성)</span></label></div>
               </div>
             </section>
 
