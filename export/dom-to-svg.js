@@ -526,11 +526,36 @@
     for (var i = 0; i < root.childNodes.length; i += 1) {
       inner += new XMLSerializer().serializeToString(root.childNodes[i]);
     }
+
+    /* Unwrapping the <svg> throws away whatever it was carrying for its children,
+       and in this catalogue that is everything: the icon buttons are authored as
+       <svg fill="none" stroke="currentColor" stroke-width="2"><path/></svg>, so a
+       bare unwrap yields paths with no paint at all and the glyph disappears
+       without erroring. repaint() only walks descendants — the root's own
+       currentColor has to be resolved here. */
+    var carried = '';
+    for (var a = 0; a < CARRY_ATTRS.length; a += 1) {
+      var name = CARRY_ATTRS[a];
+      if (!root.hasAttribute(name)) continue;
+      var value = root.getAttribute(name);
+      if (value === 'currentColor') {
+        carried += ' ' + e.paintAttrs(name, colour);
+      } else {
+        carried += ' ' + name + '="' + e.esc(value) + '"';
+      }
+    }
+
     /* stroke-width travels in viewBox units, so a uniform scale keeps line weight
        even; the specimens are square-ish and this never visibly distorts. */
-    return '  <g transform="translate(' + R(box.x) + ' ' + R(box.y) + ') scale('
-      + R(sx) + ' ' + R(sy) + ')">' + inner + '</g>\n';
+    return '  <g' + carried + ' transform="translate(' + R(box.x) + ' ' + R(box.y)
+      + ') scale(' + R(sx) + ' ' + R(sy) + ')">' + inner + '</g>\n';
   }
+
+  var CARRY_ATTRS = [
+    'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
+    'stroke-miterlimit', 'stroke-dasharray', 'stroke-dashoffset', 'fill-rule',
+    'clip-rule', 'fill-opacity', 'stroke-opacity', 'opacity',
+  ];
 
   var clipSeq = 0;
 

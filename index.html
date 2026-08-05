@@ -104,6 +104,7 @@
 <script src="./support.js"></script>
 <script src="./icons/svg-export.js"></script>
 <script src="./export/dom-to-svg.js"></script>
+<script src="./export/specimen-manifest.js"></script>
 <script type="module">
   import icons from './ms/icon-data.js';
   import parkieIcons from './icons/parkie-icon-data.js';
@@ -201,6 +202,19 @@
           <h1 id="pk-page-title" class="guide-page-header__title pk-page-header__title" tabindex="-1">{{ curTitle }}</h1>
           <p class="guide-page-header__description pk-page-header__description">{{ curDesc }}</p>
         </div>
+
+        <!-- Component SVG export. One mount for every page that offers it, keyed
+             off the active route the way the documentation contract is. -->
+        <sc-if value="{{ showSpecimenExport }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-export-actions">
+            <button type="button" class="pk-button pk-button--secondary pk-button--compact pk-export-download"
+                    data-specimen-download onClick="{{ specimenExport.onClick }}"
+                    title="{{ specimenExport.title }}">
+              {{ specimenExport.label }}
+            </button>
+            <p class="pk-export-actions-note">{{ specimenExport.title }}</p>
+          </div>
+        </sc-if>
 
         <!-- ===== OVERVIEW ===== -->
         <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
@@ -924,43 +938,43 @@
             <section class="pk-control-section">
               <h2>종류 · Variants</h2>
               <p>Primary는 화면당 한 개의 대표 행동에 사용합니다. Danger는 되돌리기 어려운 중단·초기화·삭제에만 사용합니다.</p>
-              <div class="pk-control-stage">
-                <button class="pk-button">Primary</button>
-                <button class="pk-button pk-button--secondary">Secondary</button>
-                <button class="pk-button pk-button--subtle">Subtle</button>
-                <button class="pk-button pk-button--outline">Outline</button>
-                <button class="pk-button pk-button--ghost">Ghost</button>
-                <button class="pk-button pk-button--danger">Danger</button>
+              <div class="pk-control-stage" data-spec-block="button-variants">
+                <button class="pk-button" data-spec="primary" data-spec-label="Primary">Primary</button>
+                <button class="pk-button pk-button--secondary" data-spec="secondary" data-spec-label="Secondary">Secondary</button>
+                <button class="pk-button pk-button--subtle" data-spec="subtle" data-spec-label="Subtle">Subtle</button>
+                <button class="pk-button pk-button--outline" data-spec="outline" data-spec-label="Outline">Outline</button>
+                <button class="pk-button pk-button--ghost" data-spec="ghost" data-spec-label="Ghost">Ghost</button>
+                <button class="pk-button pk-button--danger" data-spec="danger" data-spec-label="Danger">Danger</button>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>크기 · Sizes</h2>
-              <div class="pk-control-stage">
-                <button class="pk-button pk-button--compact">Compact 30</button>
-                <button class="pk-button">Default 36</button>
-                <button class="pk-button pk-button--large">Large 48</button>
+              <div class="pk-control-stage" data-spec-block="button-sizes">
+                <button class="pk-button pk-button--compact" data-spec="compact-30" data-spec-label="Compact 30">Compact 30</button>
+                <button class="pk-button" data-spec="default-36" data-spec-label="Default 36">Default 36</button>
+                <button class="pk-button pk-button--large" data-spec="large-48" data-spec-label="Large 48">Large 48</button>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>상태 · States</h2>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Rest</span><button class="pk-button">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" disabled>확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
+              <div class="pk-control-grid" data-spec-block="button-states">
+                <div class="pk-control-state"><span class="pk-control-state-label">Rest</span><button class="pk-button" data-spec="rest">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover" data-spec="hover">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed" data-spec="pressed">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus" data-spec="focus-visible">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" data-spec="disabled" disabled="disabled">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" data-spec="loading" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>아이콘 버튼 · Icon Button</h2>
               <p>Chevron·닫기·검색처럼 아이콘 자체가 널리 이해되는 보조 행동에 사용합니다. 모든 아이콘 버튼에는 접근 가능한 이름을 제공합니다.</p>
-              <div class="pk-control-stage">
-                <button class="pk-icon-button" type="button" aria-label="위로 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 14 5-5 5 5"/></svg></button>
-                <button class="pk-icon-button is-hover" type="button" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
-                <button class="pk-icon-button is-pressed" type="button" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
-                <button class="pk-icon-button is-focus" type="button" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
-                <button class="pk-icon-button" type="button" aria-label="사용할 수 없음" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+              <div class="pk-control-stage" data-spec-block="button-icon">
+                <button class="pk-icon-button" type="button" data-spec="collapse" data-spec-label="Rest" aria-label="위로 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 14 5-5 5 5"/></svg></button>
+                <button class="pk-icon-button is-hover" type="button" data-spec="expand" data-spec-label="Hover" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                <button class="pk-icon-button is-pressed" type="button" data-spec="close" data-spec-label="Pressed" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+                <button class="pk-icon-button is-focus" type="button" data-spec="search" data-spec-label="Focus visible" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
+                <button class="pk-icon-button" type="button" data-spec="disabled" data-spec-label="Disabled" aria-label="사용할 수 없음" disabled="disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
               </div>
             </section>
             <sc-if value="{{ hasButtonTokens }}" hint-placeholder-val="{{ true }}">
@@ -3044,6 +3058,7 @@ class Component extends DCLogic {
     parkieIcons: null,
     buttonSpecs: null,
     colorSpecs: null,
+    specimenCount: 0,
     copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
@@ -3077,6 +3092,7 @@ class Component extends DCLogic {
        second source of truth that silently drifts from the tokens. */
     if (this.normalizeRoute(this.state.route).system === 'parkie') {
       this.requestTokenSpecs();
+      this.requestSpecimenCount();
     }
     if (this.props.brandPrimary && this.rootRef.current) {
       this.rootRef.current.style.setProperty('--parkie-brand-primary', this.props.brandPrimary);
@@ -3105,6 +3121,13 @@ class Component extends DCLogic {
       && !this.tokenSpecsPending
     ) {
       this.requestTokenSpecs();
+    }
+    /* Recounted on every settled update rather than once: the specimens belong to
+       the route, so navigating away and back changes the number. */
+    if (!this.specimenCountPending) {
+      const root = this.rootRef.current;
+      const found = root ? root.querySelectorAll('[data-spec]').length : 0;
+      if (found !== this.state.specimenCount) this.setState({ specimenCount: found });
     }
   }
 
@@ -3549,6 +3572,161 @@ class Component extends DCLogic {
     });
 
     exporter.save(exporter.zip(files), 'parkie-icon-sheets.zip');
+  }
+
+  /* ---- component specimen export --------------------------------------
+     The icon exporters above own icon geometry. These own whole rendered
+     components, and the split is the same one the two modules make: glyphs there,
+     CSS boxes here. What they share is the ZIP writer and the dark artboard. */
+
+  /* Sheet and README colours, read from the page rather than restated. */
+  specimenOptions() {
+    const computed = window.getComputedStyle(document.documentElement);
+    const resolveToken = (token) => computed.getPropertyValue(token).trim();
+    return {
+      resolveToken,
+      background: resolveToken('--parkie-surface-elevation-00') || '#131315',
+      gridLine: resolveToken('--parkie-alpha-white-09'),
+      textPrimary: resolveToken('--parkie-text'),
+      textSecondary: resolveToken('--parkie-text-secondary'),
+    };
+  }
+
+  /* A cell's caption comes from data-spec-label when the specimen names its own
+     state, and otherwise from the labelled state cell it sits in — the pages that
+     already use .pk-control-grid get their captions for free. */
+  specimenLabel(node) {
+    const own = node.getAttribute('data-spec-label');
+    if (own) return own;
+    const cell = node.closest('.pk-control-state');
+    const label = cell && cell.querySelector('.pk-control-state-label');
+    return (label ? label.textContent : node.getAttribute('data-spec') || '').trim();
+  }
+
+  /* Reads one page's specimens out of the live DOM. Returns null when the page is
+     not the one on screen, because a specimen only exists while its route is
+     mounted — the bundle relies on that and drives the router itself. */
+  collectSpecimens(pageId, scope) {
+    const spec = window.__parkieSpecimens && window.__parkieSpecimens[pageId];
+    const dom = window.__parkieDomSvg;
+    if (!spec || !dom) return null;
+
+    const root = scope || document;
+    const options = this.specimenOptions();
+    const rows = [];
+    const files = [];
+
+    spec.blocks.forEach((block) => {
+      const host = root.querySelector('[data-spec-block="' + spec.slug + '-' + block.id + '"]');
+      if (!host) return;
+      const nodes = [...host.querySelectorAll('[data-spec]')];
+      if (!nodes.length) return;
+
+      const cells = [];
+      nodes.forEach((node) => {
+        const name = node.getAttribute('data-spec');
+        const serialized = dom.serialize(node, options);
+        if (!serialized.width || !serialized.height) return;
+        cells.push({
+          state: this.specimenLabel(node) || name,
+          markup: serialized.markup,
+          defs: serialized.defs,
+          width: serialized.width,
+          height: serialized.height,
+        });
+        files.push({
+          name: 'svg/' + block.id + '-' + name + '.svg',
+          text: dom.standalone(node, options),
+        });
+      });
+
+      if (cells.length) {
+        rows.push({ id: block.id, ko: block.ko, en: block.en, cells });
+      }
+    });
+
+    if (!files.length) return null;
+
+    const title = this.state.lang === 'en' ? spec.titleEn : spec.titleKo;
+    return {
+      slug: spec.slug,
+      title: title,
+      files,
+      /* One block, one row per group, captions under each cell: the groups on a
+         component page label their cells differently from each other, which is the
+         same reason the semantic icon rows carry per-cell captions. */
+      sheet: dom.buildBoxSheet(
+        [{ id: spec.slug, title: spec.titleKo + ' · ' + spec.titleEn, columns: null, rows }],
+        options,
+      ),
+    };
+  }
+
+  specimenReadme(collected, options) {
+    const lines = collected.files.map((file) => '  ' + file.name);
+    return [
+      'Parkie · ' + collected.title,
+      '',
+      'One SVG per specimen under svg/, plus sheet.svg — the same specimens laid',
+      'out in a labelled grid, one row per group, for reading side by side.',
+      '',
+      'Every value here was read back from the rendered page, not restated: fills,',
+      'borders, radii, focus rings, type and the position of every box are what the',
+      'browser computed. No CSS was reimplemented to produce these files, so they',
+      'cannot drift from the component they document.',
+      '',
+      'Artboards are dark on purpose. Hover greys and disabled washes are invisible',
+      'on a white artboard, and a specimen you cannot see is not a specimen.',
+      '',
+      'Surface  ' + options.background,
+      '',
+      'Files (' + collected.files.length + ')',
+      lines.join('\n'),
+      '',
+      'Known limits',
+      '  Animation is frozen at its first frame — the loading spinner exports as a',
+      '  static arc. filter() is not representable in SVG paint and is dropped;',
+      '  the only use is the switch hover brightening, which is not a documented',
+      '  specimen state.',
+      '',
+    ].join('\n');
+  }
+
+  downloadSpecimens(pageId) {
+    const exporter = window.__parkieSvgExport;
+    if (!exporter) return;
+    const collected = this.collectSpecimens(pageId);
+    if (!collected) return;
+
+    const options = this.specimenOptions();
+    const files = collected.files.concat([
+      { name: 'sheet.svg', text: collected.sheet },
+      { name: 'README.txt', text: this.specimenReadme(collected, options) },
+    ]);
+
+    exporter.save(exporter.zip(files), 'parkie-' + collected.slug + '.zip');
+  }
+
+  /* The count is read off the page rather than declared, so a specimen added to
+     the markup shows up in the label without a second list to keep in step. The
+     stylesheet arrives late enough that the first render sees nothing, which is
+     the same wait requestTokenSpecs already makes. */
+  scheduleSpecimenCount(attempt) {
+    const root = this.rootRef.current;
+    const found = root ? root.querySelectorAll('[data-spec]').length : 0;
+    if (found || attempt >= 30) {
+      this.specimenCountPending = false;
+      if (found !== this.state.specimenCount) this.setState({ specimenCount: found });
+      return;
+    }
+    this.specimenCountFrame = window.requestAnimationFrame(
+      () => this.scheduleSpecimenCount(attempt + 1),
+    );
+  }
+
+  requestSpecimenCount() {
+    this.specimenCountPending = true;
+    this.scheduleSpecimenCount(0);
   }
 
   NAV = [
@@ -5065,6 +5243,22 @@ class Component extends DCLogic {
     const documentationGuide = isParkieSystem ? (documentationGuides[active] || []) : [];
     const showDocumentationGuide = documentationGuide.length > 0;
 
+    /* The toolbar appears only where the manifest declares specimens and the page
+       has actually rendered them. Offering a download that produces an empty
+       archive would be worse than not offering one. */
+    const specimenPage = isParkieSystem && window.__parkieSpecimens
+      ? window.__parkieSpecimens[active] : null;
+    const specimenCount = this.state.specimenCount;
+    const showSpecimenExport = Boolean(specimenPage) && specimenCount > 0;
+    const specimenExport = {
+      label: L(`SVG ${specimenCount}개 내려받기`, `Download ${specimenCount} SVG`),
+      title: L(
+        '이 페이지의 표본을 하나씩 SVG로, 상태 시트 한 장과 함께 ZIP으로 받습니다. 값은 화면에서 계산된 그대로 읽어 담기므로 컴포넌트와 어긋나지 않습니다. 어두운 대지에 담기는 이유는 hover 회색과 비활성 워시가 흰 대지에서 보이지 않기 때문입니다.',
+        'One SVG per specimen on this page, with a labelled state sheet, delivered as a zip. Values are read back from the rendered page, so the files cannot drift from the component. The artboard is dark because hover greys and disabled washes are invisible on a white one.',
+      ),
+      onClick: () => this.downloadSpecimens(active),
+    };
+
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
     const spacingScale = Object.keys(spx).map((n) => ({
       token: `--parkie-space-${n}`, px: spx[n],
@@ -5166,6 +5360,8 @@ class Component extends DCLogic {
       hasButtonTokens: buttonTokenGroups.length > 0,
       documentationGuide,
       showDocumentationGuide,
+      showSpecimenExport,
+      specimenExport,
       documentationGuideTitle: L('운영·구현 계약', 'Usage & implementation contract'),
       documentationGuideDescription: L('실제 RMS 화면에 적용할 때 시각 샘플과 함께 지켜야 할 최소 규칙입니다.', 'Minimum rules to apply alongside the visual specimen in production RMS screens.'),
       /* Pages whose specimens are designed at full application width. The top
