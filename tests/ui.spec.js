@@ -22,8 +22,11 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
   await openComponent(page, '버튼');
   const button = page.locator('.pk-control-stage .pk-button').first();
   await expect(button).toBeVisible();
-  await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
-  await expect(button).toHaveCSS('color', 'rgb(6, 34, 46)');
+  /* brand-700, not brand-500: the fill sits one step below brand blue so the
+     white label clears AA. #00AAFF is still the brand colour everywhere it does
+     not have to carry type. */
+  await expect(button).toHaveCSS('background-color', 'rgb(0, 124, 189)');
+  await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(button).toHaveCSS('height', '36px');
 
   const disabled = page.locator('.pk-button.is-disabled');
@@ -32,13 +35,17 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
     'background-color',
     'rgb(223, 0, 0)'
   );
+  /* The ramp darkens monotonically — brand-700 -> 800 -> 900. There is no
+     headroom to brighten into: the brightest blue where white still clears
+     4.5:1 is about #007CBA, which is where rest already sits. Danger darkens
+     for the same reason. */
   await expect(page.locator('.pk-button.is-hover')).toHaveCSS(
     'background-color',
-    'rgb(22, 220, 242)'
+    'rgb(8, 99, 143)'
   );
   await expect(page.locator('.pk-button.is-pressed')).toHaveCSS(
     'background-color',
-    'rgb(0, 155, 233)'
+    'rgb(13, 79, 112)'
   );
 });
 

@@ -167,12 +167,23 @@
   --parkie-brand-text: var(--parkie-color-brand-400);
 
   /* ---- Action colors
-     Parkie blue is intentionally bright. Dark ink preserves the supplied
-     brand surface while clearing WCAG AA for compact control labels. */
-  --parkie-action-primary-bg: #00AAFF;
-  --parkie-action-primary-bg-hover: #16DCF2;
-  --parkie-action-primary-bg-pressed: #009BE9;
-  --parkie-action-primary-fg: var(--parkie-color-brand-950);
+     White labels on the action fill, which means the fill sits one step below
+     brand blue rather than on it. #00AAFF stays the brand colour — icons,
+     Selected, borders, the Subtle and Outline families all still read from it —
+     but it cannot carry white type: 2.56:1, short of AA and short of the 3:1
+     large-text floor too. Lowering the ink was the other option and it is the
+     one that was tried; dark-on-cyan measured 6.42:1 and was correct, it just
+     is not what the product wants to look like.
+
+     The ramp darkens monotonically, for the same reason Danger does below: the
+     brightest blue where white still clears 4.5:1 is about #007CBA, so there is
+     no headroom to brighten into. A lighter hover would drop to AA Large, and
+     the contrast table treats anything under 4.5:1 as a failure.
+     4.55 -> 6.58 -> 8.86:1, all three from the existing ramp. */
+  --parkie-action-primary-bg: var(--parkie-color-brand-700);
+  --parkie-action-primary-bg-hover: var(--parkie-color-brand-800);
+  --parkie-action-primary-bg-pressed: var(--parkie-color-brand-900);
+  --parkie-action-primary-fg: var(--parkie-color-common-white);
   --parkie-action-danger-bg: #DF0000;
   /* Danger darkens monotonically so white stays readable and the button never
      looks less dangerous as you interact with it. The old hover (#EF2020) was

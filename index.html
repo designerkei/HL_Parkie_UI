@@ -966,7 +966,8 @@
               <section class="pk-control-section">
                 <h2>색상값 · Colour values</h2>
                 <p>값은 실행 시점에 CSS 토큰에서 직접 읽습니다. 마크업에 색을 따로 적어두지 않으므로 토큰을 바꾸면 이 표가 함께 바뀝니다. 대비는 실제 배경에 합성한 뒤 계산한 값이며, 값을 누르면 복사됩니다.</p>
-                <p><strong>Primary의 글씨가 흰색이 아닌 이유</strong> — 밝은 채움 위에서는 흰 글씨가 오히려 읽히지 않습니다. 지금의 어두운 글씨(<code>--parkie-action-primary-fg</code>)는 <code>#00AAFF</code> 위에서 6.42:1이지만, 같은 자리에 흰색을 쓰면 2.56:1로 AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 흰 글씨를 쓰려면 글씨가 아니라 채움을 어둡게 내려야 하며, 그때는 hover·pressed 램프와 Subtle·Outline 계열까지 함께 재조율해야 합니다.</p>
+                <p><strong>흰 글씨를 쓰려고 채움을 한 단 내렸습니다</strong> — 흰 글씨는 <code>#00AAFF</code> 위에서 2.56:1로, AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 그래서 글씨가 아니라 채움을 내렸습니다. <code>--parkie-action-primary-bg</code>는 브랜드 블루가 아니라 그 한 단 아래(<code>brand-700</code>)이고, <code>#00AAFF</code>는 아이콘·Selected·테두리·Subtle·Outline 계열에 그대로 남습니다. 어두운 잉크가 틀렸던 것은 아닙니다 — <code>#00AAFF</code> 위에서 6.42:1로 옳은 값이었고, 다만 제품이 원하는 모양이 아니었습니다.</p>
+                <p><strong>hover가 밝아지지 않고 어두워지는 이유</strong> — 흰 글씨가 4.5:1을 넘는 가장 밝은 파랑이 대략 <code>#007CBA</code>입니다. rest를 그 근처에 두면 위로 올릴 여유가 없어, hover를 밝히면 큰 글씨 기준으로 떨어집니다. 그래서 램프가 단조 감광합니다 — <code>4.55</code> → <code>6.58</code> → <code>8.86:1</code>. 아래 Danger가 같은 이유로 이미 그렇게 되어 있습니다.</p>
                 <sc-for list="{{ buttonTokenGroups }}" as="group" hint-placeholder-count="3">
                   <div class="pk-token-block">
                     <h3>{{ group.variant }}</h3>
@@ -4703,7 +4704,7 @@ class Component extends DCLogic {
     const contrastPairs = [
       { label: L('기본 텍스트', 'Primary text'), usage: L('일반 본문 · AA/AAA', 'Body copy · AA/AAA'), ratio: '16.72:1', sample: contrastSample('var(--parkie-text)', 'var(--parkie-surface)') },
       { label: L('보조 텍스트', 'Secondary text'), usage: L('설명과 메타 정보', 'Description and metadata'), ratio: '7.18:1', sample: contrastSample('var(--parkie-text-secondary)', 'var(--parkie-surface)') },
-      { label: L('기본 액션', 'Primary action'), usage: L('브랜드 표면 · 다크 잉크', 'Brand surface · dark ink'), ratio: '6.42:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
+      { label: L('기본 액션', 'Primary action'), usage: L('액션 채움 · 흰 글씨', 'Action fill · white label'), ratio: '4.55:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
       { label: L('위험 텍스트', 'Danger text'), usage: L('오류 메시지', 'Error messaging'), ratio: '6.69:1', sample: contrastSample('var(--parkie-danger-text)', 'var(--parkie-surface)') },
       { label: L('경고 위 콘텐츠', 'On warning'), usage: L('경고 배경의 아이콘·텍스트', 'Content on warning background'), ratio: '11.89:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-warning)') },
     ];
@@ -4916,8 +4917,8 @@ class Component extends DCLogic {
         'Separate default, hover, focus, pressed, loading and disabled; connect dangerous commands to confirmation and result states.',
         '버튼 이름은 결과를 설명하고 44–48px 안전 타깃, 보이는 포커스, AA 대비를 확보합니다.',
         'Name the outcome, provide a 44–48px safety target, visible focus and AA contrast.',
-        '밝은 브랜드 배경은 --parkie-action-primary-fg의 다크 잉크를 사용하고 임의 색을 덮어쓰지 않습니다.',
-        'Use dark --parkie-action-primary-fg ink on the bright brand surface and never override it ad hoc.'
+        '파란 채움 위 글씨는 --parkie-action-primary-fg의 흰색이며, 채움은 브랜드 블루가 아니라 그 한 단 아래입니다. 임의 색을 덮어쓰지 않습니다.',
+        'White --parkie-action-primary-fg labels on the action fill, which sits one step below brand blue rather than on it. Never override either ad hoc.'
       ),
       segmented: buildDocGuide(
         '2–4개의 동등하고 상호 배타적인 즉시 전환에 사용합니다.',

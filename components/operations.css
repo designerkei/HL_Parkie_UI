@@ -652,11 +652,15 @@
   gap: 7px;
   margin-top: var(--parkie-space-3);
   padding: 0 12px;
-  color: var(--parkie-brand-on);
+  /* Reads from the action tokens rather than brand-primary/brand-on. It is a
+     button, so it takes the same white-on-lowered-fill treatment as .pk-button;
+     brand-primary stays correct for the surfaces that are not buttons, like the
+     map robot marker. */
+  color: var(--parkie-action-primary-fg);
   font-family: var(--parkie-font-sans);
   font-size:var(--parkie-font-xs);
   font-weight: var(--parkie-weight-semibold);
-  background: var(--parkie-brand-primary);
+  background: var(--parkie-action-primary-bg);
   border: 0;
   border-radius: var(--parkie-radius-sm);
   cursor: pointer;
