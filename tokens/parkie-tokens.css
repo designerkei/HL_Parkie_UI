@@ -167,12 +167,23 @@
   --parkie-brand-text: var(--parkie-color-brand-400);
 
   /* ---- Action colors
-     Parkie blue is intentionally bright. Dark ink preserves the supplied
-     brand surface while clearing WCAG AA for compact control labels. */
-  --parkie-action-primary-bg: #00AAFF;
-  --parkie-action-primary-bg-hover: #16DCF2;
-  --parkie-action-primary-bg-pressed: #009BE9;
-  --parkie-action-primary-fg: var(--parkie-color-brand-950);
+     White labels on the action fill, which means the fill sits one step below
+     brand blue rather than on it. #00AAFF stays the brand colour — icons,
+     Selected, borders, the Subtle and Outline families all still read from it —
+     but it cannot carry white type: 2.56:1, short of AA and short of the 3:1
+     large-text floor too. Lowering the ink was the other option and it is the
+     one that was tried; dark-on-cyan measured 6.42:1 and was correct, it just
+     is not what the product wants to look like.
+
+     The ramp darkens monotonically, for the same reason Danger does below: the
+     brightest blue where white still clears 4.5:1 is about #007CBA, so there is
+     no headroom to brighten into. A lighter hover would drop to AA Large, and
+     the contrast table treats anything under 4.5:1 as a failure.
+     4.55 -> 6.58 -> 8.86:1, all three from the existing ramp. */
+  --parkie-action-primary-bg: var(--parkie-color-brand-700);
+  --parkie-action-primary-bg-hover: var(--parkie-color-brand-800);
+  --parkie-action-primary-bg-pressed: var(--parkie-color-brand-900);
+  --parkie-action-primary-fg: var(--parkie-color-common-white);
   --parkie-action-danger-bg: #DF0000;
   /* Danger darkens monotonically so white stays readable and the button never
      looks less dangerous as you interact with it. The old hover (#EF2020) was
@@ -193,6 +204,14 @@
   --parkie-surface-3: var(--parkie-surface-elevation-02);
   --parkie-border: var(--parkie-alpha-white-09);
   --parkie-border-strong: var(--parkie-color-neutral-700);
+  /* The visible edge of an unselected interactive control, which WCAG 1.4.11
+     holds to 3:1 — unlike --parkie-border (1.26:1) and --parkie-border-strong
+     (2.13:1), which are divider and container edges and correct at those values.
+     Nothing here served that purpose because the UA used to draw it: the checkbox
+     and radio were accent-color only. 4.53:1 over the control stage, just above
+     the 4.09:1 Chrome's own unchecked box drew, so taking the paint off the UA
+     does not quietly lower the boundary. */
+  --parkie-control-border: rgba(255,255,255,0.45);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
@@ -415,6 +434,16 @@
   --parkie-ring-inset:
     inset 0 0 0 1px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
+  /* The iconography sheet's single-cyan focus specimen, which is a different
+     shape of answer from the two-tone product ring above and stays that way.
+     Opaque it measured 7.24:1 and read as a lit border rather than a ring. The
+     dial that lowers it without losing area is alpha, and 3:1 is the floor
+     WCAG 2.2 sets for a focus indicator: 62% composites to 3.45:1 over this
+     page's surface, where 58% is already 3.16:1 and 55% falls through at
+     2.96:1. Kept as a token so the value is named once and the export path can
+     resolve it. */
+  --parkie-focus-ring-icon:
+    color-mix(in srgb, var(--parkie-color-brand-500) 62%, transparent);
 
   /* Product-neutral aliases consumed by the shared document shell. The shell
      cannot read the JS registry, so each product publishes its canvas, ink and
@@ -444,6 +473,7 @@
   --parkie-surface-3: var(--parkie-surface-elevation-02);
   --parkie-border: var(--parkie-alpha-white-09);
   --parkie-border-strong: var(--parkie-color-neutral-700);
+  --parkie-control-border: rgba(255,255,255,0.45);
   --parkie-text: rgba(255,255,255,0.95);
   --parkie-text-secondary: rgba(255,255,255,0.60);
   --parkie-text-tertiary: rgba(255,255,255,0.50);
@@ -502,8 +532,8 @@
   --parkie-shadow-lg: 0 4px 6px -2px rgba(0,0,0,0.35), 0 12px 16px -4px rgba(0,0,0,0.50);
   --parkie-shadow-xl: 0 8px 8px -4px rgba(0,0,0,0.35), 0 20px 24px -4px rgba(0,0,0,0.55);
 
-  /* Focus ring — see the :root definition for the measurements and for why the
-     white band is 1px. */
+  /* Focus ring — see the :root definition for the measurements, for why the
+     white band is 1px, and for why the icon specimen runs at 62% alpha. */
   --parkie-focus-ring-inner: var(--parkie-color-common-white);
   --parkie-focus-ring-outer: var(--parkie-color-brand-950);
   --parkie-ring:
@@ -512,6 +542,8 @@
   --parkie-ring-inset:
     inset 0 0 0 1px var(--parkie-focus-ring-inner),
     inset 0 0 0 4px var(--parkie-focus-ring-outer);
+  --parkie-focus-ring-icon:
+    color-mix(in srgb, var(--parkie-color-brand-500) 62%, transparent);
 
   /* Product-neutral aliases consumed by the shared document shell. The shell
      cannot read the JS registry, so each product publishes its canvas, ink and
@@ -540,5 +572,6 @@
     --parkie-focus-ring-outer: Highlight;
     --parkie-border: CanvasText;
     --parkie-border-strong: CanvasText;
+    --parkie-control-border: CanvasText;
   }
 }

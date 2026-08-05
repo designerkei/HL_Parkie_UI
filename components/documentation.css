@@ -242,3 +242,29 @@
   font-size: var(--parkie-font-xs);
   line-height: var(--parkie-leading-normal);
 }
+
+/* Component SVG export ------------------------------------------------
+   Sits under the page header on every page that offers a download. Not
+   .pk-icon-actions, which carries a negative margin-top tuned to slot beneath
+   the icon summary and would pull this up into the description. */
+
+.pk-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--parkie-space-3) var(--parkie-space-4);
+  margin-bottom: var(--parkie-space-6);
+}
+
+.pk-export-download {
+  flex: 0 0 auto;
+}
+
+.pk-export-actions-note {
+  flex: 1 1 320px;
+  min-width: 0;
+  margin: 0;
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}

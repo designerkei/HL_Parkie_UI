@@ -373,9 +373,14 @@
 
 .pk-robot-command button { justify-self: end; }
 
+/* --parkie-brand-text, not --parkie-action-primary-bg. This was reading a fill
+   token as ink, which happened to pass while the fill was #00AAFF (7.24:1 on the
+   card) and broke the moment the fill dropped a step to carry white type — 4.08:1,
+   under AA. The brand-as-text token is the one that is allowed to move
+   independently of the fill, and it measures 9.46:1 here. */
 .pk-robot-command--primary,
 .pk-robot-command--primary .pk-robot-command__action {
-  color: var(--parkie-action-primary-bg);
+  color: var(--parkie-brand-text);
 }
 
 .pk-robot-command__action {

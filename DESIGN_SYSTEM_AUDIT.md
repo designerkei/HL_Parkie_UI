@@ -4,7 +4,7 @@ Date: 2026-08-01
 
 Product: HL Robotics Parkie 주차로봇 관제 시스템
 
-Scope: Parkie 33개 목적지 전체. `MS 참조`는 비교 자료로만 유지하며 Parkie 완성도 집계에서 제외한다.
+Scope: Parkie 34개 목적지 전체. `MS 참조`는 비교 자료로만 유지하며 Parkie 완성도 집계에서 제외한다.
 
 ## 1. 최종 설계 결정
 
@@ -22,18 +22,18 @@ RMS는 정보 구조, 컴포넌트 구조, 타입 위계, 화면 밀도와 KO/EN
 
 | 기준 | 확인한 원칙 | Parkie 반영 |
 | --- | --- | --- |
-| [Apple Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility/) / [Color](https://developer.apple.com/design/human-interface-guidelines/color) | 색 외 단서, 충분한 대비, 읽기 순서와 명확한 조작 결과 | 상태마다 텍스트·수치 병기, 12px 최소 캡션, 33개 화면 axe 검사, 다크 잉크 Primary |
+| [Apple Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility/) / [Color](https://developer.apple.com/design/human-interface-guidelines/color) | 색 외 단서, 충분한 대비, 읽기 순서와 명확한 조작 결과 | 상태마다 텍스트·수치 병기, 12px 최소 캡션, 34개 화면 axe 검사, 흰 글씨 Primary |
 | [Apple SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols) | 일관된 그리드·무게·의미, 플랫폼에서 학습된 기호 재사용 | 24px 그리드, Parkie Original·Custom·Adopted 출처, 범용 기호는 Adopted |
 | [Material 3 States](https://m3.material.io/foundations/interaction/states/state-layers) | Hover·Focus·Pressed와 선택 상태를 분리 | Default·Hover·Focus·Pressed·Selected/On·Disabled 6상태 매트릭스 |
 | [Material Symbols](https://developers.google.com/fonts/docs/material_symbols) | 가변 아이콘 시스템의 일관된 크기·스타일 | 아이콘 24px 기준과 currentColor 토큰 소비 |
 | [Meta accessibility co-design](https://about.fb.com/news/2024/07/building-accessibility-into-our-mixed-reality-products/) | 접근성을 사후 체크가 아닌 설계·검증 과정에 포함 | 문서 계약에 접근성 항목 고정, 자동검사·키보드·시각검사를 같은 릴리스 게이트로 운영 |
 | [ISA High Performance HMI](https://www.isa.org/getmedia/06130a38-f7af-4b35-8c9c-2c34f25c1977/The-High-Performance-HMI-Overview-v2-01.pdf) | 정상 상태는 절제하고 비정상·조치 상태가 눈에 띄어야 함 | 운행·연결·정상 배터리 중립화, Yellow·Red를 예외와 조치 큐에 집중 |
 | [Behance Enterprise Design System](https://www.behance.net/gallery/243340343/Enterprise-Design-System-SaaS-Platform-Case-Study), [Fleet Dashboard](https://www.behance.net/gallery/77060443/Automated-Fleet-Dashboard), [Mobile robots console](https://www.behance.net/gallery/130464827/Mobile-robots-console-fleet-management-UI-UX-design) | 강한 섹션 위계, 실제 제품 장면, 컴포넌트 근거를 함께 제시 | 장식형 Hero 제거, System Summary를 실제 토큰·컴포넌트·상세 링크 중심으로 구성 |
-| [Pinterest dashboard case-study reference](https://in.pinterest.com/pin/dashboard-design-case-study-on-behance--384494886949943745/) | 빠른 스캔을 위한 카드 리듬과 명료한 인덱스 | 요약의 편집형 카드 리듬과 33개 목적지 인덱스에만 참고 |
+| [Pinterest dashboard case-study reference](https://in.pinterest.com/pin/dashboard-design-case-study-on-behance--384494886949943745/) | 빠른 스캔을 위한 카드 리듬과 명료한 인덱스 | 요약의 편집형 카드 리듬과 34개 목적지 인덱스에만 참고 |
 
 Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운영 안전 규칙은 Apple·Google·Meta·W3C·ISA 같은 규범/플랫폼 자료보다 우선하지 않는다.
 
-## 3. 감사한 33개 Parkie 목적지
+## 3. 감사한 34개 Parkie 목적지
 
 - 시작하기 4개: Overview, System Summary, Principles, Change log
 - Foundations 6개: Colors, Typography, Spacing, Radius, Elevation, Iconography
@@ -43,7 +43,7 @@ Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운�
 - Robot Operations 3개: Robot Status, Robot Card, Media & Emergency
 - Overlays & Patterns 2개: Modal, Alert Center
 - Templates 2개: Control App Shell, Control Dashboard
-- Resources 1개: Brand assets
+- Resources 2개: Brand assets, Downloads
 
 모든 목적지는 동일한 4개 문서 계약을 갖는다.
 
@@ -66,10 +66,10 @@ Behance와 Pinterest는 표현·리듬 참고 자료다. 의미, 접근성, 운�
 
 | 게이트 | 자동 증거 | 통과 기준 |
 | --- | --- | --- |
-| 정보 구조 | 33개 deep link, 현재 위치, history, KO/EN 검색 | 33/33 |
+| 정보 구조 | 34개 deep link, 현재 위치, history, KO/EN 검색 | 34/34 |
 | 문서 깊이 | 목적지별 4개 고유 계약 | 33 × 4 |
-| 접근성 | axe-core로 33개 전체 렌더 검사 | 위반 0 |
-| DOM 무결성 | 33개 화면 duplicate ID 검사 | 중복 0 |
+| 접근성 | axe-core로 34개 전체 렌더 검사 | 위반 0 |
+| DOM 무결성 | 34개 화면 duplicate ID 검사 | 중복 0 |
 | 반응형 | 1440·900·390px document/main overflow | 페이지 overflow 0 |
 | 타입 | Parkie HTML/CSS의 8–11px 리터럴 탐지 | 최소 12px |
 | 아이콘 | 30개 출처, 조작 아이콘 6상태, 의미 아이콘 별도 축 | 30개 + 도메인 상태 22개 |
@@ -94,7 +94,7 @@ npm test
 
 검증은 횟수 채우기가 아니라 결함 소진 방식으로 수행한다.
 
-1. 구조 루프: 33개 문서·랜드마크·제목·관계·중복 ID를 검사한다.
+1. 구조 루프: 34개 문서·랜드마크·제목·관계·중복 ID를 검사한다.
 2. 의미 루프: Brand·interaction·operation·severity 축이 섞였는지 검사한다.
 3. 제품 루프: 데이터 신선도, 로봇 상태축, CCTV 복구, P1 원인/영향/조치를 검사한다.
 4. 스트레스 루프: 100 robots, 200 alarms, 4 CCTV와 좁은 문서 뷰를 검사한다.
@@ -136,6 +136,36 @@ npm test
 **기준으로 삼은 Material 수치** — 트림 24×24dp, 라이브 영역 20×20dp, 여백 2dp,
 키라인(정사각 18×18 · 원 ⌀20 · 세로 20×16 · 가로 16×20), 획 2dp, 24dp 심볼의 터치
 타깃 48dp. Google의 포커스 링은 `--md-focus-ring-width: 3px`이되 **색은 불투명**이다.
+
+#### 포커스 표본을 62% 알파로 되돌린 것 (2026-08-05)
+
+**위의 "색은 불투명" 근거는 이 표본에 대해서는 철회한다.** `decb82d`가 3px 40%를 2px
+불투명으로 바꾼 것은 대비 계산으로는 옳았지만(2.11:1 → 7.24:1) 실사용 판단이 빠져
+있었다. 7.24:1짜리 시안 테두리는 링이 아니라 **불 켜진 테두리**로 읽힌다. 그때 문서에
+"알파는 잘못된 다이얼"이라고 적었는데, 정확히는 **알파가 유일하게 남은 다이얼**이었다 —
+면적은 SC 2.4.13이 잠가두었으므로.
+
+바꾼 값은 `--parkie-focus-ring-icon: color-mix(in srgb, var(--parkie-color-brand-500) 62%,
+transparent)`이고, 이 페이지 표면 위 합성 실측은 다음과 같다.
+
+| 알파 | 합성색 | 대비 | |
+|---|---|---|---|
+| 1.00 | `rgb(0,170,255)` | 7.24:1 | 이전 값, 너무 밝다 |
+| **0.62** | `rgb(7,113,166)` | **3.45:1** | 채택 |
+| 0.58 | `rgb(8,107,157)` | 3.16:1 | |
+| 0.55 | `rgb(9,102,150)` | 2.96:1 | 하한 아래 |
+| 0.40 | `rgb(11,79,115)` | 2.11:1 | 전달 표본 |
+
+**Google 사례가 이 건을 정하지 못하는 이유**도 함께 적어둔다. Material의 링은 밝은
+표면 위에 얹히고, 여기는 `#131315`다. 어두운 배경에서 밝기는 곧 대비이므로 "덜 밝게"와
+"대비 유지"가 같은 축에서 충돌한다. 그래서 답은 취향이 아니라 **하한을 찾는 계산**이었다.
+
+게이트도 이에 맞춰 양쪽 괄호로 바꿨다(`tests/ui.spec.js`). 이전 게이트는 `alpha === 1`을
+단정해서 "너무 밝다"는 결함을 **잡을 수 없는 방향으로** 잠가둔 상태였다. 지금은 알파가
+1보다 작아야 하고(밝기 상한) 합성 대비가 3:1 이상이어야 한다(접근성 하한). 그리고 본문
+수치를 하드코딩 대신 **실측값에서 읽어** 비교하므로, 토큰만 바꾸고 설명을 안 고치면
+실패한다 — 직전 게이트가 `2.11`/`7.24`/`0.60` 리터럴을 고정했는데 그 셋 다 참인 채로
+아래 값이 바뀔 수 있었던 것이 이 교훈이다.
 
 1. **컨테이너 30px → 32px. 완료.** `.pk-icon-state`의 `is-focus`·`is-pressed`·
    `is-selected`·칩이 30×30이라 24 글리프에 여백이 3px씩 붙었다. 3은 `--parkie-space-*`
@@ -240,6 +270,93 @@ npm test
 다섯 번째가 다음 줄 라벨 칸에 들어갔다. `repeat()`는 count에 커스텀 속성을 못 받으므로
 개수를 클래스로 넘기고, **렌더된 열 수가 상태 수와 같은지를 게이트가 잰다** — 여섯 번째가
 생기면 조용히 줄바꿈되는 대신 테스트가 실패한다.
+
+### 액션 채움을 한 단 내려 흰 글씨를 쓴 것 (2026-08-05)
+
+제품 요구는 "파란 버튼 안 글씨는 모두 흰색"이었다. 흰색은 `#00AAFF` 위에서 2.56:1로
+AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미치므로, **글씨가 아니라 채움을 내렸다.**
+어두운 잉크가 틀렸던 것은 아니다 — 6.42:1로 옳은 값이었고 다만 제품이 원하는 모양이
+아니었다. `#00AAFF`는 브랜드 색으로 남는다(아이콘·Selected·테두리·Subtle·Outline).
+
+| 상태 | 토큰 | hex | 흰 글씨 |
+|---|---|---|---|
+| Rest | `brand-700` | `#007CBD` | 4.55:1 |
+| Hover | `brand-800` | `#08638F` | 6.58:1 |
+| Pressed | `brand-900` | `#0D4F70` | 8.86:1 |
+
+**새 색을 만들지 않았다.** 기존 램프의 세 단을 그대로 쓴다 — Danger가
+`--parkie-color-red-700/800`을 재사용하는 것과 같은 구조다.
+
+**램프가 단조 감광하는 것은 취향이 아니다.** 흰 글씨가 4.5:1을 넘는 가장 밝은 파랑이
+대략 `#007CBA`이고 rest가 이미 그 자리다. hover를 밝히면 4.35:1로 떨어지는데, 대비 표의
+판정은 `r >= 4.5`만 통과로 보므로 `AA Large`도 `is-fail`을 단다. 위로 올릴 여유가 없다.
+결과적으로 Primary가 Danger와 같은 모양(5.08 → 6.91 → 8.94)이 되었다.
+
+**이 변경이 잡아낸 결함 1건 — 채움 토큰을 잉크로 읽고 있었다.**
+`.pk-robot-command--primary`가 `color: var(--parkie-action-primary-bg)`였다. 채움이
+`#00AAFF`인 동안은 카드 위에서 7.24:1로 **우연히** 통과했고, 채움이 흰 글씨를 받으려고
+한 단 내려간 순간 4.08:1로 AA 아래로 떨어졌다. axe 33라우트 스윕이 이것을 잡았다.
+고친 값은 `--parkie-brand-text`(9.46:1)이며, **이것이 잉크로 쓰도록 만들어진 토큰**이다.
+
+교훈은 §12의 것과 같은 종류다. 게이트가 잡았다는 것이 요점이 아니라, **이름이 용도를
+말하는 토큰을 용도와 다르게 쓰면 값이 우연히 맞는 동안만 조용하다**는 것이다.
+`-bg`로 끝나는 토큰이 `color:`에 앉아 있으면 그 자체가 지적 대상이다.
+
+### 체크박스·라디오를 CSS로 그리게 한 것 (2026-08-05)
+
+전부가 `.pk-choice-field input { width:18px; height:18px; accent-color: … }`였다.
+네모·체크마크·라디오 점을 **브라우저가 그리고 있었으므로** 세 가지가 따라왔다.
+
+1. 이 페이지의 견본이 다른 OS에서 출하되는 모양과 달랐다
+2. 문서가 자기가 그리지 않는 상태를 보여줄 수 없었다
+3. 직렬화할 도형이 없어 **SVG 내보내기가 불가능했다** — 다른 컨트롤은 전부 CSS라
+   내보낼 수 있는데 이 둘만 구멍이었다
+
+`appearance: none`으로 **페인트만** 가져왔다. 요소는 여전히 진짜 `<input>`이라 키보드·
+포커스·폼 연결·역할이 그대로이고, role 기반 게이트는 차이를 보지 못한다. 체크마크는
+글리프도 이미지도 아니라 **모서리로 세운 박스의 두 변**이고, 라디오는 Material·Fluent·
+Carbon이 모두 그리는 대로 링과 동심원 점이다(채우면 원반에 구멍을 뚫은 것처럼 읽히고,
+두 컨트롤을 한눈에 가르는 유일한 단서를 버리게 된다).
+
+**경계선 토큰이 없어서 새로 만들었다.** `--parkie-border`(1.26:1)와
+`--parkie-border-strong`(2.13:1)은 구분선과 컨테이너 테두리이고 그 값이 맞다. WCAG
+1.4.11이 3:1을 요구하는 **선택되지 않은 컨트롤의 가시적 경계**에 해당하는 토큰이 없었다 —
+UA가 그려주고 있었으니 필요가 없었던 것이다. `--parkie-control-border`는
+`rgba(255,255,255,0.45)`로 컨트롤 무대 위 4.53:1이며, **Chrome 자신의 미선택 박스가 그리던
+4.09:1보다 위**다. UA에서 페인트를 가져오면서 경계를 조용히 낮추지 않았다는 뜻이다.
+
+`appearance:none` 컨트롤은 **고대비 모드에서 상태를 잃는다** — 작성자 채움과 테두리가 함께
+덮이고, 체크마크·점은 UA가 의견을 갖지 않는 pseudo-element라 체크된 박스와 빈 박스가 같아질
+수 있다. 각 표시가 `forced-color-adjust: none`으로 덮어쓰기에서 빠지고 `Highlight`/
+`HighlightText`/`Canvas`를 직접 지정한다. 네 상태가 고대비에서도 구분되는 것을 확인했다.
+
+#### 남은 결함 — 값 없는 boolean 속성이 DOM에 닿지 않는다
+
+이 작업 중에 드러났고 **고치지 않았다.** DC 런타임이 값 없는 boolean 속성을 버린다.
+`support.js`가 `checked`의 값이 `undefined`면 `false`로 강제하고(804행), `disabled`는
+`""`로 남아 React가 falsy로 읽는다. `aria-busy="true"`처럼 **값이 있는** 속성은 통과한다.
+
+그래서 선택 컨트롤 페이지는 `<input type="checkbox" checked>`라고 적어두고 **빈 박스를
+렌더링하고 있었다.** 버튼 페이지도 같다 — "Disabled" 견본이 `disabled`를 갖고 있지만
+실제로는 포커스도 클릭도 된다. 거기서는 `is-disabled` 클래스가 겉모습을 담당하고 있어
+눈에 띄지 않았을 뿐이다. **겉모습만 있는 상태**이며, §12가 말하는 "값이 우연히 맞는 동안만
+조용하다"의 또 다른 형태다.
+
+| 파일 | 값 없는 boolean 속성 |
+|---|---|
+| `index.html` | `disabled` 21 · `checked` 10 · `selected` 9 · `required` 1 |
+| `GoaliePages.dc.html` | `selected` 8 · `disabled` 3 · `required` 2 |
+| `CPMSPages.dc.html` | `disabled` 2 · `open` 1 |
+| `ProductSkeleton.dc.html` | `disabled` 1 |
+
+**58곳이다.** 선택 컨트롤 페이지만 고쳤다 — 내보내기의 전제였기 때문이다. 그 페이지는
+`checked="{{ … }}"` + `onChange` 바인딩으로 **진짜 DOM 상태**를 갖는다(React가 change
+핸들러 없이는 read-only 경고를 내고 견본이 클릭 불가가 되는데, 문서 페이지에서는 그게
+문서화하려는 상태보다 나쁘다). 나머지 57곳은 열려 있다.
+
+**런타임을 고치는 쪽이 옳은 수정이다.** 값 없는 boolean을 `true`로 강제하면 58곳이 한
+번에 해결된다. 하지만 세 제품 90경로가 쓰는 공용 런타임이고, 지금 무해하게 죽어 있는
+`disabled`·`selected`가 한꺼번에 살아나므로 **별도 작업으로 다뤄야 한다.**
 
 ## 9. 다제품 구조와 Goalie 뼈대
 
@@ -402,3 +519,42 @@ node tests/tools/route-baseline.js --diff before after
 커버리지 행렬이 채워졌고 게이트가 변이 검증됐으므로, 이후 발견되는 것은 커버리지
 구멍이 아니라 **신규 결함**으로 다룬다. 게이트를 새로 추가할 때는 그 게이트가 실패하는
 변이를 함께 확인하고, 확인하지 못하면 그 게이트는 아직 테스트가 아니다.
+
+### 컴포넌트 SVG 내보내기 게이트 변이 검증 (2026-08-05)
+
+변이 14종을 주입했다. **11종은 즉시 잡혔고 3종이 살아남았다.** 셋 다 게이트가 약한
+것이었고, 재조준 후 전부 검출됐다.
+
+| # | 변이 | 결과 |
+|---|---|---|
+| 1 | 포커스 링 알파 62% → 30% | 잡힘 |
+| 2 | `--parkie-action-primary-fg`를 어두운 잉크로 되돌림 | 잡힘 |
+| 3 | hover를 `brand-500`으로 밝힘 | 잡힘 |
+| 4 | 체크박스 체크마크 제거 | **살아남음 → 재조준 → 잡힘** |
+| 5 | 출력에서 `viewBox` 제거 | 잡힘 |
+| 6 | `resolveVars` 호출 제거 (`var(` 잔류) | 잡힘 |
+| 7 | `repaint` 호출 제거 (`currentColor` 잔류) | 잡힘 |
+| 8 | 버튼 라벨 개수를 +1로 어긋냄 | 잡힘 |
+| 9 | pseudo-element 승격 전체 비활성 | 잡힘 |
+| 10 | 전체 묶음의 라우트 복원 제거 | 잡힘 |
+| 11 | 표본 파일 하나 누락 | 잡힘 |
+| 12 | 스위치 노브 제거 | **살아남음 → 재조준 → 잡힘** |
+| 13 | 스위치 트랙 제거 | **살아남음 → 재조준 → 잡힘** |
+| 14 | 라디오 점 제거 | 잡힘 |
+
+**살아남은 셋은 모두 같은 실수였다 — 세는 것으로 있음을 증명하려 했다.**
+
+- **체크마크(4).** "체크된 박스가 빈 박스보다 도형을 더 그린다"로 단정했는데, 체크마크가
+  사라져도 판과 테두리가 남아 2 > 1이 성립한다. **잉크 색을 직접 확인**하도록 바꿨다 —
+  `--parkie-brand-on`을 페이지에서 읽어 체크된 SVG에 그 값이 있는지 본다.
+- **노브·트랙(12·13).** 색을 셌는데 **둘이 같은 hex다** — 트랙은 불투명도만 다르다. 게다가
+  표본에 라벨 텍스트가 포함되므로 색 두 개는 노브 없이도 성립한다. **기하로** 바꿨다:
+  트랙은 높이보다 넓은 사각(알약), 노브는 폭과 높이가 같은 사각(원). 대지 판은 `x`가 없어
+  자연히 제외된다.
+
+교훈은 §12 앞부분과 같은 것의 반복이다. **개수·집합 크기 같은 대리 지표는 사라진 것을
+못 본다.** 없어졌을 때 값이 달라지는 성질을 직접 재야 한다.
+
+9번이 특히 중요하다. pseudo-element 승격이 꺼지면 스위치 노브·체크마크·라디오 점이
+**한꺼번에** 사라지는데, 모든 표본이 여전히 올바른 크기와 올바른 판을 갖고 내보내진다.
+예외도 오류도 없이 그림만 비는 것이 이 내보내기의 대표적 실패 형태다.

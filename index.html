@@ -103,6 +103,8 @@
 </style>
 <script src="./support.js"></script>
 <script src="./icons/svg-export.js"></script>
+<script src="./export/dom-to-svg.js"></script>
+<script src="./export/specimen-manifest.js"></script>
 <script type="module">
   import icons from './ms/icon-data.js';
   import parkieIcons from './icons/parkie-icon-data.js';
@@ -200,6 +202,19 @@
           <h1 id="pk-page-title" class="guide-page-header__title pk-page-header__title" tabindex="-1">{{ curTitle }}</h1>
           <p class="guide-page-header__description pk-page-header__description">{{ curDesc }}</p>
         </div>
+
+        <!-- Component SVG export. One mount for every page that offers it, keyed
+             off the active route the way the documentation contract is. -->
+        <sc-if value="{{ showSpecimenExport }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-export-actions">
+            <button type="button" class="pk-button pk-button--secondary pk-button--compact pk-export-download"
+                    data-specimen-download onClick="{{ specimenExport.onClick }}"
+                    title="{{ specimenExport.title }}">
+              {{ specimenExport.label }}
+            </button>
+            <p class="pk-export-actions-note">{{ specimenExport.title }}</p>
+          </div>
+        </sc-if>
 
         <!-- ===== OVERVIEW ===== -->
         <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
@@ -578,7 +593,7 @@
                   <span class="pk-summary-group__index">05</span>
                   <div>
                     <h2 id="summary-group-index">문서 색인 · Documentation index</h2>
-                    <p>33개 목적지를 카테고리별로 나열합니다. 상세 규칙은 각 문서에 있습니다.</p>
+                    <p>34개 목적지를 카테고리별로 나열합니다. 상세 규칙은 각 문서에 있습니다.</p>
                   </div>
                 </div>
                 <div class="pk-summary-group__body">
@@ -902,7 +917,7 @@
                 </article>
                 <article class="pk-icon-rule" data-icon-focus-note>
                   <h3>Focus 링은 전달 표본과 다릅니다</h3>
-                  <p>전달 표본은 <code>3px</code> 시안 헤일로를 <code>40%</code> 불투명도로 그렸습니다. 이 페이지 배경 위에서 합성하면 <code>2.11:1</code>이라, WCAG 2.2가 포커스 표시에 요구하는 <code>3:1</code>에 못 미칩니다. 그래서 두께를 <code>2px</code>로 줄이고 색을 불투명하게 바꿨습니다 — <code>7.24:1</code>이 되고 더 얇아 보입니다. 얇게만 하는 것으로는 풀리지 않습니다. 40%를 유지하면 <code>3:1</code>을 넘기려 불투명도를 <code>0.60</code>까지 올려야 하고, 반투명인 채로 얇게 만들면 대비와 면적을 함께 잃습니다. <code>2px</code>는 취향이 아니라 하한입니다 — SC 2.4.13이 요구하는 최소 면적이 <code>2px</code> 둘레와 같고, 이 <code>32px</code> 판에서는 정확히 그 값입니다. 제품 컨트롤은 이 헤일로가 아니라 2톤 접근성 링을 씁니다.</p>
+                  <p>여기서 맞바꾸는 값은 두 개인데 하나는 고정입니다. 면적은 못 움직입니다 — SC 2.4.13이 요구하는 최소 면적이 <code>2px</code> 둘레와 같고, 이 <code>32px</code> 판에서는 정확히 그 값입니다. 움직일 수 있는 건 불투명도이고, 그 하한은 WCAG 2.2가 포커스 표시에 요구하는 <code>3:1</code>입니다. 이 페이지 배경 위에서 합성하면 <code>62%</code>가 <code>3.45:1</code>, <code>58%</code>가 <code>3.16:1</code>, <code>55%</code>가 <code>2.96:1</code>로 떨어집니다. 그래서 <code>62%</code>입니다 — 넘어야 할 선을 지키면서 헤일로가 가장 어두워지는 지점. 불투명하게 두면 <code>7.24:1</code>로 링이 아니라 불 켜진 테두리로 읽히고, 전달 표본의 <code>3px</code>·<code>40%</code>는 반대쪽 오류로 <code>2.11:1</code>짜리 두꺼운 띠였습니다. 값은 <code>--parkie-focus-ring-icon</code>에 있어 내려받는 SVG가 화면과 같은 수치를 씁니다. 제품 컨트롤은 이 헤일로가 아니라 2톤 접근성 링을 씁니다.</p>
                 </article>
                 <article class="pk-icon-rule">
                   <h3>의미는 텍스트와 함께</h3>
@@ -923,50 +938,51 @@
             <section class="pk-control-section">
               <h2>종류 · Variants</h2>
               <p>Primary는 화면당 한 개의 대표 행동에 사용합니다. Danger는 되돌리기 어려운 중단·초기화·삭제에만 사용합니다.</p>
-              <div class="pk-control-stage">
-                <button class="pk-button">Primary</button>
-                <button class="pk-button pk-button--secondary">Secondary</button>
-                <button class="pk-button pk-button--subtle">Subtle</button>
-                <button class="pk-button pk-button--outline">Outline</button>
-                <button class="pk-button pk-button--ghost">Ghost</button>
-                <button class="pk-button pk-button--danger">Danger</button>
+              <div class="pk-control-stage" data-spec-block="button-variants">
+                <button class="pk-button" data-spec="primary" data-spec-label="Primary">Primary</button>
+                <button class="pk-button pk-button--secondary" data-spec="secondary" data-spec-label="Secondary">Secondary</button>
+                <button class="pk-button pk-button--subtle" data-spec="subtle" data-spec-label="Subtle">Subtle</button>
+                <button class="pk-button pk-button--outline" data-spec="outline" data-spec-label="Outline">Outline</button>
+                <button class="pk-button pk-button--ghost" data-spec="ghost" data-spec-label="Ghost">Ghost</button>
+                <button class="pk-button pk-button--danger" data-spec="danger" data-spec-label="Danger">Danger</button>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>크기 · Sizes</h2>
-              <div class="pk-control-stage">
-                <button class="pk-button pk-button--compact">Compact 30</button>
-                <button class="pk-button">Default 36</button>
-                <button class="pk-button pk-button--large">Large 48</button>
+              <div class="pk-control-stage" data-spec-block="button-sizes">
+                <button class="pk-button pk-button--compact" data-spec="compact-30" data-spec-label="Compact 30">Compact 30</button>
+                <button class="pk-button" data-spec="default-36" data-spec-label="Default 36">Default 36</button>
+                <button class="pk-button pk-button--large" data-spec="large-48" data-spec-label="Large 48">Large 48</button>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>상태 · States</h2>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Rest</span><button class="pk-button">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus">확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" disabled>확인</button></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
+              <div class="pk-control-grid" data-spec-block="button-states">
+                <div class="pk-control-state"><span class="pk-control-state-label">Rest</span><button class="pk-button" data-spec="rest">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Hover</span><button class="pk-button is-hover" data-spec="hover">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Pressed</span><button class="pk-button is-pressed" data-spec="pressed">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Focus visible</span><button class="pk-button is-focus" data-spec="focus-visible">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><button class="pk-button is-disabled" data-spec="disabled" disabled="disabled">확인</button></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Loading</span><button class="pk-button" data-spec="loading" aria-busy="true"><span class="pk-button-spinner"></span>처리 중</button></div>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>아이콘 버튼 · Icon Button</h2>
               <p>Chevron·닫기·검색처럼 아이콘 자체가 널리 이해되는 보조 행동에 사용합니다. 모든 아이콘 버튼에는 접근 가능한 이름을 제공합니다.</p>
-              <div class="pk-control-stage">
-                <button class="pk-icon-button" type="button" aria-label="위로 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 14 5-5 5 5"/></svg></button>
-                <button class="pk-icon-button is-hover" type="button" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
-                <button class="pk-icon-button is-pressed" type="button" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
-                <button class="pk-icon-button is-focus" type="button" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
-                <button class="pk-icon-button" type="button" aria-label="사용할 수 없음" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+              <div class="pk-control-stage" data-spec-block="button-icon">
+                <button class="pk-icon-button" type="button" data-spec="collapse" data-spec-label="Rest" aria-label="위로 접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 14 5-5 5 5"/></svg></button>
+                <button class="pk-icon-button is-hover" type="button" data-spec="expand" data-spec-label="Hover" aria-label="아래로 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
+                <button class="pk-icon-button is-pressed" type="button" data-spec="close" data-spec-label="Pressed" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+                <button class="pk-icon-button is-focus" type="button" data-spec="search" data-spec-label="Focus visible" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></button>
+                <button class="pk-icon-button" type="button" data-spec="disabled" data-spec-label="Disabled" aria-label="사용할 수 없음" disabled="disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
               </div>
             </section>
             <sc-if value="{{ hasButtonTokens }}" hint-placeholder-val="{{ true }}">
               <section class="pk-control-section">
                 <h2>색상값 · Colour values</h2>
                 <p>값은 실행 시점에 CSS 토큰에서 직접 읽습니다. 마크업에 색을 따로 적어두지 않으므로 토큰을 바꾸면 이 표가 함께 바뀝니다. 대비는 실제 배경에 합성한 뒤 계산한 값이며, 값을 누르면 복사됩니다.</p>
-                <p><strong>Primary의 글씨가 흰색이 아닌 이유</strong> — 밝은 채움 위에서는 흰 글씨가 오히려 읽히지 않습니다. 지금의 어두운 글씨(<code>--parkie-action-primary-fg</code>)는 <code>#00AAFF</code> 위에서 6.42:1이지만, 같은 자리에 흰색을 쓰면 2.56:1로 AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 흰 글씨를 쓰려면 글씨가 아니라 채움을 어둡게 내려야 하며, 그때는 hover·pressed 램프와 Subtle·Outline 계열까지 함께 재조율해야 합니다.</p>
+                <p><strong>흰 글씨를 쓰려고 채움을 한 단 내렸습니다</strong> — 흰 글씨는 <code>#00AAFF</code> 위에서 2.56:1로, AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 그래서 글씨가 아니라 채움을 내렸습니다. <code>--parkie-action-primary-bg</code>는 브랜드 블루가 아니라 그 한 단 아래(<code>brand-700</code>)이고, <code>#00AAFF</code>는 아이콘·Selected·테두리·Subtle·Outline 계열에 그대로 남습니다. 어두운 잉크가 틀렸던 것은 아닙니다 — <code>#00AAFF</code> 위에서 6.42:1로 옳은 값이었고, 다만 제품이 원하는 모양이 아니었습니다.</p>
+                <p><strong>hover가 밝아지지 않고 어두워지는 이유</strong> — 흰 글씨가 4.5:1을 넘는 가장 밝은 파랑이 대략 <code>#007CBA</code>입니다. rest를 그 근처에 두면 위로 올릴 여유가 없어, hover를 밝히면 큰 글씨 기준으로 떨어집니다. 그래서 램프가 단조 감광합니다 — <code>4.55</code> → <code>6.58</code> → <code>8.86:1</code>. 아래 Danger가 같은 이유로 이미 그렇게 되어 있습니다.</p>
                 <sc-for list="{{ buttonTokenGroups }}" as="group" hint-placeholder-count="3">
                   <div class="pk-token-block">
                     <h3>{{ group.variant }}</h3>
@@ -1008,12 +1024,12 @@
             <section class="pk-control-section">
               <h2>단일 선택 · Single selection</h2>
               <p>같은 맥락 안에서 2–4개의 상호 배타적인 값을 즉시 전환합니다. 페이지 이동용 Tab과 구분하며 radiogroup 의미를 사용합니다.</p>
-              <div class="pk-control-stage">
-                <div class="pk-segmented pk-segmented--default" role="radiogroup" aria-label="사용자 역할">
+              <div class="pk-control-stage" data-spec-block="segmented-stages">
+                <div class="pk-segmented pk-segmented--default" role="radiogroup" data-spec="role" data-spec-label="역할 · Role" aria-label="사용자 역할">
                   <button role="radio" aria-checked="false">관리자</button>
                   <button role="radio" aria-checked="true">엔지니어</button>
                 </div>
-                <div class="pk-segmented" role="radiogroup" aria-label="지도 보기">
+                <div class="pk-segmented" role="radiogroup" data-spec="map" data-spec-label="지도 · Map" aria-label="지도 보기">
                   <button role="radio" aria-checked="true">2D</button>
                   <button role="radio" aria-checked="false">3D</button>
                 </div>
@@ -1021,9 +1037,9 @@
             </section>
             <section class="pk-control-section">
               <h2>상태 · States</h2>
-              <div class="pk-control-grid">
-                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
-                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled"><button disabled role="radio" aria-checked="true">열기</button><button disabled role="radio" aria-checked="false">닫기</button></div></div>
+              <div class="pk-control-grid" data-spec-block="segmented-states">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><div class="pk-segmented" data-spec="selected"><button role="radio" aria-checked="true">열기</button><button role="radio" aria-checked="false">닫기</button></div></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><div class="pk-segmented is-disabled" data-spec="disabled"><button disabled="disabled" role="radio" aria-checked="true">열기</button><button disabled="disabled" role="radio" aria-checked="false">닫기</button></div></div>
               </div>
             </section>
           </div>
@@ -1048,29 +1064,31 @@
             <section class="pk-control-section">
               <h2>스위치 · Switch</h2>
               <p>즉시 적용되는 이진 설정입니다. “서비스 시작”처럼 별도 확인이 필요한 명령에는 Button을 사용합니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label>
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label>
-                <label class="pk-switch-field"><button class="pk-switch" role="switch" aria-checked="false" aria-label="비활성 설정" disabled></button><span>Disabled</span></label>
+              <div class="pk-control-grid" data-spec-block="selection-switch">
+                <div class="pk-control-state"><span class="pk-control-state-label">On</span><label class="pk-switch-field" data-spec="on"><button class="pk-switch" type="button" role="switch" aria-checked="true" aria-label="서비스 활성화"></button><span>서비스 활성화</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Off</span><label class="pk-switch-field" data-spec="off"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="로봇 카메라"></button><span>로봇 카메라</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-switch-field" data-spec="disabled"><button class="pk-switch" type="button" role="switch" aria-checked="false" aria-label="비활성 설정" disabled="disabled"></button><span>Disabled</span></label></div>
               </div>
             </section>
 
             <section class="pk-control-section">
               <h2>체크박스 · Checkbox</h2>
               <p>서로 독립적인 항목을 여러 개 고를 때 씁니다. 선택은 적용 버튼을 누른 뒤 반영됩니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-choice-field"><input type="checkbox"><span>오류 로봇만 표시</span></label>
-                <label class="pk-choice-field"><input type="checkbox" checked><span>운행중 포함</span></label>
-                <label class="pk-choice-field"><input type="checkbox" disabled><span>오프라인 (비활성)</span></label>
+              <div class="pk-control-grid" data-spec-block="selection-checkbox">
+                <div class="pk-control-state"><span class="pk-control-state-label">Unchecked</span><label class="pk-choice-field" data-spec="unchecked"><input type="checkbox" onChange="{{ noop }}"><span>오류 로봇만 표시</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Checked</span><label class="pk-choice-field" data-spec="checked"><input type="checkbox" checked="{{ specChecked }}" onChange="{{ toggleSpecChecked }}"><span>운행중 포함</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="checkbox" disabled="disabled"><span>오프라인 (비활성)</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled · checked</span><label class="pk-choice-field" data-spec="disabled-checked"><input type="checkbox" checked="checked" disabled="disabled" onChange="{{ noop }}"><span>고정 항목</span></label></div>
               </div>
             </section>
 
             <section class="pk-control-section">
               <h2>라디오 · Radio</h2>
               <p>서로 배타적인 보기 중 하나만 고를 때 씁니다. 항목이 다섯 개를 넘으면 셀렉트로 바꿉니다.</p>
-              <div class="pk-control-stage">
-                <label class="pk-choice-field"><input type="radio" name="pk-view" checked><span>지도 보기</span></label>
-                <label class="pk-choice-field"><input type="radio" name="pk-view"><span>목록 보기</span></label>
+              <div class="pk-control-grid" data-spec-block="selection-radio">
+                <div class="pk-control-state"><span class="pk-control-state-label">Selected</span><label class="pk-choice-field" data-spec="selected"><input type="radio" name="pk-view" checked="{{ specRadioMap }}" onChange="{{ selectSpecRadioMap }}"><span>지도 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Unselected</span><label class="pk-choice-field" data-spec="unselected"><input type="radio" name="pk-view" checked="{{ specRadioList }}" onChange="{{ selectSpecRadioList }}"><span>목록 보기</span></label></div>
+                <div class="pk-control-state"><span class="pk-control-state-label">Disabled</span><label class="pk-choice-field" data-spec="disabled"><input type="radio" name="pk-view-disabled" disabled="disabled"><span>위성 보기 (비활성)</span></label></div>
               </div>
             </section>
 
@@ -1097,11 +1115,11 @@
             <section class="pk-control-section">
               <h2>책임 · Responsibility</h2>
               <p>Badge는 개수·버전·역할·신규 여부 같은 짧은 메타데이터를 표시합니다. 로봇의 동작·통신·배터리 상태는 Status Label과 Robot Status를 사용합니다.</p>
-              <div class="pk-control-stage">
-                <span class="pk-badge">v1.3.0</span>
-                <span class="pk-badge">Engineer</span>
-                <span class="pk-badge pk-badge--brand">NEW</span>
-                <span class="pk-badge pk-badge--count" aria-label="읽지 않은 알림 12개">12</span>
+              <div class="pk-control-stage" data-spec-block="badge-kinds">
+                <span class="pk-badge" data-spec="version" data-spec-label="Version">v1.3.0</span>
+                <span class="pk-badge" data-spec="role" data-spec-label="Role">Engineer</span>
+                <span class="pk-badge pk-badge--brand" data-spec="brand" data-spec-label="Brand">NEW</span>
+                <span class="pk-badge pk-badge--count" data-spec="count" data-spec-label="Count" aria-label="읽지 않은 알림 12개">12</span>
               </div>
             </section>
             <section class="pk-control-section">
@@ -1156,30 +1174,30 @@
             <section class="pk-control-section">
               <h2>Dot · 기본</h2>
               <p>반복 목록에서 밀도를 낮게 유지할 때 사용합니다. 색에만 의존하지 않도록 항상 텍스트를 병기합니다.</p>
-              <div class="pk-control-stage">
-                <span class="pk-status-label pk-status--neutral">정상</span>
-                <span class="pk-status-label pk-status--info">진행 중</span>
-                <span class="pk-status-label pk-status--warning">주의</span>
-                <span class="pk-status-label pk-status--danger">오류</span>
-                <span class="pk-status-label pk-status--offline">오프라인</span>
+              <div class="pk-control-stage" data-spec-block="status-label-dot">
+                <span class="pk-status-label pk-status--neutral" data-spec="neutral" data-spec-label="Neutral">정상</span>
+                <span class="pk-status-label pk-status--info" data-spec="info" data-spec-label="Info">진행 중</span>
+                <span class="pk-status-label pk-status--warning" data-spec="warning" data-spec-label="Warning">주의</span>
+                <span class="pk-status-label pk-status--danger" data-spec="danger" data-spec-label="Danger">오류</span>
+                <span class="pk-status-label pk-status--offline" data-spec="offline" data-spec-label="Offline">오프라인</span>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>Subtle · 보조 강조</h2>
-              <div class="pk-control-stage">
-                <span class="pk-status-label pk-status-label--subtle pk-status--running">운행 중</span>
-                <span class="pk-status-label pk-status-label--subtle pk-status--charging">충전 중</span>
-                <span class="pk-status-label pk-status-label--subtle pk-status--paused">일시정지</span>
-                <span class="pk-status-label pk-status-label--subtle pk-status--fault">고장</span>
+              <div class="pk-control-stage" data-spec-block="status-label-subtle">
+                <span class="pk-status-label pk-status-label--subtle pk-status--running" data-spec="running" data-spec-label="Running">운행 중</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--charging" data-spec="charging" data-spec-label="Charging">충전 중</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--paused" data-spec="paused" data-spec-label="Paused">일시정지</span>
+                <span class="pk-status-label pk-status-label--subtle pk-status--fault" data-spec="fault" data-spec-label="Fault">고장</span>
               </div>
             </section>
             <section class="pk-control-section">
               <h2>Solid · 강한 강조</h2>
               <p>최신 경고나 즉시 조치가 필요한 단일 상태에 제한합니다. 목록 전체를 Solid로 채우지 않습니다.</p>
-              <div class="pk-control-stage">
-                <span class="pk-status-label pk-status-label--solid pk-status--success">완료</span>
-                <span class="pk-status-label pk-status-label--solid pk-status--warning">점검 필요</span>
-                <span class="pk-status-label pk-status-label--solid pk-status--danger">즉시 중단</span>
+              <div class="pk-control-stage" data-spec-block="status-label-solid">
+                <span class="pk-status-label pk-status-label--solid pk-status--success" data-spec="success" data-spec-label="Success">완료</span>
+                <span class="pk-status-label pk-status-label--solid pk-status--warning" data-spec="warning" data-spec-label="Warning">점검 필요</span>
+                <span class="pk-status-label pk-status-label--solid pk-status--danger" data-spec="danger" data-spec-label="Danger">즉시 중단</span>
               </div>
             </section>
           </div>
@@ -1234,8 +1252,8 @@
         <!-- ===== ROBOT CARD ===== -->
         <sc-if value="{{ isRobotCard }}" hint-placeholder-val="{{ false }}">
           <div class="pk-robot-card-doc">
-            <div class="pk-robot-stack">
-              <article class="pk-robot-control-card is-selected">
+            <div class="pk-robot-stack" data-spec-block="robot-card-cards">
+              <article class="pk-robot-control-card is-selected" data-spec="selected" data-spec-label="Selected">
                 <div class="pk-robot-control-card__summary">
                   <strong class="pk-robot-control-card__id">01</strong>
                   <span class="pk-robot-control-card__signal" role="img" aria-label="연결 양호"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0ZM1 8.5 2.5 10a13.4 13.4 0 0 1 19 0L23 8.5a15.5 15.5 0 0 0-22 0Z"/></svg></span>
@@ -1245,7 +1263,7 @@
                   <button class="pk-robot-card-toggle" aria-label="로봇 01 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
                 </div>
               </article>
-              <article class="pk-robot-control-card is-expanded">
+              <article class="pk-robot-control-card is-expanded" data-spec="expanded" data-spec-label="Expanded">
                 <div class="pk-robot-control-card__summary">
                   <strong class="pk-robot-control-card__id">02</strong>
                   <span class="pk-robot-control-card__signal is-weak" role="img" aria-label="신호 약함"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0Z"/></svg></span>
@@ -1260,7 +1278,7 @@
                   <div class="pk-robot-command"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 7h11a2 2 0 0 1 2 2v1.5l3.2-2a.8.8 0 0 1 1.2.7v5.6a.8.8 0 0 1-1.2.7l-3.2-2V15a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/></svg><span>로봇 카메라</span><button class="pk-switch" role="switch" aria-checked="false" aria-label="로봇 카메라"></button></div>
                 </div>
               </article>
-              <article class="pk-robot-control-card">
+              <article class="pk-robot-control-card" data-spec="default-lost" data-spec-label="Default · lost link">
                 <div class="pk-robot-control-card__summary">
                   <strong class="pk-robot-control-card__id">03</strong>
                   <span class="pk-robot-control-card__signal is-lost" role="img" aria-label="연결 끊김"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2.3 3.7 18 18-1.4 1.4-3.1-3.1A1.8 1.8 0 0 1 12 20.5c0-.9.6-1.6 1.4-1.8l-2.2-2.2a3.7 3.7 0 0 0-1.8 1.1l-1.5-1.5c.5-.5 1.1-.9 1.7-1.2l-2.3-2.3c-.5.3-.9.7-1.3 1.1l-1.5-1.5c.4-.4.8-.8 1.3-1.1L.9 6.2l1.4-2.5ZM12 3.4c4.2 0 8.2 1.7 11 4.8l-1.5 1.5A13.4 13.4 0 0 0 7.8 6.3L5.9 4.4c1.9-.7 4-1 6.1-1Zm0 4.9c2.8 0 5.5 1.2 7.5 3.2L18 13a8.5 8.5 0 0 0-6-2.5c-.4 0-.8 0-1.2.1L8.9 8.7c1-.3 2-.4 3.1-.4Z"/></svg></span>
@@ -1270,7 +1288,7 @@
                   <button class="pk-robot-card-toggle" aria-label="로봇 03 상세 펼치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 9 5 5 5-5"/></svg></button>
                 </div>
               </article>
-              <article class="pk-robot-control-card">
+              <article class="pk-robot-control-card" data-spec="default" data-spec-label="Default">
                 <div class="pk-robot-control-card__summary">
                   <strong class="pk-robot-control-card__id">04</strong>
                   <span class="pk-robot-control-card__signal" role="img" aria-label="연결 양호"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.5a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6Zm-4.1-3.1 1.5 1.5a3.7 3.7 0 0 1 5.2 0l1.5-1.5a5.8 5.8 0 0 0-8.2 0ZM4.5 12l1.5 1.5a8.5 8.5 0 0 1 12 0l1.5-1.5a10.6 10.6 0 0 0-15 0ZM1 8.5 2.5 10a13.4 13.4 0 0 1 19 0L23 8.5a15.5 15.5 0 0 0-22 0Z"/></svg></span>
@@ -1339,16 +1357,16 @@
                 </div>
                 <span class="pk-media-reference-tag">LIVE · STALE · RECONNECT · PAUSE · OFFLINE · ERROR</span>
               </div>
-              <div class="pk-camera-state-grid">
+              <div class="pk-camera-state-grid" data-spec-block="media-emergency-stream">
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card">
+                  <article class="pk-camera-card" data-spec="live" data-spec-label="Live">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 1</span></header>
                     <div class="pk-camera-card__viewport"><span class="pk-camera-card__meta">CAM_01 · 14:01:35</span></div>
                   </article>
                   <span class="pk-camera-state-sample__label">Live · 실시간</span>
                 </div>
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card is-stale">
+                  <article class="pk-camera-card is-stale" data-spec="stale" data-spec-label="Stale">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 2</span></header>
                     <div class="pk-camera-card__viewport">
                       <div class="pk-camera-card__state" role="status">
@@ -1360,7 +1378,7 @@
                   <span class="pk-camera-state-sample__label">Stale · 18초 지연</span>
                 </div>
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card is-reconnecting">
+                  <article class="pk-camera-card is-reconnecting" data-spec="reconnecting" data-spec-label="Reconnecting">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 3</span></header>
                     <div class="pk-camera-card__viewport">
                       <div class="pk-camera-card__state" role="status"><span class="pk-camera-state-spinner" aria-hidden="true"></span><span>스트림 재연결 중</span></div>
@@ -1369,7 +1387,7 @@
                   <span class="pk-camera-state-sample__label">Reconnecting · 재연결</span>
                 </div>
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card is-paused">
+                  <article class="pk-camera-card is-paused" data-spec="paused" data-spec-label="Paused">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 4</span></header>
                     <div class="pk-camera-card__viewport">
                       <div class="pk-camera-card__state" role="status">
@@ -1381,7 +1399,7 @@
                   <span class="pk-camera-state-sample__label">Paused · 일시정지</span>
                 </div>
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card is-offline">
+                  <article class="pk-camera-card is-offline" data-spec="offline" data-spec-label="Offline">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 5</span></header>
                     <div class="pk-camera-card__viewport">
                       <div class="pk-camera-card__state" role="status">
@@ -1393,7 +1411,7 @@
                   <span class="pk-camera-state-sample__label">Offline · 신호 없음</span>
                 </div>
                 <div class="pk-camera-state-sample">
-                  <article class="pk-camera-card is-error">
+                  <article class="pk-camera-card is-error" data-spec="error" data-spec-label="Error">
                     <header class="pk-camera-card__header"><span class="pk-camera-live-dot" aria-hidden="true"></span><span>카메라 6</span></header>
                     <div class="pk-camera-card__viewport">
                       <div class="pk-camera-card__state" role="alert">
@@ -1416,12 +1434,12 @@
                 <span class="pk-media-reference-tag">SAFETY CRITICAL</span>
               </div>
               <div class="pk-emergency-control-panel">
-                <div class="pk-emergency-actions">
-                  <button class="pk-emergency-fab" type="button" onClick="{{ openMediaEmergency }}" aria-haspopup="dialog" aria-pressed="{{ mediaEmergencyActive }}">
+                <div class="pk-emergency-actions" data-spec-block="media-emergency-controls">
+                  <button class="pk-emergency-fab" type="button" data-spec="emergency-fab" data-spec-label="Emergency stop" onClick="{{ openMediaEmergency }}" aria-haspopup="dialog" aria-pressed="{{ mediaEmergencyActive }}">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h12v9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V6ZM12 2v4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>{{ emergencyFabLabel }}</span>
                   </button>
-                  <button class="pk-mic-fab" type="button" onClick="{{ toggleMediaMic }}" aria-pressed="{{ mediaMicActive }}" aria-label="{{ micFabAriaLabel }}">
+                  <button class="pk-mic-fab" type="button" data-spec="mic-fab" data-spec-label="Microphone" onClick="{{ toggleMediaMic }}" aria-pressed="{{ mediaMicActive }}" aria-label="{{ micFabAriaLabel }}">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     <span>{{ micFabLabel }}</span>
                   </button>
@@ -1652,20 +1670,20 @@
 
         <!-- ===== PARKIE ALERT ===== -->
         <sc-if value="{{ isAlert }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;flex-direction:column;gap:var(--parkie-space-3);">
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-info-subtle);border:1px solid var(--parkie-info);border-radius:var(--parkie-radius-md);">
+          <div style="display:flex;flex-direction:column;gap:var(--parkie-space-3);" data-spec-block="alert-intents">
+            <div data-spec="info" data-spec-label="Info" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-info-subtle);border:1px solid var(--parkie-info);border-radius:var(--parkie-radius-md);">
               <span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-info);margin-top:5px;flex-shrink:0;"></span>
               <div><div style="font-weight:600;color:var(--parkie-text);">정보 · Info</div><div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);margin-top:2px;">신규 로봇 PK-006이 등록되었습니다.</div></div>
             </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-success-subtle);border:1px solid var(--parkie-success);border-radius:var(--parkie-radius-md);">
+            <div data-spec="success" data-spec-label="Success" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-success-subtle);border:1px solid var(--parkie-success);border-radius:var(--parkie-radius-md);">
               <span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-success);margin-top:5px;flex-shrink:0;"></span>
               <div><div style="font-weight:600;color:var(--parkie-text);">성공 · Success</div><div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);margin-top:2px;">모든 로봇이 정상 운행 중입니다.</div></div>
             </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-warning-subtle);border:1px solid var(--parkie-warning);border-radius:var(--parkie-radius-md);">
+            <div data-spec="warning" data-spec-label="Warning" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-warning-subtle);border:1px solid var(--parkie-warning);border-radius:var(--parkie-radius-md);">
               <span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-warning);margin-top:5px;flex-shrink:0;"></span>
               <div><div style="font-weight:600;color:var(--parkie-text);">경고 · Warning</div><div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);margin-top:2px;">PK-002 배터리가 42%로 낮습니다.</div></div>
             </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-danger-subtle);border:1px solid var(--parkie-danger);border-radius:var(--parkie-radius-md);">
+            <div data-spec="danger" data-spec-label="Danger" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--parkie-danger-subtle);border:1px solid var(--parkie-danger);border-radius:var(--parkie-radius-md);">
               <span style="width:9px;height:9px;border-radius:50%;background:var(--parkie-danger);margin-top:5px;flex-shrink:0;"></span>
               <div><div style="font-weight:600;color:var(--parkie-text);">오류 · Danger</div><div style="font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);margin-top:2px;">PK-004가 C-07 구역에서 응답하지 않습니다.</div></div>
             </div>
@@ -1674,20 +1692,20 @@
           <div style="margin-top:var(--parkie-space-8);">
             <h2 style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">알림 배지 · Alert Badge</h2>
             <p style="margin:0 0 var(--parkie-space-4);font-size:var(--parkie-font-sm);color:var(--parkie-text-secondary);line-height:var(--parkie-leading-relaxed);">발열 등 즉시 인지가 필요한 이벤트를 지도·대시보드 위에 오버레이하는 배지. 원형은 위치 마커, 알약형은 액션 가능한 알림 CTA로 사용합니다.</p>
-            <div class="pk-alert-badge-group">
-              <div class="pk-alert-badge pk-alert-badge--danger" aria-label="발열 알림 Default">
+            <div class="pk-alert-badge-group" data-spec-block="alert-badges">
+              <div class="pk-alert-badge pk-alert-badge--danger" data-spec="badge-default" data-spec-label="Badge · default" aria-label="발열 알림 Default">
                 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none">
                   <path d="M5.705 4.71l-1.41-1.42C1 6.563 1 8.935 1 12h1l1-.063C3 9.009 3 7.396 5.705 4.71ZM19.704 3.29l-1.408 1.42C21 7.396 21 9.009 21 12l2-.063C23 8.935 23 6.563 19.704 3.29ZM12 23c.62 0 1.224-.192 1.729-.55.505-.359.885-.865 1.089-1.45H9.182c.204.585.583 1.091 1.088 1.45.505.358 1.11.55 1.73.55ZM19 15.586V11c0-3.217-2.185-5.927-5.145-6.742A2.001 2.001 0 0 0 12 3c-.846 0-1.562.52-1.855 1.258C7.184 5.073 5 7.783 5 11v4.586L3.293 17.293A1 1 0 0 0 3 18v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-.293-.707L19 15.586Z" fill="#fff"/>
                 </svg>
                 <span>발열 알림</span>
               </div>
-              <div class="pk-alert-badge pk-alert-badge--danger pk-alert-badge--state-hover" aria-label="발열 알림 Hover">
+              <div class="pk-alert-badge pk-alert-badge--danger pk-alert-badge--state-hover" data-spec="badge-hover" data-spec-label="Badge · hover" aria-label="발열 알림 Hover">
                 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none">
                   <path d="M5.705 4.71l-1.41-1.42C1 6.563 1 8.935 1 12h1l1-.063C3 9.009 3 7.396 5.705 4.71ZM19.704 3.29l-1.408 1.42C21 7.396 21 9.009 21 12l2-.063C23 8.935 23 6.563 19.704 3.29ZM12 23c.62 0 1.224-.192 1.729-.55.505-.359.885-.865 1.089-1.45H9.182c.204.585.583 1.091 1.088 1.45.505.358 1.11.55 1.73.55ZM19 15.586V11c0-3.217-2.185-5.927-5.145-6.742A2.001 2.001 0 0 0 12 3c-.846 0-1.562.52-1.855 1.258C7.184 5.073 5 7.783 5 11v4.586L3.293 17.293A1 1 0 0 0 3 18v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-.293-.707L19 15.586Z" fill="#fff"/>
                 </svg>
                 <span>발열 알림</span>
               </div>
-              <button class="pk-alert-pill" aria-label="발열 알림 CTA">
+              <button class="pk-alert-pill" type="button" data-spec="pill-cta" data-spec-label="Pill · CTA" aria-label="발열 알림 CTA">
                 <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M5.705 4.71l-1.41-1.42C1 6.563 1 8.935 1 12h1l1-.063C3 9.009 3 7.396 5.705 4.71ZM19.704 3.29l-1.408 1.42C21 7.396 21 9.009 21 12l2-.063C23 8.935 23 6.563 19.704 3.29ZM12 23c.62 0 1.224-.192 1.729-.55.505-.359.885-.865 1.089-1.45H9.182c.204.585.583 1.091 1.088 1.45.505.358 1.11.55 1.73.55ZM19 15.586V11c0-3.217-2.185-5.927-5.145-6.742A2.001 2.001 0 0 0 12 3c-.846 0-1.562.52-1.855 1.258C7.184 5.073 5 7.783 5 11v4.586L3.293 17.293A1 1 0 0 0 3 18v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-.293-.707L19 15.586Z" fill="var(--parkie-danger)"/>
                 </svg>
@@ -2303,8 +2321,8 @@
                   <p>서비스 스위치, 역할 세그먼트, Site Select를 직접 조작할 수 있습니다. 사이트 메뉴는 combobox/listbox 규칙을 사용합니다.</p>
                 </div>
               </div>
-              <div class="pk-appbar-stage">
-                <div class="pk-appbar" aria-label="Parkie 전역 제어 바">
+              <div class="pk-appbar-stage" data-spec-block="top-bar-bar">
+                <div class="pk-appbar" data-spec="composition" data-spec-label="46px · Live composition" aria-label="Parkie 전역 제어 바">
                   <div class="pk-appbar-brand"><img src="brand/logo.svg?v=2" alt=""><span>HL Robotics</span></div>
                   <div class="pk-service-control">
                     <span>서비스 활성화</span>
@@ -2389,9 +2407,9 @@
                 <sc-if value="{{ criticalEventLatest }}" hint-placeholder-val="{{ false }}">
                   <span class="pk-sr-only" role="alert">긴급 이벤트가 수신되었습니다. 배터리 부족으로 인해 로봇이 즉시 중단됩니다.</span>
                 </sc-if>
-                <div class="pk-feed-list" role="list" aria-live="polite" aria-label="운영 이벤트 예시">
+                <div class="pk-feed-list" role="list" aria-live="polite" aria-label="운영 이벤트 예시" data-spec-block="alert-feed-item-rows">
                   <sc-for list="{{ alertFeedItems }}" as="event" hint-placeholder-count="4">
-                    <div class="{{ event.className }}" role="listitem">
+                    <div class="{{ event.className }}" role="listitem" data-spec="{{ event.specId }}" data-spec-label="{{ event.specLabel }}">
                       <span class="pk-feed-icon" aria-hidden="true">{{ event.glyph }}</span>
                       <span class="pk-feed-status">{{ event.status }}</span>
                       <span class="pk-feed-message">{{ event.message }}</span>
@@ -2613,10 +2631,10 @@
                 </div>
                 <span class="pk-ops-chip">Combobox</span>
               </div>
-              <div class="pk-site-state-grid">
+              <div class="pk-site-state-grid" data-spec-block="site-select-states">
                 <div class="pk-site-state-card">
                   <div class="pk-site-state-label">Default · interactive</div>
-                  <div class="{{ siteSelectClass }}">
+                  <div class="{{ siteSelectClass }}" data-spec="default" data-spec-label="Default · interactive">
                     <button class="pk-site-select-button" type="button" role="combobox" aria-label="{{ siteSelectAriaLabel }}" aria-controls="select-demo-listbox" aria-haspopup="listbox" aria-expanded="{{ siteExpanded }}" onClick="{{ toggleSiteMenu }}"><span>{{ siteLabel }}</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
                     <sc-if value="{{ siteMenuOpen }}" hint-placeholder-val="{{ false }}">
                       <div class="pk-site-menu" id="select-demo-listbox" role="listbox" aria-label="사이트 선택">
@@ -2627,15 +2645,15 @@
                 </div>
                 <div class="pk-site-state-card">
                   <div class="pk-site-state-label">Default · selected</div>
-                  <div class="pk-site-select pk-site-select--selected"><button class="pk-site-select-button" type="button" aria-label="선택된 사이트: 곤지암 테스트존"><span>곤지암 테스트존.v.1.3.0</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+                  <div class="pk-site-select pk-site-select--selected" data-spec="selected" data-spec-label="Default · selected"><button class="pk-site-select-button" type="button" aria-label="선택된 사이트: 곤지암 테스트존"><span>곤지암 테스트존.v.1.3.0</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
                 </div>
                 <div class="pk-site-state-card pk-site-state-card--menu">
                   <div class="pk-site-state-label">Expanded · option hover</div>
-                  <div class="pk-site-select pk-site-select--open"><button class="pk-site-select-button" type="button" role="combobox" aria-label="사이트 선택" aria-controls="select-static-listbox" aria-haspopup="listbox" aria-expanded="true"><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="pk-site-menu" id="select-static-listbox" role="listbox" aria-label="사이트 선택 예시"><button class="pk-site-option pk-site-option--hover" type="button" role="option" aria-selected="false">곤지암 테스트존</button><button class="pk-site-option" type="button" role="option" aria-selected="false">충북도청 운영존</button><button class="pk-site-option" type="button" role="option" aria-selected="false">넥스트엠 테스트존</button></div></div>
+                  <div class="pk-site-select pk-site-select--open" data-spec="expanded" data-spec-label="Expanded · option hover"><button class="pk-site-select-button" type="button" role="combobox" aria-label="사이트 선택" aria-controls="select-static-listbox" aria-haspopup="listbox" aria-expanded="true"><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="pk-site-menu" id="select-static-listbox" role="listbox" aria-label="사이트 선택 예시"><button class="pk-site-option pk-site-option--hover" type="button" role="option" aria-selected="false">곤지암 테스트존</button><button class="pk-site-option" type="button" role="option" aria-selected="false">충북도청 운영존</button><button class="pk-site-option" type="button" role="option" aria-selected="false">넥스트엠 테스트존</button></div></div>
                 </div>
                 <div class="pk-site-state-card">
                   <div class="pk-site-state-label">Disabled</div>
-                  <div class="pk-site-select pk-site-select--disabled"><button class="pk-site-select-button" type="button" aria-label="사이트 선택 비활성" disabled><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+                  <div class="pk-site-select pk-site-select--disabled" data-spec="disabled" data-spec-label="Disabled"><button class="pk-site-select-button" type="button" aria-label="사이트 선택 비활성" disabled="disabled"><span>사이트를 선택해 주세요.</span><span class="pk-site-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m3 5 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
                 </div>
               </div>
             </section>
@@ -2986,6 +3004,32 @@
           </dc-import>
         </sc-if>
 
+        <!-- ===== DOWNLOADS ===== -->
+        <sc-if value="{{ isDownloads }}" hint-placeholder-val="{{ false }}">
+          <div class="pk-control-doc">
+            <section class="pk-control-section">
+              <h2>컴포넌트 SVG · Component SVG</h2>
+              <p>문서화된 컴포넌트 전체를 한 번에 받습니다. 페이지마다 폴더 하나이고, 그 안에 표본별 SVG와 상태 시트 한 장이 들어갑니다. 각 페이지에서 따로 받고 싶으면 그 페이지 상단의 버튼을 쓰면 됩니다.</p>
+              <div class="pk-export-actions">
+                <button type="button" class="pk-button pk-export-download" data-specimen-bundle
+                        disabled="{{ bundleExport.busy }}" onClick="{{ bundleExport.onClick }}"
+                        title="{{ bundleExport.title }}">
+                  {{ bundleExport.label }}
+                </button>
+                <p class="pk-export-actions-note">{{ bundleExport.title }}</p>
+              </div>
+              <table class="pk-layer-table">
+                <thead><tr><th>폴더</th><th>컴포넌트</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ bundleContents }}" as="entry" hint-placeholder-count="11">
+                    <tr><td><code>{{ entry.folder }}</code></td><td>{{ entry.title }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ showDocumentationGuide }}" hint-placeholder-val="{{ false }}">
           <section class="pk-doc-contract" aria-labelledby="pk-doc-contract-title" data-documentation-contract>
             <div class="pk-doc-contract__head">
@@ -3040,9 +3084,18 @@ class Component extends DCLogic {
     parkieIcons: null,
     buttonSpecs: null,
     colorSpecs: null,
+    specimenCount: 0,
+    bundleBusy: false,
+    bundleProgress: 0,
     copiedValue: '',
     modalDemo: 'critical',
     serviceActive: true,
+    /* The selection specimens carry real DOM state rather than a class that
+       looks like state. A valueless `checked` never reached the DOM — the DC
+       runtime coerces an undefined `checked` to false (support.js) — so the
+       page documented a checked box while rendering an empty one. */
+    specChecked: true,
+    specRadio: 'map',
     role: 'engineer',
     siteMenuOpen: false,
     selectedSite: '',
@@ -3067,6 +3120,7 @@ class Component extends DCLogic {
        second source of truth that silently drifts from the tokens. */
     if (this.normalizeRoute(this.state.route).system === 'parkie') {
       this.requestTokenSpecs();
+      this.requestSpecimenCount();
     }
     if (this.props.brandPrimary && this.rootRef.current) {
       this.rootRef.current.style.setProperty('--parkie-brand-primary', this.props.brandPrimary);
@@ -3095,6 +3149,13 @@ class Component extends DCLogic {
       && !this.tokenSpecsPending
     ) {
       this.requestTokenSpecs();
+    }
+    /* Recounted on every settled update rather than once: the specimens belong to
+       the route, so navigating away and back changes the number. */
+    if (!this.specimenCountPending) {
+      const root = this.rootRef.current;
+      const found = root ? root.querySelectorAll('[data-spec]').length : 0;
+      if (found !== this.state.specimenCount) this.setState({ specimenCount: found });
     }
   }
 
@@ -3541,6 +3602,270 @@ class Component extends DCLogic {
     exporter.save(exporter.zip(files), 'parkie-icon-sheets.zip');
   }
 
+  /* ---- component specimen export --------------------------------------
+     The icon exporters above own icon geometry. These own whole rendered
+     components, and the split is the same one the two modules make: glyphs there,
+     CSS boxes here. What they share is the ZIP writer and the dark artboard. */
+
+  /* Sheet and README colours, read from the page rather than restated. */
+  specimenOptions() {
+    const computed = window.getComputedStyle(document.documentElement);
+    const resolveToken = (token) => computed.getPropertyValue(token).trim();
+    return {
+      resolveToken,
+      background: resolveToken('--parkie-surface-elevation-00') || '#131315',
+      gridLine: resolveToken('--parkie-alpha-white-09'),
+      textPrimary: resolveToken('--parkie-text'),
+      textSecondary: resolveToken('--parkie-text-secondary'),
+    };
+  }
+
+  /* A cell's caption comes from data-spec-label when the specimen names its own
+     state, and otherwise from the labelled state cell it sits in — the pages that
+     already use .pk-control-grid get their captions for free. */
+  specimenLabel(node) {
+    const own = node.getAttribute('data-spec-label');
+    if (own) return own;
+    const cell = node.closest('.pk-control-state');
+    const label = cell && cell.querySelector('.pk-control-state-label');
+    return (label ? label.textContent : node.getAttribute('data-spec') || '').trim();
+  }
+
+  /* Reads one page's specimens out of the live DOM. Returns null when the page is
+     not the one on screen, because a specimen only exists while its route is
+     mounted — the bundle relies on that and drives the router itself. */
+  collectSpecimens(pageId, scope, images) {
+    const spec = window.__parkieSpecimens && window.__parkieSpecimens[pageId];
+    const dom = window.__parkieDomSvg;
+    if (!spec || !dom) return null;
+
+    const root = scope || document;
+    const options = Object.assign(this.specimenOptions(), { images: images || {} });
+    const rows = [];
+    const files = [];
+
+    spec.blocks.forEach((block) => {
+      const host = root.querySelector('[data-spec-block="' + spec.slug + '-' + block.id + '"]');
+      if (!host) return;
+      const nodes = [...host.querySelectorAll('[data-spec]')];
+      if (!nodes.length) return;
+
+      const cells = [];
+      nodes.forEach((node) => {
+        const name = node.getAttribute('data-spec');
+        const serialized = dom.serialize(node, options);
+        if (!serialized.width || !serialized.height) return;
+        cells.push({
+          state: this.specimenLabel(node) || name,
+          markup: serialized.markup,
+          defs: serialized.defs,
+          width: serialized.width,
+          height: serialized.height,
+        });
+        files.push({
+          name: 'svg/' + block.id + '-' + name + '.svg',
+          text: dom.standalone(node, options),
+        });
+      });
+
+      if (cells.length) {
+        rows.push({ id: block.id, ko: block.ko, en: block.en, cells });
+      }
+    });
+
+    if (!files.length) return null;
+
+    const title = this.state.lang === 'en' ? spec.titleEn : spec.titleKo;
+    return {
+      slug: spec.slug,
+      title: title,
+      files,
+      /* One block, one row per group, captions under each cell: the groups on a
+         component page label their cells differently from each other, which is the
+         same reason the semantic icon rows carry per-cell captions. */
+      sheet: dom.buildBoxSheet(
+        [{ id: spec.slug, title: spec.titleKo + ' · ' + spec.titleEn, columns: null, rows }],
+        options,
+      ),
+    };
+  }
+
+  specimenReadme(collected, options) {
+    const lines = collected.files.map((file) => '  ' + file.name);
+    return [
+      'Parkie · ' + collected.title,
+      '',
+      'One SVG per specimen under svg/, plus sheet.svg — the same specimens laid',
+      'out in a labelled grid, one row per group, for reading side by side.',
+      '',
+      'Every value here was read back from the rendered page, not restated: fills,',
+      'borders, radii, focus rings, type and the position of every box are what the',
+      'browser computed. No CSS was reimplemented to produce these files, so they',
+      'cannot drift from the component they document.',
+      '',
+      'Artboards are dark on purpose. Hover greys and disabled washes are invisible',
+      'on a white artboard, and a specimen you cannot see is not a specimen.',
+      '',
+      'Surface  ' + options.background,
+      '',
+      'Files (' + collected.files.length + ')',
+      lines.join('\n'),
+      '',
+      'Known limits',
+      '  Animation is frozen at its first frame — the loading spinner exports as a',
+      '  static arc. filter() is not representable in SVG paint and is dropped;',
+      '  the only use is the switch hover brightening, which is not a documented',
+      '  specimen state.',
+      '',
+    ].join('\n');
+  }
+
+  /* Waits for the route's specimens to be on screen. A specimen exists only while
+     its page is mounted, so the bundle drives the router and then has to let the
+     browser catch up — two frames for React and the paint, then the same sentinel
+     wait requestTokenSpecs makes, because the stylesheet arrives late enough that
+     an early read would serialise unstyled boxes. */
+  awaitSpecimenPaint(pageId) {
+    return new Promise((resolve) => {
+      const spec = window.__parkieSpecimens[pageId];
+      const attempt = (left) => {
+        const root = this.rootRef.current;
+        const ready = root
+          && root.querySelector('[data-spec]')
+          && getComputedStyle(root).getPropertyValue('--parkie-action-primary-bg').trim() !== '';
+        if (ready || left <= 0) {
+          resolve(Boolean(ready));
+          return;
+        }
+        window.requestAnimationFrame(() => attempt(left - 1));
+      };
+      void spec;
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => attempt(90)));
+    });
+  }
+
+  /* Every documented component in one archive. The route is restored in a finally
+     so an error part-way through does not leave the reader on a page they did not
+     ask for, and the button is held disabled meanwhile — the walk repoints the
+     hash, and a second run racing the first would interleave routes. */
+  async downloadAllSpecimens() {
+    const exporter = window.__parkieSvgExport;
+    const dom = window.__parkieDomSvg;
+    if (!exporter || !dom || this.state.bundleBusy) return;
+
+    const order = window.__parkieSpecimenOrder || [];
+    const restore = window.location.hash;
+    this.setState({ bundleBusy: true, bundleProgress: 0 });
+
+    const files = [];
+    const manifest = [];
+    const skipped = [];
+
+    try {
+      const images = await dom.collectImages(document);
+      for (let index = 0; index < order.length; index += 1) {
+        const pageId = order[index];
+        const spec = window.__parkieSpecimens[pageId];
+        window.location.hash = `#/parkie/${pageId}`;
+        this.setState({ bundleProgress: index + 1 });
+        // eslint-disable-next-line no-await-in-loop
+        const painted = await this.awaitSpecimenPaint(pageId);
+        const collected = painted ? this.collectSpecimens(pageId, null, images) : null;
+        if (!collected) {
+          skipped.push(spec.slug);
+          continue;
+        }
+        const folder = `${String(index + 1).padStart(2, '0')}-${collected.slug}`;
+        collected.files.forEach((file) => files.push({ name: `${folder}/${file.name}`, text: file.text }));
+        files.push({ name: `${folder}/sheet.svg`, text: collected.sheet });
+        manifest.push(`  ${folder}/  —  ${collected.files.length} specimens · ${collected.title}`);
+      }
+    } finally {
+      window.location.hash = restore;
+      this.setState({ bundleBusy: false, bundleProgress: 0 });
+    }
+
+    if (!files.length) return;
+
+    const options = this.specimenOptions();
+    /* Anything that could not be collected is named rather than silently absent —
+       a folder missing from an archive reads as "that component has no specimens". */
+    const note = skipped.length
+      ? ['', 'Not collected', skipped.map((slug) => `  ${slug}`).join('\n'), ''].join('\n')
+      : '';
+
+    files.push({
+      name: 'README.txt',
+      text: [
+        'Parkie · component SVG',
+        '',
+        'One folder per documented component, numbered in the order the sidebar',
+        'lists them. Inside each: one SVG per specimen under svg/, plus sheet.svg,',
+        'the same specimens in a labelled grid.',
+        '',
+        'Every value was read back from the rendered page rather than restated, so',
+        'these files cannot drift from the components they document. Artboards are',
+        'dark because hover greys and disabled washes are invisible on white.',
+        '',
+        'Surface  ' + options.background,
+        '',
+        `Folders (${manifest.length})`,
+        manifest.join('\n'),
+        note,
+        'Known limits',
+        '  Animation is frozen at its first frame — the loading spinner and the',
+        '  reconnecting stream export as static arcs. filter() has no SVG paint',
+        '  equivalent and is dropped; its only use is the switch hover brightening,',
+        '  which is not a documented specimen state.',
+        '',
+      ].join('\n'),
+    });
+
+    exporter.save(exporter.zip(files), 'parkie-components.zip');
+  }
+
+  /* Async only because <img> bytes have to be in hand before the markup is built:
+     the top bar carries the brand mark, and a relative href in a downloaded file
+     resolves against wherever it was dropped and renders nothing. */
+  async downloadSpecimens(pageId) {
+    const exporter = window.__parkieSvgExport;
+    const dom = window.__parkieDomSvg;
+    if (!exporter || !dom) return;
+    const images = await dom.collectImages(document);
+    const collected = this.collectSpecimens(pageId, null, images);
+    if (!collected) return;
+
+    const options = this.specimenOptions();
+    const files = collected.files.concat([
+      { name: 'sheet.svg', text: collected.sheet },
+      { name: 'README.txt', text: this.specimenReadme(collected, options) },
+    ]);
+
+    exporter.save(exporter.zip(files), 'parkie-' + collected.slug + '.zip');
+  }
+
+  /* The count is read off the page rather than declared, so a specimen added to
+     the markup shows up in the label without a second list to keep in step. The
+     stylesheet arrives late enough that the first render sees nothing, which is
+     the same wait requestTokenSpecs already makes. */
+  scheduleSpecimenCount(attempt) {
+    const root = this.rootRef.current;
+    const found = root ? root.querySelectorAll('[data-spec]').length : 0;
+    if (found || attempt >= 30) {
+      this.specimenCountPending = false;
+      if (found !== this.state.specimenCount) this.setState({ specimenCount: found });
+      return;
+    }
+    this.specimenCountFrame = window.requestAnimationFrame(
+      () => this.scheduleSpecimenCount(attempt + 1),
+    );
+  }
+
+  requestSpecimenCount() {
+    this.specimenCountPending = true;
+    this.scheduleSpecimenCount(0);
+  }
+
   NAV = [
     { source: 'Parkie', sub: '내 시스템 · My system', groups: [
       { ko: '시작하기', en: 'Get started', items: ['overview', 'systemsummary', 'principles', 'changelog'] },
@@ -3658,7 +3983,7 @@ class Component extends DCLogic {
     dashboard:   { ko: '관제 대시보드', en: 'Control Dashboard', impl: true, dko: '통계 카드 · 로봇 테이블 · 알림을 조합한 관제 화면 템플릿. 컴포넌트가 실제로 어떻게 쓰이는지 보여줍니다.', den: 'A control-view template combining stat cards, the robot table and alerts — shows how the components come together.' },
     appshell:    { ko: '관제 앱 셸', en: 'Control App Shell', impl: true, dko: 'Top Bar·Primary Rail·Context Panel·Workspace를 조합한 주차 관제 화면 구조.', den: 'The parking-control structure combining Top Bar, Primary Rail, Context Panel and Workspace.' },
     brand:       { ko: '브랜드 자산', en: 'Brand assets', impl: true, dko: 'RMS 구조에 적용된 HL Robotics 로고와 Parkie 색상 스왑 지점.', den: 'HL Robotics logo and Parkie color swap points applied to the RMS structure.' },
-    downloads:   { ko: '다운로드', en: 'Downloads', impl: false, dko: '토큰 · 자산 패키지.', den: 'Token and asset packages.' },
+    downloads:   { ko: '다운로드', en: 'Downloads', impl: true, dko: '문서화된 컴포넌트 전체를 SVG로 내려받습니다.', den: 'Every documented component as SVG, in one archive.' },
     'ms-icons':    { ko: 'Icons', en: 'Icons', impl: true, dko: 'Teams UI Kit 아이콘 세트 (참조용). 24px · Regular 대표 글리프.', den: 'Teams UI Kit icon set (reference) — 24px Regular representative glyphs.' },
     'ms-button':   { ko: 'Button', en: 'Button', impl: true, dko: 'Microsoft Teams UI Kit의 버튼 (참조용). appearance · size · state 변형을 라이브로 렌더링합니다.', den: 'The button from Microsoft Teams UI Kit (reference) — appearance, size and state variants rendered live.' },
     'ms-checkbox': { ko: 'Checkbox', en: 'Checkbox', impl: true, dko: 'Microsoft Teams UI Kit의 체크박스 (참조용). status · state 변형.', den: 'The checkbox from Microsoft Teams UI Kit (reference) — status and state variants.' },
@@ -3887,6 +4212,8 @@ class Component extends DCLogic {
       lang,
       modalDemo,
       serviceActive,
+      specChecked,
+      specRadio,
       role,
       siteMenuOpen,
       selectedSite,
@@ -4088,7 +4415,13 @@ class Component extends DCLogic {
         isLatest ? 'pk-feed-item--latest' : '',
         isCritical ? 'pk-feed-item--critical' : '',
       ].filter(Boolean).join(' ');
-      return { ...event, className };
+      const emphasis = isCritical ? 'critical' : (isLatest ? 'latest' : 'default');
+      return {
+        ...event,
+        className,
+        specId: `${event.intent}-${emphasis}`,
+        specLabel: `${event.intent} · ${emphasis}`,
+      };
     });
 
     const msButtons = [
@@ -4703,7 +5036,7 @@ class Component extends DCLogic {
     const contrastPairs = [
       { label: L('기본 텍스트', 'Primary text'), usage: L('일반 본문 · AA/AAA', 'Body copy · AA/AAA'), ratio: '16.72:1', sample: contrastSample('var(--parkie-text)', 'var(--parkie-surface)') },
       { label: L('보조 텍스트', 'Secondary text'), usage: L('설명과 메타 정보', 'Description and metadata'), ratio: '7.18:1', sample: contrastSample('var(--parkie-text-secondary)', 'var(--parkie-surface)') },
-      { label: L('기본 액션', 'Primary action'), usage: L('브랜드 표면 · 다크 잉크', 'Brand surface · dark ink'), ratio: '6.42:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
+      { label: L('기본 액션', 'Primary action'), usage: L('액션 채움 · 흰 글씨', 'Action fill · white label'), ratio: '4.55:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
       { label: L('위험 텍스트', 'Danger text'), usage: L('오류 메시지', 'Error messaging'), ratio: '6.69:1', sample: contrastSample('var(--parkie-danger-text)', 'var(--parkie-surface)') },
       { label: L('경고 위 콘텐츠', 'On warning'), usage: L('경고 배경의 아이콘·텍스트', 'Content on warning background'), ratio: '11.89:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-warning)') },
     ];
@@ -4916,8 +5249,8 @@ class Component extends DCLogic {
         'Separate default, hover, focus, pressed, loading and disabled; connect dangerous commands to confirmation and result states.',
         '버튼 이름은 결과를 설명하고 44–48px 안전 타깃, 보이는 포커스, AA 대비를 확보합니다.',
         'Name the outcome, provide a 44–48px safety target, visible focus and AA contrast.',
-        '밝은 브랜드 배경은 --parkie-action-primary-fg의 다크 잉크를 사용하고 임의 색을 덮어쓰지 않습니다.',
-        'Use dark --parkie-action-primary-fg ink on the bright brand surface and never override it ad hoc.'
+        '파란 채움 위 글씨는 --parkie-action-primary-fg의 흰색이며, 채움은 브랜드 블루가 아니라 그 한 단 아래입니다. 임의 색을 덮어쓰지 않습니다.',
+        'White --parkie-action-primary-fg labels on the action fill, which sits one step below brand blue rather than on it. Never override either ad hoc.'
       ),
       segmented: buildDocGuide(
         '2–4개의 동등하고 상호 배타적인 즉시 전환에 사용합니다.',
@@ -5049,9 +5382,58 @@ class Component extends DCLogic {
         '브랜드 교체는 토큰과 brand 자산에 한정하며 RMS 정보 구조와 안전 의미를 변경하지 않습니다.',
         'Limit brand swaps to tokens and brand assets; do not alter RMS information architecture or safety meaning.'
       ),
+      downloads: buildDocGuide(
+        '문서화된 컴포넌트를 디자인 도구로 옮길 때 사용합니다. 한 페이지만 필요하면 그 페이지 상단의 버튼을 씁니다.',
+        'Use when moving documented components into a design tool. For a single page, use the button at the top of that page.',
+        '페이지마다 폴더 하나이고, 그 안에 표본별 SVG와 상태 시트 한 장이 들어갑니다. 표본은 해당 페이지가 열려 있는 동안에만 존재하므로 전체 받기는 페이지를 차례로 열었다가 원래 자리로 돌아옵니다.',
+        'One folder per page, holding one SVG per specimen and a state sheet. A specimen exists only while its page is mounted, so the bundle walks the pages in order and returns you to where you were.',
+        '수집 중에는 버튼이 비활성이고 진행 상황을 라벨에 표시합니다. 화면이 페이지를 옮겨 다니는 동안 사용자가 길을 잃지 않도록 끝나면 원래 경로로 되돌립니다.',
+        'The button is disabled while collecting and states its progress. The route is restored when the walk ends so the view does not leave the reader somewhere they did not choose.',
+        '값은 화면에서 계산된 그대로 읽어 담습니다. CSS를 다시 구현하지 않으므로 내려받은 파일이 컴포넌트와 어긋날 수 없습니다. 애니메이션은 첫 프레임에서 멈추고, filter()는 SVG 페인트로 표현되지 않아 빠집니다.',
+        'Values are read back from the rendered page. No CSS is reimplemented, so a downloaded file cannot drift from its component. Animation is frozen at the first frame and filter() has no SVG paint equivalent, so it is dropped.'
+      ),
     };
     const documentationGuide = isParkieSystem ? (documentationGuides[active] || []) : [];
     const showDocumentationGuide = documentationGuide.length > 0;
+
+    /* The toolbar appears only where the manifest declares specimens and the page
+       has actually rendered them. Offering a download that produces an empty
+       archive would be worse than not offering one. */
+    const specimenPage = isParkieSystem && window.__parkieSpecimens
+      ? window.__parkieSpecimens[active] : null;
+    const specimenCount = this.state.specimenCount;
+    const showSpecimenExport = Boolean(specimenPage) && specimenCount > 0;
+    const specimenExport = {
+      label: L(`SVG ${specimenCount}개 내려받기`, `Download ${specimenCount} SVG`),
+      title: L(
+        '이 페이지의 표본을 하나씩 SVG로, 상태 시트 한 장과 함께 ZIP으로 받습니다. 값은 화면에서 계산된 그대로 읽어 담기므로 컴포넌트와 어긋나지 않습니다. 어두운 대지에 담기는 이유는 hover 회색과 비활성 워시가 흰 대지에서 보이지 않기 때문입니다.',
+        'One SVG per specimen on this page, with a labelled state sheet, delivered as a zip. Values are read back from the rendered page, so the files cannot drift from the component. The artboard is dark because hover greys and disabled washes are invisible on a white one.',
+      ),
+      onClick: () => this.downloadSpecimens(active),
+    };
+
+    const bundleOrder = window.__parkieSpecimenOrder || [];
+    const bundleContents = bundleOrder.map((pageId, index) => {
+      const entry = window.__parkieSpecimens[pageId];
+      return {
+        folder: `${String(index + 1).padStart(2, '0')}-${entry.slug}/`,
+        title: `${entry.titleKo} · ${entry.titleEn}`,
+      };
+    });
+    const bundleBusy = this.state.bundleBusy;
+    const bundleExport = {
+      busy: bundleBusy ? 'disabled' : '',
+      label: bundleBusy
+        ? L(`수집 중 ${this.state.bundleProgress}/${bundleOrder.length}`,
+          `Collecting ${this.state.bundleProgress}/${bundleOrder.length}`)
+        : L(`전체 컴포넌트 SVG 내려받기 (${bundleOrder.length}개)`,
+          `Download all ${bundleOrder.length} components as SVG`),
+      title: L(
+        '표본은 해당 페이지가 열려 있는 동안에만 존재하므로, 이 버튼은 문서화된 페이지를 차례로 열어 수집한 뒤 원래 보던 페이지로 돌려놓습니다. 수집 중에는 화면이 잠깐 페이지를 옮겨 다닙니다.',
+        'A specimen exists only while its page is mounted, so this walks the documented pages in order, collects each one and returns you to where you were. The view moves between pages while it runs.',
+      ),
+      onClick: () => this.downloadAllSpecimens(),
+    };
 
     const spx = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 7: '32px', 8: '40px', 9: '48px', 10: '64px' };
     const spacingScale = Object.keys(spx).map((n) => ({
@@ -5154,6 +5536,10 @@ class Component extends DCLogic {
       hasButtonTokens: buttonTokenGroups.length > 0,
       documentationGuide,
       showDocumentationGuide,
+      showSpecimenExport,
+      specimenExport,
+      bundleExport,
+      bundleContents,
       documentationGuideTitle: L('운영·구현 계약', 'Usage & implementation contract'),
       documentationGuideDescription: L('실제 RMS 화면에 적용할 때 시각 샘플과 함께 지켜야 할 최소 규칙입니다.', 'Minimum rules to apply alongside the visual specimen in production RMS screens.'),
       /* Pages whose specimens are designed at full application width. The top
@@ -5268,6 +5654,7 @@ class Component extends DCLogic {
       toggleMediaMic: () => this.setState({ mediaMicActive: !mediaMicActive }),
       msRefNote: L('참조용입니다. Parkie 버전으로 가져오려면 알려주세요.', 'Reference only — tell me to build the Parkie version.'),
       isSoon: isParkieSystem && !cur.impl,
+      isDownloads: isParkieSystem && active === 'downloads',
       tokenLayers,
       primitiveTitle: L('원시 팔레트 · Primitive ramps', 'Primitive ramps'),
       primitiveNote: L('밝기 순서를 나타내는 원시값입니다. 제품 UI에는 아래 Semantic 토큰을 사용합니다.', 'Raw tonal values ordered by lightness. Use the semantic aliases below in product UI.'),
@@ -5298,6 +5685,16 @@ class Component extends DCLogic {
       showModalResult: () => this.setState({ modalDemo: 'result' }),
       serviceChecked: serviceActive,
       toggleService: () => this.setState({ serviceActive: !serviceActive }),
+      /* React needs the change handler or it logs a read-only-field warning and
+         the specimen stops being clickable, which for a documentation page is
+         worse than the state it is documenting. */
+      noop: () => {},
+      specChecked,
+      toggleSpecChecked: () => this.setState({ specChecked: !specChecked }),
+      specRadioMap: specRadio === 'map',
+      specRadioList: specRadio === 'list',
+      selectSpecRadioMap: () => this.setState({ specRadio: 'map' }),
+      selectSpecRadioList: () => this.setState({ specRadio: 'list' }),
       operatorSelected: role === 'operator',
       engineerSelected: role === 'engineer',
       operatorTabIndex: role === 'operator' ? 0 : -1,

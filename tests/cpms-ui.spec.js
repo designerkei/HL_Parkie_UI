@@ -155,6 +155,13 @@ test('every CPMS route has an accessible structure', async ({ page }) => {
   test.setTimeout(300_000);
   for (const pageId of CPMS_PAGES) {
     await page.goto(route(pageId));
+    /* page.goto resolves on load, but the DC runtime mounts React after it, so the
+       include target can still be absent — and axe does not report an empty include
+       as "no violations", it throws "No elements found for include in page Context".
+       Which means this raced silently and passed only because mounting is usually
+       quick: adding two script tags to index.html was enough to expose it. Every
+       other axe call site already waits for something on the page first. */
+    await expect(page.locator('[data-cpms-pages]')).toBeVisible();
     const results = await new AxeBuilder({ page }).include('[data-cpms-pages]').analyze();
     expect(results.violations, `${pageId} axe violations`).toEqual([]);
   }

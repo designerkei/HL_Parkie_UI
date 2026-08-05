@@ -199,7 +199,10 @@
 .pk-button-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(6,34,46,0.30);
+  /* The track is the label colour at 30%, not a fixed ink. It was
+     rgba(6,34,46,0.30) — the old dark label — which on a white label leaves the
+     track invisible and the spinner reading as a lone arc. */
+  border: 2px solid rgba(255,255,255,0.30);
   border-top-color: currentColor;
   border-radius: var(--parkie-radius-round);
   animation: pk-spin 700ms linear infinite;
@@ -357,11 +360,80 @@
   cursor: pointer;
 }
 
+/* Drawn here rather than left to accent-color, which hands the box, the tick and
+   the dot to the UA renderer. Three things followed from that: the specimen on
+   this page was not what shipped on another OS, the documentation could not show
+   a state it does not draw, and the export had no geometry to read — every other
+   control in this system is CSS the exporter can serialise, and these two were a
+   hole in it.
+
+   appearance:none replaces the paint only. The element is still a real input, so
+   keyboard, focus, form association and the accessible role are untouched; the
+   role-based gates in the suite never see a difference. */
 .pk-choice-field input {
+  position: relative;
+  flex: 0 0 auto;
   width: 18px;
   height: 18px;
-  accent-color: var(--parkie-brand-primary);
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  /* Not --parkie-border-strong: at 2.13:1 over the control stage it is under the
+     3:1 WCAG 1.4.11 asks of a control boundary. See --parkie-control-border. */
+  border: 1.5px solid var(--parkie-control-border);
+  border-radius: var(--parkie-radius-xs);
   cursor: pointer;
+}
+
+.pk-choice-field input[type="radio"] {
+  border-radius: var(--parkie-radius-round);
+}
+
+.pk-choice-field input:checked {
+  background: var(--parkie-brand-primary);
+  border-color: var(--parkie-brand-primary);
+}
+
+/* The radio keeps its fill transparent and states selection with a ring and a
+   concentric dot, which is what Material, Fluent and Carbon all draw. Filling it
+   like the checkbox reads as a hole punched in a disc rather than a dot, and it
+   throws away the one cue that separates the two controls at a glance — the
+   checkbox is a filled square, the radio is a ringed circle. */
+.pk-choice-field input[type="radio"]:checked {
+  background: transparent;
+  border-color: var(--parkie-brand-primary);
+}
+
+/* The tick is two edges of a box stood on its corner — no glyph and no font, so
+   it needs neither a webfont nor an embedded image to survive export. The
+   exporter reads the rotated bounding box the browser has already resolved
+   rather than re-deriving the rotation. */
+.pk-choice-field input[type="checkbox"]:checked::after {
+  position: absolute;
+  top: 1px;
+  left: 4.5px;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--parkie-brand-on);
+  border-bottom: 2px solid var(--parkie-brand-on);
+  transform: rotate(45deg);
+  content: "";
+}
+
+.pk-choice-field input[type="radio"]:checked::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 9px;
+  height: 9px;
+  background: var(--parkie-brand-primary);
+  border-radius: var(--parkie-radius-round);
+  content: "";
+}
+
+.pk-choice-field input:focus-visible {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
 }
 
 .pk-choice-field:has(input:disabled) {
@@ -369,8 +441,47 @@
   cursor: not-allowed;
 }
 
+/* 1.4.11 exempts inactive components, which is what lets this match the switch's
+   own disabled treatment instead of holding the boundary at 3:1. */
 .pk-choice-field input:disabled {
+  opacity: 0.38;
   cursor: not-allowed;
+}
+
+/* appearance:none controls lose their state in forced-colors: the author fill and
+   border are both overridden, and the tick and dot are pseudo-elements the UA has
+   no opinion about, so a checked box and an empty one can end up identical. Each
+   mark opts out of the override and names a system colour that is guaranteed to
+   contrast with the surface it sits on.
+
+   The selectors mirror the base rules rather than relying on order — the radio's
+   attribute selector outweighs the shared one either way. */
+@media (forced-colors: active) {
+  .pk-choice-field input {
+    border-color: CanvasText;
+  }
+
+  .pk-choice-field input:checked {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .pk-choice-field input[type="checkbox"]:checked::after {
+    forced-color-adjust: none;
+    border-color: HighlightText;
+  }
+
+  /* The radio states selection with a dot on an unfilled circle, so here the
+     circle keeps Canvas and the dot carries Highlight. */
+  .pk-choice-field input[type="radio"]:checked {
+    background: Canvas;
+    border-color: Highlight;
+  }
+
+  .pk-choice-field input[type="radio"]:checked::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
 }
 
 .pk-switch {

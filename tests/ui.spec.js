@@ -22,8 +22,11 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
   await openComponent(page, '버튼');
   const button = page.locator('.pk-control-stage .pk-button').first();
   await expect(button).toBeVisible();
-  await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
-  await expect(button).toHaveCSS('color', 'rgb(6, 34, 46)');
+  /* brand-700, not brand-500: the fill sits one step below brand blue so the
+     white label clears AA. #00AAFF is still the brand colour everywhere it does
+     not have to carry type. */
+  await expect(button).toHaveCSS('background-color', 'rgb(0, 124, 189)');
+  await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(button).toHaveCSS('height', '36px');
 
   const disabled = page.locator('.pk-button.is-disabled');
@@ -32,13 +35,17 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
     'background-color',
     'rgb(223, 0, 0)'
   );
+  /* The ramp darkens monotonically — brand-700 -> 800 -> 900. There is no
+     headroom to brighten into: the brightest blue where white still clears
+     4.5:1 is about #007CBA, which is where rest already sits. Danger darkens
+     for the same reason. */
   await expect(page.locator('.pk-button.is-hover')).toHaveCSS(
     'background-color',
-    'rgb(22, 220, 242)'
+    'rgb(8, 99, 143)'
   );
   await expect(page.locator('.pk-button.is-pressed')).toHaveCSS(
     'background-color',
-    'rgb(0, 155, 233)'
+    'rgb(13, 79, 112)'
   );
 });
 
@@ -625,7 +632,7 @@ test('System Summary composes eight live-token sections and links to detail page
     'rgba(255, 255, 255, 0.1)'
   );
   await expect(page.locator('[data-summary-operation]')).toHaveCount(5);
-  await expect(page.locator('[data-summary-destination]')).toHaveCount(33);
+  await expect(page.locator('[data-summary-destination]')).toHaveCount(34);
 
   const unnamedButtons = await page.locator('[data-system-summary] button').evaluateAll((buttons) => (
     buttons
@@ -699,19 +706,23 @@ test('new icon and media controls retain accessible names, focus disclosure and 
   expect(stateLabels).toBe(0);
 });
 
-/* The icon page's focus specimen departs from the delivered Figma, and the
-   reason is a number: the supplied halo is 3px of cyan at 40% alpha, which
-   composites to 2.11:1 over this page's surface and misses the 3:1 that WCAG
-   2.2 asks a focus indicator for. Thinner alone would have made it worse —
-   translucent at 2px loses contrast and area together — so it went opaque and
-   thin at once.
+/* The icon page's focus specimen is bracketed from both sides, and neither side
+   is a preference. Too bright and it stops reading as a ring: opaque cyan
+   measured 7.24:1 and looked like a lit border, which is the complaint that
+   moved it. Too dim and it fails the 3:1 WCAG 2.2 asks a focus indicator for,
+   which is where the delivered 3px-at-40% halo sat, at 2.11:1. So the assertion
+   below is a pair — deliberately translucent, and still above the floor — and a
+   change that breaks either side has to be argued for rather than typed.
 
-   This measures what ships rather than what the note claims, because the note
-   is prose and prose drifts. It also pins the floor: SC 2.4.13 wants at least
-   the area of a 2px perimeter of the component, and on the 32px plate 2px is
-   exactly that, so there is nothing left to shave. The floor is computed from
-   the plate the build reports, so resizing the plate moves it automatically. */
-test('the icon focus specimen is thin because it is opaque, not despite it', async ({ page }) => {
+   Thickness is not part of the trade. SC 2.4.13 wants at least the area of a 2px
+   perimeter of the component, and on the 32px plate 2px is exactly that, so
+   alpha was the only dial left. The floor is computed from the plate the build
+   reports, so resizing the plate moves it automatically.
+
+   This measures what ships rather than what the note claims, because the note is
+   prose and prose drifts — and then it makes the note repeat the measured
+   numbers, so prose that drifts fails here instead of misleading a reader. */
+test('the icon focus specimen is dimmed to the floor of what WCAG still allows', async ({ page }) => {
   await openComponent(page, '아이콘');
 
   const focus = await page.evaluate(() => {
@@ -719,8 +730,15 @@ test('the icon focus specimen is thin because it is opaque, not despite it', asy
     if (!cell) return null;
     const style = window.getComputedStyle(cell);
     const parse = (value) => {
-      const n = (String(value).match(/[\d.]+/g) || []).map(Number);
-      return n.length >= 3 ? { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 } : null;
+      const text = String(value).trim();
+      const n = (text.match(/[\d.]+/g) || []).map(Number);
+      if (n.length < 3) return null;
+      /* color(srgb …) reports channels on 0–1, rgb()/rgba() on 0–255. Chrome
+         serialises color-mix() as the former, so the scale is read off the
+         function name — inferring it from the values would call an honest
+         rgb(0, 0, 1) a near-black and pass. */
+      const scale = /^color\(/i.test(text) ? 255 : 1;
+      return { r: n[0] * scale, g: n[1] * scale, b: n[2] * scale, a: n.length > 3 ? n[3] : 1 };
     };
     /* Composited against what is actually behind the cell, not against an
        assumed page colour — this repo has produced a 1.05:1 misreading by
@@ -737,14 +755,15 @@ test('the icon focus specimen is thin because it is opaque, not despite it', asy
       };
       if (behind.a >= 0.999) break;
     }
-    /* box-shadow is "rgb(0, 170, 255) 0px 0px 0px 2px": scraping digits out of
-       the whole string reads the first offset as the alpha channel. The colour
-       function has to come out on its own, which is what svg-export's ringOf
-       does for the same reason. */
+    /* box-shadow is "color(srgb 0 0.666667 1 / 0.62) 0px 0px 0px 2px": scraping
+       digits out of the whole string reads the first offset as the alpha channel,
+       and a colour function carries three more numbers of its own. The colour has
+       to come out on its own, which is what svg-export's ringOf does for the same
+       reason. */
     const shadow = style.boxShadow;
-    const colour = shadow.match(/rgba?\([^)]*\)/i);
+    const colour = shadow.match(/(?:rgba?|color)\([^)]*\)/i);
     const ring = colour ? parse(colour[0]) : null;
-    const lengths = (shadow.replace(/rgba?\([^)]*\)/i, '').match(/-?[\d.]+px/g) || []).map(parseFloat);
+    const lengths = (shadow.replace(/(?:rgba?|color)\([^)]*\)/i, '').match(/-?[\d.]+px/g) || []).map(parseFloat);
     return {
       shadow,
       ring,
@@ -757,9 +776,12 @@ test('the icon focus specimen is thin because it is opaque, not despite it', asy
   expect(focus, 'a focus specimen must exist to measure').not.toBeNull();
   expect(focus.ring, `the focus ring must carry a colour: ${focus.shadow}`).not.toBeNull();
 
-  /* Alpha is the dial that was wrong. A wash cannot be made accessible by
-     making it thinner, so the ring has to stay opaque. */
-  expect(focus.ring.a, `the focus ring must be opaque, got alpha ${focus.ring.a}`).toBe(1);
+  /* Upper bracket. Opaque cyan is 7.24:1 and reads as a lit border rather than a
+     ring, which is the whole reason the specimen was dimmed. The lower bracket is
+     the contrast floor further down; between them there is one narrow band, and
+     this is the side a revert to "just make it solid" lands on. */
+  expect(focus.ring.a, `the focus specimen is deliberately translucent, got alpha ${focus.ring.a}`)
+    .toBeLessThan(1);
 
   /* SC 2.4.13 minimum area: at least the area of a 2px perimeter of the
      component. Below 2px on this plate there is no legal thickness left. */
@@ -786,10 +808,18 @@ test('the icon focus specimen is thin because it is opaque, not despite it', asy
 
   /* And the page has to say it departs, with the numbers the build produces —
      otherwise a reader compares this to the Figma and concludes the build is
-     wrong, which is the same trap the Goalie pages document. */
+     wrong, which is the same trap the Goalie pages document.
+
+     These two are read back off the measurement rather than hardcoded, so
+     retuning the token without retuning the prose fails here. That is the point:
+     the previous round of this test pinned the literals 2.11 / 7.24 / 0.60, all
+     three of which stayed true while the value under them changed. */
   const note = page.locator('[data-icon-focus-note]');
   await expect(note, 'the departure must be stated on the page').toHaveCount(1);
-  await expect(note, 'it must name what the delivered specimen measured').toContainText('2.11');
-  await expect(note, 'it must name what ships').toContainText('7.24');
-  await expect(note, 'it must say why thinner alone was not the answer').toContainText('0.60');
+  await expect(note, `it must name the contrast the build measures, ${contrast}:1`)
+    .toContainText(String(contrast));
+  await expect(note, `it must name the alpha the build ships, ${Math.round(focus.ring.a * 100)}%`)
+    .toContainText(`${Math.round(focus.ring.a * 100)}%`);
+  await expect(note, 'it must name what opaque measured, so the reason is legible')
+    .toContainText('7.24');
 });
