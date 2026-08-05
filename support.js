@@ -411,6 +411,30 @@
     return () => raw;
   }
 
+  /* HTML boolean attributes, mapped to the prop name React expects. Only these
+     names are coerced, and only when the attribute carries no value — an explicit
+     `disabled="{{ flag }}"` still resolves through the normal path, so a template
+     can bind one to state. */
+  var BOOLEAN_ATTRS = {
+    disabled: "disabled",
+    checked: "checked",
+    readonly: "readOnly",
+    required: "required",
+    multiple: "multiple",
+    selected: "selected",
+    autofocus: "autoFocus",
+    open: "open",
+    inert: "inert",
+    reversed: "reversed",
+    novalidate: "noValidate",
+    formnovalidate: "formNoValidate",
+    controls: "controls",
+    loop: "loop",
+    muted: "muted",
+    autoplay: "autoPlay",
+    playsinline: "playsInline"
+  };
+
   // src/compile.ts
   function collectProps(node, kind, host) {
     const propGetters = [];
@@ -437,6 +461,21 @@
         else if (key === "for") key = "htmlFor";
         else if (key.startsWith("on"))
           key = EVENT_MAP[key] || "on" + key[2].toUpperCase() + key.slice(3);
+        else if (BOOLEAN_ATTRS[key] && value === "") {
+          /* A valueless boolean attribute is how HTML says true, and the parser
+             hands the value back as "". Passed through, React reads "" as false —
+             so `<button disabled>` and `<input type="checkbox" checked>` written
+             the ordinary way never reached the DOM at all. The templates had
+             sixteen of them and every one was inert: a Disabled button specimen
+             that was focusable and clickable, a "Disabled input example" that
+             accepted typing, and seven checked checkboxes rendering empty.
+
+             It failed quietly because a class carried the look in most of those
+             places, so the specimen looked disabled and simply was not. Only the
+             checkboxes had no class to hide behind, which is where it surfaced. */
+          propGetters.push([BOOLEAN_ATTRS[key], () => true]);
+          continue;
+        }
       }
       propGetters.push([key, compileAttr(value)]);
     }
