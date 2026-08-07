@@ -77,21 +77,44 @@ test('all 34 Parkie destinations are deep-linkable and fully documented', async 
   expect(new Set(destinations)).toEqual(new Set(TARGET_PAGES));
 });
 
-test('all 34 Parkie destinations have no automated accessibility violations', async ({ page }) => {
+/* One accepted contrast failure, decided 2026-08-07. The resting primary action
+   carries white type on brand blue, which measures 2.56:1 — under AA and under
+   the 3:1 large-text floor. It was #007CBA at 4.55:1 and was moved back to
+   #00AAFF on request, knowing the number. Hover and pressed did not move and
+   still measure 6.58 and 8.86:1, so the label is readable the moment the
+   control is engaged.
+
+   Pinned by rule and by the colour pair, not by node count and not by selector.
+   A count would let a second, unrelated contrast failure hide behind a fixed
+   one — the trap goalie-audit.spec.js records. Selectors would churn: axe
+   reports these as button[data-dc-tpl="542"], which is template-generated.
+   Matching on white-on-#00aaff means any other contrast defect, and any change
+   to this pairing's value, still fails the suite. */
+const ACCEPTED_CONTRAST = /foreground color: #ffffff, background color: #00aaff/i;
+
+test('all 34 Parkie destinations have no accessibility violations beyond the accepted contrast departure', async ({ page }) => {
   test.setTimeout(180_000);
 
   const defects = [];
+  let accepted = 0;
 
   for (const id of TARGET_PAGES) {
     await page.goto(`/#${id}`);
     await expect(page.locator('h1')).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
     for (const violation of results.violations) {
+      const nodes = violation.nodes.filter((node) => {
+        const known = violation.id === 'color-contrast'
+          && ACCEPTED_CONTRAST.test(node.failureSummary || '');
+        if (known) accepted += 1;
+        return !known;
+      });
+      if (!nodes.length) continue;
       defects.push({
         page: id,
         rule: violation.id,
         impact: violation.impact,
-        nodes: violation.nodes.map((node) => ({
+        nodes: nodes.map((node) => ({
           target: node.target,
           summary: node.failureSummary,
         })),
@@ -100,6 +123,12 @@ test('all 34 Parkie destinations have no automated accessibility violations', as
   }
 
   expect(defects, JSON.stringify(defects, null, 2)).toEqual([]);
+
+  /* The filter has to still be filtering something. If the fill is ever taken
+     back to a passing colour this assertion fails, which is the reminder to
+     delete the exception rather than leave a hole open behind it. */
+  expect(accepted, 'the accepted departure must still be present, or this exception should be removed')
+    .toBeGreaterThan(0);
 });
 
 test('audited destinations reflow without page-level horizontal overflow', async ({ page }) => {
@@ -748,7 +777,21 @@ test('button state contrast and focus ring visibility are enforced', async ({ pa
      sit at 4.29:1 under white text. */
   const verdicts = page.locator('.pk-token-verdict');
   await expect(verdicts).toHaveCount(12);
-  await expect(page.locator('.pk-token-verdict.is-fail')).toHaveCount(0);
+
+  /* Exactly one failure is accepted, and it has to be the one that was
+     accepted. Primary rest carries white type on brand blue at 2.56:1 by
+     decision on 2026-08-07 — the bright brand surface was wanted back on the
+     resting button and white type was kept, which those two colours cannot both
+     satisfy. Everything else still has to pass.
+
+     Pinned to the row, not to a count. A count of one would let a new failure
+     appear the moment this one is fixed, which is the trap goalie-audit.spec.js
+     records in its OPEN array. */
+  const failing = page.locator('tr:has(.pk-token-verdict.is-fail)');
+  await expect(failing, 'only the accepted Primary rest departure may fail').toHaveCount(1);
+  await expect(failing, 'the failing row must be Primary rest').toContainText('Rest');
+  await expect(failing).toContainText('--parkie-action-primary-bg');
+  await expect(failing, 'and it must still be the 2.56:1 that was accepted').toContainText('2.56:1');
 
   /* WCAG 2.2 Focus Appearance wants 3:1 against the adjacent colour. A single
      translucent ring cannot hold that everywhere — the previous one measured

@@ -22,10 +22,12 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
   await openComponent(page, '버튼');
   const button = page.locator('.pk-control-stage .pk-button').first();
   await expect(button).toBeVisible();
-  /* brand-700, not brand-500: the fill sits one step below brand blue so the
-     white label clears AA. #00AAFF is still the brand colour everywhere it does
-     not have to carry type. */
-  await expect(button).toHaveCSS('background-color', 'rgb(0, 124, 189)');
+  /* brand-500 with a white label, which is 2.56:1 and does not clear AA. That
+     is a decision, not a regression — see the token comment and the note on the
+     button page. The pair is asserted here so it cannot drift silently in
+     either direction: back to a passing colour without the exception in
+     design-system-audit being removed, or on to some third value nobody chose. */
+  await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
   await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(button).toHaveCSS('height', '36px');
 
@@ -35,10 +37,14 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
     'background-color',
     'rgb(223, 0, 0)'
   );
-  /* The ramp darkens monotonically — brand-700 -> 800 -> 900. There is no
-     headroom to brighten into: the brightest blue where white still clears
-     4.5:1 is about #007CBA, which is where rest already sits. Danger darkens
-     for the same reason. */
+  /* Hover and pressed did not move when rest went back to brand blue, so the
+     ramp still darkens — 500 -> 800 -> 900 — and white goes 2.56 -> 6.58 ->
+     8.86:1. The label is unreadable at rest and readable the moment the control
+     is engaged, which is the shape of the trade that was accepted.
+
+     The old bright ramp is deliberately not restored. Its hover was #16DCF2 at
+     1.67:1, which would have made hover the least readable of the three and
+     recreated the inversion the Goalie buttons were fixed for. */
   await expect(page.locator('.pk-button.is-hover')).toHaveCSS(
     'background-color',
     'rgb(8, 99, 143)'

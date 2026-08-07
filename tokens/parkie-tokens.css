@@ -167,20 +167,27 @@
   --parkie-brand-text: var(--parkie-color-brand-400);
 
   /* ---- Action colors
-     White labels on the action fill, which means the fill sits one step below
-     brand blue rather than on it. #00AAFF stays the brand colour — icons,
-     Selected, borders, the Subtle and Outline families all still read from it —
-     but it cannot carry white type: 2.56:1, short of AA and short of the 3:1
-     large-text floor too. Lowering the ink was the other option and it is the
-     one that was tried; dark-on-cyan measured 6.42:1 and was correct, it just
-     is not what the product wants to look like.
+     KNOWN DEPARTURE, decided 2026-08-07: rest carries white type on brand blue
+     at 2.56:1, under AA and under the 3:1 large-text floor as well. It is here
+     on purpose. The product wants the bright brand surface back on the resting
+     button and wants the label white, and those two cannot both hold — the
+     brightest blue where white clears 4.5:1 is about #007CBA, which is where
+     rest used to sit and is why it sat there.
 
-     The ramp darkens monotonically, for the same reason Danger does below: the
-     brightest blue where white still clears 4.5:1 is about #007CBA, so there is
-     no headroom to brighten into. A lighter hover would drop to AA Large, and
-     the contrast table treats anything under 4.5:1 as a failure.
-     4.55 -> 6.58 -> 8.86:1, all three from the existing ramp. */
-  --parkie-action-primary-bg: var(--parkie-color-brand-700);
+     Only rest moved. Hover and pressed stay on brand-800/900 at 6.58 and
+     8.86:1, so the label becomes readable the moment the control is engaged and
+     the ramp still darkens monotonically. The old bright ramp is NOT restored:
+     its hover was #16DCF2, which is 1.67:1 under white type and would have made
+     hover the least readable state of the three.
+
+     Everything else keeps reading brand blue as before — icons, Selected,
+     borders, the Subtle and Outline families. Dark ink on #00AAFF measures
+     6.42:1 and remains the accessible pairing if this is ever reversed.
+
+     tests/design-system-audit.spec.js pins this as an accepted axe violation by
+     rule and target, not by count, so a second contrast failure anywhere still
+     fails the suite. */
+  --parkie-action-primary-bg: var(--parkie-color-brand-500);
   --parkie-action-primary-bg-hover: var(--parkie-color-brand-800);
   --parkie-action-primary-bg-pressed: var(--parkie-color-brand-900);
   --parkie-action-primary-fg: var(--parkie-color-common-white);

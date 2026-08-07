@@ -497,10 +497,28 @@ test('representative Parkie and every non-Parkie route have complete accessible 
     });
     expect(duplicateIds, `${system}/${pageId} must not render duplicate IDs`).toEqual([]);
 
+    /* Same accepted departure the Parkie sweep in design-system-audit.spec.js
+       carries: the resting primary action is white type on brand blue at
+       2.56:1, kept on purpose since 2026-08-07. Matched on the colour pair
+       rather than a count or a selector, so any other contrast defect — and any
+       change to this pairing — still fails here.
+
+       This is the second axe sweep in the suite and it was missed when the
+       first one was given the exception, which is why both now name each other
+       in a comment. */
     const results = await new AxeBuilder({ page })
       .include('[data-guide-root]')
       .analyze();
-    expect(results.violations, `${system}/${pageId} axe violations`).toEqual([]);
+    const violations = results.violations
+      .map((violation) => ({
+        ...violation,
+        nodes: violation.nodes.filter((node) => !(
+          violation.id === 'color-contrast'
+          && /foreground color: #ffffff, background color: #00aaff/i.test(node.failureSummary || '')
+        )),
+      }))
+      .filter((violation) => violation.nodes.length);
+    expect(violations, `${system}/${pageId} axe violations`).toEqual([]);
   }
 });
 

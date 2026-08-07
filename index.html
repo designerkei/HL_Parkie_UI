@@ -981,8 +981,9 @@
               <section class="pk-control-section">
                 <h2>색상값 · Colour values</h2>
                 <p>값은 실행 시점에 CSS 토큰에서 직접 읽습니다. 마크업에 색을 따로 적어두지 않으므로 토큰을 바꾸면 이 표가 함께 바뀝니다. 대비는 실제 배경에 합성한 뒤 계산한 값이며, 값을 누르면 복사됩니다.</p>
-                <p><strong>흰 글씨를 쓰려고 채움을 한 단 내렸습니다</strong> — 흰 글씨는 <code>#00AAFF</code> 위에서 2.56:1로, AA(4.5:1)는 물론 큰 글씨 기준(3:1)에도 못 미칩니다. 그래서 글씨가 아니라 채움을 내렸습니다. <code>--parkie-action-primary-bg</code>는 브랜드 블루가 아니라 그 한 단 아래(<code>brand-700</code>)이고, <code>#00AAFF</code>는 아이콘·Selected·테두리·Subtle·Outline 계열에 그대로 남습니다. 어두운 잉크가 틀렸던 것은 아닙니다 — <code>#00AAFF</code> 위에서 6.42:1로 옳은 값이었고, 다만 제품이 원하는 모양이 아니었습니다.</p>
-                <p><strong>hover가 밝아지지 않고 어두워지는 이유</strong> — 흰 글씨가 4.5:1을 넘는 가장 밝은 파랑이 대략 <code>#007CBA</code>입니다. rest를 그 근처에 두면 위로 올릴 여유가 없어, hover를 밝히면 큰 글씨 기준으로 떨어집니다. 그래서 램프가 단조 감광합니다 — <code>4.55</code> → <code>6.58</code> → <code>8.86:1</code>. 아래 Danger가 같은 이유로 이미 그렇게 되어 있습니다.</p>
+                <p data-action-contrast-note><strong>Rest는 접근성 기준에 미달합니다 — 알고 내린 결정입니다</strong> — 브랜드 블루 <code>#00AAFF</code> 위의 흰 글씨는 <code>2.56:1</code>로, AA(<code>4.5:1</code>)는 물론 큰 글씨 기준(<code>3:1</code>)에도 못 미칩니다. 밝은 브랜드 표면과 흰 글씨는 동시에 성립하지 않습니다 — 흰 글씨가 <code>4.5:1</code>을 넘는 가장 밝은 파랑이 <code>#007CBD</code>(<code>4.55:1</code>)이고, 이전에 채움이 거기 있던 이유가 그것입니다. 제품이 브랜드 표면을 되찾는 쪽을 택했고, 그 대가로 rest의 라벨 대비를 포기했습니다.</p>
+                <p><strong>움직인 것은 rest뿐입니다</strong> — hover와 pressed는 <code>brand-800</code>·<code>brand-900</code>에 그대로 있어 <code>6.58</code>·<code>8.86:1</code>입니다. 라벨은 쉬고 있을 때 읽히지 않고 <strong>손이 닿는 순간 읽힙니다.</strong> 예전의 밝은 램프는 되살리지 않았습니다 — 그 hover는 <code>#16DCF2</code>로 흰 글씨에서 <code>1.67:1</code>이라 hover가 세 상태 중 가장 안 읽히는 상태가 됩니다.</p>
+                <p><strong>대안은 잉크입니다</strong> — 같은 <code>#00AAFF</code> 위에서 어두운 잉크(<code>#062226</code>)는 <code>6.42:1</code>로 통과합니다. 밝은 브랜드 표면을 유지하면서 기준도 지키는 유일한 조합이고, 흰 글씨를 포기할 때 돌아갈 자리입니다. <code>#00AAFF</code>는 아이콘·Selected·테두리·Subtle·Outline 계열에서는 계속 문제없이 쓰입니다.</p>
                 <sc-for list="{{ buttonTokenGroups }}" as="group" hint-placeholder-count="3">
                   <div class="pk-token-block">
                     <h3>{{ group.variant }}</h3>
@@ -5036,7 +5037,8 @@ class Component extends DCLogic {
     const contrastPairs = [
       { label: L('기본 텍스트', 'Primary text'), usage: L('일반 본문 · AA/AAA', 'Body copy · AA/AAA'), ratio: '16.72:1', sample: contrastSample('var(--parkie-text)', 'var(--parkie-surface)') },
       { label: L('보조 텍스트', 'Secondary text'), usage: L('설명과 메타 정보', 'Description and metadata'), ratio: '7.18:1', sample: contrastSample('var(--parkie-text-secondary)', 'var(--parkie-surface)') },
-      { label: L('기본 액션', 'Primary action'), usage: L('액션 채움 · 흰 글씨', 'Action fill · white label'), ratio: '4.55:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
+      { label: L('기본 액션 (rest)', 'Primary action (rest)'), usage: L('브랜드 채움 · 흰 글씨 — 의도된 미달', 'Brand fill · white label — accepted departure'), ratio: '2.56:1 · 미달', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg)') },
+      { label: L('기본 액션 (hover)', 'Primary action (hover)'), usage: L('한 단 어두운 채움 · 흰 글씨', 'Darker fill · white label'), ratio: '6.58:1 · AA', sample: contrastSample('var(--parkie-action-primary-fg)', 'var(--parkie-action-primary-bg-hover)') },
       { label: L('위험 텍스트', 'Danger text'), usage: L('오류 메시지', 'Error messaging'), ratio: '6.69:1', sample: contrastSample('var(--parkie-danger-text)', 'var(--parkie-surface)') },
       { label: L('경고 위 콘텐츠', 'On warning'), usage: L('경고 배경의 아이콘·텍스트', 'Content on warning background'), ratio: '11.89:1', sample: contrastSample('var(--parkie-brand-on)', 'var(--parkie-warning)') },
     ];
