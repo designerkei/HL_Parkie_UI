@@ -269,7 +269,7 @@
       </section>
       <section class="cpms-section" aria-labelledby="cpms-nav-contract-heading">
         <header class="cpms-section__head"><div><span>02 · NAVIGATION CONTRACT</span><h2 id="cpms-nav-contract-heading">{{ navContractTitle }}</h2></div><p>{{ navContractBody }}</p></header>
-        <div class="cpms-rule-grid"><sc-for list="{{ shellRules }}" as="rule" hint-placeholder-count="6"><article><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.evidence }}</code></article></sc-for></div>
+        <div class="cpms-rule-grid"><sc-for list="{{ shellRules }}" as="rule" hint-placeholder-count="6"><article><strong>{{ rule.title }}</strong><p>{{ rule.body }}</p><code>{{ rule.example }}</code></article></sc-for></div>
       </section>
     </sc-if>
 
@@ -396,8 +396,14 @@ class Component extends DCLogic {
     const swatch = (name, value, token, roleKo, roleEn) => ({
       name, value, role: L(roleKo, roleEn), style: { background: `var(${token})` },
     });
-    const semantic = (nameKo, nameEn, token, ruleKo, ruleEn) => ({
-      name: L(nameKo, nameEn), token, rule: L(ruleKo, ruleEn), style: { background: `var(${token})` },
+    /* Takes finished strings, because every call site resolves its own with L().
+       It used to declare (nameKo, nameEn, token, ruleKo, ruleEn) while all six
+       calls passed four arguments — the same defect GoaliePages carried, from
+       the same shape. The name survived because one L() result was passed twice;
+       ruleEn was always undefined, so the rule read correctly in Korean and
+       rendered empty in English. */
+    const semantic = (name, token, rule) => ({
+      name, token, rule, style: { background: `var(${token})` },
     });
     /* Every reference guide publishes size, weight, line height and letter
        spacing together, because a size alone does not tell you how the text
@@ -488,12 +494,12 @@ class Component extends DCLogic {
       swatch('Metallic Silver', '#B2B2B2', '--cpms-source-silver', '브랜드 자산에만 제한', 'Restricted to brand assets'),
     ];
     const semanticColors = [
-      semantic(L('주요 액션', 'Primary action'), L('주요 액션', 'Primary action'), '--cpms-action-primary', L('확정·저장·생성의 한 번의 주요 액션.', 'One primary confirm, save or create action.')),
-      semantic(L('선택', 'Selection'), L('선택', 'Selection'), '--cpms-brand-accent', L('위치와 선택을 표시하며 의미 상태를 대체하지 않음.', 'Marks location and selection; never replaces semantic state.')),
-      semantic(L('성공', 'Success'), L('성공', 'Success'), '--cpms-success', L('완료·저장 성공. 텍스트와 아이콘을 함께 사용.', 'Completion and save success, paired with text and icon.')),
-      semantic(L('경고', 'Warning'), L('경고', 'Warning'), '--cpms-warning', L('복구 가능한 주의·오프라인·지연.', 'Recoverable caution, offline state or delay.')),
-      semantic(L('오류', 'Danger'), L('오류', 'Danger'), '--cpms-danger', L('실패·충돌·파괴적 액션.', 'Failure, conflict and destructive action.')),
-      semantic(L('정보', 'Information'), L('정보', 'Information'), '--cpms-info', L('비차단 안내·편집 잠금 주체·동기화.', 'Non-blocking guidance, lock owner and synchronization.')),
+      semantic(L('주요 액션', 'Primary action'), '--cpms-action-primary', L('확정·저장·생성의 한 번의 주요 액션.', 'One primary confirm, save or create action.')),
+      semantic(L('선택', 'Selection'), '--cpms-brand-accent', L('위치와 선택을 표시하며 의미 상태를 대체하지 않음.', 'Marks location and selection; never replaces semantic state.')),
+      semantic(L('성공', 'Success'), '--cpms-success', L('완료·저장 성공. 텍스트와 아이콘을 함께 사용.', 'Completion and save success, paired with text and icon.')),
+      semantic(L('경고', 'Warning'), '--cpms-warning', L('복구 가능한 주의·오프라인·지연.', 'Recoverable caution, offline state or delay.')),
+      semantic(L('오류', 'Danger'), '--cpms-danger', L('실패·충돌·파괴적 액션.', 'Failure, conflict and destructive action.')),
+      semantic(L('정보', 'Information'), '--cpms-info', L('비차단 안내·편집 잠금 주체·동기화.', 'Non-blocking guidance, lock owner and synchronization.')),
     ];
 
     const typeRows = [

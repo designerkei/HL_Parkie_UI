@@ -168,6 +168,14 @@ test.beforeEach(async ({ page }) => {
   page.on('pageerror', (error) => runtimeErrors.push(`pageerror: ${error.message}`));
   page.on('console', (message) => {
     if (message.type() === 'error') runtimeErrors.push(`console: ${message.text()}`);
+    /* [dc-runtime] holes arrive as warnings, not errors, so collecting only
+       errors let one ship: the CPMS shell page read `rule.evidence` where the
+       helper builds `example`, and six <code> elements rendered empty on the
+       live site. Nothing else fires when a template asks for a field that does
+       not exist — the page just goes quiet where the value should be. */
+    if (message.type() === 'warning' && message.text().startsWith('[dc-runtime]')) {
+      runtimeErrors.push(`console: ${message.text()}`);
+    }
   });
   page.__multiSystemRuntimeErrors = runtimeErrors;
 });

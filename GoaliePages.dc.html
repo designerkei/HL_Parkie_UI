@@ -694,7 +694,15 @@ class Component extends DCLogic {
     const activePage = this.props.activePage || 'overview';
     const badge = (kind) => `gl-badge gl-badge--${kind}`;
     const swatch = (name, value, token, roleKo, roleEn) => ({ name, value, role: L(roleKo, roleEn), style: { background: `var(${token})` } });
-    const semantic = (nameKo, nameEn, token, ruleKo, ruleEn) => ({ name: L(nameKo, nameEn), token, rule: L(ruleKo, ruleEn), style: { background: `var(${token})` } });
+    /* Takes finished strings, because every call site resolves its own with L().
+       It used to declare (nameKo, nameEn, token, ruleKo, ruleEn) while all six
+       calls passed four arguments: the name survived because the same L() result
+       was passed twice, but ruleEn was always undefined, so L(ruleKo, ruleEn)
+       returned the rule in Korean and nothing in English. Six <p> elements went
+       empty on the English page only — invisible to the translation gate, which
+       looks for Korean characters that should not be there and finds none in an
+       empty string. */
+    const semantic = (name, token, rule) => ({ name, token, rule, style: { background: `var(${token})` } });
     const typeRow = (token, font, meta, useKo, useEn) => ({ token, sample: L('로봇 솔루션', 'Robot Solution'), style: { font }, meta, use: L(useKo, useEn) });
 
     const overviewFacts = [
@@ -779,12 +787,12 @@ class Component extends DCLogic {
       ]},
     ];
     const semanticColors = [
-      semantic(L('주요 액션', 'Primary action'), L('주요 액션', 'Primary action'), '--goalie-brand-primary', L('현재 범위의 한 가지 확정 액션.', 'One confirming action in the current scope.')),
-      semantic(L('선택', 'Selection'), L('선택', 'Selection'), '--goalie-selected-surface', L('위치와 문맥. 운영 상태를 대체하지 않음.', 'Location and context; never replaces operation state.')),
-      semantic(L('순찰 중', 'Patrolling'), L('순찰 중', 'Patrolling'), '--goalie-operation-active', L('operation 축의 active 값.', 'Active value of the operation axis.')),
-      semantic(L('비상', 'Emergency'), L('비상', 'Emergency'), '--goalie-safety-emergency', L('모든 일반 interaction보다 우선.', 'Overrides ordinary interaction.')),
-      semantic(L('발화', 'Speaking'), L('발화', 'Speaking'), '--goalie-audio-speaking', L('audio 축이며 safety와 독립.', 'Audio axis, independent of safety.')),
-      semantic(L('배터리 경고', 'Battery warning'), L('배터리 경고', 'Battery warning'), '--goalie-battery-warning', L('아이콘과 수치를 함께 사용.', 'Pair with icon and numeric value.')),
+      semantic(L('주요 액션', 'Primary action'), '--goalie-brand-primary', L('현재 범위의 한 가지 확정 액션.', 'One confirming action in the current scope.')),
+      semantic(L('선택', 'Selection'), '--goalie-selected-surface', L('위치와 문맥. 운영 상태를 대체하지 않음.', 'Location and context; never replaces operation state.')),
+      semantic(L('순찰 중', 'Patrolling'), '--goalie-operation-active', L('operation 축의 active 값.', 'Active value of the operation axis.')),
+      semantic(L('비상', 'Emergency'), '--goalie-safety-emergency', L('모든 일반 interaction보다 우선.', 'Overrides ordinary interaction.')),
+      semantic(L('발화', 'Speaking'), '--goalie-audio-speaking', L('audio 축이며 safety와 독립.', 'Audio axis, independent of safety.')),
+      semantic(L('배터리 경고', 'Battery warning'), '--goalie-battery-warning', L('아이콘과 수치를 함께 사용.', 'Pair with icon and numeric value.')),
     ];
     const contrastPairs = [
       ['#31D3FF / white', '1.77:1', 'fail', L('위 표본처럼 dark ink로 교체', 'Replace with dark ink as shown'), { background: '#31D3FF', color: '#1C2126' }],
