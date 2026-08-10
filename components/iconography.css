@@ -436,14 +436,18 @@
   color: var(--parkie-icon-disabled);
 }
 
-.pk-domain-icon.is-battery-full {
-  color: var(--parkie-icon-battery-full);
-}
-
-.pk-domain-icon.is-battery-critical {
-  color: var(--parkie-icon-battery-full);
-}
-
+/* One rule, because there is one decision here and it was previously written
+   three times. The battery glyph carries its state in the level rect *inside*
+   the outline — medium is neutral, critical fills red, the charging pair fills
+   green and adds the bolt — so the outline that surrounds all five states is
+   the same neutral ink. Three separate rules resolving to one value read as an
+   oversight waiting to be "fixed" by giving critical a red outline, which would
+   say the severity twice and leave the neutral states looking unfinished.
+   The tone the eye should read is inside the glyph; this is only its frame.
+   tests/ui.spec.js measures the inner fills; design-system-audit.spec.js
+   measures that this frame stays one neutral ink across the three tones. */
+.pk-domain-icon.is-battery-full,
+.pk-domain-icon.is-battery-critical,
 .pk-domain-icon.is-charging {
   color: var(--parkie-icon-battery-full);
 }
