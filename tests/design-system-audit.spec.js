@@ -46,10 +46,23 @@ test.beforeEach(async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.__runtimeErrors = errors;
+
+  /* A [dc-runtime] warning means the template asked for something the logic
+     never supplies, and the page renders that hole as empty text. It cost six
+     empty <code> elements on the CPMS shell page — a field named `evidence`
+     where the helper builds `example` — which shipped because nothing read the
+     console. The warning is the only signal that fires, so it is a failure. */
+  const holes = [];
+  page.on('console', (message) => {
+    if (message.type() !== 'warning' && message.type() !== 'error') return;
+    if (message.text().startsWith('[dc-runtime]')) holes.push(message.text());
+  });
+  page.__runtimeHoles = holes;
 });
 
 test.afterEach(async ({ page }) => {
   expect(page.__runtimeErrors, 'audited pages must not throw runtime errors').toEqual([]);
+  expect(page.__runtimeHoles, 'audited pages must not leave template holes unresolved').toEqual([]);
 });
 
 test('all 34 Parkie destinations are deep-linkable and fully documented', async ({ page }) => {
@@ -1360,6 +1373,123 @@ test('connection states spend colour only on severity, on every surface', async 
     expect(badge.painted[state], `the ${state} badge must route through the connection token`)
       .not.toBe('');
   }
+});
+
+/*
+ * index.html is both the authored template and the served document, and boot()
+ * compiles it twice from two different sources: first from the live DOM the
+ * browser has already parsed, then ~200ms later from its own source re-fetched
+ * as text. Those two are not always the same page. The HTML parser foster-parents
+ * an unknown element out of a table, so <sc-for> written inside <tbody> loses
+ * its children and the <tr> is left behind as a static child — the first render
+ * then draws that row once per *outer* item with the loop variable undefined.
+ * The visible output self-heals when the fetched template lands, so the only
+ * symptom was nine console warnings, and the recorded diagnosis blamed the rAF
+ * token probe instead. The runtime already dodges this on the fetched path by
+ * renaming table tags to sc-raw-* before it touches innerHTML; the authored
+ * markup uses those same aliases so both paths compile the same tree.
+ *
+ * This compares the two paths rather than banning a pattern, so it stays true
+ * if the alias list changes: put a loop back inside a real <tbody> and the two
+ * shapes diverge.
+ */
+test('the page the browser parses is the page the runtime compiles', async ({ page }) => {
+  await page.goto('/#overview');
+
+  const shapes = await page.evaluate(async () => {
+    const raw = await (await fetch('/index.html', { cache: 'no-store' })).text();
+    const open = /<x-dc(?:\s[^>]*)?>/.exec(raw);
+    const close = raw.lastIndexOf('</x-dc>');
+    if (!open || close < 0) return null;
+    const inner = raw.slice(open.index + open[0].length, close);
+
+    const shape = (root) => [...root.querySelectorAll('sc-for, sc-if')].map((el) => [
+      el.tagName.toLowerCase(),
+      el.getAttribute('list') || el.getAttribute('value') || '',
+      el.children.length,
+    ].join('|'));
+
+    /* What boot() compiles on first paint: the document, already parsed. */
+    const asDocument = new DOMParser().parseFromString(raw, 'text/html');
+
+    /* What the re-fetched path compiles: the raw slice, with table tags renamed
+       exactly as encodeCase() does before the runtime assigns innerHTML. */
+    const asRawText = document.createElement('template');
+    asRawText.innerHTML = inner.replace(
+      /(<\/?)(table|thead|tbody|tfoot|tr|td|th|caption)(?=[\s>])/gi,
+      '$1sc-raw-$2',
+    );
+
+    return { fromDocument: shape(asDocument), fromRawText: shape(asRawText.content) };
+  });
+
+  expect(shapes, 'index.html must expose an <x-dc> template to compare').not.toBeNull();
+  expect(shapes.fromRawText.length, 'the template must actually contain control flow')
+    .toBeGreaterThan(20);
+  expect(shapes.fromDocument, 'control flow the HTML parser moves out of a table renders against the wrong scope on first paint')
+    .toEqual(shapes.fromRawText);
+});
+
+/*
+ * is-battery-full, is-battery-critical and is-charging all resolve to one ink,
+ * which reads as three names for one decision and invites a tidy-up that gives
+ * critical a red outline. It is not an oversight: the battery glyph says its
+ * state with the level rect inside the outline — medium neutral, critical red,
+ * the charging pair green plus the bolt — so the outline is the frame and stays
+ * neutral for all five. Colouring the frame too would say severity twice and
+ * leave medium and the charging pair looking unfinished beside it.
+ *
+ * The property, not the value: the three tones must agree with each other, the
+ * agreed ink must be neither semantic fill, and the meaning must still be inside
+ * the glyph. Retuning the neutral is free; splitting the frame is not. The
+ * per-state inner fills are measured in tests/ui.spec.js — this is the frame.
+ */
+test('the battery glyph carries its state inside the outline, not on it', async ({ page }) => {
+  await page.goto('/#iconography');
+  await expect(page.locator('.pk-domain-icon.is-battery-full').first()).toBeVisible();
+
+  const read = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(probe);
+    const token = (name) => {
+      probe.style.color = '';
+      probe.style.color = `var(${name})`;
+      return getComputedStyle(probe).color;
+    };
+    const tokens = {
+      neutral: token('--parkie-icon-battery-full'),
+      critical: token('--parkie-icon-battery-critical'),
+      charging: token('--parkie-icon-charging'),
+    };
+    probe.remove();
+
+    const frames = [];
+    for (const tone of ['is-battery-full', 'is-battery-critical', 'is-charging']) {
+      for (const cell of document.querySelectorAll(`.pk-domain-icon.${tone}`)) {
+        frames.push({ tone, colour: getComputedStyle(cell).color });
+      }
+    }
+    const inner = [...document.querySelector('.pk-domain-grid').querySelectorAll('.pk-domain-icon rect')]
+      .map((rect) => getComputedStyle(rect).fill);
+    return { tokens, frames, inner };
+  });
+
+  /* All five specimens have to be on the page, or the rest asserts nothing. */
+  expect(read.frames.length, 'the battery grid documents five states').toBe(5);
+  expect(new Set(read.frames.map((f) => f.tone)).size, 'all three tone classes must be in use').toBe(3);
+
+  const inks = new Set(read.frames.map((f) => f.colour));
+  expect(inks.size, 'the outline is one frame, so the three tones must agree on its ink').toBe(1);
+  expect([...inks][0], 'the frame reads the battery ink token').toBe(read.tokens.neutral);
+  expect([...inks][0], 'a red outline would say critical twice').not.toBe(read.tokens.critical);
+  expect([...inks][0], 'a green outline would say charging twice').not.toBe(read.tokens.charging);
+
+  /* And the meaning has to be somewhere — inside, which is why the frame is free
+     to be neutral. Without this the gate would also pass on a colourless grid. */
+  const fills = new Set(read.inner);
+  expect(fills.has(read.tokens.critical), 'critical must be filled inside the glyph').toBe(true);
+  expect(fills.has(read.tokens.charging), 'charging must be filled inside the glyph').toBe(true);
 });
 
 /*

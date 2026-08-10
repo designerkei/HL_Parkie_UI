@@ -988,28 +988,37 @@
                   <div class="pk-token-block">
                     <h3>{{ group.variant }}</h3>
                     <div class="pk-token-scroll pk-scroll">
-                      <table class="pk-token-table">
-                        <thead>
-                          <tr><th>상태 · State</th><th>배경 · Background</th><th>전경 · Foreground</th><th>대비 · Contrast</th></tr>
-                        </thead>
-                        <tbody>
+                      <!-- Alias tags, not <table>/<tr>/<td>. This template is also the live
+                           document, and the HTML parser foster-parents an unknown element out
+                           of a table: <sc-for> inside <tbody> loses its children and the <tr>
+                           is left behind as a static child. boot() compiles that already-damaged
+                           DOM for the first render, so each {{ row.* }} resolved against an
+                           undefined row and warned. sc-raw-* are not table elements to the
+                           parser, so the nesting survives; walkElement maps them back and the
+                           rendered DOM is an ordinary <table>. Any loop inside a table needs
+                           this — see the gate in tests/design-system-audit.spec.js. -->
+                      <sc-raw-table class="pk-token-table">
+                        <sc-raw-thead>
+                          <sc-raw-tr><sc-raw-th>상태 · State</sc-raw-th><sc-raw-th>배경 · Background</sc-raw-th><sc-raw-th>전경 · Foreground</sc-raw-th><sc-raw-th>대비 · Contrast</sc-raw-th></sc-raw-tr>
+                        </sc-raw-thead>
+                        <sc-raw-tbody>
                           <sc-for list="{{ group.rows }}" as="row" hint-placeholder-count="4">
-                            <tr>
-                              <th scope="row">{{ row.state }}</th>
-                              <td>
+                            <sc-raw-tr>
+                              <sc-raw-th scope="row">{{ row.state }}</sc-raw-th>
+                              <sc-raw-td>
                                 <span class="pk-token-swatch" style="{{ row.swatchStyle }}" aria-hidden="true">Aa</span>
                                 <button class="pk-token-value" type="button" aria-label="{{ row.bgAria }}" onClick="{{ row.bgOnClick }}">{{ row.bgValue }}</button>
                                 <code>{{ row.bgToken }}</code>
-                              </td>
-                              <td>
+                              </sc-raw-td>
+                              <sc-raw-td>
                                 <button class="pk-token-value" type="button" aria-label="{{ row.fgAria }}" onClick="{{ row.fgOnClick }}">{{ row.fgValue }}</button>
                                 <code>{{ row.fgToken }}</code>
-                              </td>
-                              <td><span class="{{ row.verdictClass }}">{{ row.contrast }} · {{ row.verdict }}</span></td>
-                            </tr>
+                              </sc-raw-td>
+                              <sc-raw-td><span class="{{ row.verdictClass }}">{{ row.contrast }} · {{ row.verdict }}</span></sc-raw-td>
+                            </sc-raw-tr>
                           </sc-for>
-                        </tbody>
-                      </table>
+                        </sc-raw-tbody>
+                      </sc-raw-table>
                     </div>
                   </div>
                 </sc-for>
@@ -3019,14 +3028,16 @@
                 </button>
                 <p class="pk-export-actions-note">{{ bundleExport.title }}</p>
               </div>
-              <table class="pk-layer-table">
-                <thead><tr><th>폴더</th><th>컴포넌트</th></tr></thead>
-                <tbody>
+              <!-- Alias tags for the same reason as the button page's contrast table:
+                   a loop inside <tbody> is foster-parented out by the HTML parser. -->
+              <sc-raw-table class="pk-layer-table">
+                <sc-raw-thead><sc-raw-tr><sc-raw-th>폴더</sc-raw-th><sc-raw-th>컴포넌트</sc-raw-th></sc-raw-tr></sc-raw-thead>
+                <sc-raw-tbody>
                   <sc-for list="{{ bundleContents }}" as="entry" hint-placeholder-count="11">
-                    <tr><td><code>{{ entry.folder }}</code></td><td>{{ entry.title }}</td></tr>
+                    <sc-raw-tr><sc-raw-td><code>{{ entry.folder }}</code></sc-raw-td><sc-raw-td>{{ entry.title }}</sc-raw-td></sc-raw-tr>
                   </sc-for>
-                </tbody>
-              </table>
+                </sc-raw-tbody>
+              </sc-raw-table>
             </section>
           </div>
         </sc-if>
