@@ -22,13 +22,10 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
   await openComponent(page, '버튼');
   const button = page.locator('.pk-control-stage .pk-button').first();
   await expect(button).toBeVisible();
-  /* brand-500 with a white label, which is 2.56:1 and does not clear AA. That
-     is a decision, not a regression — see the token comment and the note on the
-     button page. The pair is asserted here so it cannot drift silently in
-     either direction: back to a passing colour without the exception in
-     design-system-audit being removed, or on to some third value nobody chose. */
+  /* Bright brand surfaces pair with brand-950 ink, preserving the Parkie
+     palette while keeping every interaction state above 4.5:1. */
   await expect(button).toHaveCSS('background-color', 'rgb(0, 170, 255)');
-  await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(button).toHaveCSS('color', 'rgb(6, 34, 46)');
   await expect(button).toHaveCSS('height', '36px');
 
   const disabled = page.locator('.pk-button.is-disabled');
@@ -37,21 +34,14 @@ test('primary actions use the accessible Parkie action palette', async ({ page }
     'background-color',
     'rgb(223, 0, 0)'
   );
-  /* Hover and pressed did not move when rest went back to brand blue, so the
-     ramp still darkens — 500 -> 800 -> 900 — and white goes 2.56 -> 6.58 ->
-     8.86:1. The label is unreadable at rest and readable the moment the control
-     is engaged, which is the shape of the trade that was accepted.
-
-     The old bright ramp is deliberately not restored. Its hover was #16DCF2 at
-     1.67:1, which would have made hover the least readable of the three and
-     recreated the inversion the Goalie buttons were fixed for. */
+  /* The same dark ink stays readable through brand-500 -> 300 -> 600. */
   await expect(page.locator('.pk-button.is-hover')).toHaveCSS(
     'background-color',
-    'rgb(8, 99, 143)'
+    'rgb(22, 220, 242)'
   );
   await expect(page.locator('.pk-button.is-pressed')).toHaveCSS(
     'background-color',
-    'rgb(13, 79, 112)'
+    'rgb(0, 155, 233)'
   );
 });
 

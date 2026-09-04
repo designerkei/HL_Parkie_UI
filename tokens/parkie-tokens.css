@@ -167,30 +167,15 @@
   --parkie-brand-text: var(--parkie-color-brand-400);
 
   /* ---- Action colors
-     KNOWN DEPARTURE, decided 2026-08-07: rest carries white type on brand blue
-     at 2.56:1, under AA and under the 3:1 large-text floor as well. It is here
-     on purpose. The product wants the bright brand surface back on the resting
-     button and wants the label white, and those two cannot both hold — the
-     brightest blue where white clears 4.5:1 is about #007CBA, which is where
-     rest used to sit and is why it sat there.
-
-     Only rest moved. Hover and pressed stay on brand-800/900 at 6.58 and
-     8.86:1, so the label becomes readable the moment the control is engaged and
-     the ramp still darkens monotonically. The old bright ramp is NOT restored:
-     its hover was #16DCF2, which is 1.67:1 under white type and would have made
-     hover the least readable state of the three.
-
-     Everything else keeps reading brand blue as before — icons, Selected,
-     borders, the Subtle and Outline families. Dark ink on #00AAFF measures
-     6.42:1 and remains the accessible pairing if this is ever reversed.
-
-     tests/design-system-audit.spec.js pins this as an accepted axe violation by
-     rule and target, not by count, so a second contrast failure anywhere still
-     fails the suite. */
+     ACCESSIBLE PRIMARY RAMP, decided 2026-09-04: bright brand surfaces pair
+     with brand-950 ink. Rest, hover and pressed measure 6.42:1, 9.84:1 and
+     5.38:1 respectively, so every state clears WCAG AA without giving up the
+     #00AAFF brand surface. The former white-on-brand exception has been removed
+     from both the component documentation and the axe sweeps. */
   --parkie-action-primary-bg: var(--parkie-color-brand-500);
-  --parkie-action-primary-bg-hover: var(--parkie-color-brand-800);
-  --parkie-action-primary-bg-pressed: var(--parkie-color-brand-900);
-  --parkie-action-primary-fg: var(--parkie-color-common-white);
+  --parkie-action-primary-bg-hover: var(--parkie-color-brand-300);
+  --parkie-action-primary-bg-pressed: var(--parkie-color-brand-600);
+  --parkie-action-primary-fg: var(--parkie-brand-on);
   --parkie-action-danger-bg: #DF0000;
   /* Danger darkens monotonically so white stays readable and the button never
      looks less dangerous as you interact with it. The old hover (#EF2020) was

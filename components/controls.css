@@ -199,10 +199,9 @@
 .pk-button-spinner {
   width: 14px;
   height: 14px;
-  /* The track is the label colour at 30%, not a fixed ink. It was
-     rgba(6,34,46,0.30) — the old dark label — which on a white label leaves the
-     track invisible and the spinner reading as a lone arc. */
-  border: 2px solid rgba(255,255,255,0.30);
+  /* The track follows the current label ink so loading remains legible when
+     the primary action palette changes. */
+  border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
   border-top-color: currentColor;
   border-radius: var(--parkie-radius-round);
   animation: pk-spin 700ms linear infinite;
