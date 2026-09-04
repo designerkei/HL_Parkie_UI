@@ -1,0 +1,36 @@
+{
+  "name": "@designerkei/parkie-ui",
+  "version": "0.0.0-registry-smoke.0",
+  "description": "Parkie UI package registry smoke artifact",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.cjs",
+    "index.d.ts",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/designerkei/HL_Parkie_UI.git",
+    "directory": "packages/parkie-ui"
+  }
+}

@@ -2,13 +2,40 @@
   "name": "hl-parkie-ui",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test tests/ui.spec.js",
-    "test:audit": "playwright test tests/design-system-audit.spec.js"
+    "test:audit": "playwright test tests/design-system-audit.spec.js",
+    "pack:parkie-ui": "npm pack --workspace @designerkei/parkie-ui",
+    "publish:parkie-ui:dry-run": "npm publish --workspace @designerkei/parkie-ui --tag registry-smoke --dry-run"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "1.62.1"
-  }
+  },
+  "description": "여러 제품의 디자인 시스템을 한 사이트에서 서빙하는 정적 가이드입니다.\r RMS 디자인 시스템의 정보 구조와 컴포넌트를 본체로 사용하고, 제품별 브랜드\r 테마를 그 위에 얹습니다.",
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "axe-core": "^4.12.1",
+    "playwright": "^1.62.1",
+    "playwright-core": "^1.62.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/designerkei/HL_Parkie_UI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/designerkei/HL_Parkie_UI/issues"
+  },
+  "homepage": "https://github.com/designerkei/HL_Parkie_UI#readme"
 }

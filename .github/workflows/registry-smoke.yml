@@ -1,0 +1,54 @@
+name: Parkie UI registry smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/parkie-ui-foundation-v0.1
+    paths:
+      - .github/workflows/registry-smoke.yml
+      - package.json
+      - package-lock.json
+      - packages/parkie-ui/**
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-and-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@designerkei'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Assign an immutable smoke version
+        shell: bash
+        run: |
+          package_version="0.0.0-registry-smoke.${GITHUB_RUN_NUMBER}"
+          npm version "$package_version" --workspace @designerkei/parkie-ui --no-git-tag-version
+          echo "PACKAGE_VERSION=$package_version" >> "$GITHUB_ENV"
+
+      - name: Publish the smoke package
+        run: npm publish --workspace @designerkei/parkie-ui --tag registry-smoke
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install from the registry in a clean consumer
+        shell: bash
+        run: |
+          consumer_dir="$(mktemp -d)"
+          cd "$consumer_dir"
+          npm init --yes
+          npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}"
+          node --input-type=module -e "import('@designerkei/parkie-ui').then(({ parkieUiRegistrySmoke: value }) => { if (!value.ready) process.exit(1); console.log(value); })"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
