@@ -1,0 +1,11 @@
+# syntax=docker/dockerfile:1.7
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
+    npm ci --cache /tmp/npm-cache --prefer-offline
+
+COPY . .
+RUN npm run build

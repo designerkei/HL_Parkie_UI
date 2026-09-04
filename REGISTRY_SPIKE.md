@@ -44,6 +44,10 @@ version from GitHub Packages, and imports it.
 The workflow must finish successfully before design tokens or components are
 added to the package.
 
+GitHub Actions run `33831584586` completed successfully on 2026-09-04. It
+published `0.0.0-registry-smoke.1` and installed that exact version in a clean
+consumer using the repository-scoped `GITHUB_TOKEN`.
+
 The current development machine has no GitHub Packages npm credential and no
 Docker executable. Remote publication is therefore delegated to the scoped
 GitHub Actions token, while the production Docker check remains an explicit
@@ -58,6 +62,11 @@ HL Robotics production path. The RMS build environment must separately prove:
 2. A read-only package token is supplied as a build secret.
 3. The token never appears in an image layer, build log, `.npmrc`, or lockfile.
 4. The existing Node 20 production build succeeds with the package installed.
+
+The workflow also checks out the current RMS feature branch into a disposable
+directory, adds the exact smoke version to its temporary lockfile, and performs
+the RMS build in a Node 20 Docker stage. Registry credentials are mounted with a
+BuildKit secret and never copied into an image layer.
 
 If the internal environment cannot satisfy those conditions, publish the same
 package artifact to the internal GitLab npm registry instead. Do not fall back

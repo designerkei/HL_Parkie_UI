@@ -10,6 +10,7 @@ on:
       - package.json
       - package-lock.json
       - packages/parkie-ui/**
+      - tests/registry-smoke/**
 
 permissions:
   contents: read
@@ -52,3 +53,31 @@ jobs:
           node --input-type=module -e "import('@designerkei/parkie-ui').then(({ parkieUiRegistrySmoke: value }) => { if (!value.ready) process.exit(1); console.log(value); })"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out the RMS consumer branch
+        uses: actions/checkout@v4
+        with:
+          repository: designerkei/Parkie-RMS
+          ref: feature/local-mock-backend
+          path: rms
+          persist-credentials: false
+
+      - name: Pin the published package in the disposable RMS lockfile
+        working-directory: rms
+        run: npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}" --save-exact --package-lock-only
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build RMS in Node 20 with registry credentials mounted as a secret
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npmrc_file="${RUNNER_TEMP}/parkie-ui.npmrc"
+          umask 077
+          printf '@designerkei:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NODE_AUTH_TOKEN" > "$npmrc_file"
+          docker build \
+            --secret "id=npmrc,src=$npmrc_file" \
+            --file tests/registry-smoke/RmsDockerfile \
+            rms
+          rm -f "$npmrc_file"
