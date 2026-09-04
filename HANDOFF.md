@@ -99,6 +99,41 @@ rest `brand-500`(`#00AAFF`), hover `brand-300`(`#16DCF2`), pressed
 - Registry run #1에서 `0.0.0-registry-smoke.1` 게시와 clean consumer 재설치가 성공했다
 - private Parkie-RMS Docker 검증은 read-only `RMS_REPO_TOKEN`이 있을 때만 수동 실행한다
 
+### 2-6. 09-04 세션 — Parkie UI package split
+
+`@designerkei/parkie-ui`는 더 이상 registry placeholder가 아니다. 이제 Parkie RMS가 직접 설치해 쓸 수 있는 패키지 경계가 생겼다.
+
+- Canonical token CSS: `packages/parkie-ui/tokens.css`
+- 기존 `tokens/parkie-tokens.css`는 compatibility import로 유지한다
+- Product CSS export: `@designerkei/parkie-ui/styles.css`
+- Component-only CSS export: `@designerkei/parkie-ui/components.css`
+- RMS legacy bridge: `@designerkei/parkie-ui/legacy-rms.css`
+- Root JS export: token metadata, CSS variable helpers, theme attributes
+- React primitives: `@designerkei/parkie-ui/react`
+- Ant Design adapter: `@designerkei/parkie-ui/antd`
+- Package version: `0.1.0`
+- Registry smoke workflow는 CI 안에서만 `0.0.0-registry-smoke.<run-number>`로 버전을 덮어쓴 뒤 publish한다
+
+RMS의 첫 적용은 아래 형태로 시작한다.
+
+```ts
+import '@designerkei/parkie-ui/legacy-rms.css';
+import { createParkieAntdTheme } from '@designerkei/parkie-ui/antd';
+import { ParkieProvider } from '@designerkei/parkie-ui/react';
+```
+
+그 다음 app root를 `ParkieProvider`로 감싸고, 기존 AntD override를 `createParkieAntdTheme(existingOverrides)`에 병합한다. 새 코드에서는 `--parkie-*` 토큰과 패키지 컴포넌트를 직접 쓰고, RMS의 예전 custom property는 migration bridge로만 둔다.
+
+검증:
+
+- local `npm pack --workspace @designerkei/parkie-ui`
+- clean temporary consumer install
+- ESM imports for root, `/antd`, `/react`
+- CommonJS requires for root, `/antd`, `/react`
+- package CSS presence under `node_modules/@designerkei/parkie-ui`
+- `npm run test:audit` — 27 passed
+- `npm run test:ui` — 18 passed
+
 08-07의 미달 수용 기록은 의사결정 역사로 아래에 남지만 더 이상 현재 계약이나 테스트
 예외가 아니다.
 

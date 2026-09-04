@@ -1,0 +1,31 @@
+@import "./styles.css";
+
+:root[data-system="parkie"][data-color-mode="dark"],
+[data-system="parkie"][data-color-mode="dark"],
+[data-theme="dark"][data-system="parkie"] {
+  --body-60-default: var(--parkie-text-secondary);
+  --body-90-default: rgba(255,255,255,0.90);
+  --body-95-default: var(--parkie-text);
+  --bar-icon-70-enabled: var(--parkie-icon-default);
+  --bar-icon-35-disabled: var(--parkie-icon-disabled);
+  --dp-kit-01-dp: var(--parkie-surface-elevation-01);
+  --dp-kit-03-dp-8: var(--parkie-surface-elevation-03);
+  --dp-kit-04-dp-9: var(--parkie-surface-elevation-04);
+  --dp-kit-06-dp-11: var(--parkie-surface-elevation-06);
+  --dp-kit-08-dp-12: var(--parkie-surface-elevation-08);
+  --dp-kit-12-dp-14: var(--parkie-surface-elevation-12);
+  --dp-kit-24-dp-16: var(--parkie-surface-elevation-24);
+  --dp-kit-32-dp-18: var(--parkie-surface-elevation-48);
+  --dp-kit-48-dp-18: var(--parkie-surface-elevation-48);
+  --button-blue-pressed-12: var(--parkie-brand-subtle);
+  --Primary_Blue: var(--parkie-brand-primary);
+  --Primary_Blue_100: var(--parkie-color-brand-400);
+  --Primary_Blue-100: var(--parkie-color-brand-400);
+  --Primary_Blue-200: var(--parkie-color-brand-500);
+  --Primary_Blue-300: var(--parkie-color-brand-600);
+  --primary-blue-10080: rgba(0,200,255,0.80);
+  --hover_blue: var(--parkie-color-brand-300);
+  --alert-red-200100: var(--parkie-action-danger-bg);
+  --Emergency-button-color: var(--parkie-emergency);
+  --emergency-status-section-red-100: var(--parkie-color-red-700);
+}

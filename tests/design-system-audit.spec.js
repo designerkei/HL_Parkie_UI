@@ -255,7 +255,7 @@ test('valueless boolean attributes reach the DOM on every product', async ({ pag
 });
 
 test('dark fixed token contract and hidden theme control remain intact', async ({ page }) => {
-  const tokenPath = path.join(process.cwd(), 'tokens', 'parkie-tokens.css');
+  const tokenPath = path.join(process.cwd(), 'packages', 'parkie-ui', 'tokens.css');
   const source = fs.readFileSync(tokenPath, 'utf8');
   expect(source.match(/--parkie-text-tertiary:\s*rgba\(255,255,255,0\.50\);/g)).toHaveLength(2);
   expect(source.match(/--parkie-action-danger-hover-fg:\s*#000000;/g)).toHaveLength(2);
@@ -682,6 +682,10 @@ test('all release-critical local assets are served and all Parkie token referenc
     '/styles.css',
     '/ProductSkeleton.dc.html',
     '/CPMSPages.dc.html',
+    '/packages/parkie-ui/tokens.css',
+    '/packages/parkie-ui/styles.css',
+    '/packages/parkie-ui/components.css',
+    '/packages/parkie-ui/legacy-rms.css',
     '/tokens/parkie-tokens.css',
     '/tokens/goalie-tokens.css',
     '/tokens/cpms-tokens.css',
@@ -715,11 +719,14 @@ test('all release-critical local assets are served and all Parkie token referenc
   const sourceFiles = [
     path.join(process.cwd(), 'index.html'),
     path.join(process.cwd(), 'styles.css'),
+    path.join(process.cwd(), 'packages', 'parkie-ui', 'styles.css'),
+    path.join(process.cwd(), 'packages', 'parkie-ui', 'components.css'),
+    path.join(process.cwd(), 'packages', 'parkie-ui', 'legacy-rms.css'),
     ...fs.readdirSync(path.join(process.cwd(), 'components'))
       .filter((name) => name.endsWith('.css'))
       .map((name) => path.join(process.cwd(), 'components', name)),
   ];
-  const tokenSource = fs.readFileSync(path.join(process.cwd(), 'tokens', 'parkie-tokens.css'), 'utf8');
+  const tokenSource = fs.readFileSync(path.join(process.cwd(), 'packages', 'parkie-ui', 'tokens.css'), 'utf8');
   const defined = new Set([...tokenSource.matchAll(/(--parkie-[\w-]+)\s*:/g)].map((match) => match[1]));
   const referenced = new Set(sourceFiles.flatMap((file) => (
     [...fs.readFileSync(file, 'utf8').matchAll(/var\((--parkie-[\w-]+)/g)].map((match) => match[1])
