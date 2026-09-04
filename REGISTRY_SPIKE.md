@@ -36,10 +36,11 @@ Verified on 2026-09-04 with Node 24.11.0 and npm 11.6.1:
 
 ## Remote check
 
-Push `feat/parkie-ui-foundation-v0.1` or manually run **Parkie UI registry
-smoke** in GitHub Actions. The workflow publishes a unique pre-release version
-with `GITHUB_TOKEN`, creates a clean consumer directory, installs that exact
-version from GitHub Packages, and imports it.
+Manually run **Parkie UI registry smoke** in GitHub Actions. The workflow
+publishes a unique pre-release version with `GITHUB_TOKEN`, creates a clean
+consumer directory, installs that exact version from GitHub Packages, and
+imports it. Publication is deliberately manual so ordinary feature pushes do
+not create registry versions.
 
 The workflow must finish successfully before design tokens or components are
 added to the package.
@@ -63,10 +64,17 @@ HL Robotics production path. The RMS build environment must separately prove:
 3. The token never appears in an image layer, build log, `.npmrc`, or lockfile.
 4. The existing Node 20 production build succeeds with the package installed.
 
-The workflow also checks out the current RMS feature branch into a disposable
-directory, adds the exact smoke version to its temporary lockfile, and performs
-the RMS build in a Node 20 Docker stage. Registry credentials are mounted with a
-BuildKit secret and never copied into an image layer.
+The optional `run_rms_docker` input also checks out the current RMS feature
+branch into a disposable directory, adds the exact smoke version to its
+temporary lockfile, and performs the RMS build in a Node 20 Docker stage.
+Registry credentials are mounted with a BuildKit secret and never copied into
+an image layer.
+
+Because `Parkie-RMS` is private, that option requires a repository Actions
+secret named `RMS_REPO_TOKEN`. Use a fine-grained token restricted to
+`designerkei/Parkie-RMS` with read-only Contents permission. Runs 2 and 3 proved
+that the registry publication and clean installation still pass, but correctly
+failed at cross-repository checkout when that permission was absent.
 
 If the internal environment cannot satisfy those conditions, publish the same
 package artifact to the internal GitLab npm registry instead. Do not fall back

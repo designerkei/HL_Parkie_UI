@@ -96,6 +96,8 @@ rest `brand-500`(`#00AAFF`), hover `brand-300`(`#16DCF2`), pressed
 - `@designerkei/parkie-ui` Registry smoke workspace를 추가했다
 - 로컬 `npm publish --dry-run`, tarball 설치, ESM import, CommonJS require를 검증했다
 - 원격 GitHub Packages 게시·재설치는 `.github/workflows/registry-smoke.yml`이 담당한다
+- Registry run #1에서 `0.0.0-registry-smoke.1` 게시와 clean consumer 재설치가 성공했다
+- private Parkie-RMS Docker 검증은 read-only `RMS_REPO_TOKEN`이 있을 때만 수동 실행한다
 
 08-07의 미달 수용 기록은 의사결정 역사로 아래에 남지만 더 이상 현재 계약이나 테스트
 예외가 아니다.

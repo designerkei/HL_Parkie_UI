@@ -2,15 +2,12 @@ name: Parkie UI registry smoke
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feat/parkie-ui-foundation-v0.1
-    paths:
-      - .github/workflows/registry-smoke.yml
-      - package.json
-      - package-lock.json
-      - packages/parkie-ui/**
-      - tests/registry-smoke/**
+    inputs:
+      run_rms_docker:
+        description: Build the private Parkie-RMS consumer with RMS_REPO_TOKEN
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -19,6 +16,8 @@ permissions:
 jobs:
   publish-and-install:
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.version.outputs.package_version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,11 +31,13 @@ jobs:
       - run: npm ci
 
       - name: Assign an immutable smoke version
+        id: version
         shell: bash
         run: |
           package_version="0.0.0-registry-smoke.${GITHUB_RUN_NUMBER}"
           npm version "$package_version" --workspace @designerkei/parkie-ui --no-git-tag-version
           echo "PACKAGE_VERSION=$package_version" >> "$GITHUB_ENV"
+          echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
 
       - name: Publish the smoke package
         run: npm publish --workspace @designerkei/parkie-ui --tag registry-smoke
@@ -54,8 +55,29 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check out the public RMS consumer branch
-        run: git clone --branch feature/local-mock-backend --depth 1 https://github.com/designerkei/Parkie-RMS.git rms
+  rms-docker:
+    if: ${{ inputs.run_rms_docker }}
+    needs: publish-and-install
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_VERSION: ${{ needs.publish-and-install.outputs.package_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@designerkei'
+
+      - name: Check out the private RMS consumer branch
+        uses: actions/checkout@v4
+        with:
+          repository: designerkei/Parkie-RMS
+          ref: feature/local-mock-backend
+          path: rms
+          token: ${{ secrets.RMS_REPO_TOKEN }}
+          persist-credentials: false
 
       - name: Pin the published package in the disposable RMS lockfile
         working-directory: rms
