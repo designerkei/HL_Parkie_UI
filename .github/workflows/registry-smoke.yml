@@ -19,6 +19,7 @@ permissions:
 jobs:
   publish-and-install:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       package_version: ${{ steps.version.outputs.package_version }}
     steps:
@@ -48,12 +49,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install from the registry in a clean consumer
+        timeout-minutes: 3
         shell: bash
         run: |
           consumer_dir="$(mktemp -d)"
           cd "$consumer_dir"
+          printf '@designerkei:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NODE_AUTH_TOKEN" > .npmrc
           npm init --yes
-          npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}"
+          npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}" --ignore-scripts --no-audit --no-fund
           node --input-type=module -e "import('@designerkei/parkie-ui').then(({ parkieUiRegistrySmoke: value }) => { if (!value.ready) process.exit(1); console.log(value); })"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,6 +65,7 @@ jobs:
     if: ${{ github.event_name == 'push' || inputs.run_rms_docker }}
     needs: publish-and-install
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       PACKAGE_VERSION: ${{ needs.publish-and-install.outputs.package_version }}
     steps:
@@ -84,7 +88,10 @@ jobs:
 
       - name: Pin the published package in the disposable RMS lockfile
         working-directory: rms
-        run: npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}" --save-exact --package-lock-only
+        run: |
+          printf '@designerkei:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NODE_AUTH_TOKEN" > .npmrc
+          npm install "@designerkei/parkie-ui@${PACKAGE_VERSION}" --save-exact --package-lock-only --ignore-scripts --no-audit --no-fund
+          rm -f .npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
