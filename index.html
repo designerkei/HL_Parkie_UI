@@ -233,6 +233,31 @@
             </div>
           </div>
 
+          <section class="pk-install-panel" aria-labelledby="pk-install-title" data-install-panel>
+            <div class="pk-install-panel__head">
+              <div>
+                <span class="pk-install-panel__eyebrow">NPM PACKAGE</span>
+                <h2 id="pk-install-title">RMS에 Parkie UI 설치</h2>
+                <p>SVG export는 디자인 툴 전달용이고, RMS 제품 코드는 npm package를 설치해서 토큰, CSS, React primitive, AntD adapter를 사용합니다.</p>
+              </div>
+              <span class="pk-install-panel__version">@designerkei/parkie-ui@0.1.0</span>
+            </div>
+            <div class="pk-install-grid">
+              <sc-for list="{{ installSnippets }}" as="snippet" hint-placeholder-count="3">
+                <article class="pk-install-card" data-install-snippet="{{ snippet.id }}">
+                  <div class="pk-install-card__head">
+                    <h3>{{ snippet.title }}</h3>
+                    <button type="button" class="{{ snippet.copyClass }}" onClick="{{ snippet.onCopy }}" aria-label="{{ snippet.copyLabel }}">
+                      {{ snippet.copyText }}
+                    </button>
+                  </div>
+                  <p>{{ snippet.description }}</p>
+                  <pre class="pk-install-code" tabindex="0" aria-label="{{ snippet.codeLabel }}"><code>{{ snippet.command }}</code></pre>
+                </article>
+              </sc-for>
+            </div>
+          </section>
+
           <div style="padding:var(--parkie-space-6);background:var(--parkie-brand-subtle);border:1px solid var(--parkie-brand-border);border-radius:var(--parkie-radius-lg);margin-bottom:var(--parkie-space-8);">
             <h2 style="margin:0 0 8px;font-size:var(--parkie-font-xl);font-weight:600;color:var(--parkie-text);">브랜드 교체 지점 · Swap the brand</h2>
             <p style="margin:0 0 12px;font-size:var(--parkie-font-base);line-height:var(--parkie-leading-relaxed);color:var(--parkie-text-secondary);">RMS 구조는 유지하고 아래 두 스왑 지점에 Parkie 브랜드를 적용했습니다. The RMS structure is preserved while Parkie branding is applied at these two swap points.</p>
@@ -5494,6 +5519,45 @@ class Component extends DCLogic {
       ? L(this.state.copiedValue + ' 복사됨', this.state.copiedValue + ' copied')
       : '';
 
+    const installSnippets = [
+      {
+        id: 'install',
+        title: L('패키지 설치', 'Install package'),
+        description: L(
+          'RMS 레포에서 실행합니다. private GitHub Packages 접근 권한이 필요합니다.',
+          'Run this in the RMS repo. Private GitHub Packages access is required.',
+        ),
+        command: 'npm install @designerkei/parkie-ui',
+      },
+      {
+        id: 'registry',
+        title: L('Registry 인증', 'Registry auth'),
+        description: L(
+          '로컬 또는 CI의 .npmrc에 scope registry와 토큰을 설정합니다. 토큰은 커밋하지 않습니다.',
+          'Configure the scope registry and token in local or CI .npmrc. Never commit the token.',
+        ),
+        command: '@designerkei:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}',
+      },
+      {
+        id: 'rms',
+        title: L('RMS 적용 코드', 'RMS integration'),
+        description: L(
+          '초기 적용은 legacy bridge로 기존 RMS 변수를 살리고, 새 화면부터 package token과 component를 사용합니다.',
+          'Start with the legacy bridge for existing RMS variables, then use package tokens and components in new screens.',
+        ),
+        command: "import '@designerkei/parkie-ui/legacy-rms.css';\nimport { createParkieAntdTheme } from '@designerkei/parkie-ui/antd';\nimport { ParkieProvider } from '@designerkei/parkie-ui/react';",
+      },
+    ].map((snippet) => {
+      const copied = this.state.copiedValue === snippet.command;
+      return Object.assign({}, snippet, {
+        copyClass: `pk-install-copy pk-button pk-button--secondary pk-button--compact${copied ? ' is-copied' : ''}`,
+        copyLabel: L(`${snippet.title} 복사`, `Copy ${snippet.title}`),
+        copyText: copied ? L('복사됨', 'Copied') : L('복사', 'Copy'),
+        codeLabel: L(`${snippet.title} 코드`, `${snippet.title} code`),
+        onCopy: () => this.copyValue(snippet.command),
+      });
+    });
+
     /* Tab order is registry order. A product appears in the top bar purely by
        being registered — there is no second list to keep in step. */
     const systemItems = this.systemIds().map((id) => ({
@@ -5545,6 +5609,7 @@ class Component extends DCLogic {
       activeTabLabel,
       buttonTokenGroups,
       copiedNotice,
+      installSnippets,
       hasButtonTokens: buttonTokenGroups.length > 0,
       documentationGuide,
       showDocumentationGuide,

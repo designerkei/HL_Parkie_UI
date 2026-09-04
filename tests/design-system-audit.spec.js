@@ -90,6 +90,28 @@ test('all 34 Parkie destinations are deep-linkable and fully documented', async 
   expect(new Set(destinations)).toEqual(new Set(TARGET_PAGES));
 });
 
+test('overview exposes the npm package install path for RMS consumers', async ({ page }) => {
+  await page.goto('/#overview');
+
+  const panel = page.locator('[data-install-panel]');
+  await expect(panel).toBeVisible();
+  await expect(panel).toContainText('@designerkei/parkie-ui@0.1.0');
+
+  const install = panel.locator('[data-install-snippet="install"]');
+  const registry = panel.locator('[data-install-snippet="registry"]');
+  const rms = panel.locator('[data-install-snippet="rms"]');
+
+  await expect(install.locator('code')).toHaveText('npm install @designerkei/parkie-ui');
+  await expect(registry.locator('code')).toContainText('@designerkei:registry=https://npm.pkg.github.com');
+  await expect(registry.locator('code')).toContainText('NODE_AUTH_TOKEN');
+  await expect(rms.locator('code')).toContainText("import '@designerkei/parkie-ui/legacy-rms.css';");
+  await expect(rms.locator('code')).toContainText("@designerkei/parkie-ui/antd");
+  await expect(rms.locator('code')).toContainText("@designerkei/parkie-ui/react");
+
+  await install.getByRole('button').click();
+  await expect(install.getByRole('button')).toContainText(/복사됨|Copied/);
+});
+
 test('all 34 Parkie destinations have no accessibility violations', async ({ page }) => {
   test.setTimeout(180_000);
 

@@ -134,6 +134,23 @@ import { ParkieProvider } from '@designerkei/parkie-ui/react';
 - `npm run test:audit` — 27 passed
 - `npm run test:ui` — 18 passed
 
+### 2-7. 09-04 세션 — Overview install copy
+
+Parkie UI 홈페이지의 첫 화면에 RMS 설치용 npm package 섹션을 추가했다. SVG 다운로드는 디자인 툴 전달용으로 그대로 두고, 제품 코드 적용은 별도의 복사 가능한 install contract로 분리했다.
+
+- Overview에 `NPM PACKAGE` install panel 추가
+- 복사 가능한 snippet 3개 제공:
+  - `npm install @designerkei/parkie-ui`
+  - GitHub Packages `.npmrc` scope/token 설정
+  - RMS entry imports: `legacy-rms.css`, `/antd`, `/react`
+- 각 snippet은 copy button을 갖고, 복사 후 `복사됨/Copied` 상태를 표시한다
+- 코드 블록은 horizontal scroll 때문에 keyboard focus 가능하도록 `tabindex="0"`과 accessible label을 갖는다
+
+검증:
+
+- `npm run test:audit` — 28 passed
+- `npx playwright test tests/multi-system.spec.js` — 17 passed
+
 08-07의 미달 수용 기록은 의사결정 역사로 아래에 남지만 더 이상 현재 계약이나 테스트
 예외가 아니다.
 

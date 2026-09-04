@@ -268,3 +268,135 @@
   font-size: var(--parkie-font-xs);
   line-height: var(--parkie-leading-normal);
 }
+
+/* RMS package install -------------------------------------------------
+   This is product-code onboarding, not the SVG export flow. It stays on the
+   overview so an RMS engineer sees the package path before browsing specimens. */
+
+.pk-install-panel {
+  margin-bottom: var(--parkie-space-8);
+  padding: var(--parkie-space-6);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-install-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--parkie-space-5);
+  margin-bottom: var(--parkie-space-5);
+}
+
+.pk-install-panel__eyebrow,
+.pk-install-panel__version {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-panel__head h2 {
+  margin: 6px 0 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-panel__head p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-install-panel__version {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  color: var(--parkie-brand-text);
+  background: var(--parkie-brand-subtle);
+  border: 1px solid var(--parkie-brand-border);
+  border-radius: var(--parkie-radius-pill);
+}
+
+.pk-install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-install-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--parkie-space-3);
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface-2);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-md);
+}
+
+.pk-install-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--parkie-space-3);
+}
+
+.pk-install-card__head h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-card p {
+  min-height: 42px;
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}
+
+.pk-install-copy.is-copied {
+  color: var(--parkie-operation-on-success);
+  background: var(--parkie-success);
+  border-color: transparent;
+}
+
+.pk-install-code {
+  min-height: 88px;
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  color: var(--parkie-text);
+  background: var(--parkie-bg);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-install-code code {
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-relaxed);
+  white-space: pre;
+}
+
+@media (max-width: 1100px) {
+  .pk-install-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pk-install-card p,
+  .pk-install-code {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .pk-install-panel__head {
+    flex-direction: column;
+  }
+}
