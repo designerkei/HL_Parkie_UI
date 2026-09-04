@@ -1,6 +1,9 @@
 name: Parkie UI registry smoke
 
 on:
+  push:
+    branches:
+      - feat/parkie-ui-foundation-v0.1
   workflow_dispatch:
     inputs:
       run_rms_docker:
@@ -56,7 +59,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   rms-docker:
-    if: ${{ inputs.run_rms_docker }}
+    if: ${{ github.event_name == 'push' || inputs.run_rms_docker }}
     needs: publish-and-install
     runs-on: ubuntu-latest
     env:
