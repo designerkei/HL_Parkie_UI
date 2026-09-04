@@ -54,13 +54,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check out the RMS consumer branch
-        uses: actions/checkout@v4
-        with:
-          repository: designerkei/Parkie-RMS
-          ref: feature/local-mock-backend
-          path: rms
-          persist-credentials: false
+      - name: Check out the public RMS consumer branch
+        run: git clone --branch feature/local-mock-backend --depth 1 https://github.com/designerkei/Parkie-RMS.git rms
 
       - name: Pin the published package in the disposable RMS lockfile
         working-directory: rms
