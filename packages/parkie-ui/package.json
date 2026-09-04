@@ -1,0 +1,79 @@
+{
+  "name": "@designerkei/parkie-ui",
+  "version": "0.1.0",
+  "description": "Parkie design tokens, CSS entrypoints, and React primitives for RMS products",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./react": {
+      "types": "./react.d.ts",
+      "import": "./react.js",
+      "require": "./react.cjs"
+    },
+    "./antd": {
+      "types": "./antd.d.ts",
+      "import": "./antd.js",
+      "require": "./antd.cjs"
+    },
+    "./tokens.css": "./tokens.css",
+    "./styles.css": "./styles.css",
+    "./components.css": "./components.css",
+    "./legacy-rms.css": "./legacy-rms.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.cjs",
+    "index.d.ts",
+    "react.js",
+    "react.cjs",
+    "react.d.ts",
+    "antd.js",
+    "antd.cjs",
+    "antd.d.ts",
+    "tokens.css",
+    "styles.css",
+    "components.css",
+    "legacy-rms.css",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "peerDependencies": {
+    "antd": ">=5.19.3 <6",
+    "react": ">=18 <20",
+    "react-dom": ">=18 <20"
+  },
+  "peerDependenciesMeta": {
+    "antd": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/designerkei/HL_Parkie_UI.git",
+    "directory": "packages/parkie-ui"
+  }
+}

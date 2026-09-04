@@ -1,0 +1,402 @@
+.pk-doc-contract {
+  margin-top: var(--parkie-space-10);
+  padding-top: var(--parkie-space-7);
+  border-top: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--parkie-space-6);
+  margin-bottom: var(--parkie-space-5);
+}
+
+.pk-doc-contract__head > div {
+  max-width: 680px;
+}
+
+.pk-doc-contract__eyebrow,
+.pk-doc-contract__gate,
+.pk-doc-contract__index {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size:var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-semibold);
+  letter-spacing: var(--parkie-tracking-wide);
+}
+
+.pk-doc-contract__head h2 {
+  margin: 7px 0 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+  letter-spacing: var(--parkie-tracking-tight);
+}
+
+.pk-doc-contract__head p {
+  margin: 8px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-doc-contract__gate {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  color: var(--parkie-text-secondary);
+  background: var(--parkie-surface-2);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-pill);
+}
+
+.pk-doc-contract__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+  overflow: hidden;
+}
+
+.pk-doc-contract__item {
+  position: relative;
+  min-height: 154px;
+  padding: var(--parkie-space-5);
+  background: var(--parkie-surface);
+}
+
+.pk-doc-contract__item:nth-child(2n) {
+  border-left: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__item:nth-child(n + 3) {
+  border-top: 1px solid var(--parkie-border);
+}
+
+.pk-doc-contract__item h3 {
+  margin: var(--parkie-space-4) 0 7px;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-doc-contract__item p {
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+@media (max-width: 760px) {
+  .pk-doc-contract__head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pk-doc-contract__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pk-doc-contract__item {
+    min-height: 0;
+  }
+
+  .pk-doc-contract__item:nth-child(2n) {
+    border-left: 0;
+  }
+
+  .pk-doc-contract__item:nth-child(n + 2) {
+    border-top: 1px solid var(--parkie-border);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Semantic colour cards
+
+   The value line is the point of the card: a token's real colour, read back
+   from the live variable rather than transcribed, so it cannot drift. It is a
+   button because the value is meant to be copied, and copying is the reason
+   someone reads this page.
+   --------------------------------------------------------------------- */
+.pk-color-hex-guide {
+  margin: 0 0 var(--parkie-space-7);
+  padding: var(--parkie-space-4) var(--parkie-space-5);
+  background: var(--parkie-brand-subtle);
+  border: 1px solid var(--parkie-brand-border);
+  border-radius: var(--parkie-radius-lg);
+  color: var(--parkie-text-secondary);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-color-hex-guide__title {
+  margin-bottom: 4px;
+  color: var(--parkie-brand-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-color-hex-guide p {
+  margin: 0;
+  font-size: var(--parkie-font-sm);
+}
+
+.pk-color-hex-guide code,
+.pk-color-hex-guide__examples code {
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-hex-guide__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 10px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-hex-guide__examples span {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pk-color-hex-guide__examples b {
+  color: var(--parkie-text);
+}
+
+.pk-color-hex-guide__examples i {
+  color: var(--parkie-brand-text);
+  font-style: normal;
+  font-family: var(--parkie-font-mono);
+}
+
+.pk-color-card {
+  overflow: hidden;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-md);
+}
+
+.pk-color-card__body {
+  padding: 10px 12px 11px;
+}
+
+.pk-color-card__name {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: 600;
+}
+
+.pk-color-card__value {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pk-color-card__value:hover {
+  color: var(--parkie-brand-text);
+}
+
+.pk-color-card__value:focus-visible {
+  outline: 2px solid var(--parkie-focus-ring-outer);
+  outline-offset: 2px;
+  border-radius: var(--parkie-radius-xs);
+}
+
+.pk-color-card__value.is-copied {
+  color: var(--parkie-success);
+}
+
+/* Translucent tokens report what they are and, separately, what they look
+   like. --parkie-text is 95% white; the composited number is the colour the
+   eye actually receives and it is not the same value. */
+.pk-color-card__composited {
+  margin-top: 1px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-color-card__token {
+  margin-top: 4px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  overflow-wrap: anywhere;
+}
+
+.pk-color-card__use {
+  margin-top: 5px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}
+
+/* Component SVG export ------------------------------------------------
+   Sits under the page header on every page that offers a download. Not
+   .pk-icon-actions, which carries a negative margin-top tuned to slot beneath
+   the icon summary and would pull this up into the description. */
+
+.pk-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--parkie-space-3) var(--parkie-space-4);
+  margin-bottom: var(--parkie-space-6);
+}
+
+.pk-export-download {
+  flex: 0 0 auto;
+}
+
+.pk-export-actions-note {
+  flex: 1 1 320px;
+  min-width: 0;
+  margin: 0;
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}
+
+/* RMS package install -------------------------------------------------
+   This is product-code onboarding, not the SVG export flow. It stays on the
+   overview so an RMS engineer sees the package path before browsing specimens. */
+
+.pk-install-panel {
+  margin-bottom: var(--parkie-space-8);
+  padding: var(--parkie-space-6);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-install-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--parkie-space-5);
+  margin-bottom: var(--parkie-space-5);
+}
+
+.pk-install-panel__eyebrow,
+.pk-install-panel__version {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-panel__head h2 {
+  margin: 6px 0 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-panel__head p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-install-panel__version {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  color: var(--parkie-brand-text);
+  background: var(--parkie-brand-subtle);
+  border: 1px solid var(--parkie-brand-border);
+  border-radius: var(--parkie-radius-pill);
+}
+
+.pk-install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-install-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--parkie-space-3);
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface-2);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-md);
+}
+
+.pk-install-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--parkie-space-3);
+}
+
+.pk-install-card__head h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-install-card p {
+  min-height: 42px;
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-normal);
+}
+
+.pk-install-copy.is-copied {
+  color: var(--parkie-operation-on-success);
+  background: var(--parkie-success);
+  border-color: transparent;
+}
+
+.pk-install-code {
+  min-height: 88px;
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  color: var(--parkie-text);
+  background: var(--parkie-bg);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-install-code code {
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-relaxed);
+  white-space: pre;
+}
+
+@media (max-width: 1100px) {
+  .pk-install-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pk-install-card p,
+  .pk-install-code {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .pk-install-panel__head {
+    flex-direction: column;
+  }
+}

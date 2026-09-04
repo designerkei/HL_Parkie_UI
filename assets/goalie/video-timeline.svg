@@ -1,0 +1,31 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1045.69" height="32" viewBox="0 0 1045.69 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1496">
+<rect id="Rectangle 2537" y="12" width="800.603" height="8" fill="#00B4ED"/>
+<rect id="Rectangle 2538" x="800.603" y="12" width="245.082" height="8" fill="#B7BDC3"/>
+<rect id="Rectangle 2540" x="904.082" y="12" width="30.4992" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2541" x="889.922" y="12" width="8.71404" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2542" x="867.047" y="12" width="3.26777" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2539" x="206.959" y="12" width="32.6777" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2543" x="270.135" y="12" width="62.0876" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2544" x="554.431" y="12" width="10.8926" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2545" x="516.307" y="12" width="19.6066" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2546" x="505.414" y="12" width="4.35702" height="8" fill="#6CFFF6"/>
+<rect id="Rectangle 2547" x="490.165" y="12" width="8.71404" height="8" fill="#6CFFF6"/>
+<g id="Ellipse 475" filter="url(#filter0_d_0_163)">
+<circle cx="798.447" cy="16" r="12" fill="#00B4ED"/>
+<circle cx="798.447" cy="16" r="9" stroke="white" stroke-width="6"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_0_163" x="782.447" y="0" width="32" height="32" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_163"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_163" result="shape"/>
+</filter>
+</defs>
+</svg>

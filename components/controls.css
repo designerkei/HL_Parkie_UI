@@ -1,0 +1,683 @@
+/* =====================================================================
+   Parkie controls — actions, single-select controls and binary switches
+   ===================================================================== */
+
+.pk-control-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-8);
+}
+
+.pk-control-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-4);
+}
+
+.pk-control-section h2,
+.pk-control-section h3,
+.pk-control-section p {
+  margin: 0;
+}
+
+.pk-control-section h2,
+.pk-control-section h3 {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-xl);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-control-section p {
+  max-width: 760px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-control-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--parkie-space-3);
+  padding: var(--parkie-space-6);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-control-state {
+  display: flex;
+  min-height: 104px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--parkie-space-4);
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-control-state-label {
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size:var(--parkie-font-xs);
+}
+
+/* Button -------------------------------------------------------------- */
+
+.pk-button {
+  display: inline-flex;
+  min-width: 0;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: var(--parkie-action-primary-fg);
+  font-family: var(--parkie-font-sans);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+  white-space: nowrap;
+  background: var(--parkie-action-primary-bg);
+  border: 1px solid transparent;
+  border-radius: var(--parkie-radius-md);
+  cursor: pointer;
+}
+
+.pk-button:hover:not(:disabled),
+.pk-button.is-hover {
+  background: var(--parkie-action-primary-bg-hover);
+}
+
+.pk-button:active:not(:disabled),
+.pk-button.is-pressed {
+  background: var(--parkie-action-primary-bg-pressed);
+  transform: translateY(1px);
+}
+
+.pk-button:focus-visible,
+.pk-button.is-focus {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-button:disabled,
+.pk-button.is-disabled {
+  color: var(--parkie-action-disabled-fg);
+  background: var(--parkie-action-disabled-bg);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pk-button--secondary {
+  color: var(--parkie-action-neutral-fg);
+  background: var(--parkie-action-neutral-bg);
+  border-color: var(--parkie-border-strong);
+}
+
+/* Rest is elevation-12, so hover has to rise above it and pressed has to sit
+   below it. Hover previously reused elevation-12 — the same value as rest —
+   which left the pointer with no feedback at all. */
+.pk-button--secondary:hover:not(:disabled),
+.pk-button--secondary.is-hover {
+  background: var(--parkie-surface-elevation-48);
+}
+
+.pk-button--secondary:active:not(:disabled),
+.pk-button--secondary.is-pressed {
+  background: var(--parkie-surface-elevation-08);
+}
+
+.pk-button--outline {
+  color: var(--parkie-brand-text);
+  background: transparent;
+  border-color: var(--parkie-brand-border);
+}
+
+.pk-button--outline:hover:not(:disabled) {
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-button--subtle {
+  color: var(--parkie-brand-text);
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-button--subtle:hover:not(:disabled) {
+  background: var(--parkie-brand-subtle-hover);
+}
+
+.pk-button--ghost {
+  color: var(--parkie-text-secondary);
+  background: transparent;
+}
+
+.pk-button--ghost:hover:not(:disabled) {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-2);
+}
+
+.pk-button--danger {
+  color: var(--parkie-action-danger-fg);
+  background: var(--parkie-action-danger-bg);
+}
+
+.pk-button--danger:hover:not(:disabled),
+.pk-button--danger.is-hover {
+  background: var(--parkie-action-danger-bg-hover);
+}
+
+.pk-button--danger:active:not(:disabled),
+.pk-button--danger.is-pressed {
+  background: var(--parkie-action-danger-bg-pressed);
+}
+
+.pk-button--compact {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--parkie-radius-sm);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-button--large {
+  height: 48px;
+  padding: 0 24px;
+  font-size: var(--parkie-font-lg);
+}
+
+.pk-button--full {
+  width: 100%;
+}
+
+.pk-button-spinner {
+  width: 14px;
+  height: 14px;
+  /* The track follows the current label ink so loading remains legible when
+     the primary action palette changes. */
+  border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+  border-radius: var(--parkie-radius-round);
+  animation: pk-spin 700ms linear infinite;
+}
+
+/* Icon button --------------------------------------------------------- */
+
+.pk-icon-button {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--parkie-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--parkie-radius-sm);
+  cursor: pointer;
+}
+
+.pk-icon-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pk-icon-button:hover:not(:disabled),
+.pk-icon-button.is-hover {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-elevation-12);
+}
+
+.pk-icon-button:active:not(:disabled),
+.pk-icon-button.is-pressed {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-elevation-48);
+}
+
+.pk-icon-button:focus-visible,
+.pk-icon-button.is-focus {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-icon-button:disabled,
+.pk-icon-button.is-disabled {
+  color: var(--parkie-text-disabled);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.pk-icon-button--compact {
+  width: 24px;
+  height: 24px;
+}
+
+.pk-icon-button--default {
+  width: 32px;
+  height: 32px;
+}
+
+.pk-icon-button--default svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pk-icon-button--large {
+  width: 40px;
+  height: 40px;
+}
+
+.pk-icon-button--danger {
+  color: var(--parkie-danger-text);
+}
+
+.pk-icon-button--danger:hover:not(:disabled) {
+  color: var(--parkie-operation-on-solid);
+  background: var(--parkie-danger);
+}
+
+/* Segmented control --------------------------------------------------- */
+
+.pk-segmented {
+  display: inline-grid;
+  min-width: 200px;
+  height: 30px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(96px, 1fr);
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid var(--parkie-select-border);
+  border-radius: var(--parkie-radius-xs);
+}
+
+.pk-segmented button {
+  min-width: 0;
+  padding: 0 12px;
+  overflow: hidden;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-sans);
+  font-size: var(--parkie-font-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.pk-segmented button + button {
+  border-left: 1px solid var(--parkie-select-border);
+}
+
+.pk-segmented button:hover:not(:disabled):not([aria-checked="true"]) {
+  color: var(--parkie-text);
+  background: var(--parkie-surface-elevation-12);
+}
+
+.pk-segmented button:active:not(:disabled) {
+  background: var(--parkie-surface-elevation-24);
+}
+
+.pk-segmented button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 0;
+  box-shadow: var(--parkie-ring-inset);
+}
+
+.pk-segmented button[aria-checked="true"] {
+  color: var(--parkie-interaction-selected);
+  background: var(--parkie-brand-subtle);
+}
+
+.pk-segmented button:disabled,
+.pk-segmented.is-disabled button {
+  color: var(--parkie-text-tertiary);
+  background: var(--parkie-surface-2);
+  cursor: not-allowed;
+}
+
+.pk-segmented--default {
+  height: 36px;
+}
+
+/* Switch -------------------------------------------------------------- */
+
+/* Label row shared by all three selection controls. */
+.pk-switch-field,
+.pk-choice-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  cursor: pointer;
+}
+
+/* Drawn here rather than left to accent-color, which hands the box, the tick and
+   the dot to the UA renderer. Three things followed from that: the specimen on
+   this page was not what shipped on another OS, the documentation could not show
+   a state it does not draw, and the export had no geometry to read — every other
+   control in this system is CSS the exporter can serialise, and these two were a
+   hole in it.
+
+   appearance:none replaces the paint only. The element is still a real input, so
+   keyboard, focus, form association and the accessible role are untouched; the
+   role-based gates in the suite never see a difference. */
+.pk-choice-field input {
+  position: relative;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  /* Not --parkie-border-strong: at 2.13:1 over the control stage it is under the
+     3:1 WCAG 1.4.11 asks of a control boundary. See --parkie-control-border. */
+  border: 1.5px solid var(--parkie-control-border);
+  border-radius: var(--parkie-radius-xs);
+  cursor: pointer;
+}
+
+.pk-choice-field input[type="radio"] {
+  border-radius: var(--parkie-radius-round);
+}
+
+.pk-choice-field input:checked {
+  background: var(--parkie-brand-primary);
+  border-color: var(--parkie-brand-primary);
+}
+
+/* The radio keeps its fill transparent and states selection with a ring and a
+   concentric dot, which is what Material, Fluent and Carbon all draw. Filling it
+   like the checkbox reads as a hole punched in a disc rather than a dot, and it
+   throws away the one cue that separates the two controls at a glance — the
+   checkbox is a filled square, the radio is a ringed circle. */
+.pk-choice-field input[type="radio"]:checked {
+  background: transparent;
+  border-color: var(--parkie-brand-primary);
+}
+
+/* The tick is two edges of a box stood on its corner — no glyph and no font, so
+   it needs neither a webfont nor an embedded image to survive export. The
+   exporter reads the rotated bounding box the browser has already resolved
+   rather than re-deriving the rotation. */
+.pk-choice-field input[type="checkbox"]:checked::after {
+  position: absolute;
+  top: 1px;
+  left: 4.5px;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--parkie-brand-on);
+  border-bottom: 2px solid var(--parkie-brand-on);
+  transform: rotate(45deg);
+  content: "";
+}
+
+.pk-choice-field input[type="radio"]:checked::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 9px;
+  height: 9px;
+  background: var(--parkie-brand-primary);
+  border-radius: var(--parkie-radius-round);
+  content: "";
+}
+
+.pk-choice-field input:focus-visible {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-choice-field:has(input:disabled) {
+  color: var(--parkie-text-disabled);
+  cursor: not-allowed;
+}
+
+/* 1.4.11 exempts inactive components, which is what lets this match the switch's
+   own disabled treatment instead of holding the boundary at 3:1. */
+.pk-choice-field input:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* appearance:none controls lose their state in forced-colors: the author fill and
+   border are both overridden, and the tick and dot are pseudo-elements the UA has
+   no opinion about, so a checked box and an empty one can end up identical. Each
+   mark opts out of the override and names a system colour that is guaranteed to
+   contrast with the surface it sits on.
+
+   The selectors mirror the base rules rather than relying on order — the radio's
+   attribute selector outweighs the shared one either way. */
+@media (forced-colors: active) {
+  .pk-choice-field input {
+    border-color: CanvasText;
+  }
+
+  .pk-choice-field input:checked {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .pk-choice-field input[type="checkbox"]:checked::after {
+    forced-color-adjust: none;
+    border-color: HighlightText;
+  }
+
+  /* The radio states selection with a dot on an unfilled circle, so here the
+     circle keeps Canvas and the dot carries Highlight. */
+  .pk-choice-field input[type="radio"]:checked {
+    background: Canvas;
+    border-color: Highlight;
+  }
+
+  .pk-choice-field input[type="radio"]:checked::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}
+
+.pk-switch {
+  position: relative;
+  display: inline-flex;
+  width: 36px;
+  height: 28px;
+  flex: 0 0 36px;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.pk-switch::before {
+  width: 34px;
+  height: 14px;
+  margin-left: 0;
+  background: rgba(0,170,255,0.35);
+  border-radius: var(--parkie-radius-pill);
+  content: "";
+}
+
+.pk-switch::after {
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  width: 20px;
+  height: 20px;
+  background: var(--parkie-brand-primary);
+  border-radius: var(--parkie-radius-round);
+  box-shadow: -2px 4px 4px rgba(33,37,44,0.25);
+  content: "";
+  transition: left 160ms ease, background 160ms ease;
+}
+
+.pk-switch[aria-checked="false"]::before {
+  margin-left: 2px;
+  background: var(--parkie-color-neutral-600);
+}
+
+.pk-switch[aria-checked="false"]::after {
+  left: 2px;
+  background: var(--parkie-color-neutral-300);
+  box-shadow: 2px 4px 4px rgba(33,37,44,0.25);
+}
+
+.pk-switch:hover:not(:disabled)::before {
+  filter: brightness(1.15);
+}
+
+.pk-switch:active:not(:disabled)::after {
+  transform: scale(0.92);
+}
+
+.pk-switch:focus-visible {
+  outline: 0;
+  border-radius: var(--parkie-radius-pill);
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-switch:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .pk-control-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-button,
+  .pk-switch::after {
+    transition: none;
+  }
+
+  .pk-button-spinner {
+    animation-duration: 1.4s;
+  }
+}
+
+/* Colour value spec ---------------------------------------------------
+   Token name, resolved value and measured contrast next to the control.
+   Row rules only — no card, background or shadow stacked on top. */
+
+.pk-token-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-3);
+}
+
+.pk-token-block + .pk-token-block {
+  margin-top: var(--parkie-space-6);
+}
+
+.pk-token-block h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-token-scroll {
+  overflow-x: auto;
+}
+
+.pk-token-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+}
+
+.pk-token-table th,
+.pk-token-table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-token-table thead th {
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-medium);
+  white-space: nowrap;
+}
+
+.pk-token-table tbody th {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-medium);
+  white-space: nowrap;
+}
+
+.pk-token-table tbody tr:last-child th,
+.pk-token-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.pk-token-swatch {
+  display: inline-flex;
+  width: 30px;
+  height: 24px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-xs);
+  font-size: var(--parkie-font-xs);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-token-value {
+  padding: 2px 6px;
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  background: var(--parkie-surface-elevation-08);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-xs);
+  cursor: copy;
+}
+
+.pk-token-value:hover {
+  background: var(--parkie-surface-elevation-16);
+}
+
+.pk-token-value:focus-visible {
+  outline: 0;
+  box-shadow: var(--parkie-ring);
+}
+
+.pk-token-table code {
+  display: block;
+  margin-top: 4px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-token-verdict {
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  white-space: nowrap;
+}
+
+.pk-token-verdict.is-pass { color: var(--parkie-success-text); }
+.pk-token-verdict.is-fail { color: var(--parkie-danger-text); }
+
+.pk-token-copied {
+  min-height: 18px;
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}

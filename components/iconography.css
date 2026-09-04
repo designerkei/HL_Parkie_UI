@@ -1,0 +1,554 @@
+/* Parkie iconography — 24px robot-operations icons and state matrices. */
+
+.pk-icon-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-9);
+}
+
+.pk-icon-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-summary-item {
+  min-height: 94px;
+  padding: var(--parkie-space-4);
+  border-right: 1px solid var(--parkie-border);
+}
+
+.pk-icon-summary-item:last-child {
+  border-right: 0;
+}
+
+.pk-icon-summary-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-icon-summary-value {
+  color: var(--parkie-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-sm);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+/* The doc column spaces its children generously; the action rows sit tight to
+   the summary above them instead. Only the first pulls up to it — the rows
+   after that space off the row before, not off the summary. */
+.pk-icon-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--parkie-space-4);
+  margin-top: calc(var(--parkie-space-9) * -1 + var(--parkie-space-3));
+  flex-wrap: wrap;
+}
+
+.pk-icon-actions + .pk-icon-actions {
+  margin-top: calc(var(--parkie-space-9) * -1 + var(--parkie-space-2));
+}
+
+/* Styling comes from .pk-button so this stays one button, not a second one
+   that has to be kept in step with it. */
+.pk-icon-download {
+  flex: 0 0 auto;
+}
+
+.pk-icon-actions-note {
+  flex: 1 1 320px;
+  margin: 0;
+  color: var(--parkie-text-tertiary);
+  font-size: var(--parkie-font-xs);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.pk-icon-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-group-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-group-head h2,
+.pk-icon-group-head h3 {
+  margin: 0;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-2xl);
+}
+
+.pk-icon-group-head p {
+  margin: 5px 0 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-icon-group-count {
+  flex-shrink: 0;
+  color: var(--parkie-brand-text);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+/* Spec-sheet layout: every row is a real matrix. Interaction and semantic
+   axes keep different column counts, but neither axis wraps states onto a
+   second line. Narrow documentation viewports scroll this specimen locally. */
+.pk-icon-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-x: auto;
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-row {
+  display: grid;
+  align-items: stretch;
+  min-width: 820px;
+  border-bottom: 1px solid var(--parkie-border);
+}
+
+.pk-icon-row:last-child {
+  border-bottom: 0;
+}
+
+.pk-icon-row.is-interaction-axis {
+  grid-template-columns: minmax(184px, 1.4fr) repeat(6, minmax(94px, 1fr));
+}
+
+/* The column count has to match the number of cells the row actually renders.
+   It was hardcoded to four, so when battery and connection went to five states
+   the fifth wrapped onto a second line and landed under the label column.
+   repeat() cannot take a custom property as its count, so the count arrives as
+   a modifier class instead — and a gate asserts the rendered column count
+   equals the state count, so a sixth state fails the suite rather than
+   silently wrapping the way the fifth did. */
+.pk-icon-row.is-semantic-axis {
+  grid-template-columns: minmax(184px, 1.4fr) repeat(4, minmax(142px, 1fr));
+}
+
+.pk-icon-row.is-semantic-axis.is-cells-5 {
+  grid-template-columns: minmax(184px, 1.4fr) repeat(5, minmax(118px, 1fr));
+}
+
+.pk-icon-name {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--parkie-space-1);
+  min-width: 0;
+  margin: 0;
+  padding: var(--parkie-space-4);
+  background: var(--parkie-surface-2);
+  border-right: 1px solid var(--parkie-border);
+}
+
+/* The head stays on a single line so the rules align across every column:
+   the Korean name never breaks, the English name truncates, the badge holds. */
+.pk-icon-name .pk-icon-name-ko {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pk-icon-name .pk-icon-name-en {
+  min-width: 0;
+  margin-top: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pk-icon-name .pk-icon-source {
+  flex-shrink: 0;
+  margin-top: var(--parkie-space-1);
+  white-space: nowrap;
+}
+
+.pk-icon-spec-states {
+  display: contents;
+}
+
+.pk-icon-spec-row {
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--parkie-space-2);
+  min-width: 0;
+  padding: var(--parkie-space-3) var(--parkie-space-2);
+  border-right: 1px solid var(--parkie-border);
+}
+
+.pk-icon-spec-row:last-child {
+  border-right: 0;
+}
+
+.pk-icon-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pk-icon-spec-row .pk-icon-state {
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.pk-icon-spec-leader {
+  display: none;
+}
+
+.pk-icon-spec-state {
+  max-width: 100%;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  line-height: var(--parkie-leading-tight);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.pk-icon-name-ko {
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-base);
+  font-weight: var(--parkie-weight-semibold);
+}
+
+.pk-icon-name-en {
+  margin-top: 3px;
+  color: var(--parkie-text-tertiary);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+}
+
+.pk-icon-source {
+  margin-top: 8px;
+  padding: 2px 6px;
+  color: var(--parkie-text-tertiary);
+  background: var(--parkie-surface-3);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-pill);
+  font-family: var(--parkie-font-mono);
+  font-size: var(--parkie-font-xs);
+  letter-spacing: .02em;
+}
+
+.pk-icon-source.is-original {
+  color: var(--parkie-brand-text);
+  border-color: var(--parkie-brand-border);
+}
+
+.pk-icon-source.is-custom {
+  color: var(--parkie-warning-text);
+  border-color: rgba(245,222,46,0.35);
+}
+
+.pk-icon-source.is-ms {
+  color: var(--parkie-info-text);
+}
+
+/* ---------------------------------------------------------------------
+   Semantic (status) icons.
+
+   A warning triangle is never hovered or pressed — it reports a condition.
+   So these rows replace the interaction axis with an emphasis axis, and the
+   colour carries meaning instead of interaction state. Previously warning,
+   error, emergency stop and complete all rendered grey → cyan → blue, which
+   made a hazard indistinguishable from a success tick.
+   --------------------------------------------------------------------- */
+
+/* Tone can be set on the row (whole icon shares one meaning) or on a single
+   cell (battery goes success → warning → emergency across its levels). */
+.pk-icon-row.tone-warning,   .pk-icon-state.tone-warning   { --sem: var(--parkie-warning);   --sem-subtle: var(--parkie-operation-warning-subtle); --sem-on: var(--parkie-operation-on-warning); }
+.pk-icon-row.tone-danger,    .pk-icon-state.tone-danger    { --sem: var(--parkie-danger);    --sem-subtle: var(--parkie-operation-danger-subtle);  --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-row.tone-success,   .pk-icon-state.tone-success   { --sem: var(--parkie-success);   --sem-subtle: var(--parkie-operation-success-subtle); --sem-on: var(--parkie-operation-on-success); }
+.pk-icon-row.tone-info,      .pk-icon-state.tone-info      { --sem: var(--parkie-info);      --sem-subtle: var(--parkie-operation-info-subtle);    --sem-on: var(--parkie-operation-on-info); }
+.pk-icon-row.tone-emergency, .pk-icon-state.tone-emergency { --sem: var(--parkie-emergency); --sem-subtle: var(--parkie-emergency-subtle);         --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-row.tone-neutral,   .pk-icon-state.tone-neutral   { --sem: var(--parkie-text-secondary); --sem-subtle: var(--parkie-surface-elevation-12); --sem-on: var(--parkie-operation-on-info); }
+
+/* Domain tones consume the product's own status tokens. Battery level is
+   neutral until it becomes critical: shape and percentage carry the low-level
+   change, red is reserved for intervention, and green means active charging. */
+.pk-icon-state.tone-battery-full     { --sem: var(--parkie-icon-battery-full);     --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-battery-low      { --sem: var(--parkie-battery-low);           --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-battery-critical { --sem: var(--parkie-icon-battery-critical); --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-charging         { --sem: var(--parkie-icon-charging);         --sem-subtle: var(--parkie-operation-success-subtle);  --sem-on: var(--parkie-operation-on-solid); }
+/* Connection takes the same treatment: arc count and motion carry the degree,
+   so good, weak and reconnecting share one neutral and only lost and offline
+   spend colour. Lost and reconnecting used to read --parkie-status-error and
+   --parkie-status-info directly, which routed around the connection tokens and
+   would have left this row blue after they moved. */
+.pk-icon-state.tone-link-good        { --sem: var(--parkie-connection-good);         --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-weak        { --sem: var(--parkie-connection-weak);         --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-reconnect   { --sem: var(--parkie-connection-reconnecting); --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+.pk-icon-state.tone-link-lost        { --sem: var(--parkie-connection-lost);         --sem-subtle: var(--parkie-operation-danger-subtle);   --sem-on: var(--parkie-operation-on-solid); }
+.pk-icon-state.tone-link-offline     { --sem: var(--parkie-connection-offline);      --sem-subtle: var(--parkie-surface-elevation-12);      --sem-on: var(--parkie-color-brand-950); }
+
+.pk-icon-state.is-outline { color: var(--sem); }
+
+.pk-icon-state.is-subtle {
+  color: var(--sem);
+  background: var(--sem-subtle);
+}
+
+/* Solid fills take the per-tone ink — white only reads on danger and
+   emergency; success and warning are far too bright for it. */
+.pk-icon-state.is-solid {
+  color: var(--sem-on);
+  background: var(--sem);
+}
+
+.pk-icon-state.is-muted { color: var(--parkie-icon-disabled); }
+
+/* Chips need room around the glyph, so they opt out of the 24px glyph slot.
+
+   32, not 30. The four states that carry a plate or a ring were 30×30, which
+   put 3px around the 24px glyph — and 3 is not a step in --parkie-space-*,
+   which runs 4/8/12/16. At 32 the padding is 4px on every side, on the same
+   grid as everything else, and it is the size Fluent, Carbon and Ant all give
+   a 24px icon in a container. Material goes further and asks 48 for a touch
+   target, but these are documentation specimens rather than controls; the
+   product's own icon button is a separate question and is not this. */
+.pk-icon-spec-row .pk-icon-state.is-subtle,
+.pk-icon-spec-row .pk-icon-state.is-solid {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-icon-state svg,
+.pk-domain-icon svg {
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+  overflow: visible;
+}
+
+.pk-icon-state.is-enabled {
+  color: var(--parkie-icon-default);
+}
+
+.pk-icon-state.is-hover {
+  color: var(--parkie-icon-hover);
+}
+
+.pk-icon-state.is-focus {
+  width: 32px;
+  height: 32px;
+  color: var(--parkie-icon-focus);
+  border-radius: var(--parkie-radius-sm);
+  /* The supplied specimen is a single cyan halo, and it stays a single cyan
+     halo — product controls still use the stronger two-tone ring.
+
+     Two things are being traded here, and only one of them is free. Area is
+     not: SC 2.4.13 wants at least the area of a 2px perimeter, and on this
+     32px plate 2px lands exactly on it, so the thickness cannot move. Alpha
+     can, down to the point where WCAG 2.2 stops allowing it — 3:1 for a focus
+     indicator. Over this page's surface 62% composites to 3.45:1, 58% to
+     3.16:1, and 55% to 2.96:1, which is where the floor actually is.
+
+     So 62%: the dimmest the halo goes while still clearing the bar it exists
+     to clear. Opaque it was 7.24:1 and read as a lit border rather than a
+     ring; the earlier 3px at 40% was the opposite error, a thick band at
+     2.11:1 that cleared nothing. The value lives in --parkie-focus-ring-icon
+     so the export path resolves the same number the page paints. */
+  box-shadow: 0 0 0 2px var(--parkie-focus-ring-icon);
+}
+
+.pk-icon-state.is-pressed {
+  width: 32px;
+  height: 32px;
+  color: var(--parkie-icon-pressed);
+  background: var(--parkie-surface-elevation-24);
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-icon-state.is-selected {
+  width: 32px;
+  height: 32px;
+  color: var(--parkie-icon-selected);
+  background: var(--parkie-brand-subtle);
+  border-radius: var(--parkie-radius-sm);
+}
+
+.pk-icon-state.is-disabled {
+  color: var(--parkie-icon-disabled);
+}
+
+.pk-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--parkie-space-3);
+}
+
+.pk-domain-icon {
+  min-height: 126px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--parkie-space-4);
+  color: var(--parkie-text);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-domain-icon.is-success {
+  color: var(--parkie-success);
+}
+
+.pk-domain-icon.is-neutral {
+  color: var(--parkie-text-secondary);
+}
+
+.pk-domain-icon.is-warning {
+  color: var(--parkie-warning);
+}
+
+.pk-domain-icon.is-danger {
+  color: var(--parkie-danger);
+}
+
+.pk-domain-icon.is-info {
+  color: var(--parkie-info);
+}
+
+.pk-domain-icon.is-disabled {
+  color: var(--parkie-icon-disabled);
+}
+
+/* One rule, because there is one decision here and it was previously written
+   three times. The battery glyph carries its state in the level rect *inside*
+   the outline — medium is neutral, critical fills red, the charging pair fills
+   green and adds the bolt — so the outline that surrounds all five states is
+   the same neutral ink. Three separate rules resolving to one value read as an
+   oversight waiting to be "fixed" by giving critical a red outline, which would
+   say the severity twice and leave the neutral states looking unfinished.
+   The tone the eye should read is inside the glyph; this is only its frame.
+   tests/ui.spec.js measures the inner fills; design-system-audit.spec.js
+   measures that this frame stays one neutral ink across the three tones. */
+.pk-domain-icon.is-battery-full,
+.pk-domain-icon.is-battery-critical,
+.pk-domain-icon.is-charging {
+  color: var(--parkie-icon-battery-full);
+}
+
+/* The connection states used to borrow the generic is-warning / is-info /
+   is-disabled tones, which meant this surface did not follow the connection
+   tokens at all — and --parkie-connection-offline existed with no consumer.
+   Each state reads its own token now, so the two documentation surfaces and
+   the product badge move together. */
+.pk-domain-icon.is-connection-good {
+  color: var(--parkie-connection-good);
+}
+
+.pk-domain-icon.is-connection-weak {
+  color: var(--parkie-connection-weak);
+}
+
+.pk-domain-icon.is-connection-reconnecting {
+  color: var(--parkie-connection-reconnecting);
+}
+
+.pk-domain-icon.is-connection-lost {
+  color: var(--parkie-connection-lost);
+}
+
+.pk-domain-icon.is-connection-offline {
+  color: var(--parkie-connection-offline);
+}
+
+.pk-domain-icon-label {
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-xs);
+  text-align: center;
+}
+
+.pk-icon-rules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--parkie-space-4);
+}
+
+.pk-icon-rule {
+  padding: var(--parkie-space-5);
+  background: var(--parkie-surface);
+  border: 1px solid var(--parkie-border);
+  border-radius: var(--parkie-radius-lg);
+}
+
+.pk-icon-rule h3 {
+  margin: 0 0 8px;
+  color: var(--parkie-text);
+  font-size: var(--parkie-font-lg);
+}
+
+.pk-icon-rule p,
+.pk-icon-rule ul {
+  margin: 0;
+  color: var(--parkie-text-secondary);
+  font-size: var(--parkie-font-sm);
+  line-height: var(--parkie-leading-relaxed);
+}
+
+.pk-icon-rule ul {
+  padding-left: 18px;
+}
+
+.pk-icon-rule code {
+  color: var(--parkie-brand-text);
+  font-family: var(--parkie-font-mono);
+  font-size:var(--parkie-font-xs);
+}
+
+@media (max-width: 900px) {
+  .pk-icon-spec-states {
+    grid-template-columns: repeat(2, minmax(132px, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .pk-icon-spec-states {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .pk-icon-summary,
+  .pk-icon-rules {
+    grid-template-columns: 1fr;
+  }
+
+  .pk-icon-summary-item {
+    border-right: 0;
+    border-bottom: 1px solid var(--parkie-border);
+  }
+
+  .pk-icon-summary-item:last-child {
+    border-bottom: 0;
+  }
+
+  .pk-icon-group-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
